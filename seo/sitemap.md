@@ -4,7 +4,7 @@
 
 ## Overview
 
-Generate an XML sitemap for your website using Luminova&#039;s sitemap generate command in CLI.
+Generate an XML sitemap for your website using Luminova's sitemap generate command in CLI.
 
 ***
 
@@ -28,12 +28,9 @@ Open the sitemap configuration file located at `/app/Controllers/Config/Sitemap.
 
 > After configuring your settings, rerun sitemap generation command (`php novakit generate:sitemap`) to apply the changes
 
-
 ***
 
-
 * Class namespace: `\Luminova\Seo\Sitemap`
-
 
 ## Methods
 

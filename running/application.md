@@ -4,7 +4,7 @@
 
 ## Overview
 
-Luminova&#039;s local development server, leveraging PHP&#039;s built-in web server.
+Luminova's local development server, leveraging PHP's built-in web server.
 
 ***
 

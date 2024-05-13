@@ -6,8 +6,6 @@
 
 The cookie class enhanced client-side data storage without Default JavaScript or HTTP-only restrictions, allowing you to configure your restrictions as needed.
 
-
-
 ***
 
 ## Introduction
@@ -20,7 +18,7 @@ The Cookie class stores data directly on the client-side, within cookies. This a
 
 * Class namespace: `\Luminova\Cookies\Cookie`
 * This class implements:
-[\Luminova\Interface\CookieInterface](/interface/classes.md#CookieInterface)
+[\Luminova\Interface\CookieInterface](/interface/classes.md#cookieinterface)
 
 ***
 

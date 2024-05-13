@@ -678,7 +678,7 @@ public execute(array $placeholder = null, int $mode = RETURN_ALL): mixed
 
 **Modes**
 
-- [Return Modes](/global/constants.md#database-fetch-modes) - Database query return modes.
+- [Return Modes](/global/constants.md) - Database query return modes.
 
 **Parameters:**
 

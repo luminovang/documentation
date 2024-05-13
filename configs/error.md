@@ -25,7 +25,7 @@ The `ViewErrors` class allows you define and manage error-handling methods to cu
 
 * Class namespace: `\App\Controllers\Errors\ViewErrors`
 * This class implements:
-[\Luminova\Interface\ErrorHandlerInterface](/interface/classes.md#ErrorHandlerInterface)
+[\Luminova\Interface\ErrorHandlerInterface](/interface/classes.md#errorhandlerinterface)
 * Parent class: [\Luminova\Base\BaseViewController](/base/view.md)
 
 ***

@@ -4,7 +4,7 @@
 
 ## Overview
 
-Integrate CSRF with forms and requests in your application to enhance its security and protect against CSRF attacks, safeguarding user data and maintaining trust in your application&#039;s integrity.
+Integrate CSRF with forms and requests in your application to enhance its security and protect against CSRF attacks, safeguarding user data and maintaining trust in your application's integrity.
 
 ***
 
@@ -29,7 +29,6 @@ The CSRF class generates unique tokens for each user session and verifies these 
 
 ## Methods
 
-
 ### getToken
 
 Retrieves a previously generated CSRF token or generates a new token if none was found, then stores it.
@@ -38,12 +37,9 @@ Retrieves a previously generated CSRF token or generates a new token if none was
 public static getToken(): string
 ```
 
-
-
 **Return Value:**
 
 `string` - The CSRF token.
-
 
 ***
 
@@ -57,15 +53,11 @@ public static refresh(): string
 
 Use this method when you need to regenerate a token after validation.
 
-
-
 **Return Value:**
 
 `string` - The generated CSRF token.
 
-
 ***
-
 
 ### delete
 
@@ -75,9 +67,7 @@ Delete stored CSRF token.
 public static delete(): void
 ```
 
-
 ***
-
 
 ### inputToken
 
@@ -87,9 +77,7 @@ Generates and displays an HTML hidden input field for the CSRF token.
 public static inputToken(): void
 ```
 
-
 ***
-
 
 ### metaToken
 
@@ -99,9 +87,7 @@ Generates and displays an HTML meta tag for the CSRF token.
 public static metaToken(): void
 ```
 
-
 ***
-
 
 ### validate
 
@@ -117,14 +103,11 @@ public static validate(string $token): bool
 |-----------|------|-------------|
 | `$token` | **string** | The token submitted by the user. |
 
-
 **Return Value:**
 
 `bool` - True if the submitted token is valid, false otherwise.
 
-
 ***
-
 
 ### hasToken
 

@@ -540,7 +540,7 @@ public getItem(int $mode = RETURN_ALL string $return = 'object'): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$mode` | **int** | Return mode RETURN_* <br> See database [return modes ](/variables/helper.md#database-fetch-modes). |
+| `$mode` | **int** | Return mode RETURN_* <br> See database [return modes ](/variables/helper.md). |
 | `$return` | **string** | [The return data type (array or object)]. |
 
 **Return Value:**

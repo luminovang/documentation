@@ -4,7 +4,7 @@
 
 ## Overview
 
-Learn how to securely store data in Luminova&#039;s session storage and create a simple login with input validation.
+Learn how to securely store data in Luminova's session storage and create a simple login with input validation.
 
 ***
 
@@ -72,8 +72,6 @@ To remove key from session storage.
 <?php
 $this->session->remove('foo');
 ```
-
-
 
 > Depending on the context you are in accessing your session instance can be either `$this->session` or `$this->app->session`.
 >

@@ -16,7 +16,6 @@ With database manager class, you can create a backup of your database or export,
 
 ***
 
-
 ### constructor
 
 Initializes database manager class with `DriversInterface` you are using.
@@ -31,7 +30,6 @@ Get database manager instance from `QueryBulder` class.
 $manager = $bilder->manager(): Manager;
 ```
 
-
 **Parameters:**
 
 | Parameter | Type | Description |
@@ -39,11 +37,9 @@ $manager = $bilder->manager(): Manager;
 | `$db` | **\Luminova\Interface\DriversInterface** |  |
 | `$table` | **null&#124;string** |  |
 
-
 ***
 
 ## Methods
-
 
 ### setTable
 
@@ -59,9 +55,7 @@ public setTable(string $table): void
 |-----------|------|-------------|
 | `$table` | **string** | Database table name to export. |
 
-
 ***
-
 
 ### export
 

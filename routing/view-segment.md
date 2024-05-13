@@ -48,7 +48,6 @@ public index(int $index): string
 |-----------|------|-------------|
 | `$index` | **int** | Position index to return segment. |
 
-
 **Return Value:**
 
 `string` - View segment
@@ -61,7 +60,6 @@ https://example.com/page/foo/bar/baz
 echo $segment->index(1);
 // foo
 ```
-
 
 ***
 

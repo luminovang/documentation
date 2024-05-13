@@ -40,14 +40,11 @@ Get shared instance singleton class.
 public static getInstance(): static
 ```
 
-
 **Return Value:**
 
 `static` *$instance* - Class instance.
 
-
 ***
-
 
 ### setLink
 
@@ -67,9 +64,7 @@ public setLink(string $link): self
 
 `\Luminova\Seo\Schema` - This Class instance.
 
-
 ***
-
 
 ### setConfig
 
@@ -84,7 +79,6 @@ public setConfig(array $config): void
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$config` | **array<string, mixed>** | The extended configuration. |
-
 
 #### Configuration options
 
@@ -131,9 +125,7 @@ public setConfig(array $config): void
 
 > Initial non-dynamic configurations can be set in your application's controller config directory, located at `/app/Controllers/Config/Schema.php`.
 
-
 ***
-
 
 ### setTitle
 
@@ -149,9 +141,7 @@ public setTitle(string $title): void
 |-----------|------|-------------|
 | `$title` | **string** | The page title. |
 
-
 ***
-
 
 ### setCanonical
 
@@ -170,9 +160,7 @@ public setCanonical(string $link, string $view = ''): void
 | `$link` | **string** | The canonical URL. |
 | `$view` | **string** | The view URI segments. |
 
-
 ***
-
 
 ### getTitle
 
@@ -182,11 +170,9 @@ Gets the current page title.
 public getTitle(): string
 ```
 
-
 **Return Value:** 
 
 `string` -  The page title.
-
 
 ***
 
@@ -202,9 +188,7 @@ public getLink(): string
 
 `string` -  The page link url.
 
-
 ***
-
 
 ### getGraph
 
@@ -217,7 +201,6 @@ public getGraph(): string
 **Return Value:**
 
 `string` - The JSON representation of the schema data.
-
 
 ***
 
@@ -233,7 +216,6 @@ public getScript(): string
 
 `string` - The HTML code for embedding the schema.
 
-
 ***
 
 ### getMeta
@@ -248,7 +230,6 @@ public getMeta(): string
 
 `string` - The HTML meta tags.
 
-
 ***
 
 ### getSchema
@@ -258,7 +239,6 @@ Generate structured data schema for SEO purposes.
 ```php
 public getSchema(): array<string,mixed>
 ```
-
 
 **Return Value:**
 

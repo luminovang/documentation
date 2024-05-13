@@ -4,7 +4,7 @@
 
 ## Overview
 
-Luminova&#039;s queue class is a flexible and efficient solution for managing asynchronous tasks in (FIFO) order.
+Luminova's queue class is a flexible and efficient solution for managing asynchronous tasks in (FIFO) order.
 
 ***
 
@@ -15,7 +15,6 @@ The Queue Class in Luminova provides a mechanism for managing asynchronous tasks
 Luminova's Queue Class facilitates the organization and execution of tasks in a first-in, first-out (FIFO) manner. This means that tasks are processed in the order they are added to the queue, ensuring fairness and predictability in task execution.
 
 * Class namespace: `\Luminova\Utils\Queue`
-
 
 ***
 
@@ -91,11 +90,9 @@ Get the last task and create a new instance.
 $lastTask = $queue->last();
 ```
 
-
 ***
 
 ## Methods
-
 
 ### constructor
 
@@ -109,9 +106,7 @@ public __construct(array|null $jobs = null): mixed
 |-----------|------|-------------|
 | `$jobs` | **array&#124;null** | Array of jobs to initialize the queue. |
 
-
 ***
-
 
 ### push
 
@@ -127,9 +122,7 @@ public push(\Closure|string|callable $item): void
 |-----------|------|-------------|
 | `$item` | **\Closure&#124;string&#124;callable** | The item to enqueue. |
 
-
 ***
-
 
 ### run
 
@@ -141,16 +134,13 @@ public run(callable|null $callback = null): void
 
 And execute a callback function
 
-
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$callback` | **callable&#124;null** | Optional Callback function to execute after running the queue. |
 
-
 ***
-
 
 ### hasQueue
 
@@ -164,9 +154,7 @@ public hasQueue(): bool
 
 `bool` - True if the queue has registered callable jobs.
 
-
 ***
-
 
 ### size
 
@@ -180,9 +168,7 @@ public size(): int
 
 `boo` - The size of the queue.
 
-
 ***
-
 
 ### delete
 
@@ -192,9 +178,7 @@ Delete the queue.
 public delete(): void
 ```
 
-
 ***
-
 
 ### remove
 
@@ -210,9 +194,7 @@ public remove(mixed $job): void
 |-----------|------|-------------|
 | `$job` | **mixed** | The job name to remove. |
 
-
 ***
-
 
 ### free
 
@@ -223,7 +205,6 @@ public free(): void
 ```
 
 ***
-
 
 ### getInstance
 
@@ -239,11 +220,9 @@ public getInstance(int $index): \Luminova\Utils\Queue
 |-----------|------|-------------|
 | `$index` | **int** | Current job index. |
 
-
 **Return Value:**
 
 `Queue` - A new Queue instance.
-
 
 ***
 
@@ -259,9 +238,7 @@ public current(): \Luminova\Utils\Queue
 
 `Queue` - A new Queue instance.
 
-
 ***
-
 
 ### next
 
@@ -275,9 +252,7 @@ public next(): \Luminova\Utils\Queue
 
 `Queue` - A new Queue instance.
 
-
 ***
-
 
 ### last
 
@@ -286,7 +261,6 @@ Get the last job from queue and return a new instance.
 ```php
 public last(): \Luminova\Utils\Queue
 ```
-
 
 **Return Value:**
 

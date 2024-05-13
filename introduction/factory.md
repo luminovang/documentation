@@ -4,7 +4,7 @@
 
 ## Overview
 
-Factory is Luminova&#039;s utility class that provides class instance management without the need for class registration or configuration. However, you must initialize classes using predefined names.
+Factory is Luminova's utility class that provides class instance management without the need for class registration or configuration. However, you must initialize classes using predefined names.
 
 ***
 

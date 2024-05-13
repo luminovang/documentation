@@ -4,7 +4,7 @@
 
 ## Overview
 
-A Comprehensive Guide to the luminova&#039;s Encryption Interface Class for PHP Framework Integration with OpenSSL and Sodium Libraries.
+A Comprehensive Guide to the luminova's Encryption Interface Class for PHP Framework Integration with OpenSSL and Sodium Libraries.
 
 ***
 

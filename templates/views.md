@@ -4,7 +4,7 @@
 
 ## Overview
 
-Managing and customizing your template view rendering and behavior with Luminova&#039;s TemplateTrait class.
+Managing and customizing your template view rendering and behavior with Luminova's TemplateTrait class.
 
 ***
 

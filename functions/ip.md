@@ -4,7 +4,7 @@
 
 ## Overview
 
-Get the user&#039;s IP address or retrieve the IP address information using a third-party API provider for IP address information.
+Get the user's IP address or retrieve the IP address information using a third-party API provider for IP address information.
 
 ***
 

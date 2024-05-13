@@ -4,7 +4,7 @@
 
 ## Overview
 
-Framework&#039;s features customization offers numerous useful features, but we understand that not all may be necessary for some developers or applications, while some may add extra performance overhead.
+Framework's features customization offers numerous useful features, but we understand that not all may be necessary for some developers or applications, while some may add extra performance overhead.
 
 ***
 

@@ -6,7 +6,6 @@
 
 With the input Validation class, you can validate the user-submitted data before saving it to the database. To do that you will have to set validation rules for each input field and optional error me
 
-
 ***
 
 ## Introduction
@@ -29,7 +28,7 @@ Error messages can include placeholders such as [field], [value], and [rule] to 
 
 * Class namespace: `\Luminova\Security\InputValidator`
 * This class implements:
-[\Luminova\Interface\ValidatorInterface](/interface/validator-interface.md)
+[\Luminova\Interface\ValidatorInterface](/interface/classes.md#validatorinterface)
 
 ***
 

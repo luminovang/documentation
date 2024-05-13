@@ -4,7 +4,7 @@
 
 ## Overview
 
-The Color Util class is a helper class for command line application for formatting and applying colors to your output text for vibrancy, it&#039;s useful when you want to display text with a background col
+The Color Util class is a helper class for command line application for formatting and applying colors to your output text for vibrancy, it's useful when you want to display text with a background col
 
 ***
 
@@ -14,16 +14,11 @@ Introducing the Color Utils class, a valuable tool for command-line applications
 
 Whether you're highlighting important information, organizing output for better comprehension, or simply adding a touch of flair to your CLI tool, Color Utils offers the functionalities to meet your needs. Easily customize text and background colors to suit your preferences and enhance the visual appeal of your application.
 
-
 ***
-
 
 * Class namespace: `\Luminova\Command\Colors`
 
-
-
 ## Properties
-
 
 ### foregroundColors
 
@@ -51,7 +46,6 @@ protected static array&lt;string,string&gt; $foregroundColors = [
 ];
 ```
 
-
 ***
 
 ### backgroundColors
@@ -71,11 +65,9 @@ protected static array&lt;string,string&gt; $backgroundColors = [
 ];
 ```
 
-
 ***
 
 ## Methods
-
 
 ### apply
 
@@ -85,7 +77,6 @@ Returns the given text with the correct color codes for a foreground and optiona
 public static apply(string $text, int|null $format = null, string|null $foreground = null, string|null $background = null): string
 ```
 
-
 **Parameters:**
 
 | Parameter | Type | Description |
@@ -94,7 +85,6 @@ public static apply(string $text, int|null $format = null, string|null $foregrou
 | `$format` | **int&#124;null** |  Optionally apply text formatting (ex: TextUtils::ANSI_BOLD). |
 | `$foreground` | **string&#124;null** | Foreground color name |
 | `$background` | **string&#124;null** | Optional background color name |
-
 
 **Return Value:**
 

@@ -4,7 +4,7 @@
 
 ## Overview
 
-Base command, Luminova&#039;s Framework for command-line operations - controller base class for NovaKit CLI Tool.
+Base command, Luminova's Framework for command-line operations - controller base class for NovaKit CLI Tool.
 
 ***
 

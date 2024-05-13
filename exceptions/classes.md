@@ -4,7 +4,7 @@
 
 ## Overview
 
-Luminova&#039;s Exception classes provide a structured way to handle errors and exceptions gracefully in your Luminova applications. 
+Luminova's Exception classes provide a structured way to handle errors and exceptions gracefully in your Luminova applications. 
 
 ***
 
@@ -17,7 +17,7 @@ Luminova Exceptions is a set of custom exception classes designed to log or hand
 * Base Exception namespace: `\Luminova\Exceptions\AppException`
 * Parent class: `\Exception`
 * This class implements:
-[\Luminova\Exceptions\ExceptionInterface](/exceptions/classes.md#exceptioninterface)
+[\Luminova\Interface\ExceptionInterface](/interface/classes.md#exceptioninterface)
 * This class is an **Abstract class**
 
 ***
@@ -215,6 +215,8 @@ class CustomException extends AppException
 
 * Parent class: `\Luminova\Exceptions\AppException`
 * Class namespace: `\Luminova\Exceptions\`
+
+---
 
 ### AppException
 

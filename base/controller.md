@@ -4,7 +4,7 @@
 
 ## Overview
 
-Base Controller provides a robust foundation for backend operations in Luminova&#039;s framework, offering efficient request handling, validation initialization, and backend view rendering capabilities.
+Base Controller provides a robust foundation for backend operations in Luminova's framework, offering efficient request handling, validation initialization, and backend view rendering capabilities.
 
 ***
 
@@ -200,7 +200,7 @@ protected onCreate(): void
 
 ### onDestroy
 
-The controller onDestroy method is an alternative to __distruct
+The controller onDestroy method is an alternative to `__distruct`
 
 ```php
 protected onDestroy(): void

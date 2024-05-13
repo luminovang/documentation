@@ -4,7 +4,7 @@
 
 ## Overview
 
-The Lumonovas `Time` class extends PHP `DateTimeImmutable` and provides additional functionality and convenience methods for handling date and time operations.
+The Luminova Time class is an extension of PHP DateTimeImmutable`and provides additional functionality and convenience methods for handling date and time operations.
 
 ***
 
@@ -17,7 +17,7 @@ Time class serves as a valuable addition to the Luminova's PHP developer's toolk
 ***
 
 * Class namespace: `\Luminova\Time\Time`
-* Parent class: [DateTimeImmutable](/../../DateTimeImmutable.md.md)
+* Parent class: [DateTimeImmutable](/DateTimeImmutable.md)
 
 ***
 

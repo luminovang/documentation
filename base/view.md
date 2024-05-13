@@ -4,7 +4,7 @@
 
 ## Overview
 
-Base View Controller Simplifies view management in Luminov&#039;s Framework by avoiding initialization of unnecessary classes except when it needed.
+Base View Controller Simplifies view management in Luminov's Framework by avoiding initialization of unnecessary classes except when it needed.
 
 ***
 

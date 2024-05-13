@@ -4,7 +4,7 @@
 
 ## Overview
 
-A Comprehensive Guide to the luminova&#039;s Encryption Interface Class for PHP Framework Integration with OpenSSL and Sodium Libraries.
+A Comprehensive Guide to the luminova's Encryption Interface Class for PHP Framework Integration with OpenSSL and Sodium Libraries.
 
 ***
 
@@ -12,19 +12,16 @@ A Comprehensive Guide to the luminova&#039;s Encryption Interface Class for PHP 
 
 The Luminova Crypter class serves as a valuable asset for developers utilizing the Luminova PHP framework, offering a convenient and secure solution for implementing encryption and decryption functionalities. By abstracting away the complexities of cryptographic libraries and providing a unified interface, the Crypter class facilitates the integration of encryption features into PHP applications, enhancing overall security and reliability.
 
-
-* Full name: `\Luminova\Interface\EncryptionInterface`
-
+* Class namespace: `\Luminova\Interface\EncryptionInterface`
 
 ## Methods
 
-
-### __construct
+### constructor
 
 Constructor, optional pass a blank key string and `setKey()` later before encrypt/decrypt.
 
 ```php
-public __construct(string $key = &#039;&#039;): mixed
+public __construct(string $key = ''): mixed
 ```
 
 **Parameters:**
@@ -33,15 +30,11 @@ public __construct(string $key = &#039;&#039;): mixed
 |-----------|------|-------------|
 | `$key` | **string** | The encryption key. |
 
-
 **Throws:**
 
-- [\Luminova\Exceptions\`InvalidException`](/exceptions/classes.md#`invalidexception`) - If the method or block size is invalid while using openssl.
-
+- [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#invalidexception) - If the method or block size is invalid while using openssl.
 
 ***
-
-
 
 ### setData
 
@@ -57,10 +50,7 @@ public setData(string $data): void
 |-----------|------|-------------|
 | `$data` | **string** | The data to encrypt/decrypt. |
 
-
 ***
-
-
 
 ### setKey
 
@@ -76,9 +66,7 @@ public setKey(string $key): void
 |-----------|------|-------------|
 | `$key` | **string** | The encryption key. |
 
-
 ***
-
 
 ### setNonce
 
@@ -94,10 +82,7 @@ public setNonce(string|null $nonce = null): void
 |-----------|------|-------------|
 | `$nonce` | **string&#124;null** | The nonce for encryption. |
 
-
-
 ***
-
 
 ### setCypherAlgo
 
@@ -116,12 +101,9 @@ public setCypherAlgo(int|null $blockSize, string $mode): void
 
 **Throws:**
 
-- [\Luminova\Exceptions\`InvalidException`](/exceptions/classes.md#`invalidexception`) - If the method or block size is invalid.
-
-
+- [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#invalidexception) - If the method or block size is invalid.
 
 ***
-
 
 ### nonce
 
@@ -137,15 +119,11 @@ public nonce(string|null $string = null): string
 |-----------|------|-------------|
 | `$string` | **string&#124;null** | The string to extract the nonce from. |
 
-
 **Return Value:** 
 
 `string` -  The nonce string.
 
-
-
 ***
-
 
 ### encrypt
 
@@ -159,15 +137,11 @@ public encrypt(): string|bool
 
 `string|bool` -  The encrypted data, or false if encryption fails.
 
-
 **Throws:**
 
-- [\Luminova\Exceptions\`InvalidException`](/exceptions/classes.md#`invalidexception`) - If encryption fails due to invalid parameters.
-
-
+- [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#invalidexception) - If encryption fails due to invalid parameters.
 
 ***
-
 
 ### decrypt
 
@@ -181,17 +155,11 @@ public decrypt(): string|bool
 
 `string|bool` -  The decrypted data, or false if decryption fails.
 
-
-
 **Throws:**
 
-- [\Luminova\Exceptions\`InvalidException`](/exceptions/classes.md#`invalidexception`) - If decryption fails due to invalid parameters.
-
-
+- [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#invalidexception) - If decryption fails due to invalid parameters.
 
 ***
-
-
 
 ### free
 

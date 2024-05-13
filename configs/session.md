@@ -4,7 +4,7 @@
 
 ## Overview
 
-Session configuration class provides flexibility and control over server-side session management, ensuring the security and reliability of the application&#039;s session handling.
+Session configuration class provides flexibility and control over server-side session management, ensuring the security and reliability of the application's session handling.
 
 ***
 

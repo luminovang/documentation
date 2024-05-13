@@ -4,7 +4,7 @@
 
 ## Overview
 
-Luminova&#039;s Crypter class provides methods for encrypting and decrypting data using encryption algorithms in OpenSSL or Sodium.
+Luminova's Crypter class provides methods for encrypting and decrypting data using encryption algorithms in OpenSSL or Sodium.
 
 ***
 
@@ -12,9 +12,8 @@ Luminova&#039;s Crypter class provides methods for encrypting and decrypting dat
 
 Luminova Crypter class is straightforward means to implement encryption and decryption functionalities in anywhere in your applications. This helper class seamlessly integrates both Sodium and OpenSSL encryption libraries, providing a unified and simplified interface for encrypting and decrypting data without the need for manual initialization of handlers.
 
-
 * Class namespace: `\Luminova\Security\Crypter`
-* Encryption class interface: [\Luminova\Interface\EncryptionInterface](/interface/classes.md#EncryptionInterface)
+* Encryption class interface: [\Luminova\Interface\EncryptionInterface](/interface/classes.md#encryptioninterface)
 
 ***
 
@@ -91,7 +90,6 @@ public static encrypt(string $data): string|bool
 |-----------|------|-------------|
 | `$data` | **string** | The data to encrypt. |
 
-
 **Return Value:**
 
 `string|bool` -  The encrypted data, or false if encryption fails.
@@ -99,7 +97,6 @@ public static encrypt(string $data): string|bool
 **Throws:**
 
 - [\Luminova\Exceptions\EncryptionException](/exceptions/classes.md#encryptionexception) - Throws when invalid encryption data is passed.
-
 
 ***
 
@@ -116,7 +113,6 @@ public static decrypt(string $data): string|null
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$data` | **string** | The data to decrypt. |
-
 
 **Return Value:** 
 
@@ -157,7 +153,6 @@ $options array<string, mixed> = [
 ];
 ```
 
-
 ***
 
 ### verify
@@ -168,14 +163,12 @@ Verify a user login password against it stored hash and determine if it match.
 public static verify(string $password, string $hash): bool
 ```
 
-
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$password` | **string** | User submitted password string |
 | `$hash` | **string** | Store password hash |
-
 
 **Return Value:**
 
@@ -197,7 +190,6 @@ public static supported(string $key, string $method): bool
 |-----------|------|-------------|
 | `$key` | **string** | Encryption key |
 | `$method` | **string** | Cipher method |
-
 
 **Return Value:**
 
@@ -221,7 +213,6 @@ public static generate_key(string $type = 'random', array $options = []): string
 | `$type` | **string** | The type of key to generate: 'random', 'private', or 'public'. |
 | `$options` | **array** | Additional options for key generation.<br />- For 'random' type: 'length' specifies the length of the random string.<br />- For 'private' type: 'private_key_bits' specifies the number of bits in the private key,<br />  and 'private_key_type' specifies the type of the private key (e.g., OPENSSL_KEYTYPE_RSA).<br />- For 'public' type: 'private_key' is the private key string from which to derive the public key. |
 
-
 **Return Value:**
 
 `string|array|false` - The generated key(s), an array of private and public key, or false on failure.
@@ -231,7 +222,6 @@ public static generate_key(string $type = 'random', array $options = []): string
 ### Configuration
 
 These `Configuration` properties allows you to configure encryption settings for your application. The location of the configuration class is `/app/Controllers/Config/Encryption.php`
-
 
 #### `$handler`
 

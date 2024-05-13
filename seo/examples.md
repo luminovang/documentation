@@ -4,8 +4,7 @@
 
 ## Overview
 
-Schema &amp; Sitemap Examples, Website optimization guides using  Luminova&#039;s Structured Data and Sitemap Generation class.
-
+Schema &amp; Sitemap Examples, Website optimization guides using  Luminova's Structured Data and Sitemap Generation class.
 
 ***
 

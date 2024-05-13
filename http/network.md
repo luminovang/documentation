@@ -18,7 +18,7 @@ By default, it uses `cURL` for making HTTP requests, but it also supports the `G
 
 * Class namespace: `\Luminova\Http\Network`
 * This class implements:
-[\Luminova\Interface\NetworkInterface](/interface/classes.md#NetworkInterface)
+[\Luminova\Interface\NetworkInterface](/interface/classes.md#networkinterface)
 
 ## Methods
 

@@ -18,7 +18,6 @@ The Encryption Driver provides a flexible solution for data encryption within th
 
 ***
 
-
 ### constructor
 
 Constructor, optional pass a blank key string and `setKey()` later before encrypt/decrypt.
@@ -43,11 +42,9 @@ new Sodium(?string $key = null, ?string $method = null, int $size = 16);
 | `$method` | **string&#124;null** | Optional encryption cypher method.. |
 | `$size` | **int** | Optional key size for encryption.. |
 
-
 **Throws:**
 
 - [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#invalidexception) - If the method or block size is invalid while using openssl.
-
 
 ***
 
@@ -62,7 +59,6 @@ Set the data to encrypt/decrypt.
 ```php
 public setData(string $data): void
 ```
-
 
 **Parameters:**
 
@@ -80,13 +76,11 @@ Set the encryption key.
 public setKey(string $key): void
 ```
 
-
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$key` | **string** | The encryption key. |
-
 
 ***
 
@@ -103,7 +97,6 @@ public setNonce(string|null $nonce = null): void
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$nonce` | **string&#124;null** | The nonce for encryption. |
-
 
 ***
 
@@ -126,7 +119,6 @@ public setMethod(string $method, int $size = 16): void
 
 - [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#invalidexception) - If the method or block size is invalid.
 
-
 ***
 
 ### nonce
@@ -142,7 +134,6 @@ public nonce(string|null $string = null): string
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$string` | **string&#124;null** | The string to extract the nonce from. |
-
 
 **Return Value:**
 
@@ -162,12 +153,9 @@ public encrypt(): string|bool
 
 The encrypted data, or false if encryption fails.
 
-
-
 **Throws:**
 
 - [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#invalidexception) - If encryption fails due to invalid parameters.
-
 
 ***
 
@@ -179,17 +167,13 @@ Decrypt data.
 public decrypt(): string|bool
 ```
 
-
 **Return Value:**
 
 The decrypted data, or false if decryption fails.
 
-
-
 **Throws:**
 
 - [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#invalidexception) - If decryption fails due to invalid parameters.
-
 
 ***
 

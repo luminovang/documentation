@@ -4,7 +4,7 @@
 
 ## Overview
 
-Services is a utility class that efficiently manages class initialization across the application&#039;s codebase. It provides shared and serializable class instances, with a centralized location for regist
+Services is a utility class that efficiently manages class initialization across the application's codebase. It provides shared and serializable class instances, with a centralized location for regist
 
 ***
 
