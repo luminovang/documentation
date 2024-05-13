@@ -45,7 +45,7 @@ make the array key your option while the value can be a description of the optio
 protected array<string,mixed> $options
 ```
 
-Tell more story about your command by writing a clear description message to help users understand.
+Tell more stories about your command by writing a clear description message to help users understand.
 
 ```php
 protected string $description
