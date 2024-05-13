@@ -37,7 +37,9 @@ If you need to register a URI group for routing, you can use `bind` method which
 ```php 
 <?php
 use \Luminova\Routing\Router;
-$router->bind('/blog', function(Router $router) {
+use \Luminova\Base\BaseApplication;
+
+$router->bind('/blog', function(Router $router, BaseApplication $app) {
 	$router->get('/', 'ExampleController::blogs');
 	$router->get('/([a-zA-Z0-9]+)', 'ExampleController::blog');
 });
@@ -75,7 +77,10 @@ Registering command controller routing.
 ```php
 <?php
 use \Luminova\Routing\Router;
-$router->group("group", function(Router $router) {
+use \Luminova\Base\BaseApplication;
+use \Luminova\Command\Terminal;
+
+$router->group("group", function(Router $router, BaseApplication $app, Terminal $term) {
     $router->command("test", 'Command::test');
     $router->command('/foo/name/(:value)', 'Command::foo');
 });
@@ -327,6 +332,8 @@ public bind(string $group, \Closure $callback): void
 **Throws:**
 - [\Luminova\Exceptions\RouterException](/exceptions/classes.md#routerexception) - If invalid callback is provided
 
+> *Note:* In other to type hint class in `bind` method, you must follow this order `$callback(Router $router, BaseApplication $app)`, only these 2 classes are supported.
+> 
 ***
 
 ### group
@@ -342,20 +349,20 @@ public group(string $group, \Closure $callback): void
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$group` | **string** | The binding group name. |
-| `$callback(Router $router, BaseApplication $app)` | **\Closure** | Callback command function to handle group |
+| `$callback(Router $router, BaseApplication $app, Terminal $term)` | **\Closure** | Callback command function to handle group.<bt/>By default: class hint injection for (`Router`, `BaseApplication` and `Terminal`), are made available. |
 
 **Throws:**
 - [\Luminova\Exceptions\RouterException](/exceptions/classes.md#routerexception) - If invalid callback is provided
 
-> Your group name must match with the controller group name for command to succeed.
-> 
-> And you must define your group name in controller.
+> Your group name must match with the controller group name for command to succeed, also you must define your group name in controller.
+> *Note:* In other to type hint class in `group` method, you must follow this order `$callback(Router $router, BaseApplication $app, Terminal $term)`, only these 3 classes are supported.
 
 ***
 
 ### bootstraps
 
-Bootstrap application routing context like [web, cli, api, console etc.
+Register your application bootstrap routing URL prefix, such as `web`, `cli`, `api`, `console` and many more.
+These prefix must be unique in other to work as expected.
 
 ```php
 public bootstraps(\Luminova\Base\BaseApplication $application, \Luminova\Routing\Bootstrap $callbacks): void
@@ -370,8 +377,8 @@ public bootstraps(\Luminova\Base\BaseApplication $application, \Luminova\Routing
 
 **See Also:**
 
-*  [Context Bootstrap](/bootstrap/Bootstrap.md) - Routing context Bootstrapping 
-*  [Index Controller File](/public/index.md) - Front controller handler. 
+*  [Routing Contents](/bootstrap/Bootstrap.md) - Read more about how routing prefix work and usages. 
+*  [Index Controller Handler](/public/index.md) - See example of front controller index file handler. 
 
 ***
 

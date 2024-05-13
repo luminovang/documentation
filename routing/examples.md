@@ -157,7 +157,9 @@ To bind and access routes defined under `/blog` and its nested group `/blog/id/i
 ```php
 <?php
 use \Luminova\Routing\Router;
-$router->bind('/blog', function(Router $router) {
+use \Luminova\Base\BaseApplication;
+
+$router->bind('/blog', function(Router $router, BaseApplication $app) {
 	$router->get('/', 'UserController::blogs');
 	$router->get('/id/([a-zA-Z0-9]+)', 'UserController::blog');
 });
@@ -184,9 +186,9 @@ Alternatively, you can set the custom view folder within a specific route bindin
 ```php
 <?php
 use \Luminova\Routing\Router;
-use \App\Controller\Application;
+use \Luminova\Base\BaseApplication;
 
-$router->bind('/admin', function(Router $router, Application $app) {
+$router->bind('/admin', function(Router $router, BaseApplication $app) {
      // Set in global scope
      $app->setFolder('panel');
 
@@ -240,9 +242,11 @@ All commands belonging to a group should be wrapped in `group` method closure.
 ```php
 <?php
 use \Luminova\Routing\Router;
+use \Luminova\Base\BaseApplication;
+use \Luminova\Command\Terminal;
 
 // Register a command route named 'foo' mapped to 'CommandController::foo'
-$router->group("users", function((Router $router){
+$router->group("users", function((Router $router, BaseApplication $app, Terminal $term){
     $router->command("foo", 'UserCommandController::foo');
 });
 ```
@@ -267,6 +271,7 @@ To create a route with dynamic segments in the router, use the following syntax:
 ```php
 <?php
 use \Luminova\Routing\Router;
+
 $router->group("users", function((Router $router){
 	$router->command('/profile/name/(:value)', 'UserCommandController::profile');
 });
@@ -283,6 +288,7 @@ Define a command route with multiple dynamic segments for blog details
 ```php
 <?php
 use \Luminova\Routing\Router;
+
 $router->group("blogs", function((Router $router){
 	$router->command('/post/id/(:value)/title/(:value)', 'BlogCommandController::blog');
 });
