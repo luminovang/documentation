@@ -40,7 +40,7 @@ new PdoDriver(\Luminova\Base\BaseDatabase $config): mixed
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - If the database connection fails.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#DatabaseException) - If the database connection fails.
 
 ***
 
@@ -338,7 +338,7 @@ public execute(array|null $params = null): bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - Query statment  encounter error.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#DatabaseException) - Query statment  encounter error.
 
 ***
 

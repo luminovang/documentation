@@ -72,8 +72,8 @@ public static getInstance(): \Luminova\Interface\EncryptionInterface
 
 **Throws:**
 
-- [\Luminova\Exceptions\EncryptionException](/exceptions/classes#EncryptionException) - Throws when an empty encryption key is passed.
-- [\Luminova\Exceptions\EncryptionException](/exceptions/classes#EncryptionException) - Throws when an invalid handler is specified or handler extension is not loaded.
+- [\Luminova\Exceptions\EncryptionException](/exceptions/classes.md#EncryptionException) - Throws when an empty encryption key is passed.
+- [\Luminova\Exceptions\EncryptionException](/exceptions/classes.md#EncryptionException) - Throws when an invalid handler is specified or handler extension is not loaded.
 
 ***
 
@@ -98,7 +98,7 @@ public static encrypt(string $data): string|bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\EncryptionException](/exceptions/classes#EncryptionException) - Throws when invalid encryption data is passed.
+- [\Luminova\Exceptions\EncryptionException](/exceptions/classes.md#EncryptionException) - Throws when invalid encryption data is passed.
 
 
 ***
@@ -124,7 +124,7 @@ public static decrypt(string $data): string|null
 
 **Throws:**
 
-- [\Luminova\Exceptions\EncryptionException](/exceptions/classes#EncryptionException) - Throws when invalid encryption data is passed.
+- [\Luminova\Exceptions\EncryptionException](/exceptions/classes.md#EncryptionException) - Throws when invalid encryption data is passed.
 
 ***
 

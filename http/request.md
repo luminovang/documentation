@@ -364,7 +364,7 @@ public getArray(string $method, string $key, array $default = []): array
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes#InvalidArgumentException) - Throws if unsupported HTTP method was passed.
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#InvalidArgumentException) - Throws if unsupported HTTP method was passed.
 
 ***
 
@@ -674,7 +674,7 @@ public getHost(bool $extension = false): string
 
 **Throws:**
 
-- [\Luminova\Exceptions\SecurityException](/exceptions/classes#SecurityException) - If host is invalid or not allowed.
+- [\Luminova\Exceptions\SecurityException](/exceptions/classes.md#SecurityException) - If host is invalid or not allowed.
 
 ***
 
@@ -700,7 +700,7 @@ public getHostname(bool $extension = false, bool $port = true): string
 
 **Throws:**
 
-- [\Luminova\Exceptions\SecurityException](/exceptions/classes#SecurityException) - If host is invalid or not allowed.
+- [\Luminova\Exceptions\SecurityException](/exceptions/classes.md#SecurityException) - If host is invalid or not allowed.
 
 ***
 
@@ -833,7 +833,7 @@ public static isTrusted(string $input, string $context = 'hostname'): bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes#InvalidArgumentException) - If invalid context is provided.
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#InvalidArgumentException) - If invalid context is provided.
 
 ***
 

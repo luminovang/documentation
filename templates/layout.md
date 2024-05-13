@@ -168,7 +168,7 @@ public layout(string $layout): self
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - Throws when layout file is not found.
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#RuntimeException) - Throws when layout file is not found.
 
 ***
 
@@ -204,7 +204,7 @@ protected end(string|null $name = null): void
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - Throws when end is called without active section to end.
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#RuntimeException) - Throws when end is called without active section to end.
 
 ***
 

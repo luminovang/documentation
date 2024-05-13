@@ -92,7 +92,7 @@ public static getInstance(): static
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) -  If the database connection fails.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#DatabaseException) -  If the database connection fails.
 
 ***
 
@@ -644,7 +644,7 @@ public query(string $query): self
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - when query is empty.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#DatabaseException) - when query is empty.
 
 *Example*
 
@@ -693,7 +693,7 @@ public execute(array $placeholder = null, int $mode = RETURN_ALL): mixed
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - If placeholder key is not a valid string.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#DatabaseException) - If placeholder key is not a valid string.
 
 ***
 
@@ -890,7 +890,7 @@ public truncate(bool $transaction = true): bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - Throws if execution encountered error.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#DatabaseException) - Throws if execution encountered error.
 
 ***
 
@@ -914,7 +914,7 @@ public exec(string $query): int|bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - Throws if execution encountered error.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#DatabaseException) - Throws if execution encountered error.
 
 ***
 
@@ -932,7 +932,7 @@ public drop(): int|bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - Throws if execution encountered error.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#DatabaseException) - Throws if execution encountered error.
 
 ***
 
@@ -956,7 +956,7 @@ public create(\Luminova\Database\Scheme $scheme): int|bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - Throws if execution encountered error.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#DatabaseException) - Throws if execution encountered error.
 
 ***
 
@@ -1015,7 +1015,7 @@ public export(string $as = 'csv', string|null $filename = null, array $columns =
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - If an invalid format is provided or if unable to create the export.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#DatabaseException) - If an invalid format is provided or if unable to create the export.
 
 ***
 
@@ -1039,7 +1039,7 @@ True if backup is successful, false otherwise.
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - If unable to create the backup directory or if failed to create the backup.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#DatabaseException) - If unable to create the backup directory or if failed to create the backup.
 
 ***
 

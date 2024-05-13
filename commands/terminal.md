@@ -173,7 +173,7 @@ protected static chooser(string $text, array $options, bool $required = false): 
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes#InvalidArgumentException)
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#InvalidArgumentException)
 
 > If you use associative array users will see index key instead.
 

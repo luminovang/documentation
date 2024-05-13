@@ -334,7 +334,7 @@ public doSearch(string $query, array<int,string> $fields = ['*'], int $limit = 1
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - If search controller class is not installed.
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#RuntimeException) - If search controller class is not installed.
 
 > To use this method or `searchInstance` you will first have to install a third party library by running composer command `composer require peterujah/php-search-controller` .
 
@@ -360,7 +360,7 @@ protected searchInstance(string $flag): \Peterujah\NanoBlock\Searchable
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - If the search controller class is not installed.
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#RuntimeException) - If the search controller class is not installed.
 
 ***
 

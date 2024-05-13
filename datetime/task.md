@@ -103,6 +103,6 @@ public static before(string $datetime, int $days = 2, null|\DateTimeZone|string 
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes#InvalidArgumentException) - If invalid days was passed.
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#InvalidArgumentException) - If invalid days was passed.
 
 > This method is useful to check and send notification days before subscription expiration.

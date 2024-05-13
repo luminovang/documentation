@@ -222,7 +222,7 @@ public setName(string $name): self
 
 **Throws:**
 
-- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If the filename contains paths or does not have a valid file extension type.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes.md#StorageException) - If the filename contains paths or does not have a valid file extension type.
 
 ***
 

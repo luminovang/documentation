@@ -248,7 +248,7 @@ function layout(string $file): \Luminova\Template\Layout
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) -Throws if layout file is not found.
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#RuntimeException) -Throws if layout file is not found.
 
 **See Also**
 
@@ -314,8 +314,8 @@ function func(string|null $context = null, mixed $params): mixed
 
 **Throws:**
 
-- [\Luminova\Exceptions\Exception](/exceptions/classes#Exception) - If an error occurs.
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - If unable to initialize method.
+- [\Luminova\Exceptions\Exception](/exceptions/classes.md#Exception) - If an error occurs.
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#RuntimeException) - If unable to initialize method.
 
 **See Also**
 
@@ -503,7 +503,7 @@ function  import(string $library): bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - If the library could not be found
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#RuntimeException) - If the library could not be found
 
 **Return Value:**
 
@@ -531,7 +531,7 @@ function logger(string $level, string $message, array $context = []): void
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes#InvalidArgumentException)
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#InvalidArgumentException)
 
 > All loges are located in `/writeable/log/`, each log level has it own file name (e.x., `warning.log`).
 >
@@ -577,9 +577,9 @@ function escape(string|array $input, string $context = 'html', string|null $enco
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes#InvalidArgumentException) - When an invalid or blank encoding is provided.
-- [\Luminova\Exceptions\BadMethodCallException](/exceptions/classes#BadMethodCallException) - When an invalid context is called
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - When the string is not valid UTF-8 or cannot be converted.
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#InvalidArgumentException) - When an invalid or blank encoding is provided.
+- [\Luminova\Exceptions\BadMethodCallException](/exceptions/classes.md#BadMethodCallException) - When an invalid context is called
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#RuntimeException) - When the string is not valid UTF-8 or cannot be converted.
 
 **Return Value:**
 
@@ -655,7 +655,7 @@ function lang(string $lookup, string|null $default = null, string|null $locale =
 
 **Throws:**
 
-- [\Luminova\Exceptions\NotFoundException](/exceptions/classes#NotFoundException) - If translation is not found and no default is provided.
+- [\Luminova\Exceptions\NotFoundException](/exceptions/classes.md#NotFoundException) - If translation is not found and no default is provided.
 
 > To create a language translations you need to define it in `/app/Controllers/Languages/`.
 > 
@@ -726,7 +726,7 @@ function write_content(string $filename, string|resource  $content, int  $flag, 
 
 **Throws:**
 
-- [\Luminova\Exceptions\FileException](/exceptions/classes#FileException) - If unable to write file.
+- [\Luminova\Exceptions\FileException](/exceptions/classes.md#FileException) - If unable to write file.
 
 **See Also**
 
@@ -756,8 +756,8 @@ Returns true if the directory existed or was created, otherwise false.
 
 **Throws:**
 
-- [\Luminova\Exceptions\FileException](/exceptions/classes#FileException) - If unable to create directory.
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - If the path is not readable.
+- [\Luminova\Exceptions\FileException](/exceptions/classes.md#FileException) - If unable to create directory.
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#RuntimeException) - If the path is not readable.
 
 **See Also**
 

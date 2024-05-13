@@ -125,7 +125,7 @@ protected static addService(string|object $classOrInstance, ...$arguments): true
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - If service name already exist or unable to initiate class.
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#RuntimeException) - If service name already exist or unable to initiate class.
 
 > *Note:*
 > 

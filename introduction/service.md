@@ -214,7 +214,7 @@ public static add(string|object $service, \Luminova\Application\arguments $argum
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - If service already exist or unable to initiate class.
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#RuntimeException) - If service already exist or unable to initiate class.
 
 > *Note:*
 >
