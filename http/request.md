@@ -362,7 +362,7 @@ public getArray(string $method, string $key, array $default = []): array
 
 **Throws:**
 
-- [InvalidArgumentException](../Exceptions/InvalidArgumentException.md) - Throws if unsupported HTTP method was passed.
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes#InvalidArgumentException) - Throws if unsupported HTTP method was passed.
 
 ***
 
@@ -406,7 +406,7 @@ public getFile(string $name): \Luminova\Http\File|false
 
 **See Also:**
 
-[File Upload Object](/http/file)
+[File Upload Object](/http/file.md)
 
 ***
 
@@ -424,7 +424,7 @@ public getFiles(): false|array&lt;int,\Luminova\Http\File&gt;
 
 **See Also:**
 
-[File Upload Object](/http/file)
+[File Upload Object](/http/file.md)
 
 ***
 
@@ -672,7 +672,7 @@ public getHost(bool $extension = false): string
 
 **Throws:**
 
-- [SecurityException](../Exceptions/SecurityException.md) - If host is invalid or not allowed.
+- [\Luminova\Exceptions\SecurityException](/exceptions/classes#SecurityException) - If host is invalid or not allowed.
 
 ***
 
@@ -698,7 +698,7 @@ public getHostname(bool $extension = false, bool $port = true): string
 
 **Throws:**
 
-- [SecurityException](../Exceptions/SecurityException.md) - If host is invalid or not allowed.
+- [\Luminova\Exceptions\SecurityException](/exceptions/classes#SecurityException) - If host is invalid or not allowed.
 
 ***
 
@@ -831,7 +831,7 @@ public static isTrusted(string $input, string $context = 'hostname'): bool
 
 **Throws:**
 
-- [InvalidArgumentException](../Exceptions/InvalidArgumentException.md) - If invalid context is provided.
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes#InvalidArgumentException) - If invalid context is provided.
 
 ***
 

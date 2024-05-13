@@ -12,7 +12,7 @@ Luminova Crypter class is straightforward means to implement encryption and decr
 
 
 * Class namespace: `\Luminova\Security\Crypter`
-* Encryption class interface: [\Luminova\Interface\EncryptionInterface](/interface/classes#EncryptionInterface)
+* Encryption class interface: [\Luminova\Interface\EncryptionInterface](/interface/classes.md#EncryptionInterface)
 
 ***
 
@@ -70,8 +70,8 @@ public static getInstance(): \Luminova\Interface\EncryptionInterface
 
 **Throws:**
 
-- [EncryptionException](/exceptions/encryption) - Throws when an empty encryption key is passed.
-- [EncryptionException](/exceptions/encryption) - Throws when an invalid handler is specified or handler extension is not loaded.
+- [\Luminova\Exceptions\EncryptionException](/exceptions/classes#EncryptionException) - Throws when an empty encryption key is passed.
+- [\Luminova\Exceptions\EncryptionException](/exceptions/classes#EncryptionException) - Throws when an invalid handler is specified or handler extension is not loaded.
 
 ***
 
@@ -96,7 +96,7 @@ public static encrypt(string $data): string|bool
 
 **Throws:**
 
-- [EncryptionException](/exceptions/encryption) - Throws when invalid encryption data is passed.
+- [\Luminova\Exceptions\EncryptionException](/exceptions/classes#EncryptionException) - Throws when invalid encryption data is passed.
 
 
 ***
@@ -122,7 +122,7 @@ public static decrypt(string $data): string|null
 
 **Throws:**
 
-- [EncryptionException](/exceptions/encryption) - Throws when invalid encryption data is passed.
+- [\Luminova\Exceptions\EncryptionException](/exceptions/classes#EncryptionException) - Throws when invalid encryption data is passed.
 
 ***
 

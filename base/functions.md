@@ -67,7 +67,7 @@ public static ip(): \Luminova\Functions\IPAddress
 
 **See Also**
 
-[IP Address Class](/function/ip-address) - See the ip address class for available useful methods.
+[IP Address Class](/function/ip-address.md) - See the ip address class for available useful methods.
 
 ***
 
@@ -128,7 +128,7 @@ public static math(): \Luminova\Functions\Maths
 
 **See Also**
 
-[Math Class](/function/math) - See the math class for available useful methods.
+[Math Class](/function/math.md) - See the math class for available useful methods.
 
 ***
 
@@ -154,9 +154,9 @@ public static escape(string|array $input, string $context = 'html', string|null 
 
 **Throws:**
 
-- [InvalidArgumentException](/exceptions/invalid-argument) - When an invalid escape context is provided.
-- [BadMethodCallException](/exceptions/bad-method) - When the called method does not exist.
-- [RuntimeException](/exceptions/runtime) - When the string is not valid UTF-8 or cannot be converted.
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes#InvalidArgumentException) - When an invalid escape context is provided.
+- [\Luminova\Exceptions\BadMethodCallException](/exceptions/classes#BadMethodCallException) - When the called method does not exist.
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - When the string is not valid UTF-8 or cannot be converted.
 - [Exception](#) - When encountered uncaught error.
 
 > To use `Laminas\Escaper` you need to install the library first by running this composer command `$ composer require laminas/laminas-escaper` in your cli.

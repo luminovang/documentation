@@ -30,7 +30,7 @@ In `public/index.php`, add a route context, to `$app->router->bootstraps()` meth
 new Bootstrap('routing name', 'callback function for error handling');
 ```
 
-Learn more about [Routing Context](/routing/view-context)
+Learn more about [Routing Context](/routing/view-context.md)
 
 ***
 

@@ -12,7 +12,7 @@ Services is a utility class designed to simplify the management of class instanc
 
 #### Key Features:
 
-1. **Class Registration and Access**: [Register classes in service](/configs/service) and access their instances anywhere in your codebase.
+1. **Class Registration and Access**: [Register classes in service](/configs/service.md) and access their instances anywhere in your codebase.
 
 2. **Shared Instances**: Enables multiple parts of the application to access the same instance of a class.
 
@@ -212,7 +212,7 @@ public static add(string|object $service, \Luminova\Application\arguments $argum
 
 **Throws:**
 
-- [Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - If service already exist or unable to initiate class.
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - If service already exist or unable to initiate class.
 
 > *Note:*
 >

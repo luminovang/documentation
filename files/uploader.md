@@ -90,7 +90,7 @@ public static upload(\Luminova\Http\File $file, string|null $path = null): bool
 
 **Throws:**
 
-- [StorageException](../Exceptions/StorageException.md) - If upload path is not specified in configuration.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If upload path is not specified in configuration.
 
 ***
 
@@ -115,7 +115,7 @@ public static move(\Luminova\Http\File $file, string|null $path = null): bool
 
 **Throws:**
 
-- [StorageException](../Exceptions/StorageException.md) - If upload path is not specified in configuration.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If upload path is not specified in configuration.
 
 ***
 
@@ -142,7 +142,7 @@ public static chunk(\Luminova\Http\File $file, string|null $path = null, int $ch
 
 **Throws:**
 
-- [StorageException](../Exceptions/StorageException.md) - If upload path is not specified in configuration.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If upload path is not specified in configuration.
 
 ***
 

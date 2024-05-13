@@ -17,7 +17,7 @@ Once you have setup the database configuration in your `.env` file.
 
 ### Connection 
 
-To get started with database connection see available methods : [Database Connection](/database/connection) and [Database Drivers](/database/drivers).
+To get started with database connection see available methods : [Database Connection](/database/connection.md) and [Database Drivers](/database/drivers.md).
 
 ```php
 <?php
@@ -34,7 +34,7 @@ $response = $db->rowCount();
 
 ### Query Builder
 
-To get started with database query builder see available methods : [Database Query Builder ](/database/query-builder).
+To get started with database query builder see available methods : [Database Query Builder ](/database/query-builder.md).
 
 ```php
 <?php
@@ -129,7 +129,7 @@ $conn = QueryBuilder::getInstance()->db()->raw();
 
 ### Manager
 
-Manager is available in query builder class if you wish to use it outside query builder class you need to initialize the class  [Database Manager](/database/manager).
+Manager is available in query builder class if you wish to use it outside query builder class you need to initialize the class  [Database Manager](/database/manager.md).
 
 ##### Export
 

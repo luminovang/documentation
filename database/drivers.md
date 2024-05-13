@@ -8,7 +8,7 @@ Database Driver Interface: Facilitating Database Connectivity, Query Execution, 
 
 ***
 
-Database drivers Interface, provides methods for executing database queries, statement preparation, and result fetching. To get started, see [Database Example](/database/examples).
+Database drivers Interface, provides methods for executing database queries, statement preparation, and result fetching. To get started, see [Database Example](/database/examples.md).
 
 * Class namespace: `\Luminova\Interface\DriversInterface`
 
@@ -38,7 +38,7 @@ new PdoDriver(\Luminova\Base\BaseDatabase $config): mixed
 
 **Throws:**
 
-- [DatabaseException](/exceptions/database) - If the database connection fails.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - If the database connection fails.
 
 ***
 
@@ -336,7 +336,7 @@ public execute(array|null $params = null): bool
 
 **Throws:**
 
-- [DatabaseException](/exceptions/database) - Query statment  encounter error.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - Query statment  encounter error.
 
 ***
 
@@ -538,7 +538,7 @@ public getItem(int $mode = RETURN_ALL string $return = 'object'): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$mode` | **int** | Return mode RETURN_* <br> See database [return modes ](/variables/helper#database-fetch-modes). |
+| `$mode` | **int** | Return mode RETURN_* <br> See database [return modes ](/variables/helper.md#database-fetch-modes). |
 | `$return` | **string** | [The return data type (array or object)]. |
 
 **Return Value:**

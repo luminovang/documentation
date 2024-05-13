@@ -24,7 +24,7 @@ In this documentation, we will walk you through the `Template` class, which is r
 ***
 
 * Class namespace: `\Luminova\Template\TemplateTrait`
-* Configuration: [Template Configuration](/configs/template) 
+* Configuration: [Template Configuration](/configs/template.md) 
 
 ***
 
@@ -220,8 +220,8 @@ public export(string|object $class, string|null $alias = null): bool
 
 **Throws:**
 
-- [RuntimeException](exceptions/runtime) - If the class does not exist or failed.
-- [InvalidArgumentException](/exceptions/invalid-argument) - If there is an error during registration.
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - If the class does not exist or failed.
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes#InvalidArgumentException) - If there is an error during registration.
 
 **Examples**
 
@@ -423,9 +423,9 @@ public render(array&lt;string,mixed&gt; $options = [], int $status = 200): int
 
 **Throws:**
 
-- [InvalidArgumentException](exceptions/invalid-argument) - If invalid view type was passed.
-- [ViewNotFoundException](/Exceptions/view-not-found) - If the view is not found
-- [RuntimeException](/exceptions/runtime) - If read and write permission to writable was denied.
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes#InvalidArgumentException) - If invalid view type was passed.
+- [\Luminova\Exceptions\ViewNotFoundException](/exceptions/classes#ViewNotFoundException) - If the view is not found
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - If read and write permission to writable was denied.
 
 ***
 

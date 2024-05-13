@@ -27,7 +27,7 @@ Error messages can include placeholders such as [field], [value], and [rule] to 
 
 * Class namespace: `\Luminova\Security\InputValidator`
 * This class implements:
-[\Luminova\Interface\ValidatorInterface](/interface/validator-interface)
+[\Luminova\Interface\ValidatorInterface](/interface/validator-interface.md)
 
 ***
 

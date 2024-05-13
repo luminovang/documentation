@@ -13,7 +13,7 @@ Base Services in the Luminova Framework provide a foundational layer for impleme
 ***
 
 * Class namespace: `\Luminova\Base\BaseServices`
-* Parent class: [\Luminova\Application\Services](application/services)
+* Parent class: [\Luminova\Application\Services](/application/services.md)
 * This class implements:
 [\Luminova\Interface\ServicesInterface](#interface/services-interface)
 * This class is an **Abstract class**
@@ -123,7 +123,7 @@ protected static addService(string|object $classOrInstance, ...$arguments): true
 
 **Throws:**
 
-- [RuntimeException](/exceptions/classes#RuntimeException) - If service name already exist or unable to initiate class.
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - If service name already exist or unable to initiate class.
 
 > *Note:*
 > 

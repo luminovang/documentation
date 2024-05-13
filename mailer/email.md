@@ -67,7 +67,7 @@ public static to(string $address): static
 
 **Throws:**
 
-- [MailerException](/exceptions/classes#MailerException) - Throws if error occurred while sending email.
+- [\Luminova\Exceptions\MailerException](/exceptions/classes#MailerException) - Throws if error occurred while sending email.
 
 ***
 
@@ -275,7 +275,7 @@ public addFile(string $path, string $name = '', string $encoding = 'base64', str
 
 **Throws:**
 
-- [MailerException](/exceptions/classes#MailerException) - Throws if error occurred while sending email.
+- [\Luminova\Exceptions\MailerException](/exceptions/classes#MailerException) - Throws if error occurred while sending email.
 
 ***
 
@@ -299,7 +299,7 @@ public send(\Luminova\Base\BaseMailer|string|null $message = null): bool
 
 **Throws:**
 
-- [MailerException](/exceptions/classes#MailerException) - Throws if error occurred while sending email.
+- [\Luminova\Exceptions\MailerException](/exceptions/classes#MailerException) - Throws if error occurred while sending email.
 
 ***
 
@@ -336,7 +336,7 @@ class MailerController extends BaseController
 
 ***
 
-Creating a mailer [template controller class](/base/mailer).
+Creating a mailer [template controller class](/base/mailer.md).
 
 ```php
 <?php

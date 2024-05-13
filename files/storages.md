@@ -16,7 +16,7 @@ To get started with the Storage class, ensure that you have installed the filesy
 composer require league/flysystem:^3.0
 ```
 
-Additionally, make sure to install the required dependencies for the chosen storage driver. You can refer to the configuration for the required drivers depending on the storage you want in the League [Storage Filesystem Configuration](/files/configuration) documentation.
+Additionally, make sure to install the required dependencies for the chosen storage driver. You can refer to the configuration for the required drivers depending on the storage you want in the League [Storage Filesystem Configuration](/files/configuration.md) documentation.
 
 ***
 
@@ -151,7 +151,7 @@ public disk(string $location): self
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the creation.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the creation.
 
 ***
 
@@ -261,7 +261,7 @@ public write(string $filename, string|resource $contents, bool $steam = false): 
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the write operation.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the write operation.
 
 ***
 
@@ -285,7 +285,7 @@ public upload(\Luminova\Http\File $file): bool
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the upload operation.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the upload operation.
 
 ***
 
@@ -324,7 +324,7 @@ public checksum(string $path, array $options = []): string|false
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the write operation.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the write operation.
 
 ***
 
@@ -349,7 +349,7 @@ public read(string $filename, bool $steam = false): mixed
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the read operation.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the read operation.
 
 ***
 
@@ -376,7 +376,7 @@ public download(string $filename, string|null $name = null, bool $steam = false,
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the read operation.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the read operation.
 
 ***
 
@@ -399,7 +399,7 @@ public delete(string $filename, string $type = 'file'): void
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the deletion operation.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the deletion operation.
 
 ***
 
@@ -425,7 +425,7 @@ public list(string $directory = null, string $return = 'files', bool $recursive 
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the listing operation.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the listing operation.
 
 ***
 
@@ -449,7 +449,7 @@ public fileExist(string $filename): bool
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the existence check.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the existence check.
 
 ***
 
@@ -473,7 +473,7 @@ public dirExist(string $path): bool
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the existence check.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the existence check.
 
 ***
 
@@ -498,7 +498,7 @@ public exist(string $filename, string $type = 'file'): bool
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the existence check.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the existence check.
 
 ***
 
@@ -522,7 +522,7 @@ public has(string $filename): bool
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the existence check.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the existence check.
 
 ***
 
@@ -546,7 +546,7 @@ public modified(string $filename): int
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the retrieval.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the retrieval.
 
 ***
 
@@ -570,7 +570,7 @@ public mime(string $filename): string
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the retrieval.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the retrieval.
 
 ***
 
@@ -594,7 +594,7 @@ public size(string $filename): int
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the retrieval.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the retrieval.
 
 ***
 
@@ -621,7 +621,7 @@ Otherwise returns false if operation failed.
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the operation.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the operation.
 
 ***
 
@@ -641,7 +641,7 @@ public mkdir(string $path): void
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the creation.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the creation.
 
 ***
 
@@ -662,7 +662,7 @@ public move(string $source, string $destination): void
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the move operation.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the move operation.
 
 ***
 
@@ -683,7 +683,7 @@ public copy(string $source, string $destination): void
 
 **Throws:**
 
-- [StorageException](/exceptions/storage) - If an error occurs during the copy operation.
+- [\Luminova\Exceptions\StorageException](/exceptions/classes#StorageException) - If an error occurs during the copy operation.
 
 ***
 

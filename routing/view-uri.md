@@ -79,7 +79,7 @@ $router->group("group", function(Router $router) {
 });
 ```
 
-see [Routing Example](/routing/examples) for more usages examples.
+see [Routing Example](/routing/examples.md) for more usages examples.
 
 ***
 
@@ -323,7 +323,7 @@ public bind(string $group, \Closure $callback): void
 | `$callback(Router $router, BaseApplication $app)` | **\Closure** | Callback group function to handle binds |
 
 **Throws:**
-- [RouterException](/exceptions#RouterException) - If invalid callback is provided
+- [\Luminova\Exceptions\RouterException](/exceptions/classes#RouterException) - If invalid callback is provided
 
 ***
 
@@ -343,7 +343,7 @@ public group(string $group, \Closure $callback): void
 | `$callback(Router $router, BaseApplication $app)` | **\Closure** | Callback command function to handle group |
 
 **Throws:**
-- [RouterException](/exceptions#RouterException) - If invalid callback is provided
+- [\Luminova\Exceptions\RouterException](/exceptions/classes#RouterException) - If invalid callback is provided
 
 > Your group name must match with the controller group name for command to succeed.
 > 
@@ -368,8 +368,8 @@ public bootstraps(\Luminova\Base\BaseApplication $application, \Luminova\Routing
 
 **See Also:**
 
-*  [Context Bootstrap](/bootstrap/Bootstrap) - Routing context Bootstrapping 
-*  [Index Controller File](/public/index) - Front controller handler. 
+*  [Context Bootstrap](/bootstrap/Bootstrap.md) - Routing context Bootstrapping 
+*  [Index Controller File](/public/index.md) - Front controller handler. 
 
 ***
 
@@ -388,7 +388,7 @@ public addNamespace(string $namespace): void
 | `$namespace` | **string** | Class namespace string |
 
 **Throws:**
-- [RouterException](/exceptions#RouterException) - If namespace string is empty or contains invalid namespace characters.
+- [\Luminova\Exceptions\RouterException](/exceptions/classes#RouterException) - If namespace string is empty or contains invalid namespace characters.
 
 ***
 
@@ -408,7 +408,7 @@ public run(\Closure|null $callback = null): void
 | `$callback` | **\Closure&#124;null** | Optional final callback function to execute after run |
 
 **Throws:**
-- [RouterException](/exceptions#RouterException) - Encounter error while executing controller callback</p>
+- [\Luminova\Exceptions\RouterException](/exceptions/classes#RouterException) - Encounter error while executing controller callback</p>
 
 ***
 
@@ -477,4 +477,4 @@ public getSegment(): \Luminova\Routing\Segments
 
 **See Also**
 
-[View Segment Instance](/routing/view-segment) - Helper class to retrieve view segments.
+[View Segment Instance](/routing/view-segment.md) - Helper class to retrieve view segments.

@@ -4,7 +4,7 @@
 
 ## Overview
 
-Base command, Luminov&#039;s Framework for command-line operations - controller base class for NovaKit CLI Tool.
+Base command, Luminova&#039;s Framework for command-line operations - controller base class for NovaKit CLI Tool.
 
 ***
 
@@ -13,7 +13,7 @@ Base Command is Luminova's comprehensive framework designed for managing command
 ***
 
 * Class namespace: `\Luminova\Base\BaseCommand`
-* Parent class: [\Luminova\Command\Terminal](/commands/terminal)
+* Parent class: [\Luminova\Command\Terminal](/commands/terminal.md)
 * This class is an **Abstract class**
 
 ***
@@ -65,7 +65,7 @@ protected string $description
 
 ### Methods
 
-The base command extends the [Luminova Terminal class](/commands/terminal), making all the methods available and ready to use in command controller class. 
+The base command extends the [Luminova Terminal class](/commands/terminal.md), making all the methods available and ready to use in command controller class. 
 
 ***
 

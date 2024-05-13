@@ -40,7 +40,7 @@ function app(): \Application
 
 **See Also**
 
-[Base Application](/base/application) - See the documentation for base application methods and usages.
+[Base Application](/base/application.md) - See the documentation for base application methods and usages.
 
 ***
 
@@ -64,7 +64,7 @@ function request(bool $shared = true): ?\Luminova\Http\Request
 
 **See Also**
 
-[HTTP Request](/http/request) - See the documentation for http request methods and usages.
+[HTTP Request](/http/request.md) - See the documentation for http request methods and usages.
 
 ***
 
@@ -88,7 +88,7 @@ function session(string|null $key = null): mixed
 
 **See Also**
 
-[Session Manager](/sessions/session) - See the documentation for session methods.
+[Session Manager](/sessions/session.md) - See the documentation for session methods.
   
 ***
 
@@ -115,7 +115,7 @@ function cookie(string $name, string $value = '', array $options = [], bool $sha
 
 **See Also**
 
-[Client Cookie Manager](/cookies/cookie) - See the documentation for client-side cookie methods.
+[Client Cookie Manager](/cookies/cookie.md) - See the documentation for client-side cookie methods.
 
 ***
 
@@ -166,7 +166,7 @@ $session = factory('session', new SessionManager(), false);
  
  **See Also**
 
-[Application Factory](/app/factory) - See the documentation for factory methods and usages.
+[Application Factory](/app/factory.md) - See the documentation for factory methods and usages.
  
 ***
 
@@ -200,7 +200,7 @@ function service(?string $service = null, mixed ...$arguments): ?object
 
  **See Also**
 
-[Application Service](/app/service) - See the documentation for service methods and usages.
+[Application Service](/app/service.md) - See the documentation for service methods and usages.
 
 ***
 
@@ -246,11 +246,11 @@ function layout(string $file): \Luminova\Template\Layout
 
 **Throws:**
 
-- [RuntimeException](/exceptions/classes#RuntimeException) -Throws if layout file is not found.
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) -Throws if layout file is not found.
 
 **See Also**
 
-[Template Layout](/templates/layout) - See the documentation for default `PHP` template layout methods and usages.
+[Template Layout](/templates/layout.md) - See the documentation for default `PHP` template layout methods and usages.
 
  > All layouts must be stored in `resources/views/layout/` directory.
  > Examples: `layout('foo')` or `layout('foo/bar/baz')`
@@ -279,7 +279,7 @@ function response(int $status = 200, bool $encode = true): \Luminova\Template\Vi
 
 **See Also**
 
-[View Response](/templates/response) - Also checkout the documentation for view response methods and usages.
+[View Response](/templates/response.md) - Also checkout the documentation for view response methods and usages.
 
 ***
 
@@ -312,12 +312,12 @@ function func(string|null $context = null, mixed $params): mixed
 
 **Throws:**
 
-- [\Exception](/exceptions/classes#Exception) - If an error occurs.
+- [\Luminova\Exceptions\Exception](/exceptions/classes#Exception) - If an error occurs.
 - [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - If unable to initialize method.
 
 **See Also**
 
-[Base Functions](/base/functions) - Learn more about the Luminova's `BaseFunction` documentation.
+[Base Functions](/base/functions.md) - Learn more about the Luminova's `BaseFunction` documentation.
 
 ***
 
@@ -343,7 +343,7 @@ function browser(?string $user_agent = null, string $return = 'object', bool $sh
 
  **See Also**
 
-[User Agents](/http/user-agent) - See the documentation for browser user-agent methods and usages.
+[User Agents](/http/user-agent.md) - See the documentation for browser user-agent methods and usages.
 
 ***
 
@@ -428,7 +428,7 @@ function path(string $file): string
 
 **See Also**
 
-[File Manager](/files/manager) - Also checkout the documentation for file manager methods and usages.
+[File Manager](/files/manager.md) - Also checkout the documentation for file manager methods and usages.
 
 ***
 
@@ -453,7 +453,7 @@ function env(string  $key, mixed  $default = null): mixed
 
 **See Also**
 
-[ENV Variables](/running/env) - Learn more from documentation about Luminova's `env` variable keys.
+[ENV Variables](/running/env.md) - Learn more from documentation about Luminova's `env` variable keys.
 
 ***
 
@@ -481,7 +481,7 @@ function setenv(string $key, string $value, bool $append_to_env = false): bool
 >
 > If you wish to write the key and value in your environment variables file `.env`, then you must specify the third argument `true`. 
 >
-> More efficient method of doing this is by utilizing the [NovaKit](commands/novakit) cli command to write the key and value to `env` file by running command `php novakit env:add --key="my_new_key" --value="my key value"`.
+> More efficient method of doing this is by utilizing the [NovaKit](/commands/novakit.md) cli command to write the key and value to `env` file by running command `php novakit env:add --key="my_new_key" --value="my key value"`.
 
 ***
 
@@ -575,9 +575,9 @@ function escape(string|array $input, string $context = 'html', string|null $enco
 
 **Throws:**
 
-- [Luminova\Exceptions\InvalidArgumentException](/exceptions/classes#classes#InvalidArgumentException) - When an invalid or blank encoding is provided.
-- [Luminova\Exceptions\BadMethodCallException](/exceptions/classes#BadMethodCallException) - When an invalid context is called
-- [Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - When the string is not valid UTF-8 or cannot be converted.
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes#InvalidArgumentException) - When an invalid or blank encoding is provided.
+- [\Luminova\Exceptions\BadMethodCallException](/exceptions/classes#BadMethodCallException) - When an invalid context is called
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - When the string is not valid UTF-8 or cannot be converted.
 
 **Return Value:**
 
@@ -661,7 +661,7 @@ function lang(string $lookup, string|null $default = null, string|null $locale =
 
 **See Also**
 
-[Translations](/languages/translate) - See the documentation for translation methods and usages.
+[Translations](/languages/translate.md) - See the documentation for translation methods and usages.
 
 **Example.en.php**
 
@@ -728,7 +728,7 @@ function write_content(string $filename, string|resource  $content, int  $flag, 
 
 **See Also**
 
-[File Manager](/files/manager) - Also checkout the documentation for file manager methods and usages.
+[File Manager](/files/manager.md) - Also checkout the documentation for file manager methods and usages.
 
 ***
 
@@ -759,7 +759,7 @@ Returns true if the directory existed or was created, otherwise false.
 
 **See Also**
 
-[File Manager](/files/manager) - Also checkout the documentation for file manager methods and usages.
+[File Manager](/files/manager.md) - Also checkout the documentation for file manager methods and usages.
 
 ***
 
@@ -785,7 +785,7 @@ function validate(array|null $inputs, array|null $rules, array $messages = []): 
 
 **See Also**
 
-[Input Validations](/security/validation) - Also checkout the documentation for input validation methods and usages.
+[Input Validations](/security/validation.md) - Also checkout the documentation for input validation methods and usages.
 
 **Sample Usages**
 

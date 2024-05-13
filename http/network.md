@@ -16,11 +16,11 @@ By default, it uses `cURL` for making HTTP requests, but it also supports the `G
 
 * Class namespace: `\Luminova\Http\Network`
 * This class implements:
-[\Luminova\Interface\NetworkInterface](/interface/classes#NetworkInterface)
+[\Luminova\Interface\NetworkInterface](/interface/classes.md#NetworkInterface)
 
 ## Methods
 
-Before you dive into the network implementation, also take a look at the response interface [Network Response Object](/http/response).
+Before you dive into the network implementation, also take a look at the response interface [Network Response Object](/http/response.md).
 
 ### constructor
 
@@ -75,10 +75,10 @@ public send(string $method, string $url, array $data = [], array $headers = []):
 
 **Throws:**
 
-- [RequestException](/exceptions/classes#RequestException) - If there is an error making the request.
-- [ConnectException](/exceptions/classes#ConnectException) - If there is an error connecting to the server.
-- [ClientException](/exceptions/classes#ClientException) - If there is an error on the client side.
-- [ServerException](/exceptions/classes#ServerException) - If there is an error on the server side.
+- [\Luminova\Exceptions\RequestException](/exceptions/classes#RequestException) - If there is an error making the request.
+- [\Luminova\Exceptions\ConnectException](/exceptions/classes#ConnectException) - If there is an error connecting to the server.
+- [\Luminova\Exceptions\ClientException](/exceptions/classes#ClientException) - If there is an error on the client side.
+- [\Luminova\Exceptions\ServerException](/exceptions/classes#ServerException) - If there is an error on the server side.
 
 ***
 
@@ -104,10 +104,10 @@ public get(string $url, array $data = [], array $headers = []): \Luminova\Http\M
 
 **Throws:**
 
-- [RequestException](/exceptions/classes#RequestException) - If there is an error making the request.
-- [ConnectException](/exceptions/classes#ConnectException) - If there is an error connecting to the server.
-- [ClientException](/exceptions/classes#ClientException) - If there is an error on the client side.
-- [ServerException](/exceptions/classes#ServerException) - If there is an error on the server side.
+- [\Luminova\Exceptions\RequestException](/exceptions/classes#RequestException) - If there is an error making the request.
+- [\Luminova\Exceptions\ConnectException](/exceptions/classes#ConnectException) - If there is an error connecting to the server.
+- [\Luminova\Exceptions\ClientException](/exceptions/classes#ClientException) - If there is an error on the client side.
+- [\Luminova\Exceptions\ServerException](/exceptions/classes#ServerException) - If there is an error on the server side.
 
 ***
 
@@ -132,10 +132,10 @@ public fetch(string $url, array $headers = []): \Luminova\Http\Message\Response
 
 **Throws:**
 
-- [RequestException](/exceptions/classes#RequestException) - If there is an error making the request.
-- [ConnectException](/exceptions/classes#ConnectException) - If there is an error connecting to the server.
-- [ClientException](/exceptions/classes#ClientException) - If there is an error on the client side.
-- [ServerException](/exceptions/classes#ServerException) - If there is an error on the server side.
+- [\Luminova\Exceptions\RequestException](/exceptions/classes#RequestException) - If there is an error making the request.
+- [\Luminova\Exceptions\ConnectException](/exceptions/classes#ConnectException) - If there is an error connecting to the server.
+- [\Luminova\Exceptions\ClientException](/exceptions/classes#ClientException) - If there is an error on the client side.
+- [\Luminova\Exceptions\ServerException](/exceptions/classes#ServerException) - If there is an error on the server side.
 
 ***
 
@@ -161,10 +161,10 @@ public post(string $url, array $data = [], array $headers = []): \Luminova\Http\
 
 **Throws:**
 
-- [RequestException](/exceptions/classes#RequestException) - If there is an error making the request.
-- [ConnectException](/exceptions/classes#ConnectException) - If there is an error connecting to the server.
-- [ClientException](/exceptions/classes#ClientException) - If there is an error on the client side.
-- [ServerException](/exceptions/classes#ServerException) - If there is an error on the server side.
+- [\Luminova\Exceptions\RequestException](/exceptions/classes#RequestException) - If there is an error making the request.
+- [\Luminova\Exceptions\ConnectException](/exceptions/classes#ConnectException) - If there is an error connecting to the server.
+- [\Luminova\Exceptions\ClientException](/exceptions/classes#ClientException) - If there is an error on the client side.
+- [\Luminova\Exceptions\ServerException](/exceptions/classes#ServerException) - If there is an error on the server side.
 
 ***
 
@@ -191,10 +191,10 @@ public request(string $method, string $url, array $data = [], array $headers = [
 
 **Throws:**
 
-- [RequestException](/exceptions/classes#RequestException) - If there is an error making the request.
-- [ConnectException](/exceptions/classes#ConnectException) - If there is an error connecting to the server.
-- [ClientException](/exceptions/classes#ClientException) - If there is an error on the client side.
-- [ServerException](/exceptions/classes#ServerException) - If there is an error on the server side.
+- [\Luminova\Exceptions\RequestException](/exceptions/classes#RequestException) - If there is an error making the request.
+- [\Luminova\Exceptions\ConnectException](/exceptions/classes#ConnectException) - If there is an error connecting to the server.
+- [\Luminova\Exceptions\ClientException](/exceptions/classes#ClientException) - If there is an error on the client side.
+- [\Luminova\Exceptions\ServerException](/exceptions/classes#ServerException) - If there is an error on the server side.
 
 ***
 

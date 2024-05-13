@@ -14,7 +14,7 @@ The `Service Configuration` class allows you to register services to be autoload
 
 * Class namespace: `\App\Controllers\Config\Services`
 * File path: `/app/Controllers/Config/Services.php`
-* Parent class: [\Luminova\Base\BaseServices](/base/services)
+* Parent class: [\Luminova\Base\BaseServices](/base/services.md)
 
 ***
 
@@ -25,7 +25,7 @@ Enable the service feature by setting `feature.app.services = enable` in your en
 ***
 
 ## Methods
-To get started with service usages and method read the [Application Service Guide](/introduction/service).
+To get started with service usages and method read the [Application Service Guide](/introduction/service.md).
 
 ### bootstrap
 

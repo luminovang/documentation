@@ -12,7 +12,7 @@ Provides a detailed record of all changes in Luminova&#039;s v2.1.0, updates, an
 
 - Lunched an official documentaion website.
 - Removed uneccesory class extends and moved to base class.
-- Optimized SEO [Schema generator](/seo/schema) class and added new methods.
+- Optimized SEO [Schema generator](/seo/schema.md) class and added new methods.
 
 #### DATABASE
 

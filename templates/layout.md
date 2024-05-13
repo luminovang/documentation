@@ -84,7 +84,7 @@ The file `/resources/views/layouts/card.php` contains another layout which our s
 
 #### Extending Samples
 
-In other to extend a layout or a section of layout file, you need to utilize the [global helper function](/global/functions#lmv-docs-layout) `layout()` to do that, see below examples.
+In other to extend a layout or a section of layout file, you need to utilize the [global helper function](/global/functions.md#lmv-docs-layout) `layout()` to do that, see below examples.
 
 To extend the whole contents of the our scaffolding layout:
 
@@ -166,7 +166,7 @@ public layout(string $layout): self
 
 **Throws:**
 
-- [RuntimeException](/exceptions/classes#RuntimeException) - Throws when layout file is not found.
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - Throws when layout file is not found.
 
 ***
 
@@ -202,7 +202,7 @@ protected end(string|null $name = null): void
 
 **Throws:**
 
-- [RuntimeException](/exceptions/classes#RuntimeException) - Throws when end is called without active section to end.
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes#RuntimeException) - Throws when end is called without active section to end.
 
 ***
 

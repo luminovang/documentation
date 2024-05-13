@@ -18,7 +18,7 @@ The Cookie class stores data directly on the client-side, within cookies. This a
 
 * Class namespace: `\Luminova\Cookies\Cookie`
 * This class implements:
-[\Luminova\Interface\CookieInterface](/interface/classes#CookieInterface)
+[\Luminova\Interface\CookieInterface](/interface/classes.md#CookieInterface)
 
 ***
 
@@ -71,7 +71,7 @@ new Cookie(string $name, mixed $value = '', array $options = []): mixed
 
 **Throws:**
 
-- [CookieException](/exceptions/cookie-exception) - Throws cookie exception.
+- [\Luminova\Exceptions\CookieException](/exceptions/classes#CookieException) - Throws cookie exception.
 
 ***
 

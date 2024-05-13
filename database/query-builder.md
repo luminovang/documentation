@@ -12,12 +12,12 @@ The Query Builder is a powerful ORM (Object-Relational Mapping) tool designed to
 
 With its flexible CRUD (Create, Read, Update, Delete) functionality, you can effortlessly create complex SQL queries without dealing directly with SQL syntax. This allows you to focus more on building your applications and less on database queries.
 
-To learn more about how to use the Query Builder,  [see examples](/database/examples).
+To learn more about how to use the Query Builder,  [see examples](/database/examples.md).
 
 ***
 
 * Class namespace: `\Luminova\Database\Builder`
-* Parent class namespace: [\Luminova\Database\Connection](database/connection)
+* Parent class namespace: [\Luminova\Database\Connection](/database/connection.md)
 
 ***
 
@@ -90,7 +90,7 @@ public static getInstance(): static
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/database) -  If the database connection fails.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) -  If the database connection fails.
 
 ***
 
@@ -642,7 +642,7 @@ public query(string $query): self
 
 **Throws:**
 
-- [DatabaseException](exceptions/database) - when query is empty.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - when query is empty.
 
 *Example*
 
@@ -676,7 +676,7 @@ public execute(array $placeholder = null, int $mode = RETURN_ALL): mixed
 
 **Modes**
 
-- [Return Modes](/global/constants#database-fetch-modes) - Database query return modes.
+- [Return Modes](/global/constants.md#database-fetch-modes) - Database query return modes.
 
 **Parameters:**
 
@@ -691,7 +691,7 @@ public execute(array $placeholder = null, int $mode = RETURN_ALL): mixed
 
 **Throws:**
 
-- [DatabaseException](/exceptions/database) - If placeholder key is not a valid string.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - If placeholder key is not a valid string.
 
 ***
 
@@ -888,7 +888,7 @@ public truncate(bool $transaction = true): bool
 
 **Throws:**
 
-- [DatabaseException](/exceptions/database) - Throws if execution encountered error.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - Throws if execution encountered error.
 
 ***
 
@@ -912,7 +912,7 @@ public exec(string $query): int|bool
 
 **Throws:**
 
-- [DatabaseException](/exceptions/database) - Throws if execution encountered error.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - Throws if execution encountered error.
 
 ***
 
@@ -930,7 +930,7 @@ public drop(): int|bool
 
 **Throws:**
 
-- [DatabaseException](/exceptions/database) - Throws if execution encountered error.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - Throws if execution encountered error.
 
 ***
 
@@ -954,7 +954,7 @@ public create(\Luminova\Database\Scheme $scheme): int|bool
 
 **Throws:**
 
-- [DatabaseException](/exceptions/database) - Throws if execution encountered error.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - Throws if execution encountered error.
 
 ***
 
@@ -987,7 +987,7 @@ public manager(): \Luminova\Database\Manager
 
 **See Also:**
 
-*  - [Database Manager](/database/manager) - Database manager class.
+*  - [Database Manager](/database/manager.md) - Database manager class.
 
 ***
 
@@ -1013,7 +1013,7 @@ public export(string $as = 'csv', string|null $filename = null, array $columns =
 
 **Throws:**
 
-- [DatabaseException](/exceptions/database) - If an invalid format is provided or if unable to create the export.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - If an invalid format is provided or if unable to create the export.
 
 ***
 
@@ -1037,7 +1037,7 @@ True if backup is successful, false otherwise.
 
 **Throws:**
 
-- [DatabaseException](/exceptions/database) - If unable to create the backup directory or if failed to create the backup.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes#DatabaseException) - If unable to create the backup directory or if failed to create the backup.
 
 ***
 

@@ -12,7 +12,7 @@ The SEO Schema Generator class is a powerful tool designed to simplify the creat
 
 ***
 
-To get started, see [Schema Example](/seo/examples).
+To get started, see [Schema Example](/seo/examples.md).
 
 - **Class namespace**: `\Luminova\Seo\Schema`
 
