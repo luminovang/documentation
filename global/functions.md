@@ -314,7 +314,7 @@ function func(string|null $context = null, mixed $params): mixed
 
 **Throws:**
 
-- [\Luminova\Exceptions\Exception](/exceptions/classes.md#exception) - If an error occurs.
+- [\Exception](/exceptions/classes.md#exception) - If an error occurs.
 - [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If unable to initialize method.
 
 **See Also**
