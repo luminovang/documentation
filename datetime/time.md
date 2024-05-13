@@ -40,7 +40,7 @@ public __construct(string|null $datetime = null, \DateTimeZone|string|null $time
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#DatetimeException) - Throws if error occurs during DateTimeImmutable object construction.
+- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#datetimeexception) - Throws if error occurs during DateTimeImmutable object construction.
 
 ***
 
@@ -84,7 +84,7 @@ public static now(\DateTimeZone|string|null $timezone = null): self
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#DatetimeException) - Throws if any error occurs.
+- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#datetimeexception) - Throws if any error occurs.
 
 ***
 
@@ -109,7 +109,7 @@ public static parse(string $datetime, \DateTimeZone|string|null $timezone = null
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#DatetimeException) - Throws if any error occurs.
+- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#datetimeexception) - Throws if any error occurs.
 
 ***
 
@@ -133,7 +133,7 @@ public static today(\DateTimeZone|string|null $timezone = null): self
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#DatetimeException) - Throws if any error occurred.
+- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#datetimeexception) - Throws if any error occurred.
 
 ***
 
@@ -157,7 +157,7 @@ public static yesterday(\DateTimeZone|string|null $timezone = null): self
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#DatetimeException) - Throws if any error occurred.
+- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#datetimeexception) - Throws if any error occurred.
 
 ***
 
@@ -181,7 +181,7 @@ public setTimezone(\DateTimeZone|string $timezone): self
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#DatetimeException) - Throws if any error occurred.
+- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#datetimeexception) - Throws if any error occurred.
 
 ***
 
@@ -436,7 +436,7 @@ public getInstanceUtc(\DateTimeInterface|\Luminova\Time\Time|string $datetime, ?
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#DatetimeException) - Throws if any error occurred.
+- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#datetimeexception) - Throws if any error occurred.
 
 ***
 
@@ -488,7 +488,7 @@ public toDatetime(): \DateTime
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#DatetimeException) - Throws if any error occurred.
+- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#datetimeexception) - Throws if any error occurred.
 
 ***
 
@@ -512,7 +512,7 @@ public static fromInstance(\DateTimeInterface $datetime): self
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#DatetimeException) - Throws if any error occurred.
+- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#datetimeexception) - Throws if any error occurred.
 
 ***
 
@@ -537,7 +537,7 @@ public static fromTimestamp(int $timestamp, \DateTimeZone|string|null $timezone 
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#DatetimeException) - Throws if any error occurred.
+- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#datetimeexception) - Throws if any error occurred.
 
 ***
 
@@ -564,7 +564,7 @@ public static fromDate(int|null $year = null, int|null $month = null, int|null $
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#DatetimeException) - Throws if any error occurred.
+- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#datetimeexception) - Throws if any error occurred.
 
 ***
 
@@ -591,7 +591,7 @@ public static fromTime(int|null $hour = null, int|null $minutes = null, int|null
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#DatetimeException) - Throws if any error occurred.
+- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#datetimeexception) - Throws if any error occurred.
 
 ***
 
@@ -616,7 +616,7 @@ public static fromRelative(string $datetime, \DateTimeZone|string|null $timezone
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#DatetimeException) - Throws if invalid relative time format was passed.
+- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#datetimeexception) - Throws if invalid relative time format was passed.
 
 ***
 
@@ -646,7 +646,7 @@ public static createFrom(int|null $year = null, int|null $month = null, int|null
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#DatetimeException) - Throws if any error occurred.
+- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#datetimeexception) - Throws if any error occurred.
 
 ***
 
@@ -670,7 +670,7 @@ public static tomorrow(\DateTimeZone|string|null $timezone = null): self
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#DatetimeException) - Throws if any error occurred.
+- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#datetimeexception) - Throws if any error occurred.
 
 ***
 
@@ -696,7 +696,7 @@ public static fromFormat(string $format, string $datetime, \DateTimeZone|string|
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#DatetimeException) - Throws if any error occurred.
+- [\Luminova\Exceptions\DatetimeException](/exceptions/classes.md#datetimeexception) - Throws if any error occurred.
 
 ***
 
@@ -852,7 +852,7 @@ public static agoToDatetime(string $ago, \DateTimeZone|string|null $timezone = n
 
 **Throws:**
 
-- [\Luminova\Exceptions\DateTimeException](/exceptions/classes.md#DateTimeException) - If invalid time unit was found in the ago format.
+- [\Luminova\Exceptions\DateTimeException](/exceptions/classes.md#datetimeexception) - If invalid time unit was found in the ago format.
 
 ***
 
@@ -878,7 +878,7 @@ public static passed(string|int|\Luminova\Time\Time|\DateTimeImmutable $datetime
 
 **Throws:**
 
-- [\Luminova\Exceptions\DateTimeException](/exceptions/classes.md#DateTimeException) - If invalid datetime was passed.
+- [\Luminova\Exceptions\DateTimeException](/exceptions/classes.md#datetimeexception) - If invalid datetime was passed.
 
 ***
 

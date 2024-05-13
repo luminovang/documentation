@@ -73,7 +73,7 @@ new Cookie(string $name, mixed $value = '', array $options = []): mixed
 
 **Throws:**
 
-- [\Luminova\Exceptions\CookieException](/exceptions/classes.md#CookieException) - Throws cookie exception.
+- [\Luminova\Exceptions\CookieException](/exceptions/classes.md#cookieexception) - Throws cookie exception.
 
 ***
 

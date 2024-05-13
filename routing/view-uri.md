@@ -325,7 +325,7 @@ public bind(string $group, \Closure $callback): void
 | `$callback(Router $router, BaseApplication $app)` | **\Closure** | Callback group function to handle binds |
 
 **Throws:**
-- [\Luminova\Exceptions\RouterException](/exceptions/classes.md#RouterException) - If invalid callback is provided
+- [\Luminova\Exceptions\RouterException](/exceptions/classes.md#routerexception) - If invalid callback is provided
 
 ***
 
@@ -345,7 +345,7 @@ public group(string $group, \Closure $callback): void
 | `$callback(Router $router, BaseApplication $app)` | **\Closure** | Callback command function to handle group |
 
 **Throws:**
-- [\Luminova\Exceptions\RouterException](/exceptions/classes.md#RouterException) - If invalid callback is provided
+- [\Luminova\Exceptions\RouterException](/exceptions/classes.md#routerexception) - If invalid callback is provided
 
 > Your group name must match with the controller group name for command to succeed.
 > 
@@ -390,7 +390,7 @@ public addNamespace(string $namespace): void
 | `$namespace` | **string** | Class namespace string |
 
 **Throws:**
-- [\Luminova\Exceptions\RouterException](/exceptions/classes.md#RouterException) - If namespace string is empty or contains invalid namespace characters.
+- [\Luminova\Exceptions\RouterException](/exceptions/classes.md#routerexception) - If namespace string is empty or contains invalid namespace characters.
 
 ***
 
@@ -410,7 +410,7 @@ public run(\Closure|null $callback = null): void
 | `$callback` | **\Closure&#124;null** | Optional final callback function to execute after run |
 
 **Throws:**
-- [\Luminova\Exceptions\RouterException](/exceptions/classes.md#RouterException) - Encounter error while executing controller callback</p>
+- [\Luminova\Exceptions\RouterException](/exceptions/classes.md#routerexception) - Encounter error while executing controller callback</p>
 
 ***
 

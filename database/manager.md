@@ -85,9 +85,9 @@ public export(string $as = 'csv', string $filename = null, array $columns = ['*'
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#DatabaseException) - If invalid format is provided.
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#DatabaseException) - If unable to create export temp directory.
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#DatabaseException) - If failed to create export.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If invalid format is provided.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If unable to create export temp directory.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If failed to create export.
 
 ***
 
@@ -111,5 +111,5 @@ public backup(string $filename = null): bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#DatabaseException) - If unable to create backup directory.
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#DatabaseException) - If failed to create backup.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If unable to create backup directory.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If failed to create backup.

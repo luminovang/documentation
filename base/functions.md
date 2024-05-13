@@ -156,9 +156,9 @@ public static escape(string|array $input, string $context = 'html', string|null 
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#InvalidArgumentException) - When an invalid escape context is provided.
-- [\Luminova\Exceptions\BadMethodCallException](/exceptions/classes.md#BadMethodCallException) - When the called method does not exist.
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#RuntimeException) - When the string is not valid UTF-8 or cannot be converted.
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - When an invalid escape context is provided.
+- [\Luminova\Exceptions\BadMethodCallException](/exceptions/classes.md#badmethodcallexception) - When the called method does not exist.
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - When the string is not valid UTF-8 or cannot be converted.
 - [Exception](#) - When encountered uncaught error.
 
 > To use `Laminas\Escaper` you need to install the library first by running this composer command `$ composer require laminas/laminas-escaper` in your cli.

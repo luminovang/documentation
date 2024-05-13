@@ -69,7 +69,7 @@ public static to(string $address): static
 
 **Throws:**
 
-- [\Luminova\Exceptions\MailerException](/exceptions/classes.md#MailerException) - Throws if error occurred while sending email.
+- [\Luminova\Exceptions\MailerException](/exceptions/classes.md#mailerexception) - Throws if error occurred while sending email.
 
 ***
 
@@ -277,7 +277,7 @@ public addFile(string $path, string $name = '', string $encoding = 'base64', str
 
 **Throws:**
 
-- [\Luminova\Exceptions\MailerException](/exceptions/classes.md#MailerException) - Throws if error occurred while sending email.
+- [\Luminova\Exceptions\MailerException](/exceptions/classes.md#mailerexception) - Throws if error occurred while sending email.
 
 ***
 
@@ -301,7 +301,7 @@ public send(\Luminova\Base\BaseMailer|string|null $message = null): bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\MailerException](/exceptions/classes.md#MailerException) - Throws if error occurred while sending email.
+- [\Luminova\Exceptions\MailerException](/exceptions/classes.md#mailerexception) - Throws if error occurred while sending email.
 
 ***
 

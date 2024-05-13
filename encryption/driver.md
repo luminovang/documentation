@@ -46,7 +46,7 @@ new Sodium(?string $key = null, ?string $method = null, int $size = 16);
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#InvalidException) - If the method or block size is invalid while using openssl.
+- [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#invalidexception) - If the method or block size is invalid while using openssl.
 
 
 ***
@@ -124,7 +124,7 @@ public setMethod(string $method, int $size = 16): void
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#InvalidException) - If the method or block size is invalid.
+- [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#invalidexception) - If the method or block size is invalid.
 
 
 ***
@@ -166,7 +166,7 @@ The encrypted data, or false if encryption fails.
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#InvalidException) - If encryption fails due to invalid parameters.
+- [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#invalidexception) - If encryption fails due to invalid parameters.
 
 
 ***
@@ -188,7 +188,7 @@ The decrypted data, or false if decryption fails.
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#InvalidException) - If decryption fails due to invalid parameters.
+- [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#invalidexception) - If decryption fails due to invalid parameters.
 
 
 ***

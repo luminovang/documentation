@@ -222,8 +222,8 @@ public export(string|object $class, string|null $alias = null): bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#RuntimeException) - If the class does not exist or failed.
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#InvalidArgumentException) - If there is an error during registration.
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If the class does not exist or failed.
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - If there is an error during registration.
 
 **Examples**
 
@@ -425,9 +425,9 @@ public render(array&lt;string,mixed&gt; $options = [], int $status = 200): int
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#InvalidArgumentException) - If invalid view type was passed.
-- [\Luminova\Exceptions\ViewNotFoundException](/exceptions/classes.md#ViewNotFoundException) - If the view is not found
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#RuntimeException) - If read and write permission to writable was denied.
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - If invalid view type was passed.
+- [\Luminova\Exceptions\ViewNotFoundException](/exceptions/classes.md#viewnotfoundexception) - If the view is not found
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If read and write permission to writable was denied.
 
 ***
 
