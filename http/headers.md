@@ -1,4 +1,4 @@
-## Request Header
+# Request Header
 
 ***
 
@@ -7,6 +7,8 @@
 The header class functions similarly to the Server class, but it specifically focuses on managing request headers. It provides methods to interact with and manage request headers in a structured way.
 
 ***
+
+## Introduction
 
 The `Header` class functions similarly to the `Server` class, but it specifically focuses on managing request headers. It provides methods to interact with and manage request headers in a structured manner.
 

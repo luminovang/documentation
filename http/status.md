@@ -1,4 +1,4 @@
-## HTTP Status Codes
+# HTTP Status Codes
 
 ***
 
@@ -7,6 +7,8 @@
 The HttpCode class serves as a helper to manage HTTP status codes and their corresponding messages.
 
 ***
+
+## Introduction
 
 The `HttpCode` class is a helper class that provides a list of HTTP status codes and their corresponding messages. You can access this list by using the public property `$codes`, or by calling the `get()` method with `null` to retrieve all status codes and messages, or with a specific status code to retrieve its message.
 

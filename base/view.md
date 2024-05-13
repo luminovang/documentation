@@ -1,4 +1,4 @@
-## Base View Controller
+# Base View Controller
 
 ***
 
@@ -7,6 +7,8 @@
 Base View Controller Simplifies view management in Luminov&#039;s Framework by avoiding initialization of unnecessary classes except when it needed.
 
 ***
+
+## Introduction
 
 Base View Controller is a fundamental component of Luminov's MVC, designed to organize view management within your applications. As a core class, it offers a structured approach for handling views, providing a solid foundation for building interactive and optimized web pages.
 

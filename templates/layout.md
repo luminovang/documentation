@@ -1,4 +1,4 @@
-## Layout Inheritance
+# Layout Inheritance
 
 ***
 
@@ -7,6 +7,8 @@
 Template Layout provides a simple and flexible template manipulation to native PHP templating for managing layout files and extending layout sections within views.
 
 ***
+
+## Introduction
 
 Luminova framework enables developers to build applications using template engines such as `TWIG` or `SMARTY`, or default `PHP`. However, `PHP` itself is already a template engine, to enhance its capabilities, we introduce Template Layout in Luminova.
 

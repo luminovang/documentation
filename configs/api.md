@@ -1,4 +1,4 @@
-## APIs Configuration
+# APIs Configuration
 
 ***
 
@@ -7,6 +7,8 @@
 In other to secure your API endpoint, set up the allowed origins and header to prevent unwanted access.
 
 ***
+
+## Introduction
 
 These properties serve as essential configuration and security measures for your application's APIs. They allow you to define the origins permitted to communicate with your API endpoints and specify the allowed headers.
 

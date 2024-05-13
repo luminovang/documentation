@@ -1,4 +1,4 @@
-## Encryption Interface Class
+# Encryption Interface Class
 
 ***
 
@@ -7,6 +7,8 @@
 A Comprehensive Guide to the luminova&#039;s Encryption Interface Class for PHP Framework Integration with OpenSSL and Sodium Libraries.
 
 ***
+
+## Introduction
 
 The Luminova Crypter class serves as a valuable asset for developers utilizing the Luminova PHP framework, offering a convenient and secure solution for implementing encryption and decryption functionalities. By abstracting away the complexities of cryptographic libraries and providing a unified interface, the Crypter class facilitates the integration of encryption features into PHP applications, enhancing overall security and reliability.
 

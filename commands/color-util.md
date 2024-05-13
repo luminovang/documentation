@@ -1,4 +1,4 @@
-## Command Color Util
+# Command Color Util
 
 ***
 
@@ -7,6 +7,8 @@
 The Color Util class is a helper class for command line application for formatting and applying colors to your output text for vibrancy, it&#039;s useful when you want to display text with a background col
 
 ***
+
+## Introduction
 
 Introducing the Color Utils class, a valuable tool for command-line applications that adds a splash of vibrancy and clarity to your text output. With Color Utils, you can apply formatting and colors to your text, transforming ordinary command-line displays into visually stunning and highly readable experiences.
 

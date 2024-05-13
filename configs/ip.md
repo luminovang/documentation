@@ -1,4 +1,4 @@
-## IP Configuration
+# IP Configuration
 
 ***
 
@@ -7,6 +7,8 @@
 IP Configuration provides flexibility and control over how IP address information is obtained and verified, ensuring the security and reliability of the application.
 
 ***
+
+## Introduction
 
 The `IP Configuration` class allows developers to configure settings related to IP address lookup and validation in their applications. It provides properties to specify the IP address API provider for `IP info` lookup, API key, trusted proxies, and other options as required.
 

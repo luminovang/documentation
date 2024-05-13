@@ -1,4 +1,4 @@
-## Database Configuration
+# Database Configuration
 
 ***
 
@@ -7,6 +7,8 @@
 This configuration provides a failover mechanism by allowing your application to connect to backup database servers if the main server fails.
 
 ***
+
+## Introduction
 
 The `Database Configuration` allows you to specify optional backup database servers to connect to in case the main server in `.env` fails. Each backup server configuration must be provided as a nested associative array, with keys representing the database connection parameters.
 

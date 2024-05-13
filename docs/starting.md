@@ -1,4 +1,4 @@
-## v2.1.0 Full Changelog 
+# v2.1.0 Full Changelog 
 
 ***
 
@@ -7,6 +7,8 @@
 Provides a detailed record of all changes in Luminova&#039;s v2.1.0, updates, and improvements made to the Luminova Framework over time.
 
 ***
+
+## Introduction
 
 #### General 
 

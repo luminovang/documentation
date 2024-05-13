@@ -1,4 +1,4 @@
-## Routing Context
+# Routing Context
 
 ***
 
@@ -7,6 +7,8 @@
 The routing context class allows you to define a route URL prefix for capturing specific types of URL requests.
 
 ***
+
+## Introduction
 
 The routing context class enables you to specify a route URL prefix for capture. By adding a new context to your `/public/index.php` and creating the context routes file in `/routes/`, the framework automatically directs all URL prefixes starting with the context name to the corresponding handler in `/routes/my-context.php`. This optimizes performance by loading only the necessary routes.
 

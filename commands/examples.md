@@ -1,4 +1,4 @@
-## CLI Example
+# CLI Example
 
 ***
 
@@ -7,6 +7,8 @@
 Novakit command line too examples
 
 ***
+
+## Introduction
 
 This example shows how you can create a simple blog application in CLI using Luminova BaseCommand.
 

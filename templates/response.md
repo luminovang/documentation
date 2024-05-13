@@ -1,4 +1,4 @@
-## ViewResponse
+# ViewResponse
 
 ***
 
@@ -7,6 +7,8 @@
 Render or download content with view response class or using its global procedural function.
 
 ***
+
+## Introduction
 
 The View Response class simplifies APs, and WEB content responses within your application's controller class or routing closures. With its global procedural function, you can easily access the class instance without instantiating the class.
 

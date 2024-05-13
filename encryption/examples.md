@@ -1,4 +1,4 @@
-## Encryption Examples
+# Encryption Examples
 
 ***
 
@@ -7,6 +7,8 @@
 A Comprehensive Guide to the luminova&#039;s Encryption Interface Class for PHP Framework Integration with OpenSSL and Sodium Libraries.
 
 ***
+
+## Introduction
 
 ### Crypter
 

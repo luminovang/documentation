@@ -1,4 +1,4 @@
-## Database Manager
+# Database Manager
 
 ***
 
@@ -7,6 +7,8 @@
 Database manager class allows you to create a backup of your database or export table in CSV or JSON format.
 
 ***
+
+## Introduction
 
 With database manager class, you can create a backup of your database or export, download database table columns as CSV or JSOn file format. All your backup and backup will be stored in `/luminova.ng/writeable/caches/database/`
 

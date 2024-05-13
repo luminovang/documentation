@@ -1,4 +1,4 @@
-## Constant Variables
+# Constant Variables
 
 ***
 
@@ -7,6 +7,8 @@
 Global constant variables, utilizing global constant variables, to improve code clarity and maintainability.
 
 ***
+
+## Introduction
 
 Global constant variables play a pivotal role in software development by providing a mechanism for defining values that remain consistent throughout the entire application. Unlike regular variables, which can be modified during runtime, constant variables maintain their assigned values throughout the execution of the program, ensuring consistency and predictability.
 

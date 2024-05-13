@@ -1,4 +1,4 @@
-## Translation
+# Translation
 
 ***
 
@@ -7,6 +7,8 @@
 With the built-in language helper class and global helper function lang, you can easily integrate language translations into your web applications and APIs.
 
 ***
+
+## Introduction
 
 #### Introduction to Luminova's Web Translation
 

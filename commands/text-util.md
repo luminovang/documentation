@@ -1,4 +1,4 @@
-## Command Text Util
+# Command Text Util
 
 ***
 
@@ -7,6 +7,8 @@
 The command Text utils class is a helper class for Luminova Command. It provides a common useful method for output text processing to help while developing your CLI application.
 
 ***
+
+## Introduction
 
 Text Utils is one of the many powerful features offered by Luminova's Framework command-line interface. With this versatile class, you can enhance the appearance of your output text, taking your CLI tool to a new level of elegance and professionalism. Whether you're aiming to beautify your output for end users or simply improve readability during development, Text Utils provides functions to help you achieve your goals with ease. 
 

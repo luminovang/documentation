@@ -1,4 +1,4 @@
-## Server Infomation
+# Server Infomation
 
 ***
 
@@ -7,6 +7,8 @@
 With the Server class, managing server-related data becomes more organized and straightforward, providing convenient methods for retrieval, manipulation, and validation of server variables.
 
 ***
+
+## Introduction
 
 The `Server` class serves as a wrapper for the PHP `$_SERVER` superglobal, providing a more structured and manageable way to interact with server-related information. By initializing `Server` with an array representation of `$_SERVER`, it becomes easier to manipulate and access server data.
 

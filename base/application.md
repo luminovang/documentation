@@ -1,4 +1,4 @@
-## Base Application
+# Base Application
 
 ***
 
@@ -7,6 +7,8 @@
 The base application controller lays the foundation for handling your software development logic, by serving as the base application class other services may rely on.
 
 ***
+
+## Introduction
 
 The Base Application serves as the foundational framework upon which your web application are built. It encapsulates essential functionalities, design patterns, and architectural principles that provide a solid starting point for developing complex applications. Essentially, the Base Application represents the core infrastructure and scaffolding upon which you can construct your application logic.
 

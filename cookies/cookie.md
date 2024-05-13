@@ -1,4 +1,4 @@
-## Cookie Manager
+# Cookie Manager
 
 ***
 
@@ -9,6 +9,8 @@ The cookie class enhanced client-side data storage without Default JavaScript or
 
 
 ***
+
+## Introduction
 
 Luminova's Cookie manager provides a convenient way to store data on the client-side, offering greater flexibility in managing cookie data compared to the `SessionManager` and `CookieManager` classes. With the Cookie class, you have the ability to configure the security access of the stored information according to your specific requirements.
 

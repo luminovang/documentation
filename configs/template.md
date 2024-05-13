@@ -1,4 +1,4 @@
-## Template Configuration
+# Template Configuration
 
 ***
 
@@ -7,6 +7,8 @@
 Customize your template rendering engine,  cache path, and rendering mode or enable other useful features based on your coding and application requirements.
 
 ***
+
+## Introduction
 
 Template Configuration in Luminova allows you to set up PHP, Twig, and Smarty template rendering engines for application views. You can configure modes, cache path, visibilities, as well as Smarty and Twig extensions.
 

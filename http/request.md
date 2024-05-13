@@ -1,4 +1,4 @@
-## HTTP Request
+# HTTP Request
 
 ***
 
@@ -7,6 +7,8 @@
 The Request class plays a crucial role in web applications by providing a structured and simple way to handle incoming HTTP requests and responses, providing methods for safe access and manipulation.
 
 ***
+
+## Introduction
 
 The `Request` class represents an incoming HTTP request received by a server. It encapsulates various aspects of the request, such as headers, query parameters, form data, uploaded files, and more. This class provides a convenient and structured way to access and manipulate incoming HTTP requests, with built-in authentication mechanisms to validate requests based on factors such as origin, proxies, or allowed domains.
 

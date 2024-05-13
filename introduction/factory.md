@@ -1,4 +1,4 @@
-## Factories
+# Factories
 
 ***
 
@@ -7,6 +7,8 @@
 Factory is Luminova&#039;s utility class that provides class instance management without the need for class registration or configuration. However, you must initialize classes using predefined names.
 
 ***
+
+## Introduction
 
 Factory is a utility class in the Luminova framework designed to simplify the management of class instances across the Luminova codebase. It serves as a centralized hub, allowing the management of shared instances of classes throughout the framework.
 

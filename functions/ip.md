@@ -1,4 +1,4 @@
-## IP Address
+# IP Address
 
 ***
 
@@ -7,6 +7,8 @@
 Get the user&#039;s IP address or retrieve the IP address information using a third-party API provider for IP address information.
 
 ***
+
+## Introduction
 
 The `IPAddress` class is a helper class designed to retrieve user IP address or IP address information using third-party IP information APIs to obtain more details about the user's IP address. Once the IP address information is received, the class stores it for subsequent requests, reducing the number of requests to the third-party API.
 

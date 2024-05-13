@@ -1,4 +1,4 @@
-## Features
+# Features
 
 ***
 
@@ -7,6 +7,8 @@
 Framework&#039;s features customization offers numerous useful features, but we understand that not all may be necessary for some developers or applications, while some may add extra performance overhead.
 
 ***
+
+## Introduction
 
 Luminova offers a numerous powerful features, yet we recognize that not all may be essential for every application. Understanding and leveraging these features can sometimes pose challenges, especially for beginners who may feel overwhelmed by their complexity.
 

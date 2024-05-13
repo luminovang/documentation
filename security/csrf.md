@@ -1,4 +1,4 @@
-##  CSRF Protection
+#  CSRF Protection
 
 ***
 
@@ -7,6 +7,8 @@
 Integrate CSRF with forms and requests in your application to enhance its security and protect against CSRF attacks, safeguarding user data and maintaining trust in your application&#039;s integrity.
 
 ***
+
+## Introduction
 
 The CSRF (Cross-Site Request Forgery), Luminova Framework provides functionality to protect against CSRF attacks, a type of malicious exploit where unauthorized commands are transmitted even from a user that the web application trusts. This class helps ensure the integrity and authenticity of requests sent to your application.
 

@@ -1,4 +1,4 @@
-## Sitemap Configuration
+# Sitemap Configuration
 
 ***
 
@@ -7,6 +7,8 @@
 Sitemap configuration provides flexibility and control over the sitemap generation, allowing you to set limits on the number of URLs to scan, specify URLs to ignore, and define pattern views.
 
 ***
+
+## Introduction
 
 The `Sitemap Configuration` class provides properties to configure the generation of sitemaps in your application, allowing you to set limits on the number of URLs to scan, specify URLs to ignore, and define patterns for extracting URLs view last-modified timestamp.
 

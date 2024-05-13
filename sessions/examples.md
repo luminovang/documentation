@@ -1,4 +1,4 @@
-## Session Examples
+# Session Examples
 
 ***
 
@@ -7,6 +7,8 @@
 Learn how to securely store data in Luminova&#039;s session storage and create a simple login with input validation.
 
 ***
+
+## Introduction
 
 ### Examples
 

@@ -1,4 +1,4 @@
-## Security Configuration
+# Security Configuration
 
 ***
 
@@ -7,6 +7,8 @@
 Security configuration provides flexibility and control over security settings, ensuring that only trusted origins and hostnames can interact with the application.
 
 ***
+
+## Introduction
 
 The `Security Configuration` class provides properties to configure security-related settings in your application, such as trusted origins and hostnames, which will be used in the `Request` class for authenticating incoming request origins and hostname. 
 

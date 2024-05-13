@@ -1,4 +1,4 @@
-## Database Connection
+# Database Connection
 
 ***
 
@@ -7,6 +7,8 @@
 Initializes Database Connections with efficient data management, database connection pool, and backup server connectivity.
 
 ***
+
+## Introduction
 
 This class allows you to initiate a database connection, Comprehensive Guide to Using the Database Connection Class for Efficient Data Management to get started, see [Database Example](/database/examples.md).
 

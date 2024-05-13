@@ -1,4 +1,4 @@
-## Database Drivers
+# Database Drivers
 
 ***
 
@@ -7,6 +7,8 @@
 Database Driver Interface: Facilitating Database Connectivity, Query Execution, and Result Handling. Explore our Database Example to Kickstart Your Integration.
 
 ***
+
+## Introduction
 
 Database drivers Interface, provides methods for executing database queries, statement preparation, and result fetching. To get started, see [Database Example](/database/examples.md).
 

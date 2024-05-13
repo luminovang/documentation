@@ -1,4 +1,4 @@
-## URI Routing
+# URI Routing
 
 ***
 
@@ -7,6 +7,8 @@
 Utilize the Luminova router class to seamlessly capture and process both API and web page requests within your controller class.
 
 ***
+
+## Introduction
 
 Luminova's framework routes serve as efficient handlers for capturing URI patterns upon requests. They simplify routing configurations by enabling the definition of URI matching patterns, methods, and closures for view rendering.
 

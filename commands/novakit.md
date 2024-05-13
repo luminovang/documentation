@@ -1,4 +1,4 @@
-## NovaKit CLI
+# NovaKit CLI
 
 ***
 
@@ -7,6 +7,8 @@
 Need to manage environment variables or create a sitemap? NovaKit has got you covered. Perform database operations, execute scripts, or start a development server seamlessly—all from the command line.
 
 ***
+
+## Introduction
 
 NovaKit Command Line Tool is a powerful tool provided by Luminova framework, for simplifying command-line operations and facilitating the development as well as building command-line applications. It offers a wide range of functionalities such as generating boilerplate code, scaffolds, templates, environment variables, sitemap, database operations, executing scripts, starting development server and more.
 

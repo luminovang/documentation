@@ -1,4 +1,4 @@
-## SSG SEO Examples
+# SSG SEO Examples
 
 ***
 
@@ -8,6 +8,8 @@ Schema &amp; Sitemap Examples, Website optimization guides using  Luminova&#039;
 
 
 ***
+
+## Introduction
 
 The Schema and Sitemap Generator is a powerful tool within the Luminova framework designed to simplify the creation of structured data for search engine optimization (SEO) purposes. 
 

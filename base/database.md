@@ -1,4 +1,4 @@
-## Base Database
+# Base Database
 
 ***
 
@@ -7,6 +7,8 @@
 Define your backup database connection server with Luminova Base Server, to automatically reconnect to a backup database when the main database fails to connect.
 
 ***
+
+## Introduction
 
 Automatic Backup Database Connectivity to ensure your application is always online when needed.
 

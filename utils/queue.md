@@ -1,4 +1,4 @@
-## Job Queuing
+# Job Queuing
 
 ***
 
@@ -7,6 +7,8 @@
 Luminova&#039;s queue class is a flexible and efficient solution for managing asynchronous tasks in (FIFO) order.
 
 ***
+
+## Introduction
 
 The Queue Class in Luminova provides a mechanism for managing asynchronous tasks, to handle background processes efficiently. Asynchronous processing is essential for improving application responsiveness and scalability, as it enables tasks to be executed independently of the main application flow.
 

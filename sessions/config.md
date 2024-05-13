@@ -1,4 +1,4 @@
-## REMOVE Session Configuration
+# REMOVE Session Configuration
 
 ***
 
@@ -7,6 +7,8 @@
 Configuration for your application server-side session behavior.
 
 ***
+
+## Introduction
 
 Class details various properties that can be adjusted to customize the behavior of sessions in your application, including cookie settings, expiration time, session paths, and more particularly for server-side session management.
 

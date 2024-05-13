@@ -1,4 +1,4 @@
-## Base Services
+# Base Services
 
 ***
 
@@ -7,6 +7,8 @@
 Define your application shared and serializable classes instance in Base Services to use it anywhere in your application.
 
 ***
+
+## Introduction
 
 Base Services in the Luminova Framework provide a foundational layer for implementing various business logic and functionalities within your application. These services offer versatility, enabling the retrieval of a shared instance of a class, reinitialization of a class with new arguments, or caching and serializing class instances for seamless utilization throughout your application or by third-party modules.
 

@@ -1,4 +1,4 @@
-## File Uploader
+# File Uploader
 
 ***
 
@@ -7,6 +7,8 @@
 File Uploader class is a simple PHP class shipped with Luminova Framework to handle file uploads as an alternative to the Storage class.
 
 ***
+
+## Introduction
 
 The File Uploader class is included with the Luminova's Framework. It serves as an alternative to the Storage class and is designed to handle local  file uploads using methods like `upload` for uploading a file to the server, and `chunk` for large file uploads using client-side chunking or `write` for Uploading content from string.
 

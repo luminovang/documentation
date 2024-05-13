@@ -1,4 +1,4 @@
-## Requirements
+# Requirements
 
 ***
 
@@ -7,6 +7,8 @@
 Requirements to develop an application using PHP Luminova Framework, ensure that your environment meets the basic requirements for smooth coding.
 
 ***
+
+## Introduction
 
 Before starting a development, it's important to have a clear idea of the application you want to build. Define the purpose, functionality, and target audience of your application. Having a well-defined user application idea will guide the design and development process, ensuring that your application meets the needs of its users effectively. 
 

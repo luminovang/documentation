@@ -1,4 +1,4 @@
-## Session Manager
+# Session Manager
 
 ***
 
@@ -7,6 +7,8 @@
 The Session class provides a set of methods to simplify session management in your Luminova application. It offers convenient methods for storing, retrieving, and manipulating session data.
 
 ***
+
+## Introduction
 
 The Luminova's Session Manager is a useful component that provides a set of methods to simplify managing user sessions in your web applications. Its primary function is to enhance the storage and retrieval of session data, allowing applications to maintain stateful interactions with users across multiple requests. With support for two distinct storage drivers `SessionManager` and `CookieManager`, you have the flexibility to choose the appropriate session storage mechanism based on your need. 
 

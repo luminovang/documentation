@@ -1,4 +1,4 @@
-## Response Object
+# Response Object
 
 ***
 
@@ -7,6 +7,8 @@
 The Response interface represents an HTTP network request response, including the status code, headers, body, and additional information.
 
 ***
+
+## Introduction
 
 The `Response` object allows you to work with HTTP network request responses in your application. It provides methods to access the status code, headers, body, and additional information associated with the response from `Network` class.
 

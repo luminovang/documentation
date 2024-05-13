@@ -1,4 +1,4 @@
-## Database Examples
+# Database Examples
 
 ***
 
@@ -7,6 +7,8 @@
 The Database Examples provides comprehensive examples and guides for leveraging database functionalities within the Luminova Framework.
 
 ***
+
+## Introduction
 
 This resource serves as a valuable reference for developers seeking to understand and implement database operations effectively. Here are some of the Database Examples available.
 

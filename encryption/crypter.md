@@ -1,4 +1,4 @@
-## Crypter
+# Crypter
 
 ***
 
@@ -7,6 +7,8 @@
 Luminova&#039;s Crypter class provides methods for encrypting and decrypting data using encryption algorithms in OpenSSL or Sodium.
 
 ***
+
+## Introduction
 
 Luminova Crypter class is straightforward means to implement encryption and decryption functionalities in anywhere in your applications. This helper class seamlessly integrates both Sodium and OpenSSL encryption libraries, providing a unified and simplified interface for encrypting and decrypting data without the need for manual initialization of handlers.
 

@@ -1,4 +1,4 @@
-## Date &amp; Time
+# Date &amp; Time
 
 ***
 
@@ -7,6 +7,8 @@
 The Lumonovas `Time` class extends PHP `DateTimeImmutable` and provides additional functionality and convenience methods for handling date and time operations.
 
 ***
+
+## Introduction
 
 Time class is a powerful extension of PHP's native DateTimeImmutable class, designed to enhance date and time operations within your application. By extending the functionality of the core DateTimeImmutable class, the Luminova's Time class offers range of additional features and convenience methods, making it easier to manipulate, format, and work with dates and times in your project.
 

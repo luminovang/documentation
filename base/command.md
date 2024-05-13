@@ -1,4 +1,4 @@
-## Base Command
+# Base Command
 
 ***
 
@@ -7,6 +7,8 @@
 Base command, Luminova&#039;s Framework for command-line operations - controller base class for NovaKit CLI Tool.
 
 ***
+
+## Introduction
 
 Base Command is Luminova's comprehensive framework designed for managing command-line operations. As a controller base class, it offers a structured approach to building and executing command-line commands, providing a solid foundation for developing robust and extensible command-line tool (CLIs).
 

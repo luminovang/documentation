@@ -1,4 +1,4 @@
-## Services
+# Services
 
 ***
 
@@ -7,6 +7,8 @@
 Services is a utility class that efficiently manages class initialization across the application&#039;s codebase. It provides shared and serializable class instances, with a centralized location for regist
 
 ***
+
+## Introduction
 
 Services is a utility class designed to simplify the management of class instances across your application. Serving as a centralized hub, it allows developers to manage, cache, or return shared instances of a class throughout the codebase. With a centralized location for registering classes, Services optimizes application performance by loading and initializing classes only when called.
 

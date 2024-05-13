@@ -1,4 +1,4 @@
-## Base Mailer
+# Base Mailer
 
 ***
 
@@ -7,6 +7,8 @@
 The BaseMailer class provides a convenient way to create reusable email templates and send them when necessary using the Luminova email framework.
 
 ***
+
+## Introduction
 
 The `BaseMailer` class is a foundational component of the Luminova email framework, designed to simplify the process of creating and sending email messages. 
 It serves as a template for defining email templates with customizable subjects, HTML content, alternative text bodies, and attachments.

@@ -1,4 +1,4 @@
-## Browser Configuration
+# Browser Configuration
 
 ***
 
@@ -7,6 +7,8 @@
 This class provides configuration options related to browsers and user agents.
 
 ***
+
+## Introduction
 
 The `Browser` configuration, located at `\app\Controllers\Config\Browser.php`, provides essential configuration options related to browsers and user agents. This class is designed to help define and manage common patterns and keywords found in user agent strings, enabling developers to customize the behavior of their applications based on browser or device information.
 

@@ -1,4 +1,4 @@
-## File Manager
+# File Manager
 
 ***
 
@@ -7,6 +7,8 @@
 File manager class is a simple PHP class shipped with Luminova Framework to handle file uploads as an alternative to the Storage class.
 
 ***
+
+## Introduction
 
 ***
 
@@ -464,5 +466,3 @@ public static symbolic(string $target, string $link): bool
 **Return Value:**
 
 `bool` - Return true if the link was successfully created false otherwise.
-
-***

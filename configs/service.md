@@ -1,4 +1,4 @@
-## Services Configuration
+# Services Configuration
 
 ***
 
@@ -7,6 +7,8 @@
 Register and autoload services that should be discoverable throughout your application.
 
 ***
+
+## Introduction
 
 The `Service Configuration` class allows you to register services to be autoloaded and discoverable anywhere in your application. It allows you specify initialization arguments, and optionally specify whether the class instance should be shared, and whether it should be serialized and stored as cache.
 

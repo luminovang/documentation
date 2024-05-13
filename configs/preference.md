@@ -1,4 +1,4 @@
-## Preference Configuration
+# Preference Configuration
 
 ***
 
@@ -7,6 +7,8 @@
 Preference configuration provides flexibility and customization methods to override the default components with your preferred components like logger and mailer client.
 
 ***
+
+## Introduction
 
 The `Preference Configuration` class provides methods to specify preferred components, such as logging and mailing, to be used in a Luminova application instead of relying only on the default components.
 

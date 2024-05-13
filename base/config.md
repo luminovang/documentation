@@ -1,4 +1,4 @@
-## Base Config
+# Base Config
 
 ***
 
@@ -7,6 +7,8 @@
 Base configuration allows you to extend the Luminova configuration class and define your custom variables or methods for your application configuration.
 
 ***
+
+## Introduction
 
 Base configuration serves as and underlying of your application where you can define your important variables for your application. To use this class you need to extend it.
 

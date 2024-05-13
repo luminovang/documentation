@@ -1,4 +1,4 @@
-## Maths Helper
+# Maths Helper
 
 ***
 
@@ -7,6 +7,8 @@
 This class has basic mathematical calculation methods to convert currency, units, averages, ratings, discounts or interest rates.
 
 ***
+
+## Introduction
 
 This class provides a set of fundamental mathematical calculation methods currency conversions and unit conversions. They are designed to assist developers in performing common mathematical tasks while we add more for advance usages. 
 

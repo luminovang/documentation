@@ -1,4 +1,4 @@
-## Base Model
+# Base Model
 
 ***
 
@@ -7,6 +7,8 @@
 Base Model, allows you to define database models for your application, it also supports database searching using a third-party library provided by the Luminova team.
 
 ***
+
+## Introduction
 
 The Base Model serves as the foundation for all models within your application, providing essential functionalities and features to interact with the database.
 

@@ -1,4 +1,4 @@
-## Cookie Configuration
+# Cookie Configuration
 
 ***
 
@@ -7,6 +7,8 @@
 Configurations to various properties to adjust and customize the behavior of cookies in your web application, including cookie expiration time, paths, and more particularly client-side cookies.
 
 ***
+
+## Introduction
 
 The `Cookie Configuration` class provides properties to configure various aspects of cookies used in web applications, particularly for client-side cookie management. These properties allow developers to customize settings such as the save path, expiration, cookie path, domain, SameSite attribute, security flags, and more.
 

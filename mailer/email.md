@@ -1,4 +1,4 @@
-## Email
+# Email
 
 ***
 
@@ -7,6 +7,8 @@
 The Mailer class provides methods to facilitate sending emails. This documentation outlines its methods and their usage.
 
 ***
+
+## Introduction
 
 The Luminova Mailer class simplifies the process of sending emails. It provides methods to handle various aspects of email composition, such as setting recipients, sender address, message body, attachments, and more.
 

@@ -1,4 +1,4 @@
-## Network Request
+# Network Request
 
 ***
 
@@ -7,6 +7,8 @@
 The Network class is a valuable tool for working with external APIs or services. By providing a simple interface for sending HTTP requests and handling responses, with support for both cURL and Guzzle
 
 ***
+
+## Introduction
 
 The `Network` class is a utility designed to simplify making HTTP requests to external resources such as APIs, web services, or websites. It provides an easy-to-use interface for sending HTTP requests and handling responses, including accessing response headers, status codes, and response bodies.
 

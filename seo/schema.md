@@ -1,4 +1,4 @@
-## Schema Generator
+# Schema Generator
 
 ***
 
@@ -7,6 +7,8 @@
 The Schema Generator class allows you to generate schema objects for your web pages. It provides methods to easily create schema on every page of your web application.
 
 ***
+
+## Introduction
 
 The SEO Schema Generator class is a powerful tool designed to simplify the creation of structured data objects for search engine optimization (SEO) purposes across your web pages. It provides methods to easily configure and create schema objects on every page of your web application to enhance the visibility and indexing of your website's content on search engine results pages.
 

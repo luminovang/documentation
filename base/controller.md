@@ -1,4 +1,4 @@
-## Base Controller
+# Base Controller
 
 ***
 
@@ -7,6 +7,8 @@
 Base Controller provides a robust foundation for backend operations in Luminova&#039;s framework, offering efficient request handling, validation initialization, and backend view rendering capabilities.
 
 ***
+
+## Introduction
 
 Base Controller serves as a fundamental component of Luminova's MVC, designed to extend backend operations within your applications. It shares similarities with the **Base View Controller** but differs in its approach to request handling and validation initialization, making it particularly suitable for backend view rendering like as development.
 

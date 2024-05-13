@@ -1,4 +1,4 @@
-## User Agent
+# User Agent
 
 ***
 
@@ -7,6 +7,8 @@
 The UserAgent class is a valuable tool for devs building web applications or services that require functionality based on client devices. By providing methods to parse and extract information from...
 
 ***
+
+## Introduction
 
 The `UserAgent` class is a utility class designed to parse and extract information from User-Agent strings. User-Agent strings are sent by web browsers and other clients to identify themselves to servers. This class makes it easy to work with User-Agent strings, allowing developers to extract useful information such as the browser name, version, operating system, and device type.
 

@@ -1,4 +1,4 @@
-## Render View Class
+# Render View Class
 
 ***
 
@@ -7,6 +7,8 @@
 Managing and customizing your template view rendering and behavior with Luminova&#039;s TemplateTrait class.
 
 ***
+
+## Introduction
 
 In this documentation, we will walk you through the `Template` class, which is responsible in rendering, presenting and customizing view templates within your Luminova's application. The template object is automatically inherited by your base application controller classes `BaseApplication`, providing convenient access to its methods anywhere in your application codebase.
 

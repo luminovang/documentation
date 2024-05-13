@@ -1,4 +1,4 @@
-## Query Builder
+# Query Builder
 
 ***
 
@@ -7,6 +7,8 @@
 Query Builder is a powerful ORM (Object-Relational Mapping) tool that organizes CRUD operations, enabling developers to work with higher-level objects and methods for simplified database interactions.
 
 ***
+
+## Introduction
 
 The Query Builder is a powerful ORM (Object-Relational Mapping) tool designed to simplify database interactions for developers. It enables you to work with higher-level objects and methods, abstracting the process of constructing SQL queries.
 

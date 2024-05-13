@@ -1,4 +1,4 @@
-## Base Functions
+# Base Functions
 
 ***
 
@@ -7,6 +7,8 @@
 Base functions are a collection of fundamental utility methods that serve as a helper for application development. These functions typically encapsulate common tasks and operations for frequent use.
 
 ***
+
+## Introduction
 
 The Base Functions class serves as a repository for various utility functions that provides a reusable methods to various solutions to tackle different problems. As an abstract class, it serves as a foundation for common functionalities that can be extended and customized to suit specific use cases within your application. With a diverse collection of methods, each designed to address specific needs.
 

@@ -1,4 +1,4 @@
-## Sitemap Generator
+# Sitemap Generator
 
 ***
 
@@ -7,6 +7,8 @@
 Generate an XML sitemap for your website using Luminova&#039;s sitemap generate command in CLI.
 
 ***
+
+## Introduction
 
 Generating a sitemap for your website with Luminova Framework is straightforward. Follow these simple steps.
 

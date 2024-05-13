@@ -1,4 +1,4 @@
-## Exception Classes
+# Exception Classes
 
 ***
 
@@ -7,6 +7,8 @@
 Luminova&#039;s Exception classes provide a structured way to handle errors and exceptions gracefully in your Luminova applications. 
 
 ***
+
+## Introduction
 
 Luminova Exceptions is a set of custom exception classes designed to log or handle errors gracefully in production. These exceptions provide clear and easy methods to help developers identify and troubleshoot issues effectively.
 

@@ -1,4 +1,4 @@
-## Input Validation
+# Input Validation
 
 ***
 
@@ -8,6 +8,8 @@ With the input Validation class, you can validate the user-submitted data before
 
 
 ***
+
+## Introduction
 
 The Input Validation class in the Luminova Framework provides a robust mechanism for validating user-submitted data before processing or storing it in a database. With this class, you can define validation rules for each input field along with optional error messages, ensuring that the data meets your application's requirements and standards.
 

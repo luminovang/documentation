@@ -1,4 +1,4 @@
-## Installation Guides
+# Installation Guides
 
 ***
 
@@ -7,6 +7,8 @@
 Installation guides for the PHP Luminova framework highlight the benefits of using Composer for easy maintenance and ensuring you&#039;re always up to date with the latest framework and dependency.
 
 ***
+
+## Introduction
 
 Whether you're new to the framework or a seasoned developer, getting started with Luminova is a breeze.  In this guide, we'll walk you through the installation process
 

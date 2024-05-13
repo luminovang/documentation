@@ -1,4 +1,4 @@
-## Base Paths
+# Base Paths
 
 ***
 
@@ -7,6 +7,8 @@
 
 
 ***
+
+## Introduction
 
 * Class namespace: `\Luminova\Base\BasePaths`
 * Parent class: [Paths](/application/paths.md)

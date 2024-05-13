@@ -1,4 +1,4 @@
-## Helper Functions
+# Helper Functions
 
 ***
 
@@ -7,6 +7,8 @@
 Global helper functions are collections of procedural functions that provide commonly used functionality across different parts of your application enhancing code reusability and productivity.
 
 ***
+
+## Introduction
 
 Global helper functions are procedural functions that provide commonly used functionality across different parts of your application. They are typically defined at the global scope, making them easily accessible from anywhere within the codebase.
 

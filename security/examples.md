@@ -1,4 +1,4 @@
-## Security Examples
+# Security Examples
 
 ***
 
@@ -7,6 +7,8 @@
 Learn how to effectively use Input validation and CSRF security to protect your application integrity, with working implementation examples. 
 
 ***
+
+## Introduction
 
 ### Input Validation
 

@@ -1,4 +1,4 @@
-## Encryption Driver
+# Encryption Driver
 
 ***
 
@@ -7,6 +7,8 @@
 The Encryption Driver allows you to secure sensitive data in your applications. By implementing either OpenSSL or Sodium encryption methods, with flexibility in choosing your encryption approach.
 
 ***
+
+## Introduction
 
 The Encryption Driver provides a flexible solution for data encryption within the Luminova Framework. It serves as an abstraction layer that supports multiple encryption algorithms, including OpenSSL and Sodium, ensuring robust security measures while offering developers the flexibility to choose the encryption method that best fits their needs.
 

@@ -1,4 +1,4 @@
-## File Upload
+# File Upload
 
 ***
 
@@ -7,6 +7,8 @@
 File object encapsulates a file ready to be uploaded to a server. It offers customization options before sending the file to the upload class, It allows you to modify properties like filename, etc...
 
 ***
+
+## Introduction
 
 The `File` object represents a file ready to be uploaded to the server. With this class, you can customize files before sending them to the `Uploader` or `Storage` class for final upload. Optionally, you can change the filename or set a `symlink` path to generate a symbolic link for files stored in the private storage directory.
 

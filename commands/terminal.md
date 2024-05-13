@@ -1,4 +1,4 @@
-## Command Terminal
+# Command Terminal
 
 ***
 
@@ -7,6 +7,8 @@
 NovaKit Terminal class seamlessly facilitates user prompts and manages input with built-in validation like a web form capabilities, it enhances the CLI experience for efficient workflow &amp; productivity
 
 ***
+
+## Introduction
 
 The Luminova Terminal class for NovaKit is a powerful utility designed to enhance the command-line interface (CLI) interaction for developers leveraging the Luminova framework. Designed to enhance CLI tool development and application operations within the framework, it offers an array of functionalities and utilities.
 

@@ -1,4 +1,4 @@
-## Files Configuration
+# Files Configuration
 
 ***
 
@@ -7,6 +7,8 @@
 File configuration provides flexibility and control over file and directory permissions, ensuring appropriate access levels for different types of files and directories in the application.
 
 ***
+
+## Introduction
 
 The `Files Configuration` class provides properties to set the default Unix file and directory permissions for creating new files and directories in your application.
 

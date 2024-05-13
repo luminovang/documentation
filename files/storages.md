@@ -1,4 +1,4 @@
-## Cloud Storages
+# Cloud Storages
 
 ***
 
@@ -7,6 +7,8 @@
 File Storage allows you to seamlessly integrate various storages like AWS S3, Azure Blob,  into your PHP application, providing flexibility and convenience in handling file and directory operations.
 
 ***
+
+## Introduction
 
 The Storage class provides an interface for interacting with various storage adapters such as local file storage, FTP servers, in-memory storage, and cloud storage services like AWS S3, Azure Blob, and Google Cloud Storage. This class serves as an extension of the powerful PHP library [League Filesystem](https://github.com/thephpleague/flysystem), which offers convenient methods for common file and directory operations.
 

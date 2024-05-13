@@ -1,4 +1,4 @@
-## View Error Controller
+# View Error Controller
 
 ***
 
@@ -7,6 +7,8 @@
 Customize or add new error handlers for different routing contexts. By default, it provides handlers for the web or API contexts, which you can modify or customize as needed.
 
 ***
+
+## Introduction
 
 The `ViewErrors` class allows you define and manage error-handling methods to customize how view errors are displayed. Error-handling methods for `404` error type that may occur during the execution of your application `web` or `api` views, provide a way to display meaningful error messages to users.
 

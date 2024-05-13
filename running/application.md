@@ -1,4 +1,4 @@
-##  Development Server
+#  Development Server
 
 ***
 
@@ -7,6 +7,8 @@
 Luminova&#039;s local development server, leveraging PHP&#039;s built-in web server.
 
 ***
+
+## Introduction
 
 Luminova provides a convenient built-in development server, leveraging PHP's native web server functionality. You have the option to use this server for local development or continue using platforms like XAMPP or WAMPP.
 

@@ -1,4 +1,4 @@
-## Tasks
+# Tasks
 
 ***
 
@@ -7,6 +7,8 @@
 Task class simplifies date and time-related tasks in Luminova applications. It offers convenient methods for checking task statuses, performing pre-expiration checks, and calculating time intervals. 
 
 ***
+
+## Introduction
 
 The Task class is a utility class shipped with Luminova framework, designed to provide convenient methods for working with date and time-related operations in your application. By encapsulating common date and time functionality into static methods, to simplify the process of performing tasks like expiration checking, and interval calculations.
 

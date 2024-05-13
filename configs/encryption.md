@@ -1,4 +1,4 @@
-## Encryption Configuration
+# Encryption Configuration
 
 ***
 
@@ -7,6 +7,8 @@
 The encryption configuration properties provide flexibility and control over the encryption and decryption of data in your application.
 
 ***
+
+## Introduction
 
 The `Encryption Configuration` class provides properties to configure encryption settings for data encryption and decryption in your applications. These properties allow developers to specify the encryption algorithm, method, digest, and key information used for encryption and decryption operations.
 

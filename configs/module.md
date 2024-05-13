@@ -1,4 +1,4 @@
-## Modules Configuration
+# Modules Configuration
 
 ***
 
@@ -7,6 +7,8 @@
 Autoload modules in your application
 
 ***
+
+## Introduction
 
 Autoload modules in your application.
 

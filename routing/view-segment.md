@@ -1,4 +1,4 @@
-## View Segments
+# View Segments
 
 ***
 
@@ -7,6 +7,8 @@
 View Segments is a utility class designed to assist in accessing requested view URIs, simplifying processing tasks.
 
 ***
+
+## Introduction
 
 View Segments" is a utility class designed to simplify the retrieval of specific segments from requested view URIs. It offers methods that allow easy access to different parts of the URI, making it convenient to extract and process relevant information.
 

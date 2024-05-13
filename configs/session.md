@@ -1,4 +1,4 @@
-## Session Configuration
+# Session Configuration
 
 ***
 
@@ -7,6 +7,8 @@
 Session configuration class provides flexibility and control over server-side session management, ensuring the security and reliability of the application&#039;s session handling.
 
 ***
+
+## Introduction
 
 The `Session Configuration` class provides properties to configure various aspects of server-side sessions in your application, including session cookies, save path, expiration, and more.
 
