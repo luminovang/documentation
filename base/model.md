@@ -116,7 +116,7 @@ protected array $messages
 Database query builder class instance.
 
 ```php
-protected \Luminova\Database\QueryBuilder $builder
+protected \Luminova\Database\Builder $builder
 ```
 
 ***
@@ -137,14 +137,14 @@ Constructor for the Model class, if query builder instance is passed null, it wi
 To use with your configured builder instance pass it.
 
 ```php
-public __construct(?\Luminova\Database\QueryBuilder $builder = null): mixed
+public __construct(?\Luminova\Database\Builder $builder = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$builder` | **null&#124;\Luminova\Database\QueryBuilder** |  |
+| `$builder` | **null&#124;\Luminova\Database\Builder** | Query builder class instance.  |
 
 ***
 
