@@ -32,7 +32,7 @@ In `public/index.php`, add a route context, to `$app->router->context()` method 
 new Context('routing name', 'callback function for error handling');
 ```
 
-Learn more about [Routing Context](/routing/view-context.md)
+To learn more about routing context  [See Documentation](/routing/view-context.md)
 
 ***
 
@@ -42,9 +42,7 @@ The below context can be accessed in browser by visiting `https://example.com/pa
 
 ```php
 <?php
-$app->router->context($app, 
-     new Context('panel', [ViewErrors::class, 'myErrorMethodName'])
-);
+$app->router->context(new Context('panel', [ViewErrors::class, 'myErrorMethodName']));
 ```
 
 > *IMPORTANT*
@@ -201,7 +199,7 @@ $router->bind('/admin', function(Router $router, BaseApplication $app) {
 
 ***
 
-## CLI Routing Capture & Controllers
+## CLI Capture & Controllers
 
 In NovaKit CLI, you can register global before middleware security checks similar to those used for web and APIs, but using a different method named `before`. Your callback or controller method within this middleware must return an integer (`0` or `STATUS_SUCCESS`) to indicate a pass, or (`1` or `STATUS_ERROR`) to indicate a failure.
 
@@ -230,7 +228,7 @@ $router->before(function(): int {
 
 ***
 
-### CLI Capture & Controllers
+### CLI Implementation
 
 To register command controllers within NovaKit CLI, you can use the `command()` method to define command routes. Unlike HTTP methods (`post`, `get`, `put`, etc.), CLI commands are triggered directly from the command line and do not use traditional HTTP routing methods.
 
@@ -311,6 +309,7 @@ While defining command controllers in NovaKit CLI, it's possible to use `Closure
 ```php
 <?php
 use \Luminova\Routing\Router;
+
 $router->group("users", function((Router $router){
 	$router->command('/user/name/(:value)', function($name): int {
 		echo "Hello, $name!";
@@ -339,7 +338,7 @@ $router->group("blogs", function((Router $router){
 
 ### HTTP Controller
 
-This UserController class is an example of a web pages or APis controller that extends BaseController from the Luminova framework component. It defines methods to handle specific URI request actions.
+This `UserController` class is an example of a web controller class that extends `BaseController` from the Luminova's component. It defines methods to handle specific URI request and actions.
 
 ```php
 <?php
@@ -387,7 +386,7 @@ class UserController extends BaseController
 
 ### Command Controller
 
-This CommandController class is an example of a command controller that extends BaseCommand from the Luminova Terminal component. It defines methods to handle specific command actions based on command arguments.
+This `CommandController` class is an example of a `CLI` controller that extends `BaseCommand` from the Luminova's `Terminal` component. It defines methods to handle specific command and actions based on command arguments.
 
 ```php
 <?php 

@@ -90,7 +90,7 @@ public \Luminova\Routing\Router $router
 Get the base application instance shared singleton class instance.
 
 ```php
-public static getInstance(): static
+public static final getInstance(): static
 ```
 
 ***
@@ -100,7 +100,7 @@ public static getInstance(): static
 Get the current view segment.
 
 ```php
-public getView(): string
+public final getView(): string
 ```
 
 **Return Value:**
@@ -114,7 +114,7 @@ public getView(): string
 Get application base path from router.
 
 ```php
-public getBase(): string
+public final getBase(): string
 ```
 
 **Return Value:**
@@ -138,7 +138,7 @@ protected onCreate(): void
 Get the framework version name or code.
 
 ```php
-public static version(bool $integer = false): string|int
+public static final version(bool $integer = false): string|int
 ```
 
 **Parameters:**

@@ -22,7 +22,7 @@ use \Luminova\Routing\Context;
 use App\Controller\Config\ViewErrors;
 //...
 
-$app->router->context($app,
+$app->router->context(
       new Context('admin', [ViewErrors::class, 'onAdminError']),
 	//...
 );
@@ -45,11 +45,11 @@ $router->get('/', 'AdminController::login');
 $router->get('/dashboard', 'AdminController::dashboard');
 ```
 
-> Whenever you visit `https://example.com/admin`, `https://example.com/admin/*`, or `https://localhost/example.com/public/admin`, your admin page will be loaded.
+> Whenever you visit `https://example.com/admin`, `https://example.com/admin/*`, or `https://localhost/example.com/public/admin`, your administrator page will be loaded.
 
 **Setting a Subdirectory for Admin Views**
 
-In many cases, you might want to organize your application views so that each context has a folder to contain all its view files. To achieve this, simply create the subfolder in your `/resources/views/` directory. For example, create `/resources/views/admin/`.
+In many cases, you might want to organize your application views so that each context has a folder to contain all its view files. To achieve this, simply create the sub-folder in your `/resources/views/` directory. For example, create `/resources/views/admin/`.
 
 Next, instruct the framework to look for your view files in the `/resources/views/admin` directory of your resources by adding the `setFolder()` method in your context file `/routes/admin.php` before registering routes or before rendering views.
 
@@ -65,7 +65,7 @@ $app->setFolder('admin');
 
 ```php 
 <?php 
-$router->get('/', function() use($app, $router){
+$router->get('/', function(Router $router, BaseApplication $app){
 	$app->setFolder('admin');
 	$router->view('index')->render();
 });
@@ -122,4 +122,6 @@ new Context(string $name, \Closure|array|null $onError = null): mixed
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$name` | **string** | Route context name |
-| `$onError` | **\Closure&#124;array<int,string>&#124;null** | Optional error callback function to execute |
+| `$onError` | **\Closure&#124;array<int,string>&#124;null** | Optional error callback function to execute. |
+
+> Error handler supports any callable, or list array with two elements, the first element should be class name while the second is method name.

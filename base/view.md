@@ -95,7 +95,7 @@ protected \Luminova\Library\Importer $library
 Initializes the HTTP request class instance.
 
 ```php
-protected request(): \Luminova\Http\Request
+protected final request(): \Luminova\Http\Request
 ```
 
 **Return Value:**
@@ -109,7 +109,7 @@ protected request(): \Luminova\Http\Request
 Initializes the input validator class instance.
 
 ```php
-protected validate(): \Luminova\Security\InputValidator
+protected final validate(): \Luminova\Security\InputValidator
 ```
 
 **Return Value:**
@@ -123,7 +123,7 @@ protected validate(): \Luminova\Security\InputValidator
 Initializes the application class instance.
 
 ```php
-protected app(): \App\Controllers\Application
+protected final app(): \App\Controllers\Application
 ```
 
 **Return Value:**
@@ -137,7 +137,7 @@ protected app(): \App\Controllers\Application
 Initializes the application class instance.
 
 ```php
-protected library(): \Luminova\Library\Importer
+protected final library(): \Luminova\Library\Importer
 ```
 
 **Return Value:**
@@ -151,7 +151,7 @@ protected library(): \Luminova\Library\Importer
 Shorthand to render view in controller class.
 
 ```php
-protected view(string $view, array $options = []): int
+protected final view(string $view, array $options = []): int
 ```
 
 **Return Value:**
@@ -172,7 +172,7 @@ protected view(string $view, array $options = []): int
 Shorthand to respond view contents in controller class.
 
 ```php
-protected respond(string $view, array $options = []): string
+protected final respond(string $view, array $options = []): string
 ```
 
 **Return Value:**

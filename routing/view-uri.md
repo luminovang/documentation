@@ -359,25 +359,28 @@ public group(string $group, \Closure $callback): void
 
 ***
 
-### bootstraps
+### context
 
-Register your application bootstrap routing URL prefix, such as `web`, `cli`, `api`, `console` and many more.
-These prefix must be unique in other to work as expected.
+Register your application routing context prefixes, such as `web`, `cli`, `api`, `console` and many more.
+These context name must be unique in other to discover requested route.
 
 ```php
-public bootstraps(\Luminova\Base\BaseApplication $application, \Luminova\Routing\Bootstrap $callbacks): void
+public context(\Luminova\Routing\Context $contextes): \Luminova\Routing\Router
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$application` | **\Luminova\Base\BaseApplication** | Your application instance. |
-| `$callbacks` | **\Luminova\Routing\Bootstrap** | Routing context callback arguments. |
+| `$contextes` | **\Luminova\Routing\Context** | Arguments containing routing context. |
+
+**Return Value**
+
+`Router` - Return router instance.
 
 **See Also:**
 
-*  [Routing Contents](/bootstrap/Bootstrap.md) - Read more about how routing prefix work and usages. 
+*  [Routing Context](/routing/view-context.md) - Read more on how routing prefix work and usages. 
 *  [Index Controller Handler](/public/index.md) - See example of front controller index file handler. 
 
 ***
