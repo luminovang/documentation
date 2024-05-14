@@ -19,7 +19,7 @@ The `ViewErrors` class allows you define and manage error-handling methods to cu
 - Error handler methods can be either static or non-static.
 - Methods must be declared as `public`, not `protected` or `private`.
 - Dependency injection is enabled by default for error handlers, allowing you to pass any class you need as a parameter in the method signature.
-- After adding a new method for a routing context error handler or modifying a method name, you must update the corresponding name in the `bootstrap` method located in the `/public/index.php` file.
+- After adding a new method for a context error handler or modifying a method name, you must update the corresponding name in the `context` method located in the `/public/index.php` file.
 
 ***
 
@@ -71,12 +71,13 @@ To register your error handler, it must be callable or pass an array where the f
 ```php
 // public/index.php
 <?php
+use \Luminova\Routing\Context;
 use App\Controllers\Errors\ViewErrors;
 
-$app->router->bootstraps($app, 
-	new Bootstrap(Bootstrap::FOO, [ViewErrors::class, 'onFooError']),
+$app->router->context($app, 
+	new Context(Context::FOO, [ViewErrors::class, 'onFooError']),
 	//...
 );
 ``` 
 
-> This snippet demonstrates how to register an error handler in your application's bootstrap process. The `onFooError` method from the `ViewErrors` class will handle errors for the `FOO` context.
+> This example demonstrates how to register an error handler in your application's routing context. The `onFooError` method from the `ViewErrors` class will handle errors for the `FOO` context.

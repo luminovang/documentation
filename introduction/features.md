@@ -45,17 +45,13 @@ return [
 `feature.app.services` When enabled, the framework will register all services listed in your controller Services configuration located in `/app/Controllers/Config/Services.php`.
 
 ```php 
-public static function bootstrap(): void
+public function bootstrap(): void
     {
-        static::addService(Adapter::class, "Test Argument", true, true);
-		static::addService(Example::class, true);
+        static::newService(Adapter::class, 'adapter', true, true, []); // service('adapter)
+		static::newService(ExampleClass::class, null, true, true, []); // service('ExampleClass')
 		//...
     }
 ```
-
-> The last two arguments should be boolean values to indicate whether the instance is shared or serialized cached.
-> 
-> `static::addService(Example::class, $shared, $serialized);`
 
 ***
 

@@ -15,7 +15,6 @@ Base Services in the Luminova Framework provide a foundational layer for impleme
 ***
 
 * Class namespace: `\Luminova\Base\BaseServices`
-* Parent class: [\Luminova\Application\Services](/application/services.md)
 * This class implements:
 [\Luminova\Interface\ServicesInterface](#interface/services-interface)
 * This class is an **Abstract class**
@@ -24,21 +23,27 @@ Base Services in the Luminova Framework provide a foundational layer for impleme
 
 ### Registration
 
-To register a class that should be discoverable by the service container, you can configure it in your controller configuration folder located at `/app/Controllers/Config/Services.php`.
+To register a class that should be discoverable by the service container, you can configure it in your controller configuration folder located at [/app/Controllers/Config/Services.php](/configs/service.md).
 
 ```php 
 namespace App\Controllers\Config;
 
 use \Luminova\Base\BaseServices;
-use \Some\Class\Foo\Example;
+use \Some\Class\Foo\YourServiceClassName;
 
 class Services extends BaseServices
 {
-    public static function bootstrap(): void
-    {
-        static::addService(Example::class, "Test Argument", true, true);
-				//...
-    }
+  public function bootstrap(): void
+  {
+    static::newService(
+      YourServiceClassName::class, // Class name to register.
+      null, // Class name alias (defaults to the class basename if null).
+      true, // Should return shared instance.
+      true, // Should serialize and store the class object.
+      [] // Initialization arguments, must be array list (int keys)
+    );
+    //...
+  }
 }
 ```
 
@@ -49,11 +54,19 @@ Using global function `service` to call your class method in service.
 service('example')->doFoo();
 ```
 
+Using class name.
+
+```php 
+<?php 
+service(SomeClass::class)->doFoo();
+```
+
 Using service instance.
 
 ```php 
 <?php 
-\Luminova\Application\Services::example()->doFoo();
+use \Luminova\Application\Services;
+Services::example()->doFoo();
 ```
 
 Using global function `factory` to initialize service and call your class method in service.
@@ -67,10 +80,11 @@ Using factory instance.
 
 ```php 
 <?php 
-\Luminova\Application\Factory::services()->example()->doFoo();
+use \Luminova\Application\Factory;
+Factory::services()->example()->doFoo();
 ```
 
-To re-instantiate an 'example' class with new parameters, simply pass the desired values to 'example()'. To prevent updating the previously stored instance, append 'false' and 'false' after your initialization parameters.
+To re-instantiate class with new parameters, simply pass the required values to `method()`. To prevent updating the previously stored instance, append `false` and `false` after your initialization parameters.
 
 **Don't share instance nor don't serialize**
 ```php 
@@ -82,7 +96,8 @@ Using service instance.
 
 ```php 
 <?php 
-\Luminova\Application\Services::example('Peter', 'PHP', false, false)->doFoo();
+use \Luminova\Application\Services;
+Services::example('Peter', 'PHP', false, false)->doFoo();
 ```
 
 **Share instance but don't serialize**
@@ -95,38 +110,36 @@ Using factory instance.
 
 ```php 
 <?php 
-\Luminova\Application\Factory::services(true, false)->example('Peter', 'PHP')->doFoo();
+use \Luminova\Application\Factory;
+Factory::service(true, false)->example('Peter', 'PHP')->doFoo();
 ```
 
 ***
 
 ## Methods
 
-### addService
+### newService
 
-Add instance or class name to service shared instance
+Add a service class to the service autoloading.
 
 ```php
-protected static addService(string|object $classOrInstance, ...$arguments): true
+ protected static final function newService(string $class, ?string $alias = null,  bool $shared = true,  bool $serialize = false,  array $arguments = []): true
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$classOrInstance` | **string &#124;object** | Class name or instance of a class |
-| `$arguments` | **arguments** | Arguments to initialize class with. |
-| `$shared` | **bool** | Whether class the instance should be shared or not (default: true). |
-| `$serialize` | **bool** | Whether the instance should be serialized and store in cache or not, (default: false). |
+| `$class` | **class-string** | The class name to add to service. |
+| `$alias` | **string&#124;null** | Service class name alias. Defaults to class name. |
+| `$shared` | **bool** | Whether the instance should be shared. Defaults to true.. |
+| `$serialize` | **bool** | Whether the instance should be serialized and stored in cache. Defaults to false. |
+| `$arguments` | **array<int,mixed>** | Optional arguments to initialize the class with. |
 
 **Return Value:**
 
-`true` - Return true service was added, otherwise throw an excption.
+`true` - Returns true if the service was added successfully, otherwise throws an exception.
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If service name already exist or unable to initiate class.
-
-> *Note:*
-> 
-> The last 2 argument should be boolean value to indicate whether shared instance or serialized cached
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If the service already exists or class argument is not an array list.

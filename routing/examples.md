@@ -23,33 +23,33 @@ Similarly, requests to `https://example.com/console/foo` or any URI starting wit
 ### Registering Routes Context
 
 To register a route context, it can be done in `public/index.php` and also create the handler PHP file in `routes/`.
-The handler file name must match with routing context name registered in `bootstrap` in your `public/index.php`, see below examples.
+The handler file name must match with routing context name registered in `context` in your `public/index.php`, see below examples.
 
-In `public/index.php`, add a route context, to `$app->router->bootstraps()` method for routing. The bootstrap method accepts arguments of the `\Luminova\Routing\Bootstrap` class instance. You can register as many routes as needed, ensuring that each route name is unique. It's important to ensure that the URI start segments are also unique and match your desired route handler to avoid conflicts.
+In `public/index.php`, add a route context, to `$app->router->context()` method for routing. The context method accepts arguments of the `\Luminova\Routing\Context` class instance. You can register as many routes as needed, ensuring that each route name is unique. It's important to ensure that the URI start segments are also unique and match your desired route handler to avoid conflicts.
 
 ```php 
 <?php
-new Bootstrap('routing name', 'callback function for error handling');
+new Context('routing name', 'callback function for error handling');
 ```
 
 Learn more about [Routing Context](/routing/view-context.md)
 
 ***
 
-### Bootstrap Context
+### Context
 
 The below context can be accessed in browser by visiting `https://example.com/panel/`, every request that starts with `panel` will be handles by `routes/panel.php`
 
 ```php
 <?php
-$app->router->bootstraps($app, 
-     new Bootstrap('panel', [ViewErrors::class, 'myErrorMethodName'])
+$app->router->context($app, 
+     new Context('panel', [ViewErrors::class, 'myErrorMethodName'])
 );
 ```
 
 > *IMPORTANT*
 > 
-> When creating custom routes, avoid changing the default web route `Bootstrap::WEB`. Changing this name may lead to unexpected errors in your application.
+> When creating custom routes, avoid changing the default web route `Context::WEB`. Changing this name may lead to unexpected errors in your application.
 
 ***
 
@@ -61,7 +61,7 @@ To register a custom route, follow these steps:
 
 1. Open `/routes/your-context-name.php` to define your URI routing using the global variable `$router` class instance.
 2. Create a corresponding handler PHP file in the `routes/` directory if you haven't, in this example we are using `panel` .
-3. Ensure that the controller file name matches the routing bootstrap context name specified in `/public/index.php`.
+3. Ensure that the controller file name matches the routing context name specified in `/public/index.php`.
 
 In `/routes/panel.php`, add your routings 
 

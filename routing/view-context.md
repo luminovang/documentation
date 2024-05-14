@@ -14,15 +14,16 @@ The routing context class enables you to specify a route URL prefix for capture.
 
 **Example Usages**
 
-In your `index.php` located at `public/index.php`, and add a new argument to `$app->router->bootstraps()` method, representing a new context URI prefix.
+In your `index.php` located at `public/index.php`, and add a new argument to `$app->router->context()` method, representing a new context URI prefix.
 
 ```php
 <?php
+use \Luminova\Routing\Context;
 use App\Controller\Config\ViewErrors;
 //...
 
-$app->router->bootstraps($app,
-      new Bootstrap('admin', [ViewErrors::class, 'onAdminError']),
+$app->router->context($app,
+      new Context('admin', [ViewErrors::class, 'onAdminError']),
 	//...
 );
 
@@ -33,7 +34,7 @@ $app->router->run();
 
 ***
 
-After adding the new argument to the `$app->router->bootstraps()` method in your `index.php` located at `public/index.php`, create a handler file in the `/routes/` directory with the same name as the context URI prefix. For instance, if you added a context called `admin` in your index.php, create a file named `admin.php` in the routes directory.
+After adding the new argument to the `$app->router->context()` method in your `index.php` located at `public/index.php`, create a handler file in the `/routes/` directory with the same name as the context URI prefix. For instance, if you added a context called `admin` in your index.php, create a file named `admin.php` in the routes directory.
 
 ```php
 <?php 
@@ -76,7 +77,7 @@ $router->get('/', function() use($app, $router){
 
 ***
 
-* Class namespace: `\Luminova\Routing\Bootstrap`
+* Class namespace: `\Luminova\Routing\Context`
 * This class is marked as **final** and can't be subclassed
 * This class is a **Final class**
 
@@ -113,7 +114,7 @@ The `web`, `api`, and `cli` contexts are installed by default, so you don't need
 Initialize context class constructor with required `URL` prefix name.
 
 ```php
-new Bootstrap(string $name, \Closure|array|null $onError = null): mixed
+new Context(string $name, \Closure|array|null $onError = null): mixed
 ```
 
 **Parameters:**

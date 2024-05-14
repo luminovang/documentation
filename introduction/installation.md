@@ -18,7 +18,7 @@ For easy maintenance and keeping Luminova up to date, it's recommended to instal
 
 ### Composer Installation
 
-Installing via Composer is recommended to keeps Framework up to date easily.
+Installing via [Composer](https://getcomposer.org/doc/00-intro.md) is recommended to keeps Framework up to date easily.
 
 ```bash
 composer create-project luminovang/luminova my-project
