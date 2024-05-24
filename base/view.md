@@ -10,17 +10,9 @@ Base View Controller Simplifies view management in Luminov's Framework by avoidi
 
 ## Introduction
 
-Base View Controller is a fundamental component of Luminov's MVC, designed to organize view management within your applications. As a core class, it offers a structured approach for handling views, providing a solid foundation for building interactive and optimized web pages.
+The `BaseViewController` is the fundamental component of Luminova's MVC component, serving as an important intermediary for managing view operations. This core class offers a structured approach to accepts instructions from the router and transmitting the relevant information to the template class for rendering views.
 
-### Features
-
-1. **View Rendering:** HTML, JSON, or other formats, the controller ensures easy rendering.
-
-2. **Templating Support:** Integrate template engines into your application.
-
-3. **Layout Management:** Support for layout management, define reusable layout templates, organize view components, and apply consistent styling across multiple views
-
-4. **Data Binding:** Bind data to views, dynamic content generation and manipulation.
+It establishes a solid foundation for building interactive and optimized web applications, well-suited for client-side rendering. While its primary focus is not limited to frontend operations, it also suitable for backend applications, ensuring consistency between frontend and backend functionalities.
 
 ***
 
@@ -31,9 +23,9 @@ Base View Controller is a fundamental component of Luminov's MVC, designed to or
 
 ### Usages
 
-Makes sure to extend `BaseViewController` whenever you want create a new controller class to manage web pages.
+To use `BaseViewController` class, you will need to extend it whenever you want create a new view controller class.
 
-Here is an example of controller should look like.
+Below is an example of how a basic view controller class may look like, in this example we use `__construct`, optionally you can use `onCreate` method instead.
 
 ```php
 <?php 
@@ -42,7 +34,8 @@ use \luminova\Base\BaseViewController;
 
 class BackendController extends BaseViewController 
 {
-	public function __construct(){
+	public function __construct()
+    {
         parent::__construct();
 	}
 	
@@ -59,32 +52,26 @@ class BackendController extends BaseViewController
 
 ## Properties
 
-Access the HTTP request object.
+Access to HTTP request object.
 
 ```php
-protected \Luminova\Http\Request $request
+protected ?\Luminova\Http\Request $request = null;
 ```
 
-Access user Input validation object.
+Access to input validation object.
 
 ```php
-protected \Luminova\Security\InputValidator $validate
+protected ?\Luminova\Security\InputValidator $validate = null;
 ```
 
-Access your application instance.
+Access to application object.
 
 ```php
-protected \App\Controllers\Application $app
+protected ?\App\Controllers\Application $app = null;
 ```
 
-Access library Importer instance
-
-```php
-protected \Luminova\Library\Importer $library
-```
-
-> *Note:*  In `BaseViewController`, the `$library`, `$validate` or `$request` object is not initialized by default.
-> To use any of it you must first initialized it in `__contruct` or `onCreate` method by calling the proper method to create it e.g `$this->request()` 
+> *Note:*  In `BaseViewController`, the `$validate` or `$request` object is not initialized by default.
+> To use access it properties you must first initialized it in `__construct` or `onCreate` method by calling the proper method to create it e.g `$this->request()`.
 
 ***
 
@@ -92,7 +79,7 @@ protected \Luminova\Library\Importer $library
 
 ### request
 
-Initializes the HTTP request class instance.
+Initializes the HTTP request class instance
 
 ```php
 protected final request(): \Luminova\Http\Request
@@ -100,13 +87,13 @@ protected final request(): \Luminova\Http\Request
 
 **Return Value:**
 
-`Request` - HTTP request class instance
+`Request` - Return request class instance.
 
 ***
 
 ### validate
 
-Initializes the input validator class instance.
+Initializes the input validation class instance.
 
 ```php
 protected final validate(): \Luminova\Security\InputValidator
@@ -114,7 +101,7 @@ protected final validate(): \Luminova\Security\InputValidator
 
 **Return Value:**
 
-`InputValidator` - input validation object
+`InputValidator` - Return input validation class instance.
 
 ***
 
@@ -128,35 +115,21 @@ protected final app(): \App\Controllers\Application
 
 **Return Value:**
 
-`Application` - Application instance
-
-***
-
-### library
-
-Initializes the application class instance.
-
-```php
-protected final library(): \Luminova\Library\Importer
-```
-
-**Return Value:**
-
-`Importer` - Application instance
+`Application` - Return application class instance.
 
 ***
 
 ### view
 
-Shorthand to render view in controller class.
+The `view` method serves as a convenient alias or shorthand for rendering views within the `ViewController` class. It is equivalent to `$this->app->view('view_file')->render()`.
 
 ```php
-protected final view(string $view, array $options = []): int
+protected final view(string $view, array $options = [], string $type = 'html'): int
 ```
 
 **Return Value:**
 
-`int` Return STATUS_SUCCESS on success, otherwise STATUS_ERROR failure.
+`int` - Return `STATUS_SUCCESS` on success, otherwise `STATUS_ERROR` failure.
 
 **Parameters:**
 
@@ -164,33 +137,35 @@ protected final view(string $view, array $options = []): int
 |-----------|------|-------------|
 | `$view` | **string** | The view name to render. |
 | `$options` | **array** | Optional options to be passed to view template. |
+| `$type` | **string** | The type of view content you are compiling (default: `html`). |
 
 ***
 
 ### respond
 
-Shorthand to respond view contents in controller class.
+The `respond` method is also a convenient alias or shorthand for returning view contents within the `ViewController` class. It is equivalent to `$this->app->view('view_file')->respond()`.
 
 ```php
-protected final respond(string $view, array $options = []): string
+protected final respond(string $view, array $options = [], string $type = 'html'): string
 ```
 
 **Return Value:**
 
-`string` Return view contents which is ready to be rendered.
+`string` - Return view contents which is ready to be rendered.
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$view` | **string** | The view name to render. |
+| `$view` | **string** | The view name to respond with. |
 | `$options` | **array** | Optional options to be passed to view template. |
+| `$type` | **string** | The type of view content you are compiling (default: `html`). |
 
 ***
 
 ### onCreate
 
-Controller onCreate method an alternative to __construct
+The `onCreate` method serves as an alternative to `__construct`. It is invoked after the controller class has completed its initialization via the constructor method. When using this method for initialization, there is no need to explicitly call `parent::__construct()`.
 
 ```php
 protected onCreate(): void
@@ -200,7 +175,7 @@ protected onCreate(): void
 
 ### onDestroy
 
-Controller onDestroy method an alternative to __distruct
+The `onDestroy` method acts as an alternative to `__destruct`. It is called after the `__destruct` method has completed its execution.
 
 ```php
 protected onDestroy(): void

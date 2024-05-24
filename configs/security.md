@@ -17,7 +17,6 @@ The `Security Configuration` class provides properties to configure security-rel
 * Class namespace: `\App\Controllers\Config\Security`
 * File path: `/app/Controllers/Config/Security.php`
 * This class is marked as **final** and can't be subclassed
-* This class is a **Final class**
 
 ***
 ## Properties
@@ -27,7 +26,7 @@ The `Security Configuration` class provides properties to configure security-rel
 Set the list of trusted origin domains or patterns.
 
 ```php
-public static array<int,string> $trustedOrigins = [];
+public array<int,string> $trustedOrigins = [];
 ```
 
 > This will be use in `Request` class for authenticating incoming requests origin.
@@ -41,7 +40,7 @@ public static array<int,string> $trustedOrigins = [];
 Set the list of trusted hostname or patterns.
 
 ```php
-public static array<int,string> $trustedHostname = [];
+public array<int,string> $trustedHostname = [];
 ```
 
 > This will be use in `Request` class for authenticating your hostname.

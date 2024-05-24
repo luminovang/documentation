@@ -17,7 +17,6 @@ The `Files Configuration` class provides properties to set the default Unix file
 * Class namespace: `\App\Controllers\Config\Files`
 * File path: `/app/Controllers/Config/Files.php`
 * This class is marked as **final** and can't be subclassed
-* This class is a **Final class**
 
 ## Properties
 
@@ -26,7 +25,7 @@ The `Files Configuration` class provides properties to set the default Unix file
 Set Unix file permission, to use while creating a new file in your application.
 
 ```php
-public static int $filePermissions = 0644;
+public int $filePermissions = 0644;
 ```
 
 ***
@@ -36,5 +35,5 @@ public static int $filePermissions = 0644;
 Set Unix directory permission, to use while creating a new directory.
 
 ```php
-public static int $dirPermissions = 0755;
+public int $dirPermissions = 0755;
 ```

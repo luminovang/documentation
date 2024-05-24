@@ -17,7 +17,6 @@ The `Encryption Configuration` class provides properties to configure encryption
 * Class namespace: `\App\Controllers\Config\Encryption`
 * File path: `/app/Controllers/Config/Encryption.php`
 * This class is marked as **final** and can't be subclassed
-* This class is a **Final class**
 
 ***
 
@@ -28,7 +27,7 @@ The `Encryption Configuration` class provides properties to configure encryption
 Specify encryption algorithm to use (openssl or sodium).
 
 ```php
-public static string $handler = 'openssl';
+public string $handler = 'openssl';
 ```
 
 ***
@@ -38,7 +37,7 @@ public static string $handler = 'openssl';
 The encryption mode for openssl (e.g., 'AES-128-CBC', 'AES-192-CBC', 'AES-128-CFB', 'AES-128-ECB').
 
 ```php
-public static string $method = 'AES-128-CBC';
+public string $method = 'AES-128-CBC';
 ```
 
 ***
@@ -48,7 +47,7 @@ public static string $method = 'AES-128-CBC';
 Specify hashing digest to use (e.g., SHA512, SHA256).
 
 ```php
-public static string $digest = 'SHA512';
+public string $digest = 'SHA512';
 ```
 
 ***
@@ -58,5 +57,5 @@ public static string $digest = 'SHA512';
 Provides information about the key used in openssl encryption.
 
 ```php
-public static string $keyInfo = '';
+public string $keyInfo = '';
 ```

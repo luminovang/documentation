@@ -69,6 +69,36 @@ protected string $description
 
 The base command extends the [Luminova Terminal class](/commands/terminal.md), making all the methods available and ready to use in command controller class. 
 
+### help
+
+This allows you to override the default help display implementation.
+When you implement your custom help information display, you must return `STATUS_SUCCESS` else return `STATUS_ERROR` to tell the framework to keep using the default help implementation.
+
+To call help command: `php index.php groupName --help`
+
+```php
+abstract public help(array $helps): int;
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$helps` | **array** | Receives the command informations. |
+
+**Help arguments array keys**
+
+* `class`: Command class name.
+* `group`: Command group name.
+* `name`: Command identifier name.
+* `description`: Command description.
+* `usages`: Command usages.
+* `options`: Command options.
+
+**Return Value**
+
+`array` - Return Help information for the command group.
+
 ***
 
 ###  Usages
@@ -83,12 +113,5 @@ use \Luminova\Base\BaseCommand;
 class PayStackCommand extends BaseCommand 
 {
 	//...
-	public function foo(): int
-	{
-		$command = $terminal::getCommand();
-		$var = $this->getOption('var');
-		//..
-		return STATUS_SUCCESS;
-	}
 }
 ```

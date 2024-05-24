@@ -10,9 +10,9 @@ Services is a utility class that efficiently manages class initialization across
 
 ## Introduction
 
-Services is a utility class designed to simplify the management of class instances across your application. Serving as a centralized hub, it allows developers to manage, cache, or return shared instances of a class throughout the codebase. With a centralized location for registering classes, Services optimizes application performance by loading and initializing classes only when called.
+Services is a utility class designed to simplify the management of class instances across your application. Serving as a centralized hub, it allows developers to manage, cache, or return shared instances of a class throughout the codebase. With a centralized location for registering classes, Services optimizes application performance by loading and initializing classes only when called. See documentation on how you can register your [service bootstrap](/base/services.md).
 
-#### Key Features:
+#### Key Features
 
 1. **Class Registration and Access**: [Register classes in service](/configs/service.md) and access their instances anywhere in your codebase.
 
@@ -22,7 +22,7 @@ Services is a utility class designed to simplify the management of class instanc
 
 ***
 
-### Usages:
+### Usages
 
 Suppose you have a class named `YourClassName` that you want to discover using the service class loader. In this example, let's assume that your class is located at `app/Controllers/Utils/YourClassName.php`, with the namespace `App\Controllers\Utils`.
 
@@ -44,33 +44,7 @@ class YourClassName
 }
 ```
 
-**TO DO**
-
-1. Enable the service feature by setting `feature.app.services = enable` in your environment configuration file.
-2. In your service bootstrap class located at `/app/Controllers/Config/Services.php`, register your class as follows:
-
-```php
-<?php
-namespace App\Controllers\Config;
-
-use Luminova\Base\BaseServices;
-use App\Controllers\Utils\YourClassName;
-
-class Services extends BaseServices
-{
-    public function bootstrap(): void
-    {
-        static::newService(
-            YourClassName::class, // Class name to register
-            null, // Class name alias (defaults to basename if null)
-            'Peter', // Default initialization argument
-            true, // Always return shared instance
-            true // Serialize and store the class object
-        );
-        //...
-    }
-}
-```
+***
 
 To dynamically create an instance of a service class, you can use the `Services::YourClassName()` method with the following parameters:
 
@@ -86,13 +60,13 @@ Additionally, there is a global helper function `service()` available, which pro
 
 ```php
 <?php
-$instance = service('YourClassName', ...arguments, true, true);
+$instance = service('YourClassName', true, true, ...arguments);
 ```
 Using full qualified class name `FooClass::class`.
 
 ```php
 <?php
-$instance = service(YourClassName::class, ...arguments, true, true);
+$instance = service(YourClassName::class, true, true, ...arguments);
 ```
 
 > *Note:*
@@ -112,7 +86,7 @@ To reinitialize the instance with a new constructor argument without persisting 
 
 ```php
 <?php
-$new = service('YourClassName', 'Farhana', false, false);
+$new = service('YourClassName', false, false, 'Farhana');
 $new->getName(); // Farhana
 ```
 
@@ -129,6 +103,13 @@ $persist->getName(); // Ujah
 ```php
 <?php
 $service = service();
+```
+
+Clear all services.
+
+```php
+<?php
+$service = service()->clear();
 ```
 
 ***
@@ -160,7 +141,7 @@ public static has(class-string|string $service): bool
 
 ### delete
 
-Delete a service from shared instance and it cached instances.
+To delete a service from shared instance and it cached instances.
 
 ```php
 public static delete(class-string|string $service): bool
@@ -181,7 +162,7 @@ public static delete(class-string|string $service): bool
 
 ### clear
 
-Clear all instance of service and it corresponding cached instance.
+To clear all instance of service and it corresponding cached instance.
 
 ```php
 public static clear(): bool
@@ -195,7 +176,7 @@ public static clear(): bool
 
 ### add
 
-Add a service class object or class name to services.
+To add a service class object or class name to services.
 
 ```php
 public static add(string|object $service, \Luminova\Application\arguments $arguments): ?object

@@ -17,7 +17,6 @@ The `Sitemap Configuration` class provides properties to configure the generatio
 * Class namespace: `\App\Controllers\Config\Sitemap`
 * File path: `/app/Controllers/Config/Sitemap.php`
 * This class is marked as **final** and can't be subclassed
-* This class is a **Final class**
 
 ## Properties
 
@@ -26,7 +25,7 @@ The `Sitemap Configuration` class provides properties to configure the generatio
 The maximum limit of URLs to scan when generating the sitemap.
 
 ```php
-public static int $maxScan = 0;
+public int $maxScan = 0;
 ```
 
 > A value of `0 (zero)` indicates no limit, meaning all accessible URLs will be scanned.
@@ -40,7 +39,7 @@ public static int $maxScan = 0;
 URLs, URL patterns, or full URLs to ignore when generating a sitemap.
 
 ```php
-public static array<int,string> $ignoreUrls = [];
+public array<int,string> $ignoreUrls = [];
 ```
 
 This array defines specific URLs, URL patterns, or full URLs that should be ignored
@@ -59,7 +58,7 @@ Each element in the array can be:
 URL patterns associated with views for determining last modified timestamps in a sitemap.
 
 ```php
-public static array<string,string> $viewUrlPatterns = [];
+public array<string,string> $viewUrlPatterns = [];
 ```
 
 This array defines URL patterns corresponding to views within your application. When generating
@@ -78,8 +77,8 @@ In this example we assume your routing `web.php` look like below.
 
 ```php
 <?php
-$router->get('/', 'BlogController::index');
-$router->bind('/blog', function(Router $router) {
+  $router->get('/', 'BlogController::index');
+  $router->bind('/blog', function(Router $router) {
   $router->get('/', 'BlogController::blogs');
   $router->get('/author/([0-9-.]+)', 'BlogController::author');
   $router->get('/([0-9-.]+)', 'BlogController::blog');
@@ -89,7 +88,7 @@ $router->bind('/blog', function(Router $router) {
 Now with the above routing setup, your `$viewUrlPatterns` patterns should look like below
 
 ```php
-public static array $viewUrlPatterns = [
+public array $viewUrlPatterns = [
   'index' => '/',
   'blogs' => '/blog',
   'author' => '/blog/author/([0-9-.]+)',

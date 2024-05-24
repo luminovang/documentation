@@ -123,20 +123,26 @@ function cookie(string $name, string $value = '', array $options = [], bool $sha
 
 ### factory
 
-Returns a shared instance of a class in the factory or a factory instance if the context is null.
+To initialize a class available in factory and returns a shared instance of the class.
+Optionally you can pass `NULL` to context parameter in other to return factory instance instead.
 
 ```php
-function factory(class-string|string|null $context = null, mixed ...$arguments): ?object
+function factory(string|null $context = null, bool $shared = true, mixed ...$arguments): ?object
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$context` | **class-string&#124;string&#124;null** | The factory class name or alias (e.g: `Task::class` or `task`). |
-| `$arguments` | **mixed** | Additional parameters to pass to class constructor.<br> - The Last parameter to pass to the factory constructor indicate if it should return a shared instance. |
+| `$context` | **string&#124;null** | The factory class name alias (e.g: `task`). |
+| `$shared` | **bool** | Weather to return a shared instance (default: `true`). |
+| `$arguments` | **mixed** | Additional arguments to pass to class constructor. |
 
-**Available Context**
+**Return Value:**
+
+`class-object<\T>|Factory|null` - Return instance of factory class, instance of class called, otherwise null.
+
+**Available Factories Context**
 
 -   'task'      `\Luminova\Time\Task`
 -   'session'   `\Luminova\Sessions\Session`
@@ -150,21 +156,14 @@ function factory(class-string|string|null $context = null, mixed ...$arguments):
 -   'services'  `\App\Controllers\Config\Services`
 -   'request'   `\Luminova\Http\Request`
 
-**Return Value:**
-
-`class-object|Factory|null` - Return instance of factory class, instance of class called, otherwise null.
-
 **Example**
 
-This example shows how to reinitialize factory class instance with a new constructor argument.
+This example shows how to initialize session class instance with a new constructor argument using factory.
 
 ```php
 <?php 
-$session = factory('session', new SessionManager(), false);
+$session = factory('session', false, new SessionManager());
 ```
-
-> *Note:* The last argument must be a `bool`, indicating whether to return a shared instance or not.
-> If your class constructor accepts `boolean` argument, then you must add extra `boolean` to the factory constructor function to indicate shared or not shared instance.
  
  **See Also**
 
@@ -174,31 +173,24 @@ $session = factory('session', new SessionManager(), false);
 
 ### service
 
-Returns a shared instance of a class in services or a service instance if the context is null.
+Service on the other hand focus more on your business logic, It allows you to returns a shared instance of a class registered in your service `bootstrap` method. To return an instance of service pass null as the service parameter.
 
 ```php
-function service(?string $service = null, mixed ...$arguments): ?object
+function service(class-string<\T>|string|null $service = null, bool $shared = true, bool $serialize = false, mixed ...$arguments): ?object
 ```
-
-*Same as:*
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$service` | **class-string&#124;string&#124;null** | The service class name or alias. |
-| `$arguments` | **mixed** |Additional parameters to pass to class constructor.<br/>The two bool argument indicate wether to return a shared instance or serialize and store as cache. |
+| `$service` | **class-string<\T>&#124;string&#124;null** | The service class name or alias. |
+| `$shared` | **bool** | Weather to return a shared instance of class (default: true).. |
+| `$serialize` | **bool** | Weather to serialize and store class object as cache (default: false). |
+| `$arguments` | **mixed** | Additional parameters to pass to class constructor. |
 
 **Return Value:**
 
-`class-object|Services|null` - Return service class instance or instance of called class.
-
-> *Note:*
-> Indicate 2 last `bool` argument if you want to return a shared instance and serialize class and store for later use.
-> 
-> Example:  `(my, param, foo, true, false, [shared_bool] [serialize_bool])`
-> 
-> By default shared is `true` while serialize is `false`.
+`class-object<\T>|Services|null` - Return service class instance or instance of called class.
 
  **See Also**
 
@@ -211,7 +203,7 @@ function service(?string $service = null, mixed ...$arguments): ?object
 Delete a service or clear all services.
 
 ```php
-function remove_service(string|null  $service = null): bool
+function remove_service(class-string<\T>|string|null  $service = null): bool
 ```
 
 > If `NULL` is passed all cached and serialized services will be cleared.
@@ -220,7 +212,7 @@ function remove_service(string|null  $service = null): bool
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$service` | **class-string&#124;string** | The class name or alias, to delete and clear it cached. |
+| `$service` | **class-string<\T>&#124;string** | The class name or alias, to delete and clear it cached. |
 
 **Return Value:**
 
@@ -391,8 +383,7 @@ function asset(string $filename = ''): string
 
 ### root
 
-Get the application root directory of your project.
-Optionally pass a path to append the the root directory, all return path will be converted to `unix` or `windows` directory separator style.
+Get the application root directory of your project anywhere, optionally pass a path to append the the root directory, all return path will be converted to `unix` or `windows` directory separator style.
 
 ```php
 function root(string $suffix = ''): string
@@ -515,7 +506,8 @@ function  import(string $library): bool
 
 ### logger
 
-Log a message at the given level.
+To log a message with a given log level.
+This function uses your `prefered` psr logger class if define otherwise it will use default `NovaLogger`.
 
 ```php
 function logger(string $level, string $message, array $context = []): void
@@ -525,9 +517,22 @@ function logger(string $level, string $message, array $context = []): void
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$level` | **string** | The log level.<br />- Log levels ['emergency, alert, critical, error, warning, notice, info, debug, exception, php_errors'] |
+| `$level` | **string** | The log level. |
 | `$message` | **string** | The log message. |
 | `$context` | **array** | Additional context data (optional). |
+
+**Log levels** 
+
+- `emergency` - Log an emergency errors.
+- `alert` - Log an alert message .
+- `critical` - Log a critical errors.
+- `error` - Log an error message.
+- `warning` - Log a warning message. 
+- `notice` - Log a notice.
+- `info` - Log an info message.
+- `debug` - Log debugging information.
+- `exception` - Log an exceptions.
+- `php_errors` - Log PHP errors.
 
 **Throws:**
 
@@ -535,7 +540,7 @@ function logger(string $level, string $message, array $context = []): void
 
 > All loges are located in `/writeable/log/`, each log level has it own file name (e.x., `warning.log`).
 >
-> By default all logging will use your preferred `PSR` logger class specified in `App\Controllers\Config\Preference`.
+> To set your own logging handler class, it can be done in `App\Controllers\Config\Preference`, your logger must implement `PSR` logger interface.
 
 ***
 
@@ -827,7 +832,7 @@ function validate(array|null $inputs, array|null $rules, array $messages = []): 
 
 ### start_url
 
-Get start url with port hostname suffix if available.
+Get start URL with hostname port suffix if available.
 
 ```php
 function start_url(string $suffix = ''): string
@@ -842,6 +847,44 @@ function start_url(string $suffix = ''): string
 **Return Value:**
 
 `string` Return public start URL with port if available.
+
+***
+
+### absolute_url
+
+Convert application relative paths to absolute URL including hostname port if available.
+
+```php
+function absolute_url(string $path): string
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$path` | **string** | The path to convert to absolute url. |
+
+**Return Value:**
+
+`string` Return absolute url of the specified path.
+
+**Example:**
+
+On development server.
+
+```php
+<?php 
+echo absolute_url('/Applications/XAMPP/htdocs/project-base/public/asset/files/foo.text');
+//Output: http://localhost/project-base/public/asset/files/foo.text.
+```
+
+On projection server.
+
+```php
+<?php 
+echo absolute_url('/example.com/www/public/asset/files/foo.text');
+//Output: http://example.com/asset/files/foo.text.
+```
 
 ***
 
@@ -887,6 +930,26 @@ function get_class_name(string|object $from): string
 `string` - Return the class basename.
 
 > *Note:* This method is not same as PHP `get_class`, this method return the base name of a class no full qualified class.
+
+***
+
+### get_mime
+
+Detect `MIME` content type of a given file, (e.g text/plain).
+
+```php
+function get_mime(string $filename): string|false
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$filename` | **string** | The full file path. |
+
+**Return Value:**
+
+`string|false` - Return the content type in MIME format, otherwise false.
 
 ***
 

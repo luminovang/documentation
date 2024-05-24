@@ -17,7 +17,6 @@ The `Cookie Configuration` class provides properties to configure various aspect
 * Class namespace: `\App\Controllers\Config\Cookie`
 * File path: `/app/Controllers/Config/Cookie.php`
 * This class is marked as **final** and can't be subclassed
-* This class is a **Final class**
 
 ***
 
@@ -28,7 +27,7 @@ The `Cookie Configuration` class provides properties to configure various aspect
 The path where session files are stored on the server.
 
 ```php
-public static string $savePath = '';
+public string $savePath = '';
 ```
 
 ***
@@ -38,7 +37,7 @@ public static string $savePath = '';
 The lifetime of the session in seconds.
 
 ```php
-public static int $expiration = 365 * 24 * 60 * 60;
+public int $expiration = 365 * 24 * 60 * 60;
 ```
 
 ***
@@ -48,7 +47,7 @@ public static int $expiration = 365 * 24 * 60 * 60;
 The path to use for the session cookie.
 
 ```php
-public static string $cookiePath = '/';
+public string $cookiePath = '/';
 ```
 
 ***
@@ -58,7 +57,7 @@ public static string $cookiePath = '/';
 The domain to use for the session cookie.
 
 ```php
-public static string $cookieDomain = '.localhost';
+public string $cookieDomain = '.localhost';
 ```
 
 ***
@@ -70,7 +69,7 @@ Set the session cookie security level.
 Possible attributes: `None`, `Lax`, `Strict`
 
 ```php
-public static string $sameSite = 'Lax'
+public string $sameSite = 'Lax'
 ```
 
 ***
@@ -80,7 +79,7 @@ public static string $sameSite = 'Lax'
 Cookie will only be set if a secure HTTPS connection exists.
 
 ```php
-public static bool $secure = false;
+public bool $secure = false;
 ```
 
 ***
@@ -90,7 +89,7 @@ public static bool $secure = false;
 Cookie will only be accessible via HTTP(S) (no JavaScript).
 
 ```php
-public static bool $httpOnly = true;
+public bool $httpOnly = true;
 ```
 
 ***
@@ -100,7 +99,7 @@ public static bool $httpOnly = true;
 This flag allows setting a 'raw' cookie, i.e., its name and value are not URL encoded using `rawurlencode()` leaving the cookie as it was.
 
 ```php
-public static bool $cookieRaw = false;
+public bool $cookieRaw = false;
 ```
 
 > If this is set to `true`, cookie names should be compliant of RFC 2616's list of allowed characters.

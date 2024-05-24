@@ -21,7 +21,6 @@ The purpose of the `Browser` class is to centralize configuration settings relat
 * Class namespace: `\App\Controllers\Config\Browser`
 * File path: `/app/Controllers/Config/Browser.php`
 * This class is marked as **final** and can't be subclassed
-* This class is a **Final class**
 
 ***
 ## Properties
@@ -32,7 +31,7 @@ An associative array of strings representing common keywords or patterns found i
 The array key is the robot pattern or keyword and the value is the name.
 
 ```php
-public static array<string,string> $robotPatterns = [
+public array<string,string> $robotPatterns = [
     'Googlebot' => 'Googlebot',
     //...
 ]
@@ -46,7 +45,7 @@ An associative array of strings representing common keywords found in mobile dev
 The array key is the mobile keyword and the value is the name.
 
 ```php
-public static array<string,string> $mobileKeywords = [
+public array<string,string> $mobileKeywords = [
     'android'  => 'Android',
     //...
 ]
@@ -63,7 +62,7 @@ public static array<string,string> $mobileKeywords = [
 An array of strings representing common keywords or patterns found in browser user agents.
 
 ```php
-public static string[] $browsers = [
+public string[] $browsers = [
    'Chrome',
     //...
 ]

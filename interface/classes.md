@@ -104,3 +104,11 @@ Interface for managing user sessions storage drivers, it offers methods for stor
 `\Luminova\Interface\ValidationInterface` 
 
 Interface for validating user submitted input data against predefined rules, providing methods for defining validation rules, applying rules to input data, and retrieving validation results. This interface helps ensure data integrity and enforce data validation constraints in applications.
+
+***
+
+### AiInterface
+
+`\Luminova\Interface\AiInterface` 
+
+The interface for creating `AIs` models, currently only `OpenAI ChatGPT` has been implemented.

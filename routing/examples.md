@@ -111,8 +111,8 @@ It can also be done using closure.
 
 ```php
 <?php
-$router->get('/', function() use ($app) {
-    $app->view("index")->render();
+$router->get('/', function(Application $app): int {
+    return $app->view("index")->render();
 });
 ```
 
@@ -201,24 +201,24 @@ $router->bind('/admin', function(Router $router, BaseApplication $app) {
 
 ## CLI Capture & Controllers
 
-In NovaKit CLI, you can register global before middleware security checks similar to those used for web and APIs, but using a different method named `before`. Your callback or controller method within this middleware must return an integer (`0` or `STATUS_SUCCESS`) to indicate a pass, or (`1` or `STATUS_ERROR`) to indicate a failure.
+You can register global before middleware security checks, similar to those used in `HTTP`, but in `CLI` it uses `before` method to handle middleware authentication. Your callback or controller method for middleware must return an integer (`0` or `STATUS_SUCCESS`) to indicate a pass, or (`1` or `STATUS_ERROR`) to indicate a failure.
 
 ***
 
 ### CLI Middleware 
 
-You can define a global before middleware for command `foo`.
+You can define a global before middleware for command using `any` as the group name.
 
 ```php
 <?php
-$router->before('foo', 'CommandController::middleware');
+$router->before('any', 'CommandController::middleware');
 ```
 
-Alternatively, you can pass a `Closure` as the first parameter to the `before()` middleware method to use the middleware globally for all CLI commands. This allows you to define a single authentication check or pre-route action that applies to all CLI routes.
+Alternatively, you can pass a `Closure` as the `before` callback method to use. This allows you to define a single authentication check that applies to all `CLI` routes.
 
 ```php
 <?php
-$router->before(function(): int {
+$router->before('any', function(): int {
     if (doAuthenticationPassed()) {
         return STATUS_SUCCESS; // Authentication passed
     }
@@ -230,12 +230,13 @@ $router->before(function(): int {
 
 ### CLI Implementation
 
-To register command controllers within NovaKit CLI, you can use the `command()` method to define command routes. Unlike HTTP methods (`post`, `get`, `put`, etc.), CLI commands are triggered directly from the command line and do not use traditional HTTP routing methods.
+To register command controllers in `CLI` routing, you must use the `command` method only, to define commands. Unlike the HTTP routing that support methods like (`post`, `get`, `put`, etc.), the `CLI` commands are triggered directly from the command line tool and do not use traditional HTTP request methods in handling commands.
 
-**Registering Command Controllers**
+**Registering Controllers**
 
-You can register command controllers using the `command()` method with the following syntax.
-All commands belonging to a group should be wrapped in `group` method closure.
+To register command controllers and grouped middleware security, use the `command` and `before` method within the `group` closure callback. All commands belonging to a group should be wrapped in same `group` closure do not define multiple group with same name, it must be unique just like you will do on HTTP routing. 
+
+Bellow example we register a command route with 'foo' name, mapped to 'CommandController::foo' to handle the execution.
 
 ```php
 <?php
@@ -243,35 +244,38 @@ use \Luminova\Routing\Router;
 use \Luminova\Base\BaseApplication;
 use \Luminova\Command\Terminal;
 
-// Register a command route named 'foo' mapped to 'CommandController::foo'
-$router->group("users", function((Router $router, BaseApplication $app, Terminal $term){
+$router->group("users", function(Router $router, BaseApplication $app, Terminal $term){
+    $router->before('users', 'UserCommandController::middleware');
     $router->command("foo", 'UserCommandController::foo');
 });
 ```
 
-*To execute the registered command route `foo`, use the following command in the terminal:*
+*To execute the above example command `foo`, use the following command in the terminal:*
 
  ```bash
  php index.php users foo
  php index.php users foo --bar
  ``` 
  
+ >*Note:* The `before` middleware will first execute before `command` is executed.
+ >If middleware fails, then the execution of `command` will be terminated.
+ 
  ***
 
 ### CLI Dynamic Segments
 
-In NovaKit CLI, you can define routes with dynamic segments to capture variable values within command arguments. Dynamic segments are specified using the syntax `(:value)` within the route pattern.
+In `CLI` routing, you can define routes with dynamic segments to capture variable values within command arguments. Dynamic segments are specified using the syntax like `(:mixed)`, `(:int)`, `(:optional)` and more within the route pattern.
 
-**Defining Routes with Dynamic Segments**
+**Example**
 
-To create a route with dynamic segments in the router, use the following syntax:
+This example shows how you can create a route with dynamic segments.
 
 ```php
 <?php
 use \Luminova\Routing\Router;
 
-$router->group("users", function((Router $router){
-	$router->command('/profile/name/(:value)', 'UserCommandController::profile');
+$router->group("users", function(Router $router){
+	$router->command('/profile/name/(:mixed)', 'UserCommandController::profile');
 });
 ```
 
@@ -281,14 +285,14 @@ $router->group("users", function((Router $router){
 php index.php users profile name "Peter"
 ```
 
-Define a command route with multiple dynamic segments for blog details
+Define a command route with multiple dynamic segments.
  
 ```php
 <?php
 use \Luminova\Routing\Router;
 
-$router->group("blogs", function((Router $router){
-	$router->command('/post/id/(:value)/title/(:value)', 'BlogCommandController::blog');
+$router->group("blogs", function(Router $router){
+	$router->command('/post/id/(:int)/title/(:string)', 'BlogCommandController::blog');
 });
 ```
 
@@ -302,29 +306,29 @@ php index.php blogs post id 277363 title "my post title"
 
 ### CLI Closures Command Controllers (Not Recommended)
 
-While defining command controllers in NovaKit CLI, it's possible to use `Closure` functions directly as command handlers. However, it's generally not recommended due to limitations such as lack of access to the command instance and lack of support for dependency injection within the router command.
+While defining command controllers for `CLI`, it's possible to use `Closure` functions directly as command handlers. However, it's generally not recommended.
 
-**Example with Closure Command Controller**
+**Example**
 
 ```php
 <?php
 use \Luminova\Routing\Router;
 
-$router->group("users", function((Router $router){
-	$router->command('/user/name/(:value)', function($name): int {
+$router->group("users", function(Router $router){
+	$router->command('/user/name/(:string)', function(string $name): int {
 		echo "Hello, $name!";
 		return STATUS_SUCCESS;
 	});
 });
 ```
 
-Define a command route with multiple dynamic segments for blog details
+Define a command route with multiple dynamic segments.
 
 ```php
 <?php
 use \Luminova\Routing\Router;
 $router->group("blogs", function((Router $router){
-     $router->command('/blog/id/(:value)/title/(:value)', function($title, $id): int {
+     $router->command('/blog/id/(:int)/title/(:string)', function($title, $id): int {
           echo "Blog: {$id}, Title: {$title}";
                
           return STATUS_SUCCESS;
@@ -338,7 +342,7 @@ $router->group("blogs", function((Router $router){
 
 ### HTTP Controller
 
-This `UserController` class is an example of a web controller class that extends `BaseController` from the Luminova's component. It defines methods to handle specific URI request and actions.
+This `UserController` class is an example of HTTP controller class that extends `BaseController` from the Luminova's component. It defines methods to handle specific URI request and actions.
 
 ```php
 <?php
@@ -396,6 +400,12 @@ use Luminova\Base\BaseCommand;
 class BlogCommandController extends BaseCommand 
 {
      protected string $group = 'blogs';
+		 //...
+		 
+		  public function middleware():int
+		 {
+			 return STATUS_SUCCESS;
+		 }
 
      public function foo(): int
      {

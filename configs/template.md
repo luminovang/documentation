@@ -17,7 +17,6 @@ Template Configuration in Luminova allows you to set up PHP, Twig, and Smarty te
 * Class namespace: `\App\Controllers\Config\Template`
 * File path: `/app/Controllers/Config/Template.php`
 * This class is marked as **final** and can't be subclassed
-* This class is a **Final class**
 
 ***
 ## Properties
@@ -31,7 +30,7 @@ Template Configuration in Luminova allows you to set up PHP, Twig, and Smarty te
 Specify the template engine to use for rendering your application views.
 
 ```php
-public static string $templateEngine = 'default';
+public string $templateEngine = 'default';
 ```
 
 **Available Template Engines**
@@ -55,7 +54,7 @@ Furthermore, access to `protected` and `public` properties registered in your `A
 Instead, you can use a custom `$self` keyword (e.g., `$self->myClassName->doMethod()`) and classes must be exported first using template dependency injection method `$this->export()`,  in application controller.
 
 ```php
-public static bool $templateIsolation = false;
+public bool $templateIsolation = false;
 ```
 
 **Example**
@@ -91,7 +90,7 @@ This property controls the use of variable key prefixing with `_` for view optio
 Instead of using `$this->_vername` or  in isolation `$_vername` , you will use `$this->vername` or `$vername` in isolation.
 
 ```php
-public static bool|null $variablePrefixing = true;
+public bool|null $variablePrefixing = true;
 ```
 
 > *Note:*
@@ -109,7 +108,7 @@ public static bool|null $variablePrefixing = true;
 Set your application template cache file directory path.
 
 ```php
-public static string $cacheFolder = 'writeable/caches/';
+public string $cacheFolder = 'writeable/caches/';
 ```
 
 ***
@@ -119,8 +118,7 @@ public static string $cacheFolder = 'writeable/caches/';
 Set your application template compile folder, this will be used by template engines like `Smarty` or `Twig`.
 
 ```php
-public static string $compileFolder = 'writeable/compile/';
-
+public string $compileFolder = 'writeable/compile/';
 ```
 
 ***
@@ -130,6 +128,5 @@ public static string $compileFolder = 'writeable/compile/';
 Set your application template configuration folder for `Smarty` or `Twig` template engine.
 
 ```php
-public static string $configFolder = 'writeable/config/';
-
+public string $configFolder = 'writeable/config/';
 ```

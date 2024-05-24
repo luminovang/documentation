@@ -12,20 +12,22 @@ The base application controller lays the foundation for handling your software d
 
 The Base Application serves as the foundational framework upon which your web application are built. It encapsulates essential functionalities, design patterns, and architectural principles that provide a solid starting point for developing complex applications. Essentially, the Base Application represents the core infrastructure and scaffolding upon which you can construct your application logic.
 
+Your application class must be located in the `/app/Controllers/` directory, and its name must remain unchanged under any circumstance.
+
 ***
 
 * Class namespace: `\Luminova\Base\BaseApplication`
 * This class is an **Abstract class**
-* Parent class: `\Luminova\Application\Foundation`
+* Inherited class: [\Luminova\Template\TemplateView](/templates/views.md)
 
 ***
 
 ### Example
 
-Your application class is located in `/app/Controllers/` directory.
-This is how your application should look something like this  
+This is an example a basic application class may look like using the `__construct` method.  
 
 ```php 
+<?php
 namespace App\Controllers;
 
 use \Luminova\Base\BaseApplication;
@@ -38,9 +40,10 @@ class Application extends BaseApplication
 }
 ```
 
-Alternatively, you can use the `onCreate` method, ensuring that your application is initialized before the `onCreate` method is called.
+Alternatively, this is an of application class may using the `onCreate` method.  
 
 ```php 
+<?php
 namespace App\Controllers;
 
 use \Luminova\Base\BaseApplication;
@@ -48,46 +51,19 @@ class Application extends BaseApplication
 {
 	protected function onCreate(): void
 	{
-
+		//...
 	}
 }
 ```
 
 ***
 
-## Properties
-
-Framework version name.
-
-```php
-public const VERSION
-```
-
-Minimum required php version.
-
-```php
-public const MIN_PHP_VERSION
-```
-
-Command line tool version.
-
-```php
-public const NOVAKIT_VERSION
-```
-
-Router instance made available in your application controller.
-
-```php
-public \Luminova\Routing\Router $router
-```
-
-***
-
 ## Methods
+The methods and properties of the base application are a combination of those inherited from the `TemplateView`, your `Application`, and the `BaseApplication` class. These classes ensure that properties and methods are accessible wherever the application object is invoked, based on their visibility. You can access them accordingly.
 
 ###  getInstance
 
-Get the base application instance shared singleton class instance.
+The singleton `getInstance` method allows you to return a shared `static` instance  of your application class.
 
 ```php
 public static final getInstance(): static
@@ -97,7 +73,7 @@ public static final getInstance(): static
 
 ### getView
 
-Get the current view segment.
+The `getView` method allows you to the current view `URI` segments.
 
 ```php
 public final getView(): string
@@ -105,44 +81,91 @@ public final getView(): string
 
 **Return Value:**
 
-`string` - Returns current view segment.
+`string` - Returns current view URI segment.
 
 ***
 
-### getBase
-
-Get application base path from router.
-
-```php
-public final getBase(): string
-```
-
-**Return Value:**
-
-`string` - Return base directory.
+## Application Events
+To handle command events in your application controller class based on actions, below are the list of events to listen to.
 
 ***
 
 ### onCreate
 
-Application on create method, an alternative method to __construct()
+The `onCreate` method in your application class serves as an alternative to the `__construct()` method. It is invoked after all necessary initializations have been performed, ensuring that your application is fully initialized before any operations are carried out on template views.
 
 ```php
 protected onCreate(): void
 ```
 
+> This method provides a convenient hook for executing additional setup logic or configurations specific to your application after the standard initialization process.
+
 ***
 
-### version
+### onFinish
 
-Get the framework version name or code.
+Application on finish even, which triggers once application router has finished handling request.
+This trigger weather error occurs or not.
 
 ```php
-public static final version(bool $integer = false): string|int
+protected onFinish(): void
+```
+
+***
+
+### onFinish
+
+Application on finish even, which triggers once application router has finished handling request.
+This trigger weather error occurs or not.
+
+```php
+protected onFinish(): void
+```
+
+***
+
+### onContextInstalled
+
+Application on context installed, which triggers once application route context has successfully registered request context.
+
+```php
+protected function onContextInstalled(string $context): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$integer` | **bool** | Return version code or version name (default: name). |
+| `$context` | **string** | The context name that was registered. |
+
+***
+
+### onViewPresent
+
+Application on view presented event, which is triggered after view controller method was called.
+
+```php
+protected function onViewPresent(string $uri): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$uri` | **string** | The view URI that was presented. |
+
+***
+
+### onCommandPresent
+
+Application on command presented event, which is triggered after command controller was called.
+
+```php
+protected function onCommandPresent(array $options): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$options` | **array** | The command options that was presented. |

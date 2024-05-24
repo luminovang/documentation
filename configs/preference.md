@@ -17,7 +17,6 @@ The `Preference Configuration` class provides methods to specify preferred compo
 * Class namespace: `\App\Controllers\Config\Preference`
 * File path: `/app/Controllers/Config/Preference.php`
 * This class is marked as **final** and can't be subclassed
-* This class is a **Final class**
 
 ***
 ## Methods
@@ -27,7 +26,7 @@ The `Preference Configuration` class provides methods to specify preferred compo
 Return instance of your preferred logger class.
 
 ```php
-public static getLogger(): \Psr\Log\LoggerInterface|null
+public getLogger(): \Psr\Log\LoggerInterface|null
 ```
 
 > Your logger class must implement psr LoggerInterface.
@@ -43,7 +42,7 @@ public static getLogger(): \Psr\Log\LoggerInterface|null
 Return instance of your preferred mail client.
 
 ```php
-public static getMailer(): \Luminova\Interface\MailerInterface|null
+public getMailer(): \Luminova\Interface\MailerInterface|null
 ```
 
 > Your mail client class must implement Luminova MailerInterface.

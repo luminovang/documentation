@@ -16,106 +16,10 @@ Base Services in the Luminova Framework provide a foundational layer for impleme
 
 * Class namespace: `\Luminova\Base\BaseServices`
 * This class implements:
-[\Luminova\Interface\ServicesInterface](#interface/services-interface)
+[\Luminova\Interface\ServicesInterface](/interface/classes.md#servicesinterface)
 * This class is an **Abstract class**
 
 ***
-
-### Registration
-
-To register a class that should be discoverable by the service container, you can configure it in your controller configuration folder located at [/app/Controllers/Config/Services.php](/configs/service.md).
-
-```php 
-namespace App\Controllers\Config;
-
-use \Luminova\Base\BaseServices;
-use \Some\Class\Foo\YourServiceClassName;
-
-class Services extends BaseServices
-{
-  public function bootstrap(): void
-  {
-    static::newService(
-      YourServiceClassName::class, // Class name to register.
-      null, // Class name alias (defaults to the class basename if null).
-      true, // Should return shared instance.
-      true, // Should serialize and store the class object.
-      [] // Initialization arguments, must be array list (int keys)
-    );
-    //...
-  }
-}
-```
-
-Using global function `service` to call your class method in service.
-
-```php 
-<?php 
-service('example')->doFoo();
-```
-
-Using class name.
-
-```php 
-<?php 
-service(SomeClass::class)->doFoo();
-```
-
-Using service instance.
-
-```php 
-<?php 
-use \Luminova\Application\Services;
-Services::example()->doFoo();
-```
-
-Using global function `factory` to initialize service and call your class method in service.
-
-```php 
-<?php 
-factory('services')->example()->doFoo();
-```
-
-Using factory instance.
-
-```php 
-<?php 
-use \Luminova\Application\Factory;
-Factory::services()->example()->doFoo();
-```
-
-To re-instantiate class with new parameters, simply pass the required values to `method()`. To prevent updating the previously stored instance, append `false` and `false` after your initialization parameters.
-
-**Don't share instance nor don't serialize**
-```php 
-<?php 
-service('example', 'Peter', 'PHP', false, false)->doFoo();
-```
-
-Using service instance.
-
-```php 
-<?php 
-use \Luminova\Application\Services;
-Services::example('Peter', 'PHP', false, false)->doFoo();
-```
-
-**Share instance but don't serialize**
-```php 
-<?php 
-service('example', 'Peter', 'PHP', true, false)->doFoo();
-```
-
-Using factory instance.
-
-```php 
-<?php 
-use \Luminova\Application\Factory;
-Factory::service(true, false)->example('Peter', 'PHP')->doFoo();
-```
-
-***
-
 ## Methods
 
 ### newService
@@ -143,3 +47,131 @@ Add a service class to the service autoloading.
 **Throws:**
 
 - [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If the service already exists or class argument is not an array list.
+
+***
+
+## Examples
+
+### Service Registration
+
+To register a class that should be discoverable in service, you must configure your class in service controller configuration folder located at [/app/Controllers/Config/Services.php](/configs/service.md).
+
+Additionally, enable the service feature by setting `feature.app.services = enable` in your environment configuration file.
+
+```php 
+namespace App\Controllers\Config;
+
+use \Luminova\Base\BaseServices;
+use \Some\Class\Foo\YourServiceClassName;
+
+class Services extends BaseServices
+{
+  public function bootstrap(): void
+  {
+    static::newService(
+      YourServiceClassName::class, // Class name to register.
+      null, // Class name alias (defaults to the class basename if null).
+      true, // Should return shared instance.
+      true, // Should serialize and store the class object.
+      [] // Initialization arguments, must be array list (int keys)
+    );
+    //...
+  }
+}
+```
+***
+
+Once you are done with class registrations, you can now access class anywhere using global helper function `service` or `Service` instance to call your class method in service.
+
+**Using global helper function**
+
+ Calling class method with the service alias if specified during class registration.
+
+```php 
+<?php 
+service('example')->doFoo();
+```
+
+Calling class method directly from the class namespace string.
+
+```php 
+<?php 
+service(SomeClass::class)->doFoo();
+```
+
+**Using service instance**
+
+Optionally class your service from service class static instance.
+
+```php 
+<?php 
+use \Luminova\Application\Services;
+Services::example()->doFoo();
+```
+> Calling or initializing class with namespace is not supported when you use service static method.
+
+***
+
+### Re-Initialization
+
+To re-instantiate class with new constructor arguments is simple, to do that you will need to pass the required values to `service` method after the first parameter which is always the calling service. 
+
+Additionally, to prevent updating the previously stored instance, set the `serialize` argument to `false`, also set `shared` to false if you don't want to return a shared instance.
+
+**Examples**
+
+Don't share instance nor don't serialize.
+```php 
+<?php 
+service('example', false, false, 'param1', 'param2')->doFoo();
+```
+
+Share instance, but don't don't serialize.
+
+```php 
+<?php 
+service('example', true, false, 'param1', 'param2')->doFoo();
+```
+***
+
+Using service instance is a bit difference in term of how it accept your arguments.
+To directly call service using the service class object, you mus specify `serialize` or `shared` as the last 2 arguments after your initialization arguments. Example the order should follow `Service::foo(arg1, arg2, serialize, shared)`.
+
+```php 
+<?php 
+use \Luminova\Application\Services;
+Services::example('Peter', 'PHP', false, false)->doFoo();
+```
+
+Share instance but don't serialize.
+
+```php 
+<?php 
+use \Luminova\Application\Services;
+Services::example('Peter', 'PHP', false, true)->doFoo();
+```
+
+###
+
+Optionally you can initialize service from factory, using global function `factory` to initialize service and call your class method in service.
+
+```php 
+<?php 
+factory('services')->example()->doFoo();
+```
+
+Using factory instance.
+
+```php 
+<?php 
+use \Luminova\Application\Factory;
+Factory::services()->example()->doFoo();
+```
+
+Using factory instance.
+
+```php 
+<?php 
+use \Luminova\Application\Factory;
+Factory::service(true, false)->example('Peter', 'PHP')->doFoo();
+```

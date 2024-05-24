@@ -18,7 +18,7 @@ To get started with the Storage class, ensure that you have installed the filesy
 composer require league/flysystem:^3.0
 ```
 
-Additionally, make sure to install the required dependencies for the chosen storage driver. You can refer to the configuration for the required drivers depending on the storage you want in the League [Storage Filesystem Configuration](/files/configuration.md) documentation.
+Additionally, make sure to install the required dependencies for the chosen storage driver. You can refer to the configuration for the required drivers depending on the storage you want in the League [Storage Filesystem Configuration](/configs/storage.md) documentation.
 
 ***
 

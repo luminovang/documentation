@@ -10,28 +10,22 @@ Base Controller provides a robust foundation for backend operations in Luminova'
 
 ## Introduction
 
-Base Controller serves as a fundamental component of Luminova's MVC, designed to extend backend operations within your applications. It shares similarities with the **Base View Controller** but differs in its approach to request handling and validation initialization, making it particularly suitable for backend view rendering like as development.
+The `BaseController` is a core element of Luminova's MVC architecture, functioning as an intermediary between the router and template engines. It suitable for handling backend operations by receiving instructions from the router and conveying them to the template for processing. While similar to the `BaseViewController`, but differs in its approach to request handling and validation. It initializes the class on the go, making easy access to validation user inputs and interact with request objects without requiring class initialization beforehand.
 
-## Features
-
-1. **Request Handling** The Base Controller initializes request handling functionality, providing seamless access to request data, such as query parameters, request headers, and body content. This ensures efficient processing of incoming requests.
-
-2. **Validation Initialization** Unlike the Base View Controller, which focuses on view rendering and presentation logic, the Base Controller includes built-in initialization for request validation. This enables developers to validate incoming data against predefined rules, ensuring data integrity and security in backend operations.
-
-3. **Compatibility** While primarily designed for backend operations, the Base Controller remains compatible with frontend applications, offering a seamless integration between frontend and backend components. This enables developers to build end-to-end solutions with consistency and ease.
+While primarily designed for `backend` operations, the `BaseController` remains compatible with `frontend` applications, offering a seamless integration between `frontend` and `backend` components. 
 
 ***
 
 * Class namespace: `\Luminova\Base\BaseController`
-* Parent class: [\Luminova\Base\BaseViewController](/base/view.md)
 * This class is an **Abstract class**
 
 ***
 
 ### Example usages
 
-Makes sure to extend it whenever you want create a new controller class.
-Here is an example of controller should look like.
+In other to use `BaseController` class, you will need to extend it whenever you want create a new controller class.
+
+Below is an example of how a basic controller class should look like.
 
 ```php
 <?php 
@@ -40,19 +34,21 @@ use \luminova\Base\BaseController;
 
 class BackendController extends BaseController 
 {
-    /** @var \ Luminova\Http\Request $this->request */
-    /** @var \ Luminova\Application $this->app */
-    /** @var \Luminova\Security\InputValidator $this->validate */
-		
-	public function __construct(){
+	public function __construct()
+    {
         parent::__construct();
 	}
 	
 	public function addUser(): int 
 	{
-		$name = $this->request->getPost('name');
-		//...
-		return STATUS_SUCCESS;
+		$name = escape($this->request->getPost('name'));
+		$added = $builder->table('users')->insert([
+			[
+				'name' => $name,
+				//...
+			]
+		]);
+		return $added ? STATUS_SUCCESS : STATUS_ERROR;
 	}
 }
 ```
@@ -61,28 +57,22 @@ class BackendController extends BaseController
 
 ## Properties
 
-HTTP request object
+Access to HTTP request object.
 
 ```php
-protected ?\Luminova\Http\Request $request
+protected ?\Luminova\Http\Request $request = null;
 ```
 
-Input validation object
+Access to input validation object.
 
 ```php
-protected ?\Luminova\Security\InputValidator $validate
+protected ?\Luminova\Security\InputValidator $validate = null;
 ```
 
-Application instance
+Access to application object.
 
 ```php
-protected ?\App\Controllers\Application $app
-```
-
-Importer instance
-
-```php
-protected ?\Luminova\Library\Importer $library
+protected ?\App\Controllers\Application $app = null;
 ```
 
 ***
@@ -99,13 +89,13 @@ protected final request(): \Luminova\Http\Request
 
 **Return Value:**
 
-`Request` - HTTP request object
+`Request` - Return request class instance.
 
 ***
 
 ### validate
 
-Initializes the input validator class instance.
+Initializes the input validation class instance.
 
 ```php
 protected final validate(): \Luminova\Security\InputValidator
@@ -113,7 +103,7 @@ protected final validate(): \Luminova\Security\InputValidator
 
 **Return Value:**
 
-`InputValidator` - input validation object
+`InputValidator` - Return input validation class instance.
 
 ***
 
@@ -127,35 +117,21 @@ protected final app(): \App\Controllers\Application
 
 **Return Value:**
 
-`Application` - Application instance
-
-***
-
-### library
-
-Initializes the application class instance.
-
-```php
-protected final library(): \Luminova\Library\Importer
-```
-
-**Return Value:**
-
-`Importer` Application instance
+`Application` - Return application class instance.
 
 ***
 
 ### view
 
-Shorthand to render view in controller class.
+The `view` method serves as a convenient alias or shorthand for rendering views within the controller class. It is equivalent to `$this->app->view('view_file')->render()`.
 
 ```php
-protected final view(string $view, array $options = []): int
+protected final view(string $view, array $options = [], string $type = 'html'): int
 ```
 
 **Return Value:**
 
-`int` Return STATUS_SUCCESS on success, otherwise STATUS_ERROR failure.
+`int` - Return `STATUS_SUCCESS` on success, otherwise `STATUS_ERROR` failure.
 
 **Parameters:**
 
@@ -163,34 +139,35 @@ protected final view(string $view, array $options = []): int
 |-----------|------|-------------|
 | `$view` | **string** | The view name to render. |
 | `$options` | **array** | Optional options to be passed to view template. |
+| `$type` | **string** | The type of view content you are compiling (default: `html`). |
 
 ***
 
 ### respond
 
-Shorthand to respond view contents in controller class.
+The `respond` method is also a convenient alias or shorthand for returning view contents within the controller class. It is equivalent to `$this->app->view('view_file')->respond()`.
 
 ```php
-protected final respond(string $view, array $options = []): string
+protected final respond(string $view, array $options = [], string $type = 'html'): string
 ```
 
 **Return Value:**
 
-`string` Return view contents which is ready to be rendered.
+`string` - Return view contents which is ready to be rendered.
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$view` | **string** | The view name to render. |
+| `$view` | **string** | The view name to respond with. |
 | `$options` | **array** | Optional options to be passed to view template. |
+| `$type` | **string** | The type of view content you are compiling (default: `html`). |
 
 ***
 
 ### onCreate
 
-Controller onCreate method an alternative to **__construct**.
-When you use this method for initialization it eliminate the need of calling `parent::__construct()`.
+The `onCreate` method in the controller serves as an alternative to `__construct`. It is invoked after the controller class has completed its initialization via the constructor method. When using this method for initialization, there is no need to explicitly call `parent::__construct()`.
 
 ```php
 protected onCreate(): void
@@ -200,7 +177,7 @@ protected onCreate(): void
 
 ### onDestroy
 
-The controller onDestroy method is an alternative to `__distruct`
+The `onDestroy` method in the controller acts as an alternative to `__destruct`. It is called after the `__destruct` method has completed its execution.
 
 ```php
 protected onDestroy(): void

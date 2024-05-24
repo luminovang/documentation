@@ -1,4 +1,4 @@
-# Session Manager
+# User Session Handling
 
 ***
 

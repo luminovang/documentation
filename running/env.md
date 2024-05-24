@@ -98,6 +98,8 @@ You can use any of the following values:
 
 - `debug.show.tracer` *(bool)*: Show debug tracer configuration.
 - `debug.display.errors` *(bool)*: Display error reporting.
+- `debug.show.performance.profiling` *(bool)*: Display performance reporting at the bottom of every page, only on development.
+- `debug.catch.inline.errors` *(bool)*: Throws an exception if hidden error is detected in your view content.
 
 ***
 

@@ -14,10 +14,11 @@ These properties serve as essential configuration and security measures for your
 
 ***
 
-* Class namespace: `\App\Controllers\Config`
+* Class namespace: `\App\Controllers\Config\Apis`
 * File path: `/app/Controllers/Config/Apis.php`
 * This class is marked as **final** and can't be subclassed
-* This class is a **Final class**
+
+***
 
 ## Properties
 
@@ -27,7 +28,7 @@ Indicates whether to forbid requests with empty Origin headers.
 If true, requests with empty Origin headers are forbidden.
 
 ```php
-public static bool $forbidEmptyOrigin = true
+public bool $forbidEmptyOrigin = true
 ```
 
 ***
@@ -38,7 +39,7 @@ Set whether to allow credentials in API requests.
 If true, the Access-Control-Allow-Credentials header is included.
 
 ```php
-public static bool $allowCredentials = true
+public bool $allowCredentials = true
 ```
 
 ***
@@ -49,7 +50,7 @@ Set the allowed origins for the Access-Control-Allow-Origin header in API reques
 An array of allowed origins or a wildcard `*` to allows all origins.
 
 ```php
-public static array<int,string>|string $allowOrigins = [
+public array<int,string>|string $allowOrigins = [
     'https://localhost',
     'http://localhost',
     '127.0.0.1'
@@ -65,7 +66,7 @@ Set the allowed headers for the Access-Control-Allow-Headers header in API reque
 An array of allowed header names.
 
 ```php
-public static array<int,string> $allowHeaders = [
+public array<int,string> $allowHeaders = [
     'Content-Type',
     'Access-Control-Allow-Headers',
     'Authorization',

@@ -140,7 +140,7 @@ public setValue(mixed $value): \Luminova\Interface\CookieInterface
 
 ### get
 
-Retrieve the value of a cookie.
+Retrieve the value of a cookie, if `key` is specified it will return value of the key .
 
 ```php
 public get(string|null $key = null): mixed
@@ -150,7 +150,7 @@ public get(string|null $key = null): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string&#124;null** | The key of the cookie to retrieve. |
+| `$key` | **string&#124;null** | Optional key of the cookie to retrieve. |
 
 **Return Value:**
 
@@ -160,7 +160,7 @@ public get(string|null $key = null): mixed
 
 ### has
 
-Check if a cookie exists.
+Check if a cookie exists, if `key` is passed `NULL`, it checks if the current cookie object name exists.
 
 ```php
 public has(string|null $key = null): bool
@@ -180,7 +180,7 @@ public has(string|null $key = null): bool
 
 ### delete
 
-Remove a cookie.
+Remove a cookie, If `key` is null or empty, delete the entire cookie.
 
 ```php
 public delete(string|null $key = null): \Luminova\Interface\CookieInterface

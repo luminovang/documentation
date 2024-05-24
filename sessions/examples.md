@@ -1,14 +1,16 @@
-# Session Examples
+# User Session Examples
 
 ***
 
 ## Overview
 
-Learn how to securely store data in Luminova's session storage and create a simple login with input validation.
+Learn how to securely utilize Luminova's back-end session storage, to create, a simple user login with input validation.
 
 ***
 
 ## Introduction
+
+Back-end session storage is a convenient way to temporarily store user data on the server. This data persists even after the user closes the browser window, depending on the session configuration. It is useful for various purposes such as session login management, user preferences, and tracking.
 
 ### Examples
 

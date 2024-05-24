@@ -1,4 +1,4 @@
-# ViewResponse
+# View Response
 
 ***
 

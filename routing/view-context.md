@@ -10,48 +10,102 @@ The routing context class allows you to define a route URL prefix for capturing 
 
 ## Introduction
 
-The routing context class enables you to specify a route URL prefix for capture. By adding a new context to your `/public/index.php` and creating the context routes file in `/routes/`, the framework automatically directs all URL prefixes starting with the context name to the corresponding handler in `/routes/my-context.php`. This optimizes performance by loading only the necessary routes.
+The routing context is a powerful feature in the Luminova framework for managing your application's routing. It enables you to specify route URL prefixes and handle them in separate contexts, promoting separation of concerns.
 
-**Example Usages**
+By adding a new context in your `/public/index.php` and creating the corresponding routes file in `/routes/`, the framework automatically directs all URL prefixes starting with the context name to the relevant handler in `/routes/my-context.php`. This approach optimizes performance by loading only the necessary routes.
+
+You can set up contexts in two ways: using an `Array` for configuration or employing the `Context` class object. This flexibility allows you to choose the method that best fits your application's complexity and your coding style preferences.
+
+***
+
+### Examples
 
 In your `index.php` located at `public/index.php`, and add a new argument to `$app->router->context()` method, representing a new context URI prefix.
 
+Using The `Context` class instance.
+
 ```php
+/public/index.php
 <?php
+use \Luminova\Boot;
 use \Luminova\Routing\Context;
 use App\Controller\Config\ViewErrors;
 //...
 
-$app->router->context(
-      new Context('admin', [ViewErrors::class, 'onAdminError']),
+Boot::http()->router->context(
+    new Context('admin', [ViewErrors::class, 'onAdminError']),
 	//...
-);
-
-$app->router->run();
+)->run();
 ```
 
-> *Note:* You will need to create the method `onAdminError` in your `ViewErrors` class.
+Using The `Array` to setup.
+The array setup expect only two elements as show below.
+
+`prefix` (string) - The URI prefix name.
+`error` (Closure|array|null) - The URI context 404 error handler.
+
+```php
+/public/index.php
+<?php
+use \Luminova\Boot;
+use \Luminova\Routing\Context;
+use App\Controller\Config\ViewErrors;
+//...
+
+Boot::http()->router->context(
+	[
+        'prefix' => 'admin', 
+        'error' => [ViewErrors::class, 'onAdminError']
+    ],
+	//...
+)->run();
+```
+
+> *Note:* 
+> You will have to create the method `onAdminError` in your `ViewErrors` class.
 
 ***
 
-After adding the new argument to the `$app->router->context()` method in your `index.php` located at `public/index.php`, create a handler file in the `/routes/` directory with the same name as the context URI prefix. For instance, if you added a context called `admin` in your index.php, create a file named `admin.php` in the routes directory.
+After adding the new context to router `context` method in your `public/index.php`, create the corresponding handler file in the `/routes/` directory with the same name as the context URI prefix. 
+For instance, if you added a context prefix for `admin` in your `index.php`, create a file name `admin.php` in the routes directory.
 
 ```php
+/routes/admin.php
 <?php 
-/** @global \Luminova\Routing\Router $router */
-/** @global \App\Controllers\Application $app */
-
 $router->get('/', 'AdminController::login');
 $router->get('/dashboard', 'AdminController::dashboard');
 ```
 
-> Whenever you visit `https://example.com/admin`, `https://example.com/admin/*`, or `https://localhost/example.com/public/admin`, your administrator page will be loaded.
+> Now whenever you visit `https://example.com/admin`, `https://example.com/admin/foo`, or `https://localhost/example.com/public/admin`, your administrator page will be loaded only.
 
-**Setting a Subdirectory for Admin Views**
+***
 
-In many cases, you might want to organize your application views so that each context has a folder to contain all its view files. To achieve this, simply create the sub-folder in your `/resources/views/` directory. For example, create `/resources/views/admin/`.
+### Subdirectory
 
-Next, instruct the framework to look for your view files in the `/resources/views/admin` directory of your resources by adding the `setFolder()` method in your context file `/routes/admin.php` before registering routes or before rendering views.
+Setting a subdirectory for your context helps organize your application view files, ensuring each context has its own view folder. 
+
+To achieve this, follow these steps.
+
+1. Create a sub-folder in your `/resources/views/` directory for each context. For example, create an `admin` folder: `/resources/views/admin/`.
+
+2. Instruct the framework to look for your view files in the corresponding subdirectory. This can be done by calling the `setFolder` method of the application template in your context file (`/routes/admin.php`), before rendering view, or within your view controller class.
+
+By doing this, you ensure that your application's view files are neatly organized and easily manageable within their respective contexts.
+
+**Within your controller class**
+
+```php
+<?php
+class MyController extends BaseController
+{
+	protected onCreate(): void 
+	{
+		$this->app->setFolder('admin');
+	}
+}
+```
+
+**In context file**
 
 ```php 
 <?php 
@@ -61,7 +115,7 @@ $app->setFolder('admin');
 //...
 ```
 
-**Setting for a particular page**
+**Setting for a particular view**
 
 ```php 
 <?php 
@@ -73,9 +127,10 @@ $router->get('/', function(Router $router, BaseApplication $app){
 //...
 ```
 
-> You can also do this within your controller class.
-
 ***
+
+The `Context` class, offers better readability and clarity, each context is explicitly defined with its type and associated error handler. 
+This makes it easier to understand the routing configuration at a glance. 
 
 * Class namespace: `\Luminova\Routing\Context`
 * This class is marked as **final** and can't be subclassed

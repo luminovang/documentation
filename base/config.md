@@ -4,20 +4,24 @@
 
 ## Overview
 
-Base configuration allows you to extend the Luminova configuration class and define your custom variables or methods for your application configuration.
+Base configuration serves as an underlying of your application configuration classes, which may be required by the framework depending on the component used in your application. 
 
 ***
 
 ## Introduction
 
-Base configuration serves as and underlying of your application where you can define your important variables for your application. To use this class you need to extend it.
+The base configuration service as the foundation of your application's configuration classes, which are essential for the framework depending on the components utilized in your application. To create a new configuration class, you need to extend and define necessary properties and method as you need.
+
+***
 
 * Class namespace: `\Luminova\Base\BaseConfig`
 * This class is an **Abstract class**
 
 ***
 
-###  Usages.
+###  Usages
+
+Bellow is an example how you can extend the `BaseConfig` class.
 
 ```php
 <?php 
@@ -30,7 +34,7 @@ class Config extends BaseConfig
 }
 ```
 
-> Now you can import your configuration class anywhere you would like to use it.
+> Now you can import your configuration class anywhere you would like to use it or register in service to make it available anywhere.
 
 ***
 
@@ -38,10 +42,10 @@ class Config extends BaseConfig
 
 ### getEnv
 
-And alternative to global helper class `env()`, to get environment configuration variables with a specific return type.
+An alternative to the global helper function `env`, the `getEnv` method allows you to retrieve an environment variable with a specific return type.
 
 ```php
-public static getEnv(string $key, mixed $default = null, string|null $return = null): mixed
+public static final getEnv(string $key, mixed $default = null, string|null $return = null): mixed
 ```
 
 **Parameters:**

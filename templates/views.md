@@ -1,4 +1,4 @@
-# Render View Class
+# View Handling
 
 ***
 
@@ -10,29 +10,30 @@ Managing and customizing your template view rendering and behavior with Luminova
 
 ## Introduction
 
-In this documentation, we will walk you through the `Template` class, which is responsible in rendering, presenting and customizing view templates within your Luminova's application. The template object is automatically inherited by your base application controller classes `BaseApplication`, providing convenient access to its methods anywhere in your application codebase.
+In this documentation, we'll delve into the functionalities of the `TemplateView` class, which acts as the core controller for Luminova templates. This class is responsible in compiling, presenting, and caching application views. Its adaptable nature enables it to handle various content types, while its rendering mode can be customized to suit your coding style and business logic. The template object is automatically inherited by `BaseApplication` class, providing a convenient access to its methods throughout your application codebase.
 
 ***
 
 ### Class Access
 
-- In your application controller class, call it methods using `$this->app->foo()`.
-- In routing context files, access the methods using `$app->foo()`.
-- In view files, access the methods using `$this->foo()`, if template isolation is not enabled and you are using `default` template engine.
-- In other context where `BaseApplication` object is not initialized by default, you can use a global helper function `app()->foo()`.
+- Within the `App\Controllers\Application` class, access to it methods should be through the `$this->foo()`.
+- Within the view controllers classes, access to it methods should be through the application object `$this->app->foo()`.
+- Within the routing context files, access it methods through application global variable  `$app->foo()`.
+- Within the view files, access the methods using `$this->foo()`, only if template isolation is not enabled and you are using the `default` template engine.
+- In your global scope, you can use the global helper function `app` to access it methods `app()->foo()`.
 
-> Avoid reinitializing your `Application` instance multiple times as this may cause unintended error, instead always use helper function `app()`, to return a shared instance of your application object.
+> *Note:* Avoid re-initializing your `Application` class multiple times as this may cause unintended error, instead always use helper function `app()`, to return a shared instance of your application object.
 
 ***
 
-* Class namespace: `\Luminova\Template\TemplateTrait`
+* Class namespace: `\Luminova\Template\TemplateView`
 * Configuration: [Template Configuration](/configs/template.md) 
 
 ***
 
 ### codeblock
 
-Set if HTML codeblock tags should be ignore during page minification.
+The `codeblock` method enables you to disable minification for HTML code blocks enclosed within `<pre><code></code></pre>` tags during view content minification. This feature is particularly useful when you need to display code on your webpage. If minification is applied, the removal of new lines can make the code difficult for users to read.
 
 ```php
 public codeblock(bool $minify, bool $button = false): self
@@ -42,25 +43,21 @@ public codeblock(bool $minify, bool $button = false): self
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$minify` | **bool** | Indicate if codeblocks should be minified (default: false). |
-| `$button` | **bool** | Indicate if codeblock tags should include a copy button (default: false). |
+| `$minify` | **bool** | Indicate if code-blocks should be minified (default: false). |
+| `$button` | **bool** | Indicate if code-block tags should include a copy button (default: false). |
 
 **Return Value:**
 
-`TemplateTrait` - Return class instance.
+`self` - Returns the class object, including the application object.
 
-> Enabling codeblock button will add a copy button to your HTML code blocks, allowing users to easily copy the code. 
-> 
-> You will need to implement the copy logic using JavaScript.
+> Enabling the `codeblock` button option adds a copy button to your HTML code blocks, allowing easy code copying for users. However, implementing the copy functionality requires `JavaScript` integration.
 
 ***
 
 ### setFolder
 
-With this method you can set a sub directory folder name for template to look for your view file.
-Your need to create the sub folder in `resources/views/`.
-
-This method allows you to specify a subdirectory within the resource view `resources/views/` directory where the template engine will look for your view files.
+The `setFolder` method can be used to achieve a Hierarchical Model-View-Controller (HMVC) structure. It allows you to organize your application's view files into subdirectories. 
+This method informs the framework's template engine where to look for template files for an entire controller class, a specific controller method, or an entire route context.
 
 ```php
 public setFolder(string $path): self
@@ -70,71 +67,86 @@ public setFolder(string $path): self
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$path` | **string** | folder name to search for view. |
+| `$path` | **string** | Directory path to search for view. |
 
 **Return Value:**
 
-`TemplateTrait` - Return class instance.
+`self` - Returns the class object, including the application object.
+
+> *Note:* For `setFolder` to function properly, you must create the sub-folder within the `resources/views/` directory.
 
 **Example**
 
-To set a custom directory where your view files should be looked for.
-Optionally you can call method `setFolder` anywhere in your controller methods before rendering template. 
+To set a custom directory where your view files should be looked for in view folder e.g `resources/views/example/`
 
 ```php
 <?php 
 namespace App\Controllers;
 
 use \Luminova\Base\BaseController;
-class ApiController extends BaseController
+
+class ExampleController extends BaseController
 {
     protected function onCreate(): void
     {
-        $this->app->setFolder('v2');
+        $this->app->setFolder('example');
+    }
+
+    public function show(): int
+    {
+        return $this->view('show');
     }
 
     //...
 }
 ```
 
+> In this example, the `setFolder` method is used to set the view folder to `example`, so when you call the `show` method, it will look for the view file in `resources/views/example/show.php`.
+>
+> This approach helps maintain a clear and organized structure for your view files, especially in large applications with many views.
+
 ***
 
 ### noCaching
 
-You can use this method to specify views that should be excluded from page caching. This can be configured either in your `routes/context.php` file or within your application controller class.
+By default when `page.caching = true` is enabled in `env` file, all views will be cached and reused. The `noCaching` method allows you to specify views that should be excluded from page caching making it useful for selectively excluding views from page caching, ensuring that dynamic content is always up-to-date. 
+This can be configured either in your `routes/context.php` file, `Application` class or your view `Controller` class.
 
 ```php
-public noCaching(string|array&lt;int,string&gt; $viewName): self
+public noCaching(string|array<int,string> $viewName): self
 ```
 
 **Parameters:**
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$viewName` | **string&#124;array<int,string>** | view name or array of view names. |
+| Parameter  | Type                        | Description                      |
+|------------|-----------------------------|----------------------------------|
+| `$viewName` | **string&#124;array<int,string>** | The view name or array list of view names to exclude. |
 
 **Return Value:**
 
-`TemplateTrait` - Return class instance.
+`self` - Returns the class object, including the application object.
 
 **Example**
 
-To disabled caching for selected APIs routes `insert` and `edit` while allow cache for other routes.
+To disable caching for specific a route method, e,g in this `API` example `insert` and `edit` will be excluded while allowing cache for other route methods.
 
 ```php
-<?php 
+<?php
 $router->post('/fetch', 'ApiController::fetch');
 $router->post('/insert', 'ApiController::insert');
 $router->post('/edit', 'ApiController::edit');
 ```
 
-In your `API` controller class `onCreate` or `__construct` method.
+**Controller Implementation**
+
+In your `ApiController` class, within the `onCreate` or `__construct` method.
 
 ```php
-<?php 
+<?php
 namespace App\Controllers;
 
 use \Luminova\Base\BaseController;
+
 class ApiController extends BaseController
 {
     protected function onCreate(): void
@@ -144,24 +156,32 @@ class ApiController extends BaseController
 
     public function insert(): int 
     {
-        return $this->view('insert_view', [
-            //...
-        ])
+        return $this->view('insert_view');
     }
 
-    //...
+    public function edit(): int 
+    {
+        return $this->view('edit_view');
+    }
+
+    public function fetch(): int 
+    {
+        return $this->view('fetch_view');
+    }
+
+    // Other methods...
 }
 ```
 
-> The `noCaching` method can also be called in controller `onCreate` method or `__construct` method.
+> The `noCaching` method can also be called in the application's `onCreate` method or `__construct` method.
+> But to have more convenient access in customizing based on controller, it is recommended to call it within your view controller class instead.
 
 ***
 
 ### cacheable
 
-To disabled page view caching for entire routing context use the `cacheable` method globally in the routing context file or withing your middleware method to disabled caching of the routes within the context.
-
-> By default caching of routes context are enabled once you have specified `page.caching = true` in your .env file. 
+Unlike the `noCaching` method that disables caching for specific views, the `cacheable` method allows you to disable view caching for an entire routing context or controller class. 
+Optionally, you can call this method globally in the routing context file within the `middleware` method to disable caching for the entire route context.
 
 ```php
 public cacheable(bool $allow): self
@@ -171,23 +191,25 @@ public cacheable(bool $allow): self
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$allow` | **bool** | Set the caching context status. |
+| `$allow` | **bool** | Set the caching status true or false. |
 
 **Return Value:**
 
-`TemplateTrait` - Return class instance.
+`self` - Returns the class object, including the application object.
 
-> The `cacheable` method can also be called in controller `onCreate` method or `__construct` method.
+***
 
 **Example**
 
-To disabled caching for all APIs routes.
+The `cacheable` method can be called in the controller's `onCreate` method or `__construct` method.
+But in this example we will use `onCreate` method to disable caching for all `API` routes.
 
 ```php
-<?php 
+<?php
 namespace App\Controllers;
 
 use \Luminova\Base\BaseController;
+
 class ApiController extends BaseController
 {
     protected function onCreate(): void
@@ -195,18 +217,22 @@ class ApiController extends BaseController
         $this->app->cacheable(false);
     }
 
-    //...
+    // Other methods...
 }
 ```
+
+> The `cacheable` method provides a straightforward way to control view caching by setting the caching status globally or for specific controllers, you can ensure that dynamic content remains current without being cached.
 
 ***
 
 ### export
 
-The export method allows you to inject dependencies into your application's views, making them accessible within the view template. Injections should be performed in your application controller class, either after calling `parent::__construct()` in the constructor or within the `onCreate()` method of your application controller class.
+The `export` method allows you to inject dependencies making them accessible within your `template` files, controllers, and anywhere you have access to `Application` object. 
+
+Injections should be performed in your `App\Controllers\Application` controller class, either after calling `parent::__construct()` in the constructor or within the `onCreate()` method of your application class depending on your choice.
 
 ```php
-public export(string|object $class, string|null $alias = null): bool
+public export(string|object $class, string|null $alias = null, bool $initialize =true): true
 ```
 
 **Parameters:**
@@ -215,10 +241,11 @@ public export(string|object $class, string|null $alias = null): bool
 |-----------|------|-------------|
 | `$class` | **class-string&#124;class-object** | The class name or instance of a class to register. |
 | `$alias` | **string&#124;null** | Optional class name alias. |
+| `$initialize` | **bool** | Whether to initialize class-string or leave it as static class (default: true). |
 
 **Return Value:**
 
-`bool` - true on success, false on failure.
+`true` -  Returns true on success, otherwise, an exception will be thrown if an error occurs.
 
 **Throws:**
 
@@ -227,41 +254,73 @@ public export(string|object $class, string|null $alias = null): bool
 
 **Examples**
 
-With no alias indicated.
+1. **Exporting Class without Alias**
+
+    ```php
+    <?php 
+    $this->export(new FooClass());
+    ```
+
+2. **Exporting Class by Namespace**
+
+    If you do not want the class to be initialized, pass `false` as the third argument.
+
+    ```php
+    <?php
+    $this->export(FooClass::class);
+    ```
+
+3. **Exporting Class with Alias**
+
+    ```php
+    <?php 
+    $this->export(FooClass::class, 'foo');
+    ```
+
+### Accessing Properties
+
+**Accessing Class within the Template Files**
+
+To access class within your template files, you must use either `$this` or `$self` when view isolation is enabled.
+1. **Direct Access**
+
+    ```php
+    <?php
+    $this->FooClass->myMethod();
+    ```
+
+2. **Accessing Class by Alias**
+
+    ```php
+    <?php
+    $this->foo->myMethod();
+    ```
+
+3. **Accessing Static Class Method**
+
+    ```php
+    <?php
+    $this->foo::myMethod();
+    ```
+
+**Accessing Class Properties within Your Controller Class**
+
+To access class properties within your controller class, use the application object.
 
 ```php
-<?php 
-$this->export(new FooClass());
-//Or 
-$this->export(FooClass::class);
+<?php
+$this->app->foo->myMethod();
 ```
-Will be accessed like.
-```php
-$this->FooClass->myMethod()
-```
-Alias indicated.
-
-```php
-<?php 
-$this->export(new FooClass(), 'foo');
-//Or 
-$this->export(FooClass::class, 'foo');
-```
-It can be accessed within your template view files as shown below.
-```php
-$this->foo->myMethod()
-```
-
-Or in your controller classes as.
-```php
-$this->app->foo->myMethod()
-```
+> Globally you can access properties anywhere that `application` object is available or using global helper function `app()`.
 
 ***
 
 ### cache
 
-The cache method enables you to cache and store responses to reuse them on subsequent requests for the same content, ensuring that cached versions are served when the same resource is requested again.
+The `cache` method allows you to manually manage view caching, updating the view with new content or reusing the cached version on subsequent requests. 
+The cache key generation for caches is handled automatically, so you don't need to specify cache keys manually. 
+
+Optionally, you can specify cache expiry if you don't want to use the global expiration set in the `.env` file.
 
 ```php
 public cache(\DateTimeInterface|int|null $expiry = null): self
@@ -271,42 +330,33 @@ public cache(\DateTimeInterface|int|null $expiry = null): self
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$expiry` | **\DateTimeInterface&#124;int&#124;null** |  |
+| `$expiry` | **\DateTimeInterface&#124;int&#124;null** | The cache expiration, set to `null` to use default expiration from .env file. |
 
 **Return Value:**
 
-`TemplateTrait` - Return class instance.
+`self` - Returns the class object, including the application object.
 
-***
+**Example**
 
-### expired
+In this example we check if cache exist and not expired before processing heavy database operation.
 
-The expired method allows you to check whether a cached item has expired or not. Before using this method, you must first instantiate cache the `cache()` method.
-
-```php
-public expired(): bool
-```
-
-**Return Value:**
-
-`bool` Returns true if cache doesn't exist or expired.
-
-**Example Usage**
-
-To check if a cached item has expired, use the expired method as follows:
+<p style="color:red;">*Note:* Passing different expiration other than the expiration used during cache will not take effect in checking the expiration.</p>
 
 ```php
-<?php 
+<?php
 namespace App\Controllers;
 
-use \Luminova\Base\BaseViewController;
-class PageController extends BaseViewController
+use \Luminova\Base\BaseController;
+
+class ExampleController extends BaseController
 {
-    public function page(): int
+    protected function show(): int
     {
-        $cache = $this->app->cache(3500);
+        $cache = $this->app->cache(60); 
+
         if($cache->expired()){
-            return $cache->view('page')->render(['data' => doHeavyProcess()]);
+            $heavy = $db->doHeavyProcess();
+            return $this->view('show_view', ['data' => $heavy]);
         }
 
         return $cache->reuse();
@@ -314,11 +364,29 @@ class PageController extends BaseViewController
 }
 ```
 
+> The `cache` method offers fine-grained control over view caching, by specifying cache expiration and checking for cached content, you can optimize performance by avoiding redundant processing and ensuring that users receive the most up-to-date content when necessary.
+
+***
+
+### expired
+
+The `expired` method checks whether a cached item has expired, allowing you to decide whether to renew the view or reuse the cached version.
+
+```php
+public expired(): bool
+```
+
+**Return Value:**
+
+`bool` - Returns `true` if the cache doesn't exist or has expired.
+
+> **Note:** Before calling this method, you must first instantiate the cache with the `cache()` method.
+
 ***
 
 ### reuse
 
-Reuse cached content if the cache exists.
+The `reuse` method renders the cached version of view content if it exists.
 
 ```php
 public reuse(): int
@@ -326,66 +394,18 @@ public reuse(): int
 
 **Return Value:**
 
-`int` - Returns true if cache exist and rendered else return false.
+`int` - Returns a status code: `SUCCESS` if the cache exists and is rendered successfully, otherwise `ERROR`.
 
-***
+**Throws**
 
-### respond
-
-Get the rendered contents of a view, if cache is enabled it will store the content for later use.
-
-```php
-public respond(array $options = [], int $status = 200): string
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$options` | **array<string,mixed>** | Additional options to pass in the template file. |
-| `$status` | **int** | HTTP status code (default: 200 OK) |
-
-**Return Value:**
-
-`string` - The rendered view contents.
-
-> This method can be useful when you want to send view as email template.
-
-```php
-<?php 
-class FooController extends BaseController {
-	//...
-	public function foo(): int 
-	{
-		$content = $this->respond('foo', ['foo' => 'bar']);
-		Mailer::to('peter@example.com')->send($content);
-		return STATUS_SUCCESS
-	}
-}
-```
-
-***
-
-### redirect
-
-The redirect method is used to redirect to another view URI.
-
-```php
-public redirect(string $view, int $response_code): void
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$view` | **string** | view name or name with segments |
-| `$response_code` | **int** | response status code |
+- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - Throws an exception if called without first calling the `cache` method or if the cache file is not 
 
 ***
 
 ### view
 
-The view method is used to specify the view name and type of view to render within your application.
+The `view` method allows you to specify the name and type of the view content to be rendered or returned. 
+This method must be called before using the `respond` or `render` methods.
 
 ```php
 public view(string $viewName, string $viewType = 'html'): self
@@ -395,18 +415,58 @@ public view(string $viewName, string $viewType = 'html'): self
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$viewName` | **string** | view name|
-| `$viewType` | **string** | Type of content, differs from Content-Type and file formats. `(html, json, text or xml)` |
+| `$viewName` | **string** | The view name to render or respond with. |
+| `$viewType` | **string** | Type of content, differs from Content-Type and file formats. |
 
 **Return Value:**
 
-`TemplateTrait` - Return class instance.
+`self` - Returns the class object, including the application object.
+
+**Supported View Types:**
+
+| Type  | Description     |
+|------------|----------|
+| `html` | HTML content. |
+| `json` | JSON content. |
+| `text` | Plain text content. |
+| `xml` | XML content. |
+| `js` | JavaScript content. |
+| `css` | CSS content. |
+| `rdf` | RDF content. |
+| `atom` | Atom content. |
+| `rss` | RSS feed content. |
+
+***
+
+**Example**
+
+In your controller class.
+
+```php
+<?php
+namespace App\Controllers;
+
+use \Luminova\Base\BaseController;
+
+class FooController extends BaseController
+{
+    public function show(): int
+    {
+        return $this->app->view('show_view')->render(['foo' => 'bar']);
+    }
+}
+```
+
+> The `view` method is crucial for defining the view template and content type before rendering or responding with the view content. 
+> By setting the view name and type, you ensure that the correct content is prepared and handled appropriately.
 
 ***
 
 ### render
 
-This method renders your application view content with additional options provided as an array of key-value pairs. These options can be accessed within the template view file using `$this->_myvar`. If you set `public static bool $useVariablePrefix` to false in `/app/Controllers/Config/Template.php`, then you can access your options directly as variable `$myVar`.
+The `render` method allows you to present your application's view content to users, with additional options provided as an array of key-value pairs. 
+These options can be accessed within the template view file using `$this->_myVar` or `$_myVar` when view isolation is enabled. 
+If variable prefixing is disabled in `/app/Controllers/Config/Template.php`, then you can access your options directly as variables `$this->myVar` or `$myVar`.
 
 ```php
 public render(array&lt;string,mixed&gt; $options = [], int $status = 200): int
@@ -428,6 +488,71 @@ public render(array&lt;string,mixed&gt; $options = [], int $status = 200): int
 - [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - If invalid view type was passed.
 - [\Luminova\Exceptions\ViewNotFoundException](/exceptions/classes.md#viewnotfoundexception) - If the view is not found
 - [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If read and write permission to writable was denied.
+
+***
+
+### respond
+
+Unlike the `render` method, the `respond` method returns the compiled view content as a string instead of presenting it. If caching is enabled, it will store the content for later use.
+
+```php
+public respond(array $options = [], int $status = 200): string
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$options` | **array<string,mixed>** | Additional options to pass in the template file. |
+| `$status` | **int** | HTTP status code (default: 200 OK) |
+
+**Return Value:**
+
+`string` - Return compiled view contents.
+
+***
+
+**Example**
+
+In your controller class.
+
+```php
+<?php
+namespace App\Controllers;
+
+use \Luminova\Base\BaseController;
+use \App\Services\Mailer;
+
+class FooController extends BaseController
+{
+    public function foo(): int
+    {
+        $content = $this->respond(['foo' => 'bar']);
+        Mailer::to('peter@luminova.ng')->send($content);
+        return STATUS_SUCCESS;
+    }
+}
+```
+
+> The `respond` method allows for greater flexibility in handling view content by returning it as a string. 
+> This is particularly useful for scenarios such as downloading, sending emails or processing the view content further before presenting it. 
+
+***
+
+### redirect
+
+To transit from one view URI to another.
+
+```php
+public redirect(string $view, int $response_code): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$view` | **string** | view name or name with segments |
+| `$response_code` | **int** | response status code |
 
 ***
 

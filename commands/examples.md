@@ -109,7 +109,7 @@ php index.php blogs list
 ### Get Blogs
 
 ```php
-php index.php blogs get id 123456
+php index.php blogs read id 123456
 ```
 
 > To execute your controller command, you must `cd` to `/public/` before running any controller related commands.

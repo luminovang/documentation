@@ -65,7 +65,7 @@ public static ip(): \Luminova\Functions\IPAddress
 
 **Return Value:**
 
-`IPAddress` - Returns a ip address class instance.
+`Luminova\Functions\IPAddress` - Returns a ip address class instance.
 
 **See Also**
 
@@ -78,12 +78,12 @@ public static ip(): \Luminova\Functions\IPAddress
 Initialize or return a shared an instance of the Files class.
 
 ```php
-public static files(): \Luminova\Functions\Files
+public static files(): \Luminova\Storages\FileManager
 ```
 
 **Return Value:**
 
-`Files` - Returns a file class instance
+`\Luminova\Storages\FileManager` - Returns a file class instance
 
 ***
 
@@ -97,7 +97,7 @@ public static tor(): \Luminova\Functions\TorDetector
 
 **Return Value:**
 
-`TorDetector` - Returns a tor detector class instance.
+`\Luminova\Functions\TorDetector` - Returns a tor detector class instance.
 
 **Example**
 
