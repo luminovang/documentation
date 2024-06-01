@@ -10,7 +10,9 @@ Base Model, allows you to define database models for your application, it also s
 
 ## Introduction
 
-The Base Model serves as the foundation for all models within your application, providing essential functionalities and features to interact with the database.
+The `BaseModel` serves as the foundation for all models within your application, providing essential functionalities and features to interact with the database in an efficient and secure method.
+
+It allows you to define basic rules for your models, like fields that are allowed to be inserted into the model database table, delete, or update. Additionally, it also supports flagging the model as read-only which limits the model to only perform select statements.
 
 ***
 
@@ -26,14 +28,14 @@ The Base Model serves as the foundation for all models within your application, 
 Model table name name.
 
 ```php
-protected string $table
+protected string $table 
 ```
 
 ***
 
 ### primaryKey
 
-Default primary key column name for table.
+The default primary key column name for table, this will be used while selecting, updating and more.
 
 ```php
 protected string $primaryKey
@@ -43,7 +45,7 @@ protected string $primaryKey
 
 ### searchables
 
-Define your database table searchable column names.
+Define your database table searchable columns, the fields that search will have to look for queries.
 
 ```php
 protected array<int,string> $searchables
@@ -53,7 +55,7 @@ protected array<int,string> $searchables
 
 ### cachable
 
-Enable or disable database caching for query builder.
+Enable or disable database caching for model while calling `select`, `find`, `search`, `total` or `count`.
 
 ```php
 protected bool $cachable
@@ -61,9 +63,19 @@ protected bool $cachable
 
 ***
 
+### expiry
+
+Database cache expiration time `TTL` in seconds.
+
+```php
+protected DateTimeInterface|int $expiry
+```
+
+***
+
 ### readOnly
 
-Specify whether model table is updatable, deletable and insertable.
+Specify whether the model's table is `updatable`, deletable, and `insertable`.
 
 ```php
 protected bool $readOnly
@@ -73,7 +85,7 @@ protected bool $readOnly
 
 ### insertables
 
-Define fields that allows to be inserted.
+Define fields that can be inserted into.
 
 ```php
 protected array $insertables
@@ -83,7 +95,7 @@ protected array $insertables
 
 ### updatables
 
-Define fields that allows to be updated.
+Define fields that can be updated.
 
 ```php
 protected array $updatables
@@ -93,10 +105,10 @@ protected array $updatables
 
 ### rules
 
-Define your Input validation rules.
+Define your Input validation rules based on `Validator` class rules.
 
 ```php
-protected array $rules
+protected array<string,string> $rules
 ```
 
 ***
@@ -106,7 +118,7 @@ protected array $rules
 Define your Input validation rules errors messages.
 
 ```php
-protected array $messages
+protected array<string,array> $messages
 ```
 
 ***
@@ -126,10 +138,12 @@ protected \Luminova\Database\Builder $builder
 Input validation class instance.
 
 ```php
-protected \Luminova\Security\InputValidator $validation
+protected static \Luminova\Security\InputValidator $validation
 ```
 
 ***
+
+## Methods
 
 ### constructor
 
@@ -148,14 +162,12 @@ public __construct(?\Luminova\Database\Builder $builder = null): mixed
 
 ***
 
-## Abstract Methods
-
 ### insert
 
 Insert a new record into the current database.
 
 ```php
-abstract protected insert(array<string,mixed> $values): int
+public insert(array<string,mixed> $values): bool
 ```
 
 **Parameters:**
@@ -166,7 +178,11 @@ abstract protected insert(array<string,mixed> $values): int
 
 **Return Value:**
 
-`int` - Return the number of records inserted.
+`bool` - Return true if records was inserted, otherwise false.
+
+**Throw Exception:**
+
+[\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - Throws if columns contains unallowed column.
 
 ***
 
@@ -175,19 +191,24 @@ abstract protected insert(array<string,mixed> $values): int
 Update current record in the database.
 
 ```php
-abstract protected update(string|array<int,mixed> $key, array $data): int
+public update(string|array<int,mixed> $key, array $data, int $max = 1): bool
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string&#124;array<int,mixed>** | The key?s to update its record |
-| `$data` | **array** | Columns key and value to update |
+| `$key` | **string&#124;array<int,mixed>** | The key?s to update its record. |
+| `$data` | **array** | Columns key and value to update. |
+| `$max` | **int** | The maximum number of records to update. |
 
 **Return Value:**
 
-`int` - Return the number of records updated.
+`bool` - Return true if records was updated., otherwise false
+
+**Throw Exception:**
+
+[\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - Throws if columns contains unallowed column.
 
 ***
 
@@ -196,7 +217,7 @@ abstract protected update(string|array<int,mixed> $key, array $data): int
 Fine next or a single record from the database table.
 
 ```php
-abstract protected find(string|array<int,mixed> $key, array<int,string> $fields = ['*']): mixed
+public find(string|array<int,mixed> $key, array<int,string> $fields = ['*']): mixed
 ```
 
 **Parameters:**
@@ -217,7 +238,7 @@ abstract protected find(string|array<int,mixed> $key, array<int,string> $fields 
 Select records from the database table.
 
 ```php
-abstract protected select(string|array<int,mixed> $key = null, array<int,string> $fields = ['*']): mixed
+public select(string|array<int,mixed> $key = null, array<int,string> $fields = ['*'], int $limit = 100, int $offset = 0): mixed
 ```
 
 **Parameters:**
@@ -226,6 +247,8 @@ abstract protected select(string|array<int,mixed> $key = null, array<int,string>
 |-----------|------|-------------|
 | `$key` | **string&#124;array<int,mixed>** | The key?s to select its record, if null all record in table will be selected. |
 | `$fields` | **array<int,string>** | The fields to retrieve (default is all). |
+| `$limit` | **int** | Select result limit (default: 100). |
+| `$offset` | **int** | Select limit offset (default: 0). |
 
 **Return Value:**
 
@@ -238,7 +261,7 @@ abstract protected select(string|array<int,mixed> $key = null, array<int,string>
 Select records from the database.
 
 ```php
-abstract protected search(string $query, array<int,string> $fields = ['*']): mixed
+public search(string $query, array<int,string> $fields = ['*'], int $limit = 100, int $offset = 0): mixed
 ```
 
 **Parameters:**
@@ -247,6 +270,8 @@ abstract protected search(string $query, array<int,string> $fields = ['*']): mix
 |-----------|------|-------------|
 | `$query` | **string** | Search query string, escape string before passing. |
 | `$fields` | **array<int,string>** | The fields to retrieve (default is all). |
+| `$limit` | **int** | Search result limit (default: 100). |
+| `$offset` | **int** | Search limit offset (default: 0). |
 
 **Return Value:**
 
@@ -259,7 +284,7 @@ abstract protected search(string $query, array<int,string> $fields = ['*']): mix
 Delete a record from the database.
 
 ```php
-abstract protected delete(string|array<int,mixed> $key = null): bool
+public delete(string|array<int,mixed> $key = null, int $max = 1): bool
 ```
 
 **Parameters:**
@@ -267,6 +292,7 @@ abstract protected delete(string|array<int,mixed> $key = null): bool
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$key` | **string&#124;array<int,mixed>** | The keys to delete, if null all record in table will be deleted. |
+| `$max` | **int** | The maximum number of records to delete. |
 
 **Return Value:**
 
@@ -279,12 +305,12 @@ abstract protected delete(string|array<int,mixed> $key = null): bool
 Get total number of records in the database.
 
 ```php
-abstract protected total(): bool
+public total(): int|bool 
 ```
 
 **Return Value:**
 
-Return the number of records.
+`int|bool ` - Return the number of records or false if failed.
 
 ***
 
@@ -293,7 +319,7 @@ Return the number of records.
 Get total number of records in the database based on the keys.
 
 ```php
-abstract protected count(string|array<int,mixed> $key): int
+public count(string|array<int,mixed> $key): int|bool 
 ```
 
 **Parameters:**
@@ -304,11 +330,39 @@ abstract protected count(string|array<int,mixed> $key): int
 
 **Return Value:**
 
-`int` - Return the number of records.
+`int|bool ` - Return the number of records or false if failed.
 
 ***
 
-## Methods
+### purge
+
+Delete all model database caches.
+
+```php
+public purge(): bool
+```
+
+**Return Value:**
+
+`bool` - Return true if all caches are deleted, false otherwise.
+
+***
+
+### validation
+
+Initialize and ser validation class object.
+
+```php
+protected validation(): Luminova\Security\InputValidator
+```
+
+**Return Value:**
+
+`Luminova\Security\InputValidator` - Return the number of records.
+
+> After first initialization you can then use `static::$validation` to access the object.
+
+***
 
 ### doSearch
 
@@ -394,7 +448,7 @@ public getKey(): string
 
 ### getSearchable
 
-Get the table searchables array of column names.
+Get the table searchable array of column names.
 
 ```php
 public getSearchable(): array<int,string>

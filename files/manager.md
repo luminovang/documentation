@@ -4,15 +4,15 @@
 
 ## Overview
 
-File manager class is a simple PHP class shipped with Luminova Framework to handle file uploads as an alternative to the Storage class.
+File Manager is a helper class shipped with Luminova Framework to handle file-related operations like downloading, reading or writing files, all methods are defined as static making it easier to call.
 
 ***
 
 ## Introduction
 
-***
+The Luminova `FileSystem` is a core component of the Luminova framework designed for managing file-related operations. It handles tasks such as retrieving system paths, downloading, reading, and writing files. With its `static` methods, `FileSystem` offers convenient and efficient file management within both the framework and your application.
 
-# FileSystem
+***
 
 * Class namespace: `\Luminova\Storages\FileManager`
 
@@ -271,7 +271,7 @@ public static write(string $filename, string|resource $content, int $flags, reso
 |-----------|------|-------------|
 | `$filename` | **string** | — Path to the file where to write the data. |
 | `$content` | **string&#124;resource** | The contents to write to the file, either as a string or a stream resource. |
-| `$flags` | **int** | File flags, it can be combination flags joined with the binary OR (|) operator. |
+| `$flags` | **int** | File flags, it can be combination flags joined with the binary OR (&#124;) operator. |
 | `$context` | **resource** | [optional] A valid context resource created with stream_context_create. |
 
 **Return Value:**
@@ -296,9 +296,9 @@ public static stream(string $filename, resource $resource, int $flags, resource 
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$filename` | **string** | — Path to the file where to write the data. |
+| `$filename` | **string** | Path to the file where to write the data. |
 | `$resource` | **resource** | The contents to write to the file as a stream resource. |
-| `$flags` | **int** | [optional] The value of flags can be any combination of the following flags (with some restrictions), joined with the binary OR (|) operator. |
+| `$flags` | **int** | [optional] The value of flags can be any combination of the following flags (with some restrictions), joined with the binary OR (&#124;) operator. |
 | `$context` | **resource** | [optional] A valid context resource created with stream_context_create. |
 
 **Return Value:**
@@ -379,6 +379,110 @@ public static move(string $origin, string $dest, int& $moved = 0): bool
 **Return Value:**
 
 `bool` - Return true if the operation is successful, false otherwise.
+
+***
+
+### size
+
+To calculate the size of a given file or an entire directory.
+If a directory is specified, it calculates the size of a given path recursively to determine total size of all files within the directory. 
+
+```php
+public static size(string $path): int 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$path` | **resource** | The path to the file or directory.. |
+
+**Return Value:**
+
+`int` - Return the size in bytes.
+
+**Throws:**
+
+[\Luminova\Exceptions\FileException](/exceptions/classes.md#fileexception) - Throws If the path does not exist.
+
+***
+
+### read
+
+The `read` method is a combination of `readBinary` and `readText`, with an additional check for type-specific handling.
+It was optimized for efficiency in reading a large file in chunks or smaller files using `fpassthru`
+
+```php
+public static read($handler, int $filesize, string $mime, int $length = (1 << 21)): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$handler` | **resource** | The file handler. |
+| `$filesize` | **int** | The size of the file. |
+| `$mime` | **string** | The MIME type of the file. |
+| `$length` | **int** | The length of each chunk (default: 2MB). |
+
+**Return Value:**
+
+`bool` - Return true if the file was successfully read, false otherwise.
+
+**Example**
+```php
+<?php 
+$filename = 'large-file.pdf';
+if ($handler = fopen($filename, 'rb')) {
+	$filesize = filesize($filename);
+	$mime = get_mime($filename);
+	FileManager::read($handler, $filesize, $mime);
+}
+
+```
+
+***
+
+### readBinary
+
+Reads binary files in chunks, this method is suitable for reading `PDF`, `AUDIO`, `IMAGES` and other types of files that preserving lines ending isn't necessary.
+
+```php
+public static readBinary($handler, int $length = (1 << 21)): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$handler` | **resource** | The file handler. |
+| `$length` | **int** | The length of each chunk (default: 2MB). |
+
+**Return Value:**
+
+`bool` - Return true if the file was successfully read, false otherwise.
+
+***
+
+### readText
+
+Reads a text-based files in chunks while preserving line endings, suitable for handling `TEXT`, `MD`, `LOG` and more.
+
+```php
+public static readText($handler, int $filesize, int $length = (1 << 21)): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$handler` | **resource** | The file handler. |
+| `$filesize` | **int** | The size of the file. |
+| `$length` | **int** | The length of each chunk (default: 2MB). |
+
+**Return Value:**
+
+`bool` - Return true if the file was successfully read, false otherwise.
 
 ***
 

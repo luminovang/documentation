@@ -30,6 +30,21 @@ public string $cookieName = 'PHPSESSID';
 
 ***
 
+### tableIndex
+
+The session storage index name, this will be used as the default storage index for user's information in session or cookie.
+
+```php
+public string $tableIndex = '__server_side_session_table';
+```
+
+> Since the `Session` is primarily designed for back-end user session management, we need a unique `ID` to differentiate the user session from any other sessions  stored in session variable. 
+> 
+> Use a unique identifier possibly `md5` hash string.
+> > Do not dynamically generate the index always, you must use specific default ID that will be used always to lookup users data in session.
+
+***
+
 ### savePath
 
 Set the directory where session files are stored on the server.

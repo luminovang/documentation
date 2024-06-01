@@ -1,4 +1,4 @@
-# NovaKit CLI
+# NovaKit Commands
 
 ***
 
@@ -10,14 +10,14 @@ Need to manage environment variables or create a sitemap? NovaKit has got you co
 
 ## Introduction
 
-NovaKit Command Line Tool is a powerful tool provided by Luminova framework, for simplifying command-line operations and facilitating the development as well as building command-line applications. It offers a wide range of functionalities such as generating boilerplate code, scaffolds, templates, environment variables, sitemap, database operations, executing scripts, starting development server and more.
+NovaKit Command Line Tool is a powerful tool provided by Luminova framework, for simplifying command-line operations and facilitating the development as well as building command-line applications. It offers a wide range of functionalities such as generating boilerplate code, scaffolds, templates, environment variables, sitemap, database operations, executing scripts, starting development server, and more.
 
 ***
 ## Helps
 
 ### Controller Help
 
-Print help information for a command group in controller.
+Print help information for a command group in the controller.
 
 ```bash
 php index.php blog --help
@@ -33,7 +33,7 @@ Print help all novakit help commands.
 php novakit --help
 ```
 
-Print help a specific novakit help commands.
+To print help for a specific novakit help commands.
 
 ```bash
 php novakit --help create:controller
@@ -42,7 +42,7 @@ php novakit --help create:controller
 ***
 
 ## Generators
-The generator commands allow you to easily generate a skeleton for a controller class, utils class or a view file.
+The generator commands allow you to easily generate a skeleton for a controller class, utils class, or a view file.
 
 ### Utils Class
 
@@ -51,6 +51,17 @@ The class will be saved in `/app/Controllers/Utils/`
 
 ```bash
 php novakit create:class "myClass" --extend "baseClassName" --implement "myClassInterface"
+```
+
+***
+
+### Model Class
+
+To create a database model class for your application use the below example command.
+The class will be saved in `/app/Controllers/Models/`
+
+```bash
+php novakit create:model "myModel" 
 ```
 
 ***
@@ -64,9 +75,9 @@ The class will be saved in `/app/Controllers/`
 php novakit create:controller "PayStackController"  --type "view"
 ```
 
-> You can pass type of `api` to extend `\Luminova\Base\BaseController` or `view` to extend `\Luminova\Base\BaseViewController`.
+> You can pass the type of `API` to extend `\Luminova\Base\BaseController` or `view` to extend `\Luminova\Base\BaseViewController`.
 > 
-> For command controller class extend and implement will ignored, use flag `--type "command"`
+> For command controller class extend and implement will ignore, use flag `--type "command"`
 
 ***
 
@@ -79,22 +90,22 @@ The class will be saved in `/resources/views/`
 php novakit create:view "blog" 
 ```
 
-> To create view file in a sub directory in `/resources/views/` folder, use flag `--dir "mySubDir"` 
+> To create a view file in a subdirectory in `/resources/views/` folder, use flag `--dir "mySubDir"` 
 
 ***
 
 ### Routing Context
 
-To install new routing context use the below example command.
+To install a new routing context use the below example command.
 
 ```bash
 php novakit context "test"'
 ```
 
-> The above command will create a file in `/routes/` directory and update your `/public/index.php` with new context.
+> The above command will create a file in `/routes/` directory and update your `/public/index.php` with a new context.
 > 
-> To disable adding error handler in `index.php` use flag `--no-error`
-> > *Note:* If error handler is not disabled, you need to manually create the method name in your View errors class in `/app/Controllers/Config/ViewErrors.php`.
+> To disable adding an error handler in `index.php` use flag `--no-error`
+> > *Note:* If the error handler is not disabled, you need to manually create the method name in your View errors class in `/app/Controllers/Config/ViewErrors.php`.
 
 ***
 
@@ -106,7 +117,7 @@ To generate your website sitemap use the below command.
 php novakit generate:sitemap
 ```
 
-> To configure sitemap domain and ignore list it can be done here `/app/Controllers/Config/Sitemap.php`.
+> To configure the sitemap domain and ignore list, it can be done here `/app/Controllers/Config/Sitemap.php`.
 
 ***
 

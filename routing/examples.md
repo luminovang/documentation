@@ -155,9 +155,9 @@ To bind and access routes defined under `/blog` and its nested group `/blog/id/i
 ```php
 <?php
 use \Luminova\Routing\Router;
-use \Luminova\Base\BaseApplication;
+use \App\Controllers\Application;
 
-$router->bind('/blog', function(Router $router, BaseApplication $app) {
+$router->bind('/blog', function(Router $router, Application $app) {
 	$router->get('/', 'UserController::blogs');
 	$router->get('/id/([a-zA-Z0-9]+)', 'UserController::blog');
 });
@@ -165,33 +165,45 @@ $router->bind('/blog', function(Router $router, BaseApplication $app) {
 
 ***
 
-#### Custom View Directory
+#### Custom View Hierarchy
 
-You can load template views from a subfolder within the `resources/views` directory by setting a custom view folder using the `setFolder()` method in your application or within specific route bindings. This allows you to organize views into subdirectories for better structure and organization.
+You can load template views from a sub-folder within the `resources/views` directory, set a custom view folder using the `setFolder()` method in your controller `onCreate`  or `__construct` method, it can also be done within specific route context file. 
+
+This allows you to organize views based on directory `Hierarchy` and archive `HMVC` implementation, for better structure, organization and separation of concern.
 
 **Setting Custom View Folder Globally**
 
-To set a custom view folder globally for all routes or controllers within a specific context (e.g., `panel`), you can use the `setFolder()` method in your view controller initialization or middleware.
+To set a custom view folder globally for all routes within a context file or the context controllers class (e.g., `panel`), use the `setFolder()` method in your view controller initialization method like `onCreate`, `__construct` or `middleware` method if in use.
 
 ```php
 <?php
-// Set the custom view folder globally
-$app->setFolder("panel");
+use \Luminova\Base\BaseController;
+
+class Controller extends BaseController 
+{
+	protected onCreate(): void 
+	{
+		$this->app->setFolder("panel");
+	}
+}
 ```
 
-Alternatively, you can set the custom view folder within a specific route binding globally or by view using the `setFolder() `method before rendering a view.
+Alternatively, you can set the custom view folder within a specific route context in a global scope, withing `bind` method for group global scope or before calling `view` method.
 
 ```php
 <?php
 use \Luminova\Routing\Router;
-use \Luminova\Base\BaseApplication;
+use \App\Controllers\Application;
 
-$router->bind('/admin', function(Router $router, BaseApplication $app) {
-     // Set in global scope
+// In context global scope
+$app->setFolder('panel');
+		 
+$router->bind('/admin', function(Router $router, Application $app) {
+     // In bind global scope
      $app->setFolder('panel');
 
      $router->get('/', function() use ($app) {
-          //Or optionally set for specific view
+          //Or optionally before a specific view
           $app->setFolder("panel")->view("foo")->render();
      });
 });
@@ -241,10 +253,9 @@ Bellow example we register a command route with 'foo' name, mapped to 'CommandCo
 ```php
 <?php
 use \Luminova\Routing\Router;
-use \Luminova\Base\BaseApplication;
-use \Luminova\Command\Terminal;
+use \App\Controllers\Application;
 
-$router->group("users", function(Router $router, BaseApplication $app, Terminal $term){
+$router->group("users", function(Router $router, Application $app){
     $router->before('users', 'UserCommandController::middleware');
     $router->command("foo", 'UserCommandController::foo');
 });
@@ -328,7 +339,7 @@ Define a command route with multiple dynamic segments.
 <?php
 use \Luminova\Routing\Router;
 $router->group("blogs", function((Router $router){
-     $router->command('/blog/id/(:int)/title/(:string)', function($title, $id): int {
+     $router->command('/blog/id/(:int)/title/(:string)', function(string $title, int $id): int {
           echo "Blog: {$id}, Title: {$title}";
                
           return STATUS_SUCCESS;
@@ -353,6 +364,10 @@ class UserController extends BaseController
 {
      public function profile(string $username): void
      {
+          /**
+           * Setting folder here is not a good practice, this is just for an example.
+           * Always create a new controller class to handle views based on custom folder and define your `setFolder` in `onCreate` or `__construct` initailzation method.
+           */
           $this->app->setFolder('profile')->view('foo')->render([
                'username' => $username
           ]);
@@ -400,12 +415,12 @@ use Luminova\Base\BaseCommand;
 class BlogCommandController extends BaseCommand 
 {
      protected string $group = 'blogs';
-		 //...
-		 
-		  public function middleware():int
-		 {
-			 return STATUS_SUCCESS;
-		 }
+     //...
+          
+     public function middleware():int
+     {
+          return STATUS_SUCCESS;
+     }
 
      public function foo(): int
      {

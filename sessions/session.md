@@ -417,6 +417,22 @@ public start(): void
 
 ***
 
+### destroy
+
+To empty all data stored in your application session table index.
+
+```php
+public destroy(): bool
+```
+
+**Return Value**
+
+`bool` - Return true if storage was data was deleted successfully otherwise false.
+
+> This method doesn't behave same way as PHP `session_destroy`.
+
+***
+
 ### synchronize
 
 Starts a user's online login session, optionally specifying an IP address.
