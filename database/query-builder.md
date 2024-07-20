@@ -30,57 +30,27 @@ To learn more about how to use the Query Builder,  [see examples](/database/exam
 Get database connection instance.
 
 ```php
-public db(): \Luminova\Instance\DatabaseInterface 
+public db(): \Luminova\Instance\DatabaseInterface|null
 ```
 
 **Return Value:**
 
-`DatabaseInterface|null` - Database driver connection instance.
+`\Luminova\Interface\DatabaseInterface|null` - Return database driver instance.
 
-To get the raw database connection instance of `PDO` or `mysqli`.
+**Return Raw Connection Object**
+
+To get the raw database connection instance of `PDO` or `MYSQLI`.
 
 ```php
 <?php 
-$builder->db()->raw()
-```
-
-***
-
-### stmt
-
-Returns last query prepared statement.
-
-```php
-public stmt(): \Luminova\Interface\DriversInterface|bool|null 
-```
-
-> To return statement you need to indicate `stmt` in  `returns('stmt')`,
->  before calling method `total()`, `sum()`, `find()`, `select()`, `update()`, `delete()` or `execute()` to return query statement object.
->  > The above method will return true if statement was executed successfully otherwise it will return false.
-
-**Return Value:**
-
-`\Luminova\Interface\DriversInterface|bool|null` - Database driver connection instance.
-
-*Example*
-
-```php
-$tbl = $query->table('users');
-$tbl->where('pref_code', '=', 'PHP');
-$tbl->returns('stmt');
-if($tbl->select()){
-	$stmt = $tbl->stmt();
-	// Do what you want with statment object 
-  var_export($stmt->getAll());
-	$stmt->free();
-}
+$conn = $builder->db()->raw();
 ```
 
 ***
 
 ### getInstance
 
-Class shared singleton class instance.
+To get a shared singleton instance of builder class.
 
 ```php
 public static getInstance(): static
@@ -88,7 +58,7 @@ public static getInstance(): static
 
 **Return Value:**
 
-`static`  - Shared instance of database driver connection.
+`static` - Return new static instance of builder class.
 
 **Throws:**
 
@@ -98,31 +68,35 @@ public static getInstance(): static
 
 ### table
 
-Sets database table name to execute your query.
+Sets the database table name to build query for.
 
 ```php
-public table(string $table, string $alias = ''): self
+public table(string $table, string|null $alias = null): self
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$table` | **string** | The table name |
-| `$alias` | **string** | Optional table alias |
+| `$table` | **string** | The table name (non-empty string). |
+| `$alias` | **string&#124;null** | Optional table alias (default: NULL). |
 
 **Return Value:**
 
-`self` - Class instance.
+`self` - Returns the instance of builder class.
+
+**Throws:**
+
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - Throws if an invalid table name is provided.
 
 ***
 
 ### join
 
-Specifies a table join operation for `table()`, to join query.
+To join main table `table()` with another using `JOIN` operators (e.g `INNER JOIN`, `FULL JOIN`).
 
 ```php
-public join(string $table, string $type = 'INNER', string $alias = ''): self
+public join(string $table, string $type = 'INNER', ?string $alias = null): self
 ```
 
 **Parameters:**
@@ -130,25 +104,34 @@ public join(string $table, string $type = 'INNER', string $alias = ''): self
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$table` | **string** | The name of the table to join. |
-| `$type` | **string** | The type of join (default: "INNER"). |
-| `$alias` | **string** | Optional alias for the joined table (optional). |
+| `$type` | **string** | The type of join (default: &quot;INNER&quot;). |
+| `$alias` | **string&#124;null** | Optional table join alias (default: NULL). |
 
 **Return Value:**
 
-`self` - Returns the instance of the class.
+`self` - Returns the instance of builder class.
+
+**Throws:**
+
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - Throws if invalid argument is provided.
+
+**Join Types**
+
+- `INNER` - Returns rows with matching values in both tables.
+- `LEFT`  - Returns all rows from the left table and matching rows from the right table, or NULLs for non-matching rows from the right table.
+- `RIGHT` - Returns all rows from the right table and matching rows from the left table, or NULLs for non-matching rows from the left table.
+- `CROSS` - Returns the Cartesian product of the two tables.
+- `FULL`  - Returns rows with matching values in either table, with NULLs for non-matching rows from either table.
+- `FULL OUTER` - Returns all rows when there is a match in either the left or right table, or NULL from the side that does not have a match.
 
 ***
 
 ### on
 
-Specifies join conditions for to query tables.
-
-*Method Chaining*
-
-The `on` Method can be called multiple times with different arguments, each call to `on()` sets a condition for the query.
+Specifies join conditions to query table, the `on` method can be called multiple times with different arguments, each call to `on` sets a condition for the query.
 
 ```php
-public on(string $condition, string $operator = '=', mixed $value = null): self
+public on(string $condition, string $operator, mixed $value): self
 ```
 
 **Parameters:**
@@ -161,37 +144,41 @@ public on(string $condition, string $operator = '=', mixed $value = null): self
 
 **Return Value:**
 
-`self` - Returns the instance of the class.
+`self` - Returns the instance of builder class.
 
 ***
 
 ### innerJoin
 
-Shorthand for inner join table operation.
+Sets table join condition as `INNER JOIN`.
 
 ```php
-public innerJoin(string $table, string $alias = ''): self
+public innerJoin(string $table, string|null $alias = null): self
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$table` | **string** | The table name |
-| `$alias` | **string** | join table alias |
+| `$table` | **string** | The table name. |
+| `$alias` | **string&#124;null** | Optional table join alias (default: NULL). |
 
 **Return Value:**
 
 `self` - Returns the instance of the class.
+
+**Throws:**
+
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - Throws if invalid argument is provided.
 
 ***
 
 ### leftJoin
 
-Shorthand for left join table operation.
+Sets table join condition as `LEFT JOIN`.
 
 ```php
-public leftJoin(string $table, string $alias = ''): self
+public leftJoin(string $table, string|null $alias = null): self
 ```
 
 **Parameters:**
@@ -199,20 +186,24 @@ public leftJoin(string $table, string $alias = ''): self
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$table` | **string** | The table name |
-| `$alias` | **string** | join table alias |
+| `$alias` | **string&#124;null** | Optional table join alias (default: NULL). |
 
 **Return Value:**
 
 `self` - Returns the instance of the class.
+
+**Throws:**
+
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - Throws if invalid argument is provided.
 
 ***
 
 ### rightJoin
 
-Shorthand for right join table operation.
+Sets table join condition as `RIGHT JOIN`.
 
 ```php
-public rightJoin(string $table, string $alias = ''): self
+public rightJoin(string $table, string|null $alias = null): self
 ```
 
 **Parameters:**
@@ -220,20 +211,24 @@ public rightJoin(string $table, string $alias = ''): self
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$table` | **string** | The table name |
-| `$alias` | **string** | join table alias |
+| `$alias` | **string&#124;null** | Optional table join alias (default: NULL). |
 
 **Return Value:**
 
 `self` - Returns the instance of the class.
+
+**Throws:**
+
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - Throws if invalid argument is provided.
 
 ***
 
 ### crossJoin
 
-Shorthand for cross join table operation.
+Sets table join condition as `CROSS JOIN`.
 
 ```php
-public crossJoin(string $table, string $alias = ''): self
+public crossJoin(string $table, string|null $alias = null): self
 ```
 
 **Parameters:**
@@ -241,17 +236,72 @@ public crossJoin(string $table, string $alias = ''): self
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$table` | **string** | The table name |
-| `$alias` | **string** | join table alias |
+| `$alias` | **string&#124;null** | Optional table join alias (default: NULL). |
 
 **Return Value:**
 
 `self` - Returns the instance of the class.
 
+**Throws:**
+
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - Throws if invalid argument is provided.
+
+***
+
+### fullJoin
+
+Sets table join condition as `FULL JOIN`.
+
+```php
+public fullJoin(string $table, string|null $alias = null): self
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$table` | **string** | The table name |
+| `$alias` | **string&#124;null** | Optional table join alias (default: NULL). |
+
+**Return Value:**
+
+`self` - Returns the instance of the class.
+
+**Throws:**
+
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - Throws if invalid argument is provided.
+
+***
+
+### fullOuterJoin
+
+Sets table join condition as `FULL OUTER JOIN`.
+
+```php
+public fullOuterJoin(string $table, string|null $alias = null): self
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$table` | **string** | The table name |
+| `$alias` | **string&#124;null** | Optional table join alias (default: NULL). |
+
+**Return Value:**
+
+`self` - Returns the instance of the class.
+
+**Throws:**
+
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - Throws if invalid argument is provided.
+
 ***
 
 ### limit
 
-Set query limit for `update`, `select` or `delete` statement.
+Set the limit and offset for `SELECT` query execution.
+This method can be called when working while calling methods like `total`, `select` `fetch`, `count`, `sum` and `average`.
 
 ```php
 public limit(int $limit, int $offset): self
@@ -261,21 +311,38 @@ public limit(int $limit, int $offset): self
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$limit` | **int** | limit threshold |
-| `$offset` | **int** | start offset query limit |
+| `$limit` | **int** | The maximum number of results to return. |
+| `$offset` | **int** | The starting offset for the results (default is 0). |
 
 **Return Value:**
 
-`self` - Returns the instance of the class.
+`self` - Returns the instance of the builder class.
+
+***
+
+### max
+
+Set the maximin record to execute when called `update` or `delete`method.
+
+```php
+public max(int $limit): self
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$limit` | **int** | number of records to update or delete. |
+
+**Return Value:**
+
+`self` - Return instance of builder class.
 
 ***
 
 ### order
 
-Set the order for the query results in a select statement (e.g., "ASC", "DESC").
-
-*Method Chaining*
-
+Set result return order for query selection (e.g., `id ASC`, `date DESC`).
 The `order` Method can be called multiple times with different arguments to allows chaining of multiple query orders.
 
 ```php
@@ -291,16 +358,36 @@ public order(string $column, string $order = 'ASC'): self
 
 **Return Value:**
 
-`self` - Returns the instance of the class.
+`self` - Return instance of builder class.
+
+***
+
+### orderByMatch
+
+Set the result return order when match `against` method is called.
+
+```php
+public orderByMatch(array $columns, string|int|float $value, string $mode = 'NATURAL_LANGUAGE', string $order = 'ASC'): self
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$columns` | **array** | The column names to index match order. |
+| `$value` | **string&#124;int&#124;float** | The value to match against in order. |
+| `$mode` | **string** | The comparison match mode operator.<br />Optionally you can choose any of these modes or pass your own mode.<br />    - NATURAL_LANGUAGE<br />    - BOOLEAN<br />    - NATURAL_LANGUAGE_WITH_QUERY_EXPANSION<br />    - WITH_QUERY_EXPANSION |
+| `$order` | **string** | The order algorithm to use (either &quot;ASC&quot; or &quot;DESC&quot;). |
+
+**Return Value:**
+
+`self` - Returns an instance of the class.
 
 ***
 
 ### group
 
 Set query grouping for the SELECT statement.
-
-*Method Chaining*
-
 The `group` Method can be called multiple times with different arguments to allows chaining of multiple query grouping.
 
 ```php
@@ -315,13 +402,14 @@ public group(string $group): self
 
 **Return Value:**
 
-`self` - Returns the instance of the class.
+`self` - Return instance of builder class.
 
 ***
 
 ### where
 
-Set query where clause for `select`, `update`, `delete` statement.
+Set query condition for `WHERE` operator.
+This can be called while working with methods like: `select`, `find`, `stmt`, `update`, `delete`, `sum`, `total` or `average` methods execution.
 
 ```php
 public where(string $column, string $operator, mixed $key): self
@@ -331,23 +419,19 @@ public where(string $column, string $operator, mixed $key): self
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$column` | **string** | column name |
-| `$operator` | **string** | Comparison Operator |
-| `$key` | **mixed** | column key value |
+| `$column` | **string** | The column name. |
+| `$operator` | **string** | The comparison operator (e.g. `=`, `&gt;=`, `&lt;&gt;`). |
+| `$value` | **mixed** | The where condition column value. |
 
 **Return Value:**
 
-`self` - Returns the instance of the class.
-
+`self` - Return instance of builder class.
 ***
 
 ### and
 
-Set query where and conditions or `select`, `update`, `delete` statement.
-
-*Method Chaining*
-
-The `and` Method can be called multiple times with different arguments to allows chaining of multiple query conditions.
+Set query condition for `AND` operator.
+The `and` method can be called multiple times with different arguments to allows chaining of multiple query conditions.
 
 ```php
 public and(string $column, string $operator, mixed $value): self
@@ -357,22 +441,50 @@ public and(string $column, string $operator, mixed $value): self
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$column` | **string** | column name |
-| `$operator` | **string** | Comparison operator |
-| `$value` | **mixed** | column key value |
+| `$column` | **string** | The column name. |
+| `$operator` | **string** | The comparison operator (e.g. `=`, `&gt;=`, `&lt;&gt;`). |
+| `$value` | **mixed** | The and condition column value. |
 
 **Return Value:**
 
-`self` - Returns the instance of the class.
+`self` - Return instance of builder class.
+
+***
+
+### against
+
+The `against` method allows you to perform database querying with the `match` operator for efficient matching against specified columns. It sets the query match columns and mode. It also support chaining multiple against conditions.
+
+```php
+public against(array $columns, string $mode, mixed $value): self
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$columns` | **array** | The column names to match against. |
+| `$mode` | **string** | The comparison match mode operator. |
+| `$value` | **mixed** | The value to match against. |
+
+**Modes:**
+
+You can use any of the following matching modes or pass your own mode:
+
+- `NATURAL_LANGUAGE`: This mode provides a natural language search experience.
+- `BOOLEAN`: This mode enables Boolean search capabilities.
+- `NATURAL_LANGUAGE_WITH_QUERY_EXPANSION`: This mode extends the `NATURAL_LANGUAGE` mode with query expansion.
+- `WITH_QUERY_EXPANSION`: This mode extends the standard search with query expansion.
+
+**Return Value:**
+
+`self` - Return instance of builder class.
 
 ***
 
 ### set
 
-Set table update column name and value.
-
-*Method Chaining*
-
+To stage the table column name and value which will be use when called `update` method.
 The `set` Method can be called multiple times with different arguments to allows chaining of multiple query update key-values.
 
 ```php
@@ -383,22 +495,19 @@ public set(string $column, mixed $value): self
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$column` | **string** | column name |
-| `$value` | **mixed** | column key value  to update|
+| `$column` | **string** | The column name to update. |
+| `$value` | **mixed** | The column key value to update. |
 
 **Return Value:**
 
-`self` - Returns the instance of the class.
+`self` - Return instance of builder class.
 
 ***
 
 ### or
 
-Set query `OR` condition operator for a query like `WHERE column = 1 OR comum2 = 1 `.
-
-*Method Chaining*
-
-The `or` Method can be called multiple times with different arguments to allows chaining of multiple query `OR` conditions.
+To set query `OR` condition operator for execution.
+The `or` method can be called multiple times with different arguments to allows chaining of multiple query `OR` conditions.
 
 ```php
 public or(string $column, string $operator, mixed $value): self
@@ -408,42 +517,158 @@ public or(string $column, string $operator, mixed $value): self
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$column` | **string** | column name |
-| `$operator` | **string** | Comparison operator |
-| `$value` | **mixed** | column key value |
+| `$column` | **string** | The column name. |
+| `$operator` | **string** | The comparison operator to use. |
+| `$value` | **mixed** | The column key value. |
 
 **Return Value:**
 
-`self` - Returns the instance of the class.
+`self` - Return instance of builder class.
 
 ***
 
-### andor
+### orGroup
 
-Set query strict `OR` condition operators for queries like `WHERE column = 1 AND (comum2 = 1 OR column3 = 3) `.
-
-*Method Chaining*
-
-The `andor` Method can be called multiple times with different arguments to allows chaining of multiple query `AND (? OR ?)` conditions.
+To set an `OR` group of conditions (e.g `(foo = 1 OR bar = 2)`).
 
 ```php
-public andor(string $column, mixed $operator, mixed $value, string $orColumn, mixed $orOperator, mixed $orValue): self
+public orGroup(array $conditions): self
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$column` | **string** | column name |
-| `$operator` | **string** | Comparison operator |
-| `$value` | **mixed** | column key value |
-| `$orColumn` | **string** | column name |
-| `$orOperator` | **string** | Comparison operator |
-| `$orValue` | **mixed** | column or key value |
+| `$conditions` | **array** | Array of conditions to be grouped with `OR`. |
 
 **Return Value:**
 
-`self` - Returns the instance of the class.
+`self` - Return instance of builder class.
+
+***
+
+### andGroup
+
+Adds a group of conditions combined with AND to the query.
+
+```php
+public andGroup(array $conditions): self
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$conditions` | **array** | Array of conditions to be grouped with AND. |
+
+**Return Value:**
+
+`self` - Return instance of builder class.
+
+***
+
+### Group Example
+
+Here is an example of how you can implement `orGroup` and `andGroup`.
+
+```php
+<?php 
+$builder->orGroup([
+	['column1' => ['operator' => '=', 'value' => 1]],
+	['column2' => ['operator' => '=', 'value' => 2]]
+]);
+```
+
+```php
+<?php 
+$builder->andGroup([
+	['column1' => ['operator' => '=', 'value' => 1]],
+	['column2' => ['operator' => '=', 'value' => 2]]
+]);
+```
+
+> *Note:*
+>
+> The binding columns must be the array key while the child elements must have only 2 index with keys `operator` and `value`.
+
+***
+
+### orBind
+
+To bind multiple `OR` group conditions and combined to a single group (e.g: `((foo = 1 OR bar = 2) OR (baz = 3 OR bra = 4))`).
+
+```php
+public orBind(array $group1, array $group2, string $bind = 'OR'): self
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$group1` | **array** | First group of conditions. |
+| `$group2` | **array** | Second group of conditions. |
+| `$bind` | **string** | The type of logical operator to use in binding groups together (default: 'OR').<br />- `AND` or `OR`. |
+
+**Return Value:**
+
+`self` - Return instance of builder class.
+
+***
+
+### andBind
+
+Adds two groups of conditions combined with AND condition.
+The `andBind` is similar with `orBind`, except that it uses `AND` operator to bind group conditions before combining to a single group (e.g: `((foo = 1 AND bar = 2) OR (baz = 3 AND bra = 4))`).
+
+```php
+public andBind(array $group1, array $group2, string $bind = 'AND'): self
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$group1` | **array** | First group of conditions. |
+| `$group2` | **array** | Second group of conditions. |
+| `$bind` | **string** | The type of logical operator to use in binding groups together (default: 'AND').<br />- `AND` or `OR`. |
+
+**Return Value:**
+
+`self` - Return instance of builder class.
+
+***
+
+### Binds Group Example
+
+Here is an example of how you can implement `orBind` and `andBind`.
+
+```php
+<?php 
+$builder->orBind([
+	['column1' => ['operator' => '=', 'value' => 1]],
+	['column2' => ['operator' => '=', 'value' => 2]]
+],
+[
+	['column3' => ['operator' => '=', 'value' => 3]],
+	['column4' => ['operator' => '=', 'value' => 4]]
+]);
+```
+
+```php
+<?php 
+$builder->andBind([
+	['column1' => ['operator' => '=', 'value' => 1]],
+	['column2' => ['operator' => '=', 'value' => 2]]
+],
+[
+	['column3' => ['operator' => '=', 'value' => 3]],
+	['column4' => ['operator' => '=', 'value' => 4]]
+]);
+```
+
+> *Note:*
+>
+> The binding columns must be the parent array key while the child elements should only have 2 elements with key `operator` and `value`.
 
 ***
 
@@ -452,19 +677,23 @@ public andor(string $column, mixed $operator, mixed $value, string $orColumn, mi
 Set query where `IN`  operator expression, allows you to specify array values to search.
 
 ```php
-public in(string $column, array $lists = []): self
+public in(string $column, array&lt;int,mixed&gt; $list): self
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$column` | **string** | column name |
-| `$lists` | **array<int, mixed>** | Array values to search |
+| `$column` | **string** | The column name. |
+| `$list` | **array<int,mixed>** | The expression values. |
 
 **Return Value:**
 
-`self` - Returns the instance of the class.
+`self` - Return instance of builder class.
+
+**Throws:**
+
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - If values is not provided.
 
 ***
 
@@ -473,28 +702,30 @@ public in(string $column, array $lists = []): self
 Set query operator FIND_IN_SET() expression.
 
 ```php
-public inset(string $search, string $operator = '=', array $list = []): self
+public inset(string $search, string $operator, array&lt;int,mixed&gt; $list): self
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$search` | **string** | search value |
-| `$operator` | **string** | allow specifying the operator for matching (e.g., > or =) |
-| `$list` | **array<int, mixed>** | of values |
+| `$search` | **string** | The search value. |
+| `$operator` | **string** | allow specifying the operator for matching (e.g., &gt; or =). |
+| `$list` | **array<int,mixed>** | The expression values. |
 
 **Return Value:**
 
-`self` - Returns the instance of the class.
+`self` - Return instance of builder class.
+
+**Throws:**
+
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - If values is not provided.
 
 ***
 
 ### returns
 
-Set a return type for query result `stmt`, `array` or `object`, the default return type is `object`.
-
-When the return type is set to `stmt` if query executed successfully method `total()`, `sum()`, `find()`, `select()`, `update()`, `delete()` or `execute()` will return true else false.
+To change the result return type to either `object` or `array`, call this method before finally executing `fetch`, `find` or `select` method. The default result response is `object`.
 
 ```php
 public returns(string $type): self
@@ -504,11 +735,46 @@ public returns(string $type): self
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$type` | **string** | Return type`stmt`, 'object' or 'array' |
+| `$type` | **string** | The result return type `object` or `array`. |
 
 **Return Value:**
 
-`self` - Returns the instance of the class.
+`self` - Return instance of builder class.
+
+**Throws:**
+
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - Throws if an invalid type is provided.
+
+***
+
+### debug
+
+To enable query string debugging, this allow you to preview the compiled query string ready to be executed.
+
+```php
+public debug(): self
+```
+
+**Return Value:**
+
+`self` - Return instance of builder class.
+
+> If this method is called in a production environment, the query string will be logged using the `debug` level.
+> Additionally when debug is enabled, execution will always fail and caching will be disabled.
+
+***
+
+### printDebug
+
+To get the query string debug information, this method will return an array containing the query string in `mysql` and `pdo` placeholder format. Additionally it will show the exactly the binding mapping for every column in the query string.
+
+```php
+public printDebug(): array<string,mixed>;
+```
+
+**Return Value:**
+
+`array<string,mixed>` - Return array containing query information.
 
 ***
 
@@ -533,34 +799,9 @@ public static datetime(string $format = 'datetime', ?int $timestamp = null): str
 
 ***
 
-### cache
-
-Cache the query result and return cached data when next user request the same content.
-To cache a query result, you must call cache method before `select()`, `find()`, or `total()` method is called.
-
-```php
-public cache(string $key, string $storage = null, DateTimeInterface|int $expiry = 7 * 24 * 60 * 60): self
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$key` | **string** | The cache storage key |
-| `$storage` | **string** | Optional storage name, but it's recommended to void storing large data in one file. |
-| `$expiry` | **DateTimeInterface&#124;int** | The cache expiry time in seconds or datetime interface (default: 7 days). |
-
-**Return Value:**
-
-`self` - Returns the instance of the class.
-
-> Returning statement doesn't support caching.
-
-***
-
 ### caching
 
-Caching provides the flexibility to enable or disable all caches universally. This is particularly useful for debugging or temporarily disabling database caching throughout your application without the need to manually remove `cache()` method calls from your all code. 
+The caching method provides the flexibility to enable or disable all caches universally. This is particularly useful for debugging or temporarily disabling database caching throughout your application without the need to manually remove `cache()` method calls from your all code. 
 
 To disable all database caching, simply call this method with a `false` parameter.
 
@@ -572,44 +813,73 @@ public caching(bool $enable): self
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$enable` | **bool** | The caching status action |
+| `$enable` | **bool** | The caching status action. |
 
 **Return Value:**
 
-`self` - Returns the instance of the class.
+`self` - Return instance of builder class.
 
-> By default caching is enabled once you call `cache()` method.
+> By default caching is enabled once you call `cache` method.
 
 ***
 
-### insert
+### cache
 
-Insert records into a database table, either by passing an array of key-value pairs with values, or by using the `set()` method to specify the data to update.
+To cache query result response, and return cached data when next user request the same content.
+In other for caching to work, you must call `cache` method before `select`, `find`, `execute`, `fetch`, `sum`, `average` or `total` method is called.
 
 ```php
-public insert(array<string,mixed> $values, bool $prepare = true): int|bool
+public cache(string $key, string $storage = null, DateTimeInterface|int $expiry = 7 * 24 * 60 * 60, string|null $folder = null): self
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$values` | **array<string,mixed>** | array of values to insert into table |
-| `$prepare` | **bool** | Use bind values and execute prepare statement instead of query |
+| `$key` | **string** | The cache storage key |
+| `$storage` | **string** | Optional storage name, but it's recommended to void storing large data in one file. |
+| `$expiry` | **DateTimeInterface&#124;int** | The cache expiry time in seconds or datetime interface (default: 7 days). |
+| `$folder` | **string&#124;null** | Optionally set a sub folder name to store caches. |
 
 **Return Value:**
 
-- `int` - Returns number of affected rows or false on failure.
-- `bool` - Returns true if method `returns()` was set to `stmt` and query execution succeed otherwise false.
+`self` - Return instance of builder class.
+
+> Using `stmt` method for returning preferred statement object doesn't support caching.
+> To use cache, you will need to manually implement it.
+
+***
+
+### insert
+
+To Insert records into a database table, either by passing an array of key-value pairs with values, or by using the `set()` method to specify the data to update.
+
+Additionally the insert method supports inserting array value to database, but `The array will be JSON encoded`, if wish to insert a serialized string, you should do that before passing to insert
+
+```php
+public insert(array<string,mixed> $values, bool $prepare = true): int
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$values` | **array<int,array<string,mixed>>** | An associative arrays,<br />each containing column names and corresponding values to insert into the table. |
+| `$prepare` | **bool** | Use bind values and execute prepare statement instead of query (default: true). |
+
+**Return Value:**
+
+`int` - Return number of affected rows or 0 if none was inserted.
 
 ***
 
 ### select
 
-Select records from database table.
+To select multiple records from table, call `select` method after you have prepared other conditional methods.
 
 ```php
 public select(array<int,string> $columns = ['*']): mixed
+
 ```
 
 **Parameters:**
@@ -620,13 +890,79 @@ public select(array<int,string> $columns = ['*']): mixed
 
 **Return Value:**
 
-`mixed` - returns selected rows or false on failure.
+`mixed` - Return selected rows, otherwise false on failure.
+
+***
+
+### fetch
+
+The `fetch` method allows you to retrieve records from table, by passing desired fetch mode and result type.
+
+```php
+public fetch(string $result = 'all', int $mode = FETCH_OBJ, array<int,string> $columns = ['*']): object|null|array|int|float|bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$result` | **string** | The fetch result type (next or all). |
+| `$mode` | **int** | The fetch result mode FETCH_*. |
+| `$columns` | **array<int,string>** | The table columns to return (default: *). |
+
+**Return Value:**
+
+`object|null|array|int|float|bool` - Return selected records, otherwise false on failure.
+
+**Throws:**
+
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If where method was not called.
+
+***
+
+### stmt
+
+Returns query prepared statement based on build up method conditions.
+
+```php
+public stmt(array<int,string> $columns = ['*']): \Luminova\Interface\DatabaseInterface;
+```
+
+> *Note:*
+>
+> To return prepared statement object don't need to call any of these methods `total`, `sum`, `find`, `select`, `average`, `fetch` or `execute`, calling them will result in `stmt` returning `NULL`.
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$columns` | **array<int,string>** | The table columns to return (default: *). |
+
+**Return Value:**
+
+`\Luminova\Interface\DatabaseInterface` - Return prepared statement object if query is successful otherwise null.
+
+**Example**
+
+To learn more about methods included in statement object see [Database driver documentation](/database/drivers.md).
+
+```php
+<?php
+$tbl = $builder->table('users');
+$tbl->where('pref_code', '=', 'PHP');
+$stmt = $tbl->stmt();
+
+// Do what you want with statement object 
+var_export($stmt->getAll());
+$stmt->free();
+```
 
 ***
 
 ### query
 
-Allows you to execute more complex query by building your own `SQL` query.
+Build a custom SQL query string to execute when calling the `execute` method.
+This allows you to execute more customized query string, it also support caching result response.
 
 ```php
 public query(string $query): self
@@ -640,7 +976,7 @@ public query(string $query): self
 
 **Return Value:**
 
-`self` - Returns the instance of the class.
+`self` - Return instance of builder class.
 
 **Throws:**
 
@@ -651,12 +987,13 @@ public query(string $query): self
 The below example show how you can use custom query builder to create and execute your SQL queries.
 
 ```php
+<?php
 $query = $builder->query("
 	UPDATE addresses 
 	SET address_default = (address_id = :address_id) 
 	WHERE address_customer_id = :customer_id
 ");
-$query->execute([
+$response = $query->execute([
 	'address_id' => $id,
 	'customer_id' => $customer_id
 ]);
@@ -666,30 +1003,31 @@ $query->execute([
 
 ### execute
 
-Executes your SQL query after constructing it in `query()` method.
+To execute an SQL query string that was previously constructed in the `query` method, tenable caching of query result, you must call `cache` method before calling the `execute` method. 
 
-To cache query result you must initialize `cache()` method before calling execute method. 
-It also allows you to pass your array placeholders, of key-value pairs with values to be executed with query.
+Optionally, it allows you to pass an array of placeholders, of key-value pairs with values to be executed with query.
 The key will be usage as placeholder name while value is the value to bind to the placeholder.
 
+It uses prepared statements if placeholder array is passed, otherwise, it will fallback to `query` execution, so ensure that values passed directly to the query are escaped.
+
 ```php
-public execute(array $placeholder = null, int $mode = RETURN_ALL): mixed
+public execute(?array $placeholder = null, int $mode = RETURN_ALL): mixed
 ```
-
-**Modes**
-
-- [Return Modes](/global/constants.md) - Database query return modes.
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$binds` | **array<string, mixed>** | binds placeholder to query |
-| `$mode` | **int** | The return type mode |
+| `$binds` | **array<string,mixed>&#124;null** | The placeholder and value to binds with query string (default: `NULL`). |
+| `$mode` | **int** | Result return mode RETURN_* (default: RETURN_ALL). |
 
 **Return Value:**
 
 `mixed` - Return result or prepared statement depending on `$mode` otherwise false on failed.
+
+**Modes**
+
+- [Constant database return modes](/global/constants.md) - To see reference on database return modes.
 
 **Throws:**
 
@@ -719,7 +1057,7 @@ public find(array<int,string> $columns = ['*']): mixed
 
 ### total
 
-Select total counts of records from database table.
+To calculate the total number of records table,
 
 ```php
 public total(string $column = '*'): int|bool
@@ -729,18 +1067,17 @@ public total(string $column = '*'): int|bool
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$column` | **string** | column to index counting (default: *) |
+| `$column` | **string** | The column to index calculation (default: *). |
 
 **Return Value:**
 
-- `int` - Returns total counts of records or false on failure.
-- `bool` - Returns true if `returns()` is set to `stmt` and query execution succeed else false.
+`int|bool` - Return total number of records in table, otherwise false if execution failed.
 
 ***
 
 ### sum
 
-Select total sum of records from database table.
+To calculate a total sum of a numeric column in the table.
 
 ```php
 public sum(string $column): int|float|bool
@@ -754,15 +1091,34 @@ public sum(string $column): int|float|bool
 
 **Return Value:**
 
-- `int|float` - Returns total sum of records or false on failure.
-- `bool` - Returns true if `returns()` is set to `stmt` and query execution succeed else false.
+`int|float|bool` - Return total sum columns, otherwise false if execution failed.
+
+**
+
+### average
+
+To calculate the average value of a numeric column in the table.
+
+```php
+public average(string $column): int|float|bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$column` | **string** | The column to calculate the average. |
+
+**Return Value:**
+
+`int|float|bool` - Return total average of columns, otherwise false if execution failed.
 
 ***
 
 ### update
 
-Update database table records with a new value.
-You can pass an array of key-value pairs with values to update method or use the `set()` method.
+To update database table records with a new data.
+You can pass an array of column key pairs with values to update method or use the `set` method stage your columns and values to update.
 
 ```php
 public update(array<string,mixed> $setValues = []): int|bool
@@ -776,49 +1132,33 @@ public update(array<string,mixed> $setValues = []): int|bool
 
 **Return Value:**
 
-- `int` - Returns number of affected rows or false on failure.
-- `bool` - Returns true if `returns()` is set to `stmt` and query execution succeed else false.
+`int` - Return number of affected rows.
 
-***
+**Throws:**
 
-### max
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - Throw if error occurred while updating.
 
-Set max query limit for `update` and `delete` queries statement.
-
-```php
-public max(int $limit): self
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$limit` | **int** | maximum number of records to update or delete  |
-
-**Return Value:**
-
-`self` - The class instance.
+> *Note:* 
+> 
+> Passing an array value to update field will be automatically convert to `JSON` string, so ensure that your table field is designed to accept json string before passing an array.
 
 ***
 
 ### delete
 
-Delete record from database table.
+To delete record from database table.
 
 ```php
-public delete(): int|bool
+public delete(): int
 ```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$limit` | **int** | row limit |
 
 **Return Value:**
 
-- `int` - Returns number of affected rows or false on failure.
-- `bool` - Returns true if `returns()` is set to `stmt` and query execution succeed else false.
+`int` - Return number of affected rows.
+
+**Throws:**
+
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - Throw if error occurs.
 
 ***
 
@@ -838,35 +1178,77 @@ public errors(): array
 
 ### transaction
 
-Begin a query transaction.
+Begins a transaction with optional read-only isolation level and `SAVEPOINT` for `PDO`.
 
 ```php
-public transaction(): self
+public transaction(int $flags = 0, ?string $name = null): bool
 ```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$flags` | **int** | Optional flags to set transaction properties. (Default: `0`).<br>No predefined flags for `PDO`, specify `4` to create read-only isolation. |
+| `$name` | **string&#124;null** | Optional name.<br> If provided in `PDO`, `SAVEPOINT` will be created with name instead. |
 
 **Return Value:**
 
-`self` - The class instance.
+`bool` - Return true if transaction started successfully, otherwise false.
+
+**Throws:**
+
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - Throws exception on `PDO` if failure to set transaction isolation level or create `savepoint`.
+
+> **Note:** 
+> - If `$flags` is set to `4` in `PDO`, which is equivalent to `MYSQLI_TRANS_START_READ_ONLY`, a read-only isolation level will be established. If the transaction starts successfully, it will return true.
+> 
+> - If `$name` is specified in `PDO`, a `SAVEPOINT` will be created. If the savepoint creation is successful, the transaction will return true.
 
 ***
 
 ### commit
 
-Commit a transaction.
+Commits a transaction.
 
 ```php
-public commit(): void
+public commit(int $flags = 0, ?string $name = null): bool
 ```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$flags` | **int** | Optional flags to set transaction properties. (Default: `0`).<br>Only supported in `MySQLi`. |
+| `$name` | **string&#124;null** | Optional name.<br>Only supported in `MySQLi`. |
+
+**Return Value:**
+
+`bool` - Returns true if the transaction was successfully committed, otherwise false.
 
 ***
 
 ### rollback
 
-Rollback a transaction to default on failure.
+Rolls back the current transaction or to a specific name while in `PDO` uses `SAVEPOINT`.
 
 ```php
-public rollback(): void
+public rollback(int $flags = 0, ?string $name = null): bool
 ```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$flags` | **int** | Optional flags to set transaction properties. (Default: `0`).<br/>Only supported in `MySQLi`. |
+| `$name` | **string&#124;null** | Optional name.<br/>If provided in `PDO`, rolls back to the `SAVEPOINT` named |
+
+**Return Value:**
+
+`bool` - Return true if rolled back was successful, otherwise false.
+
+**Throws:**
+
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - Throws exception on `PDO` if failure to create `SAVEPOINT`.
 
 ***
 
@@ -882,11 +1264,11 @@ public truncate(bool $transaction = true): bool
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$transaction` | **bool** | Use query transaction (default: true). |
+| `$transaction` | **bool** | Weather to use transaction (default: true). |
 
 **Return Value:**
 
-`bool` - Returns true if completed else false.
+`bool` - Return true truncation was completed, otherwise false.
 
 **Throws:**
 
@@ -894,23 +1276,60 @@ public truncate(bool $transaction = true): bool
 
 ***
 
-### exec
+### temp
 
-Execute an SQL statement and return the number of affected rows.
+Creates a temporary table and copies all records from the main table to the temporary table.
 
 ```php
-public exec(string $query): int|bool
+public temp(bool $transaction = true): bool
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$query` | **string** | SQL query statement to execute. |
+| `$transaction` | **bool** | Whether to use a transaction (default is true). |
 
 **Return Value:**
 
-`int|bool` - Returns number of affected rows or false on failure.
+`bool` - Returns true if the operation was successful; false otherwise.
+
+**Throws:**
+
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - Throws an exception if a database error occurs during the operation.
+
+**Example**
+
+```php
+<?php
+if ($builder->table('users')->temp()) {
+   $data = $builder->table('temp_users')->select();
+}
+```
+
+> **Note:**
+> Temporary tables are automatically deleted when the current session ends.
+> To query the temporary table, use the `temp_` prefix before the main table name.
+
+***
+
+### exec
+
+Execute an `SQL` query string and return the number of affected rows.
+
+```php
+public exec(string $query): int
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$query` | **string** | The `SQL` query string to execute. |
+
+**Return Value:**
+
+`int` - Return number affected rows.
 
 **Throws:**
 
@@ -920,64 +1339,55 @@ public exec(string $query): int|bool
 
 ### drop
 
-Drop table from database
+Drop database table if table exists.
 
 ```php
-public drop(): int|bool
-```
-
-**Return Value:**
-
-`int|bool` - Returns number of affected rows or false on failure.
-
-**Throws:**
-
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - Throws if execution encountered error.
-
-***
-
-### create
-
-Create table from table Scheme model.
-
-```php
-public create(\Luminova\Database\Scheme $scheme): int|bool
+public drop(bool $transaction = false): bool
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$scheme` | **\Luminova\Database\Scheme** | table column instance |
+| `$transaction` | **bool** | Whether to use a transaction (default: false). |
 
 **Return Value:**
 
-`int|bool` - Returns number of affected rows or false on failure.
+`bool` - Return true if table was successfully dropped, false otherwise.
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - Throws if execution encountered error.
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - Throws if error occurs.
 
 ***
 
-### scheme
+### dropTemp
 
-Get table scheme mode class instance.
+Drop a temporal database table if table exists.
 
 ```php
-public scheme(): \Luminova\Database\Scheme
+public dropTemp(bool $transaction = false): bool
 ```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$transaction` | **bool** | Whether to use a transaction (default: false). |
 
 **Return Value:**
 
-`Scheme` - Returns scheme model class instance.
+`bool` - Return true if table was successfully dropped, false otherwise.
+
+**Throws:**
+
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - Throws if error occurs.
 
 ***
 
 ### manager
 
-Retrieves the database manager class instance.
-Returns a singleton instance of the Manager class initialized with the current database connection.
+Retrieves the database manager class shared instance, initialized with the current database connection.
 
 ```php
 public manager(): \Luminova\Database\Manager
@@ -985,11 +1395,11 @@ public manager(): \Luminova\Database\Manager
 
 **Return Value:**
 
-`Manager` - Database manager class instance.
+`\Luminova\Database\Manager` - Database manager class instance.
 
 **See Also:**
 
-*  - [Database Manager](/database/manager.md) - Database manager class.
+[Database Manager](/database/manager.md) - Database manager documentation.
 
 ***
 

@@ -357,7 +357,7 @@ public remove(string $key): self
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** |  |
+| `$key` | **string** | The key to remove. |
 
 **Return Value:**
 
@@ -410,8 +410,14 @@ public has(string $key): bool
 To start a session, simply call the `start()` method. It initializes the session if it's not already started.
 
 ```php
-public start(): void
+public start(?string $sid = null): void
 ```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$sid` | **string&#124;null** | Optional specify session identifier from `PHP` function `session_id`. |
 
 > This method replaces the default PHP `session_start()`, but with additional configuration.
 
@@ -481,12 +487,14 @@ Initializes the session storage driver of your choice.
 
 ```php
 $session = new Session(new SessionManager());
+$session->start();
 ```
 
 Cookie manager, this manager will store your user information in cookie storage which is client-side storage.
 
 ```php
 $session = new Session(new CookieManager());
+$session->start();
 ```
 
 > By default access to `JavaScript` is not allowed on and cookie should only be transmitted over secure `HTTPS`  connection.

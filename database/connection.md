@@ -10,13 +10,19 @@ Initializes Database Connections with efficient data management, database connec
 
 ## Introduction
 
-This class allows you to initiate a database connection, Comprehensive Guide to Using the Database Connection Class for Efficient Data Management to get started, see [Database Example](/database/examples.md).
+Databases are crucial in application development for storing and managing data. The Luminova `Database` class simplifies initiating a database connection, enabling efficient data management. For a comprehensive guide, see [Database Example](/database/examples.md).
+
+With Luminova, establishing a database connection is easy and requires minimal configuration. Simply define your database `host-name`, `username`, and `password` in the `ENV` file.
+
+To allow connections through the CLI, specify your `MYSQL` socket path in the `ENV` file using `database.mysql.socket.path`. For `SQLITE`, specify your database path and file in `database.sqlite.path`, such as `writeable/database/production.sqlite`, ensuring it is located in `/writeable/database/`.
+
+***
 
 * Class namespace: `\Luminova\Database\Connection`
 
 ## Properties
 
-Database connection instance
+Database connection driver instance.
 
 ```php
 protected \Luminova\Interface\DriversInterface|null $db
@@ -28,13 +34,11 @@ protected \Luminova\Interface\DriversInterface|null $db
 
 ### constructor
 
-Initializes the Connection class constructor based on configuration in the .env file.
+Initializes the Connection class constructor based on configuration in the `ENV` file.
 
 ```php
 new Connection()
 ```
-
-* The constructor method is **final**.
 
 **Throws:**
 

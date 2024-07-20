@@ -20,12 +20,30 @@ Similarly, requests to `https://example.com/console/foo` or any URI starting wit
 
 > Ensure that you do not have any custom web routes that start with the paths registered in your `public/index.php` file, such as `api` or `console`, to avoid conflicts with the designated API and console routes.
 
+***
+
 ### Registering Routes Context
 
 To register a route context, it can be done in `public/index.php` and also create the handler PHP file in `routes/`.
 The handler file name must match with routing context name registered in `context` in your `public/index.php`, see below examples.
 
-In `public/index.php`, add a route context, to `$app->router->context()` method for routing. The context method accepts arguments of the `\Luminova\Routing\Context` class instance. You can register as many routes as needed, ensuring that each route name is unique. It's important to ensure that the URI start segments are also unique and match your desired route handler to avoid conflicts.
+In `public/index.php`, add a route context, to `$app->router->context()` method for routing. The context method accepts arguments of the `\Luminova\Routing\Context` class instance. 
+You can register as many routes as needed, ensuring that each route name is unique. It's important to ensure that the URI start segments are also unique and match your desired route handler to avoid conflicts.
+
+***
+
+### Routes Attribute
+
+You can register routes and context using `PHP8` attribute, 
+to use attributes first you will have to enable the feature in `ENV` file by changing the value of `feature.route.attributes` to `enable`.
+
+Once done you can now use `Route` attribute before methods and use `Error` attribute before class declaration.
+
+***
+
+### Demos
+
+**Without Attribute**
 
 ```php 
 <?php
@@ -48,6 +66,18 @@ $app->router->context(new Context('panel', [ViewErrors::class, 'myErrorMethodNam
 > *IMPORTANT*
 > 
 > When creating custom routes, avoid changing the default web route `Context::WEB`. Changing this name may lead to unexpected errors in your application.
+
+**Using Attribute**
+
+```php
+<?php
+use \Luminova\Attributes\Error;
+
+#[Error('panel', onError: [ViewErrors::class, 'myErrorMethodName')]
+class PanelController extends BaseController
+{
+}
+```
 
 ***
 
@@ -84,7 +114,7 @@ Implementation example in closure.
 
 ```php 
 <?php
-$router->middleware('GET|POST', '/.*', function (): int {
+$router->middleware('GET|POST', '/.*', static function (): int {
     if(doAuthenticatedPassed()){
         return STATUS_OK;
     }
@@ -93,6 +123,19 @@ $router->middleware('GET|POST', '/.*', function (): int {
 ```
 
 > You can also implement middleware in `bind` method for group capture.
+
+**Using Attribute**
+
+```php
+<?php
+use \Luminova\Attributes\Route;
+
+#[Route('/.*', methods: ['GET', 'POST']), middleware: 'before']
+public function middleware(): int
+{
+     //...
+}
+```
 
 ***
 
@@ -111,9 +154,22 @@ It can also be done using closure.
 
 ```php
 <?php
-$router->get('/', function(Application $app): int {
+$router->get('/', static function(Application $app): int {
     return $app->view("index")->render();
 });
+```
+
+**Using Attribute**
+
+```php
+<?php
+use \Luminova\Attributes\Route;
+
+#[Route('/', methods: ['GET'])]
+public function index(): int
+{
+    //...
+}
 ```
 
 ***
@@ -131,7 +187,20 @@ Define the route using a regular expression pattern for the username after `user
     $router->get('/user/([a-zA-Z0-9-]+)', 'UserController::profile');
 ```
 
-The above allows you to capture dynamic usernames from the URL and route them to the appropriate controller method for processing and displaying user profiles. 
+**Using Attribute**
+
+```php
+<?php
+use \Luminova\Attributes\Route;
+
+#[Route('/user/([a-zA-Z0-9-]+)', methods: ['GET'])]
+public function profile(): int
+{
+     //...
+}
+```
+
+The above examples allows you to capture dynamic usernames from the URL and route them to the appropriate controller method for processing and displaying user profiles. 
 
 ***
 
@@ -144,6 +213,19 @@ Here's an example of defining a route for updating user profiles using a POST re
 ```php
 <?php
 $router->post('/user', 'UserController::update');
+```
+
+**Using Attribute**
+
+```php
+<?php
+use \Luminova\Attributes\Route;
+
+#[Route('/user', methods: ['POST'])]
+public function update(): int
+{
+    //...
+}
 ```
 
 ***
@@ -161,6 +243,25 @@ $router->bind('/blog', function(Router $router, Application $app) {
 	$router->get('/', 'UserController::blogs');
 	$router->get('/id/([a-zA-Z0-9]+)', 'UserController::blog');
 });
+```
+
+**Using Attribute**
+
+```php
+<?php
+use \Luminova\Attributes\Route;
+
+#[Route('/blog', methods: ['POST'])]
+public function blogs(): int
+{
+    //...
+}
+
+#[Route('/blog/id/([a-zA-Z0-9]+)', methods: ['POST'])]
+public function blog(): int
+{
+    //...
+}
 ```
 
 ***
@@ -199,13 +300,13 @@ use \App\Controllers\Application;
 $app->setFolder('panel');
 		 
 $router->bind('/admin', function(Router $router, Application $app) {
-     // In bind global scope
-     $app->setFolder('panel');
+    // In bind global scope
+    $app->setFolder('panel');
 
-     $router->get('/', function() use ($app) {
-          //Or optionally before a specific view
-          $app->setFolder("panel")->view("foo")->render();
-     });
+    $router->get('/', function() use ($app) {
+        //Or optionally before a specific view
+        $app->setFolder("panel")->view("foo")->render();
+    });
 });
 ```
 
@@ -261,6 +362,25 @@ $router->group("users", function(Router $router, Application $app){
 });
 ```
 
+**Using Attribute**
+
+```php
+<?php
+use \Luminova\Attributes\Route;
+
+#[Route('users', group: 'users', middleware: 'before')]
+public function middleware(): int
+{
+    //...
+}
+
+#[Route('foo', group: 'users')]
+public function foo(): int
+{
+    //...
+}
+```
+
 *To execute the above example command `foo`, use the following command in the terminal:*
 
  ```bash
@@ -286,8 +406,21 @@ This example shows how you can create a route with dynamic segments.
 use \Luminova\Routing\Router;
 
 $router->group("users", function(Router $router){
-	$router->command('/profile/name/(:mixed)', 'UserCommandController::profile');
+	$router->command('profile/name/(:mixed)', 'UserCommandController::profile');
 });
+```
+
+**Using Attribute**
+
+```php
+<?php
+use \Luminova\Attributes\Route;
+
+#[Route('profile/name/(:mixed)', group: 'users')]
+public function profile(): int
+{
+    //...
+}
 ```
 
 *To execute the registered command route `user`, use the following command in the terminal:*
@@ -339,11 +472,11 @@ Define a command route with multiple dynamic segments.
 <?php
 use \Luminova\Routing\Router;
 $router->group("blogs", function((Router $router){
-     $router->command('/blog/id/(:int)/title/(:string)', function(string $title, int $id): int {
-          echo "Blog: {$id}, Title: {$title}";
-               
-          return STATUS_SUCCESS;
-     });
+    $router->command('/blog/id/(:int)/title/(:string)', function(string $title, int $id): int {
+        echo "Blog: {$id}, Title: {$title}";
+        
+        return STATUS_SUCCESS;
+    });
 });
 ```
 
@@ -357,47 +490,48 @@ This `UserController` class is an example of HTTP controller class that extends 
 
 ```php
 <?php
+// app/Controllers/UserController.php
+
 namespace App\Controllers;
+
 use Luminova\Base\BaseController;
 
 class UserController extends BaseController
 {
-     public function profile(string $username): void
-     {
-          /**
-           * Setting folder here is not a good practice, this is just for an example.
-           * Always create a new controller class to handle views based on custom folder and define your `setFolder` in `onCreate` or `__construct` initailzation method.
-           */
-          $this->app->setFolder('profile')->view('foo')->render([
-               'username' => $username
-          ]);
-     }
+    public function profile(string $username): int
+    {
+        /**
+         * Setting folder here is not a good practice, this is just for an example.
+         * Always create a new controller class to handle views based on custom folder and define your `setFolder` in `onCreate` or `__construct` initailzation method.
+         */
+        return $this->app->setFolder('profile')->view('foo')->render([
+            'username' => $username
+        ]);
+    }
 
-     public function blog(string $id): void
-     {
-          $this->view('foo')->render([
-               'blog_id' => $id
-          ]);
-     }
+    public function blog(string $id): void
+    {
+        return $this->view('foo')->render([
+            'blog_id' => $id
+        ]);
+    }
 
-     public function blogs(): void
-     {
-          $this->view('blogs')->render();
-     }
+    public function blogs(): int
+    {
+        return $this->view('blogs')->render();
+    }
 
-     public function update(): void
-     {
-          if ($this->request->isPost()) {
-               $name = escape($this->request->getPost("name"));
-               response(200)->json(['message' => 'okay']);
+    public function update(): int
+    {
+        if ($this->request->isPost()) {
+            $name = escape($this->request->getPost("name"));
+            // Your update code here
 
-               return STATUS_SUCCESS;
-          }
+            return response(200)->json(['message' => 'okay']);
+        }
 
-          response(405)->json(['message' => 'error']);
-
-          return STATUS_ERROR;
-     }
+        return response(405)->json(['message' => 'error']);
+    }
 }
 ```
 
@@ -409,30 +543,39 @@ This `CommandController` class is an example of a `CLI` controller that extends 
 
 ```php
 <?php 
+// app/Controllers/BlogCommandController.php
+
 namespace App\Controllers;
+
 use Luminova\Base\BaseCommand;
 
 class BlogCommandController extends BaseCommand 
 {
-     protected string $group = 'blogs';
-     //...
-          
-     public function middleware():int
-     {
-          return STATUS_SUCCESS;
-     }
+    protected string $group = 'blogs';
+    //...
+        
+    public function help(array $helps): int
+    {
+        return STATUS_SUCCESS;
+    }
 
-     public function foo(): int
-     {
-          echo $this->getOption('bar');
-          var_export($this->getQueries());
-          return STATUS_SUCCESS;
-     }
+    public function middleware():int
+    {
+        return STATUS_SUCCESS;
+    }
 
-     public function name(string $id, string $title): int
-     {
-          echo "Blog: {$id}, Title: {$title}";
-          return STATUS_SUCCESS;
-     }
+    public function foo(): int
+    {
+        echo $this->getOption('bar');
+        var_export($this->getQueries());
+
+        return STATUS_SUCCESS;
+    }
+
+    public function name(string $id, string $title): int
+    {
+        echo "Blog: {$id}, Title: {$title}";
+        return STATUS_SUCCESS;
+    }
 }
 ```

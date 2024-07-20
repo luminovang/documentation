@@ -315,6 +315,29 @@ function func(string|null $context = null, mixed $params): mixed
 
 ***
 
+### shared
+
+Temporarily stores and retrieves values within the same scope.
+It allows you to set and get shared values. It uses a static array to store the shared preference, which persists across multiple calls to the function within the same script execution.
+
+```php
+function shared(string $key, mixed $value = null, mixed $default = null): mixed
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$key` | **string** | The key to identify the value. |
+| `$value` | **mixed** | The value to store (optional). |
+| `$default` | **mixed** | The default value return if key not found (default: NULL). |
+
+**Return Value:**
+
+`mixed` - Returns the value associated with the key, or default value if the key does not exist.
+
+***
+
 ### browser
 
 Get the information about user's browser, based on the user-agent string.
@@ -950,6 +973,30 @@ function get_mime(string $filename): string|false
 **Return Value:**
 
 `string|false` - Return the content type in MIME format, otherwise false.
+
+***
+
+### get_column
+
+Return the values from a single column in the input array or an object.
+
+```php
+function get_column(array|object $from, null|string|int $property, null|string|int $index = null): array 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$from` | **array&#124;object** | Array or an object to extract column values from. |
+| `$property` | **null&#124;string&#124;int** | The column property key to extract. |
+| `$index` | **null&#124;string&#124;int** | An optional column to use as the index/keys for the returned array. |
+
+**Return Value:**
+
+`array` - Returns an array of values representing a single column from the input array or object.
+
+> This function is a wrapper for  `PHP` `array_column`, but with additional optimization to handle both `object` or an `array` column.
 
 ***
 

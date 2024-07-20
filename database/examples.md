@@ -52,19 +52,17 @@ $response = $tbl->select(['*']);
 
 ### Statement
 
-To return a prepared statement, you will need to call `returns` method passing `stmt` as the return type before executing `CRUD` method.
+To return a prepared statement, you don't need to call any `CRUD` method.
 
 ```php
 <?php
-use \Luminova\Database\QueryBuilder;
+use \Luminova\Database\Builder;
 
-$builder = QueryBuilder::getInstance();
-
+$builder = Builder::getInstance();
 $tbl = $builder->table('users');
-$tbl->returns('stmt');
-if($tbl->select(['*'])){
-	$statement = $tbl->stmt()
-}
+$statement = $tbl->stmt(['*']);
+
+var_export($statement->getNext());
 ```
 
 ***
@@ -79,9 +77,9 @@ Utilizing database result caching in Luminova framework is straightforward and p
 
 ```php
 <?php
-use \Luminova\Database\QueryBuilder;
+use \Luminova\Database\Builder;
 
-$builder = QueryBuilder::getInstance();
+$builder = Builder::getInstance();
 
 $tbl = $builder->table('users');
 $tbl->cache('my_cache_key', 'optional_storage_users', 3600);
@@ -122,9 +120,9 @@ $conn = Connection::getInstance()->database()->raw();
 
 ```php 
 <?php 
-use \Luminova\Database\QueryBuilder;
+use \Luminova\Database\Builder;
 
-$conn = QueryBuilder::getInstance()->db()->raw();
+$conn = Builder::getInstance()->db()->raw();
 ```
 
 ***

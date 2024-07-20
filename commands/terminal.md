@@ -35,7 +35,7 @@ new Terminal()
 Show a waiting countdown, intentionally freeze screen while waiting or ask user for a key press to continue.
 
 ```php
-protected static waiting(int $seconds, bool $countdown = false): void
+protected static waiting(int $seconds, bool $countdown = false, string $message='...'): void
 ```
 
 Examples
@@ -44,8 +44,9 @@ Examples
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$seconds` | **int** | Number of seconds for waiting |
-| `$countdown` | **bool** | Show waiting countdown |
+| `$seconds` | **int** | Number of seconds for waiting. |
+| `$countdown` | **bool** | Show waiting countdown. |
+| `$message` | **string** | Waiting message instruction. |
 
 ***
 
@@ -179,6 +180,50 @@ protected static chooser(string $text, array $options, bool $required = false): 
 
 ***
 
+### password
+
+Prompts the user to enter a password, with options for retry attempts and a timeout.
+
+```php
+protected static password(string $message = 'Enter Password', int $retry = 3, int $timeout = 0): string
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$prompt` | **string** | The message to display when prompting for the password.. |
+| `$retry` | **int** | The number of retry attempts if the user provides an empty password (default: 3). |
+| `$timeout` | **int** | The number of seconds to wait for user input before displaying an error message (default: 0). |
+
+**Return Value:**
+
+`string` - Return the entered password.
+
+***
+
+### timeout
+
+Execute a callback function after a specified timeout when no input or output is received.
+
+```php
+public static timeout(Closure $callback, int $timeout = 0, mixed $stream = STDIN): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$callback` | **Closure** | The callback function to execute on timeout. |
+| `$timeout` | **int** | Timeout duration in seconds. If <= 0, callback is invoked immediately (default: 0). |
+| `$stream` | **mixed** |Optional stream to monitor for activity (default: STDIN). |
+
+**Return Value:**
+
+`bool` - Returns true if the timeout occurred and callback was executed, otherwise false.
+
+***
+
 ### wrap
 
 Wrap it with padding left and width to a maximum
@@ -191,13 +236,13 @@ public static wrap(string|null $string = null, int $max, int $leftPadding): stri
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$string` | **string&#124;null** | string to write |
-| `$max` | **int** | maximum width |
-| `$leftPadding` | **int** | left padding |
+| `$string` | **string&#124;null** | The text to wrap. |
+| `$max` | **int** | The maximum width to use. |
+| `$leftPadding` | **int** |The left padding to apply. |
 
 **Return Value:**
 
-`string` - Wrapped message.
+`string` - Return wrapped text with padding left and width.
 
 ***
 
@@ -213,12 +258,12 @@ public static card(string $text, int|null $padding = null): string
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$text` | **string** | string to pad |
-| `$padding` | **int&#124;null** | maximum padding |
+| `$text` | **string** | The text display in card. |
+| `$padding` | **int&#124;null** | Optional maximum padding to use. |
 
 **Return Value:**
 
-`string` - Return beautiful card text.
+`string` - Return beautiful card with text.
 
 ***
 
@@ -267,7 +312,7 @@ protected static getHeight(int $default = 24): int
 Get user input from the shell, after requesting for user to type or select an option.
 
 ```php
-protected static input(string|null $prompt = null): string
+protected static input(string|null $prompt = null, bool $useFopen = false): string
 ```
 
 **Parameters:**
@@ -275,6 +320,7 @@ protected static input(string|null $prompt = null): string
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$prompt` | **string&#124;null** | You may specify a string to prompt the user after they have typed. |
+| `$useFopen` | **bool** | Optional use file-read, this opens `STDIN` stream in read-only binary mode (default: false).<br/>This creates a new file resource. |
 
 **Return Value:**
 
@@ -294,8 +340,32 @@ protected static validate(string $value, array $rules): bool
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$value` | **string** | Input value |
-| `$rules` | **array** | Validation rules |
+| `$value` | **string** | The user Input value. |
+| `$rules` | **array** | The validation rules, array key `input` value `ruels` (e.g. ['input' => 'required|email']). |
+
+**Return Value:**
+
+`bool` - Return true if validation succeeded, false if validation failed.
+
+***
+
+### visibility
+
+Toggles the terminal visibility of user input.
+
+```php
+protected static visibility(bool $visibility = true): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$visibility` | **bool** | True to show input, False to hide input (default: true). |
+
+**Return Value:**
+
+`bool` - Return true if visibility toggling was successful, false otherwise.
 
 ***
 
@@ -387,6 +457,23 @@ public static print(string $text, string|null $foreground = null, string|null $b
 | `$foreground` | **string&#124;null** | Optional foreground color name |
 | `$background` | **string&#124;null** | Optional background color name |
 
+### table
+
+Prints a formatted table header abd rows to the console.
+
+```php
+table(array $headers, array $rows, ?string $headerColor = null, int $headerPadding = 1): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$headers` | **array<int,string>** | The headers for the table columns. |
+| `$rows` | **array<string,string>** | The rows of data to display in the table. |
+| `$headerColor` | **string&#124;null** | The table heading columns text color. |
+| `$headerPadding` | **int** | Optional table heading columns padding. |
+
 ***
 
 ### fwrite
@@ -403,6 +490,27 @@ protected static fwrite(string $text, resource $handle = STDOUT): void
 |-----------|------|-------------|
 | `$text` | **string** | string to output or write |
 | `$handle` | **resource** | resource handler |
+
+***
+
+### oops
+
+The `oops` method can be use to display default error message "Unknown command "foo" not found".
+
+```php
+protected static oops(string $command, string|null $color = 'red'): int
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$command` | **string** | The executed command. |
+| `$color` | **string&#124;null** | The command text color (default: red) |
+
+**Return Value**
+
+`int` - Return status code `STATUS_ERROR`.
 
 ***
 
@@ -567,7 +675,7 @@ public static getCaller(): string|null
 ### getOption
 
 Get options value from command arguments.
-If option flag is passed with an empty value true will be return else default or false.
+If option key is passed with an empty value true will be return otherwise the default value.
 
 ```php
 public static getOption(string $key, string $default = false): mixed
@@ -577,12 +685,47 @@ public static getOption(string $key, string $default = false): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | Option key to retrieve |
-| `$default` | **string** | Default value to return (default: false) |
+| `$key` | **string** | Option key to retrieve. |
+| `$default` | **string** | Default value to return (default: false). |
 
 **Return Value:**
 
-`array` - Option value or default value.
+`mixed` - Return option value, true if empty value, otherwise default value.
+
+***
+
+### getAnyOption
+
+Get options value from command arguments with an alias key to lookup if main key isn't found.
+If option key is passed with an empty value true will be return otherwise the default value.
+
+```php
+public static getAnyOption(string $key, string $alias, mixed $default = false): mixed
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$key` | **string** | Option key to retrieve. |
+| `$alias` | **string** | Option key alias to retrieve. if main key is not found. |
+| `$default` | **string** | Default value to return (default: false). |
+
+**Return Value:**
+
+`array` - Return option value, true if empty value, otherwise default value.
+
+**Example**
+
+Assume you have a command, such as `php index.php my-command --which=a`. If you want to also accept an alias of `--which` as `-w`, then `getAnyOption` is what you need.
+
+```php
+<?php
+$which = $this->getAnyOption('which', 'w');
+echo $which;
+```
+
+In this example, `getAnyOption('which', 'w')` checks for both `--which` and `-w`, allowing you to use either option in your command.
 
 ***
 
@@ -596,7 +739,7 @@ public static getOptions(): array
 
 **Return Value:**
 
-`array` - Options and arguments passed to cli as array.
+`array` - Return Options and arguments passed to cli as array.
 
 ***
 

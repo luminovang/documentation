@@ -98,3 +98,4 @@ Global constant variables are accessible from any part of the application, makin
 - `RETURN_COUNT` *(int)*: - Fetch number of affected rows.
 - `RETURN_COLUMN` *(int)*: - Fetch all result columns.
 - `RETURN_ALL` *(int)*: - Fetch all results.
+- `RETURN_STMT` *(int)*: - Return prepared statement.

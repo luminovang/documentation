@@ -33,34 +33,56 @@ if($upload){
 
 ***
 
-This example demonstrates how you can upload large file using chunk method and browser-side chunking like [Plupload](https://www.plupload.com/).
+This example demonstrates how you can upload large file using chunk method and browser-side chunking like `Plupload`.
 
 ```php
-<?php 
-$file = $this->request->getFile('file');
-$file->setConfig([
-    'upload_path' => root(__DIR__, 'writeable/storages/foo/'),
-    'chunk_length' => 5242880 //The length of each chunk in bytes (default is 5mb)
-]);
+<?php
+namespace App\Controllers;
 
-$upload = Uploader::chunk($file, null, 1, 3);
+use \Luminova\Base\BaseController;
+use \Luminova\Storages\Uploader;
 
-if(is_bool($upload) && $upload === true){
-    echo 'Upload was successful';
-}elseif(is_bool($upload) && $upload === false){
-    echo 'Upload failed';
-}else{
-    echo 'Upload chunk part completed';
+class UploadController extends BaseController 
+{
+	public function upload(): int
+	{
+		$file = $this->request->getFile('file');
+		if($file === false){
+			echo 'Invalid file';
+			return STATUS_ERROR;
+		}
+		
+		$file->setConfig([
+			'upload_path' => root('writeable/storages/foo/'),
+			'chunk_length' => 5242880 //The length of each chunk in bytes (default is 5mb)
+		]);
+
+		$chunk = (int) strict($this->request->getPost("chunk", 0), 'int');
+		$chunks = (int) strict($this->request->getPost("chunks", 0), 'int');
+	
+		$status = Uploader::chunk($file, null, $chunk, $chunks);
+		if($status === true){
+			echo 'File was uploaded';
+		}elseif(is_int($status)){
+			// Part of file has been uploaded
+		}else{
+			echo 'Upload has failed.'
+			return STATUS_ERROR;
+		}
+		return STATUS_SUCCESS;
+	}
 }
 ```
+
 > Each request to backend should contain total number of chunk parts, and the current index of current chunk uploading.
 
 ***
+
 To write a content to file.
 
 ```php
 <?php 
-$upload = Uploader::write(root(__DIR__, 'writeable/storages/foo/'), 'Hello world');
+$upload = Uploader::write(root('writeable/storages/foo/'), 'Hello world');
 
 if($upload){
     echo 'Upload was successful';
@@ -73,7 +95,7 @@ if($upload){
 
 ### upload
 
-Upload file to server.
+Upload an entire file to server, by first reading the file from temp, and slowing writing to destination in chunk.
 
 ```php
 public static upload(\Luminova\Http\File $file, string|null $path = null): bool
@@ -98,7 +120,7 @@ public static upload(\Luminova\Http\File $file, string|null $path = null): bool
 
 ### move
 
-Moves an uploaded file to a new location using traditional PHP `move_uploaded_file`.
+Moves an uploaded file from temp to it new location using traditional PHP `move_uploaded_file`.
 
 ```php
 public static move(\Luminova\Http\File $file, string|null $path = null): bool
@@ -124,9 +146,10 @@ public static move(\Luminova\Http\File $file, string|null $path = null): bool
 ### chunk
 
 Uploads a file to the server using stream file upload, allowing large files to be uploaded in chunks.
+This can be implemented with client side `JavaScript` like [Plupload](https://www.plupload.com/) or other that support chunk uploads.
 
 ```php
-public static chunk(\Luminova\Http\File $file, string|null $path = null, int $chunk = 1, int $chunks = 1): bool|int
+public static chunk(\Luminova\Http\File $file, string|null $path = null, int $chunk = 0, int $chunks = 0): bool|int
 ```
 
 **Parameters:**
@@ -135,8 +158,8 @@ public static chunk(\Luminova\Http\File $file, string|null $path = null, int $ch
 |-----------|------|-------------|
 | `$file` | **\Luminova\Http\File** | Instance of file being uploaded. |
 | `$path` | **string&#124;null** | The directory path where the file will be stored. |
-| `$chunk` | **int** | The current chunk part index (start: 1). |
-| `$chunks` | **int** | The total number of chunks parts the server will be expecting (start: 1). |
+| `$chunk` | **int** | The current chunk part index (start: 0). |
+| `$chunks` | **int** | The total number of chunks parts the server will be expecting (start: 0). |
 
 **Return Value:**
 
@@ -150,10 +173,10 @@ public static chunk(\Luminova\Http\File $file, string|null $path = null, int $ch
 
 ### write
 
-Save contents to a file.
+Wite contents to a file, this can be either a string or resource (e.g., a stream), use `stream_get_contents` to read the entire stream into a string before writing it.
 
 ```php
-public static write(string $filename, string $contents): bool
+public static write(string $filename, string|resource $contents): bool
 ```
 
 **Parameters:**
@@ -161,7 +184,7 @@ public static write(string $filename, string $contents): bool
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$filename` | **string** | The file path and and name the to put content. |
-| `$contents` | **string** | The contents to be written to the file. |
+| `$contents` | **string&#124;resource** | The contents to be written to the file. |
 
 **Return Value:**
 

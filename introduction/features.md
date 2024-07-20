@@ -1,10 +1,10 @@
-# Features
+# Features Customization
 
 ***
 
 ## Overview
 
-Framework's features customization offers numerous useful features, but we understand that not all may be necessary for some developers or applications, while some may add extra performance overhead.
+Luminova offers numerous useful features, but we understand that not all may be necessary for some developers or applications, while some may add extra performance overhead.
 
 ***
 
@@ -21,6 +21,31 @@ To address this, we provide a method for enabling or disabling specific features
 ## Setups
 
 You can configure the features in your environment variable file `/.env`, by simply specifying `enable` or `disable` as the value for the variable key.
+
+***
+
+### PHP Attribute 
+
+`feature.route.attributes` When enabled, you can define your route before the method using `PHP 8` attribute to simplifies the creation of routes.
+
+```php 
+<?php 
+namespace App\Controllers;
+
+use Luminova\Base\BaseController;
+use Luminova\Attributes\Route;
+use Luminova\Attributes\Error;
+
+#[Error('web', pattern: '/.*', onError: [ViewErrors::class, 'onWebError'])]
+class MyController extends BaseController
+{
+	#[Route('/', methods: ['GET', 'POST'])]`)
+	public function index(SomeClass $class): int 
+	{
+		// your code here
+	}
+}
+```
 
 ***
 

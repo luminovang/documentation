@@ -4,26 +4,40 @@
 
 ## Overview
 
-Utilize the Luminova router class to seamlessly capture and process both API and web page requests within your controller class.
+Luminova's routing module simplifies capturing, processing, and executing both web page and CLI command requests within your controller class.
 
 ***
 
 ## Introduction
 
-Luminova's framework routes serve as efficient handlers for capturing URI patterns upon requests. They simplify routing configurations by enabling the definition of URI matching patterns, methods, and closures for view rendering.
+Routing is a crucial part of the Luminova framework, responsible for receiving, matching, and handling URL requests to ensure the appropriate controller method is executed based on the request URL. Luminova provides an efficient routing module and methods for both `HTTP` and `CLI`  capturing, matching, command, and authenticating URI patterns with middleware upon requests. It simplifies routing initialization by using [Routing Context](/routing/view-context.md) to match the first URL prefix and load only the necessary route to execute the request. This approach ensures better performance than loading all routes before matching the required route to render.
 
-In your route context file `/routes/*.php`, the `$router`, `$app` variable is already set as a global variable. Therefore, there's no need to specify the use keyword or import the router instance anymore.
+Router handling can be done using either a `closure` or a `string` in the format like you are calling a static method (e.g, `ClassBaseName::methodName`) for view rendering.
+
+Luminova's routing supports dependency injection, allowing you to type-hint your controller method parameters with the modules you want. By default, route dependency injection is disabled. To enable it, update your [environment configuration file](/running/env.md) with `feature.route.dependency.injection`.
+
+### Prefer PHP Attributes?
+
+Luminova provides a `Route` attribute, allowing you to define both `HTTP` and `CLI` routes using attributes. [Read the documentation here](/routing/attribute.md).
+
+***
+
+### Base Usages
+
+In your route context file `/routes/*.php`, the `Router $router`, `BaseApplication $app` variable is already available as a global variable. Therefore, there's no need to specify the `use` keyword or import the router instance anymore except if it required.
 
 ```php 
 <?php
-$router->get('/', function () use($app) {
-    $app->view('index')->render();
+$router->get('/',  function () use($app) {
+    $app->view('index')->render([
+		// Options to pass to the view
+	]);
 });
 ```
 
-**Controller Class**
+**Using Controller Class**
 
-When passing your controller class, you only need to provide the class name, without the full namespace (e.g., `ExampleController`) instead of `App\Controllers\ExampleController`. The namespace is automatically registered, allowing you to pass only a controller class that extends `Luminova\Base\BaseController` by default.
+When passing your controller class, you only need to provide the class base name and method, without the full namespace (e.g., `ExampleController::about`) instead of `App\Controllers\ExampleController`. The namespace is already registered with the `BaseApplication` class, allowing you to pass only a controller class that extends `Luminova\Base\BaseController` by default.
 
 ```php 
 <?php
@@ -32,7 +46,7 @@ $router->get('/about', 'ExampleController::about');
 
 **Bind Group**
 
-If you need to register a URI group for routing, you can use `bind` method which accepts only 2 parameters `group name` and `Closure`.
+If you need to register a URI group for routing, you can use `bind` method which accepts only 2 arguments `group pattern` and `Closure`.
 
 ```php 
 <?php
@@ -44,35 +58,42 @@ $router->bind('/blog', function(Router $router, BaseApplication $app) {
 	$router->get('/([a-zA-Z0-9]+)', 'ExampleController::blog');
 });
 ```
-**Capture and HTTP method**
 
-The `any` method allows you to capture any HTTP method for `contact us page` as shown below.
+**Capturing any HTTP method**
+
+The `any` method allows you to capture any HTTP method this can be useful for `API` applications.
+
+For example `contact us page` as shown below.
 
 ```php 
 <?php
 $router->any('/contact', 'ExampleController::contact');
 ```
+
 If you want to use a selected methods you can do that using `capture()` method.
 
 ```php 
 <?php
-$router->capture('POST|GET|PUT', '/home', 'ExampleController::home');
+$router->capture('POST|GET|PUT', '/contact', 'ExampleController::contact');
 ```
 
-Dependency injection.
+Using dependency injection type-hint.
 
 ```php
 <?php
 use \Luminova\Http\Request;
  
 $router->get('/users', function (Request $request) {
-    $request->getGet('name');
+    $name = $request->getGet('name');
 });
 ```
 
-### Controller Command
+***
+
+### Command Controller
 
 Registering command controller routing.
+To register commands, you will need to first call the `group` method which is like your command base, within the group closure you can then call `command` method to register your commands associated to the group name.
 
 ```php
 <?php
@@ -80,13 +101,22 @@ use \Luminova\Routing\Router;
 use \Luminova\Base\BaseApplication;
 use \Luminova\Command\Terminal;
 
-$router->group("group", function(Router $router, BaseApplication $app, Terminal $term) {
-    $router->command("test", 'Command::test');
-    $router->command('/foo/name/(:value)', 'Command::foo');
+$router->group("blog", function(Router $router, BaseApplication $app) {
+    $router->command("list", 'Command::listBlogs');
+    $router->command('id/(:int)', 'Command::showBlog');
 });
 ```
+To execute the above command run the following command:
 
-[Routing Example](/routing/examples.md) see examples for more usages.
+To list all blogs based on the above example.
+```bash
+php index.php blog list
+```
+
+To get a single blog by its ID based on the above example.
+```bash
+php index.php blog id=2
+```
 
 ***
 
@@ -97,6 +127,8 @@ $router->group("group", function(Router $router, BaseApplication $app, Terminal 
 ***
 
 ## Methods
+
+To see more usages examples read [Routing Example Documentation](/routing/examples.md).
 
 ***
 
@@ -389,21 +421,21 @@ The `web` is the default to handle any incoming request with no unique registere
 The flexible array arguments approach is particularly useful for scenarios with complex routing requirements or a large number of contexts. Leveraging the array approach may offer better scalability and maintainability. Choose the method that aligns best with your specific use case and coding style preferences. 
 
 ```php
-public context(\Luminova\Routing\Context|array<string,mixed> ...$contextes): \Luminova\Routing\Router
+public context(\Luminova\Routing\Context|array<string,mixed>|null ...$contexts): \Luminova\Routing\Router
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$contextes` | **Luminova\Routing\Context&#124;array<string,mixed>** | Arguments containing routing context configuration. |
+| `$contexts` | **Luminova\Routing\Context&#124;array<string,mixed>|null** | Arguments containing routing context or array of arguments.<br/>Pass `NULL` or leave blank only when using route attributes. |
 
 **Return Value**
 
-`Router` - Return router instance.
+`Router` - Return router instance class.
 
 **Throws:**
-- [\Luminova\Exceptions\RouterException](/exceptions/classes.md#routerexception) - Throws if no context arguments was passed.
+- [\Luminova\Exceptions\RouterException](/exceptions/classes.md#routerexception) - Throws if no context arguments was passed and route attribute is not enabled.
 
 **See Also:**
 
@@ -418,6 +450,7 @@ public context(\Luminova\Routing\Context|array<string,mixed> ...$contextes): \Lu
 ### addNamespace
 
 To register controller class `namespace` that router is allowed to lookup classed in.
+If you wish to register more namespace this should method should ne called in your application class either within `constructor` or `onCreate` method.
 
 ```php
 public addNamespace(string $namespace): void
@@ -437,19 +470,14 @@ public addNamespace(string $namespace): void
 ### run
 
 Run application routes, loop through registered routes and executed request methods if match is  found.
+This method should be called once on `public/index.php` after calling the `context` method.
 
 ```php
-public run(\Closure|null $callback = null): void
+public run(): void
 ```
 
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$callback` | **\Closure&#124;null** | Optional final callback function to execute after run |
-
 **Throws:**
-- [\Luminova\Exceptions\RouterException](/exceptions/classes.md#routerexception) - Encounter error while executing controller callback</p>
+- [\Luminova\Exceptions\RouterException](/exceptions/classes.md#routerexception) - Encounter error while executing controller callback
 
 ***
 

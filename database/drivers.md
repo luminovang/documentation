@@ -60,6 +60,20 @@ public isConnected(): bool
 
 ***
 
+### getDriver
+
+Get database connection driver name in use (e.g `sqlite`, `mysql`, `cubrid` etc..).
+
+```php
+public getDriver(): ?string
+```
+
+**Return Value:**
+
+`string|null` - Return driver name if connection is open, otherwise null.
+
+***
+
 ### raw
 
 Get the actual database connection object of `PDO` or `mysqli` database.
@@ -226,11 +240,31 @@ public exec(string $query): int
 
 ### beginTransaction
 
-Begins a transaction.
+Begins a transaction with optional read-only isolation level and `SAVEPOINT` for `PDO`.
 
 ```php
-public beginTransaction(): void
+public beginTransaction(int $flags = 0, ?string $name = null): bool
 ```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$flags` | **int** | Optional flags to set transaction properties. (Default: `0`).<br>No predefined flags for `PDO`, specify `4` to create read-only isolation. |
+| `$name` | **string&#124;null** | Optional name.<br> If provided in `PDO`, `SAVEPOINT` will be created with name instead. |
+
+**Return Value:**
+
+`bool` - Return true if transaction started successfully, otherwise false.
+
+**Throws:**
+
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - Throws exception on `PDO` if failure to set transaction isolation level or create `savepoint`.
+
+> **Note:** 
+> - If `$flags` is set to `4` in `PDO`, which is equivalent to `MYSQLI_TRANS_START_READ_ONLY`, a read-only isolation level will be established. If the transaction starts successfully, it will return true.
+> 
+> - If `$name` is specified in `PDO`, a `SAVEPOINT` will be created. If the savepoint creation is successful, the transaction will return true.
 
 ***
 
@@ -239,18 +273,58 @@ public beginTransaction(): void
 Commits a transaction.
 
 ```php
-public commit(): void
+public commit(int $flags = 0, ?string $name = null): bool
 ```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$flags` | **int** | Optional flags to set transaction properties. (Default: `0`).<br>Only supported in `MySQLi`. |
+| `$name` | **string&#124;null** | Optional name.<br>Only supported in `MySQLi`. |
+
+**Return Value:**
+
+`bool` - Returns true if the transaction was successfully committed, otherwise false.
 
 ***
 
 ### rollback
 
-Rolls back a transaction.
+Rolls back the current transaction or to a specific name while in `PDO` uses `SAVEPOINT`.
 
 ```php
-public rollback(): void
+public rollback(int $flags = 0, ?string $name = null): bool
 ```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$flags` | **int** | Optional flags to set transaction properties. (Default: `0`).<br/>Only supported in `MySQLi`. |
+| `$name` | **string&#124;null** | Optional name.<br/>If provided in `PDO`, rolls back to the `SAVEPOINT` named |
+
+**Return Value:**
+
+`bool` - Return true if rolled back was successful, otherwise false.
+
+**Throws:**
+
+- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - Throws exception on `PDO` if failure to create `SAVEPOINT`.
+
+***
+
+### inTransaction
+
+Determine if there is any active transaction.
+
+```php
+public inTransaction(): bool
+```
+
+**Return Value:**
+
+`bool` - Return true if any active transaction, otherwise false.
 
 ***
 

@@ -14,6 +14,16 @@ Base Command is Luminova's comprehensive framework designed for managing command
 
 ***
 
+### Features
+
+- Define custom commands with specific functionalities, each associated with a unique name and description.
+- Handle command execution, including parsing command-line arguments, validating inputs, and invoking the appropriate command handler.
+- Organize commands into logical modules or groups for improved code reusability and maintainability.
+- Customize and extend functionality by creating custom command handlers, adding new command-line options, or integrating with third-party libraries.
+- Access controller class functionality just as you would in a web browser, providing seamless integration between command-line and browser-based operations.
+
+***
+
 * Class namespace: `\Luminova\Base\BaseCommand`
 * Parent class: [\Luminova\Command\Terminal](/commands/terminal.md)
 * This class is an **Abstract class**
@@ -22,46 +32,63 @@ Base Command is Luminova's comprehensive framework designed for managing command
 
 ## Properties
 
-Define your command group name. The group will be used as a router capture authentication to ensure that commands belonging to same group are executed accordingly.
+#### group
+
+The group name for the current command controller class. This group is used for router capture authentication to ensure that commands within the same group are executed accordingly (e.g., `php index.php <command-group-name> <command> <arguments>`).
 
 ```php
-protected string $group
-```
-
-Give your command a name.
-
-```php
-protected string $name
-```
-
-Describe your command usages, it can either be a `string` or an `array` of usages examples.
-
-```php
-protected string|array $usage
-```
-
-More expressive way to describe your command options and it descriptive message.
-make the array key your option while the value can be a description of the option.
-
-```php
-protected array<string,mixed> $options
-```
-
-Tell more stories about your command by writing a clear description message to help users understand.
-
-```php
-protected string $description
+protected string $group = '';
 ```
 
 ***
 
-### Features
+#### name
 
-- Define custom commands with specific functionalities, each associated with a unique name and description.
-- Handle command execution, including parsing command-line arguments, validating inputs, and invoking the appropriate command handler.
-- Organize commands into logical modules or groups for improved code reusability and maintainability.
-- Customize and extend functionality by creating custom command handlers, adding new command-line options, or integrating with third-party libraries.
-- Access controller class functionality just as you would in a web browser, providing seamless integration between command-line and browser-based operations.
+The execution command name for the current controller class. This name is used internally to build information about your command, which can be utilized in displaying command help.
+
+```php
+protected string $name = '';
+```
+
+***
+
+#### usage
+
+A description of your command usages. This can be either a `string` or an `array` of usage examples.
+
+```php
+protected string|array $usage = [];
+```
+
+***
+
+#### options
+
+A more expressive way to describe your command options and their descriptive messages. The array key represents the command option, while the value is a description of the option (e.g., `['-f, --foo' => 'Foo description']`).
+
+```php
+protected array<string,mixed> $options = [];
+```
+
+***
+
+#### examples
+
+Examples of how to use the command. This allows you to provide full examples demonstrating command usage.
+
+```php
+protected array<string,mixed> $examples = [];
+```
+
+***
+
+#### description
+
+A detailed description of your command to help users understand its purpose and functionality.
+
+```php
+protected string $description = '';
+```
 
 ***
 
@@ -84,7 +111,7 @@ abstract public help(array $helps): int;
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$helps` | **array** | Receives the command informations. |
+| `$helps` | **array** | Receives the command information. |
 
 **Help arguments array keys**
 
@@ -112,6 +139,9 @@ use \Luminova\Base\BaseCommand;
 
 class PayStackCommand extends BaseCommand 
 {
-	//...
+	public function help(array $helps): int
+	{
+	    return STATUS_ERROR;
+	}
 }
 ```

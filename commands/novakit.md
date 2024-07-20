@@ -13,11 +13,91 @@ Need to manage environment variables or create a sitemap? NovaKit has got you co
 NovaKit Command Line Tool is a powerful tool provided by Luminova framework, for simplifying command-line operations and facilitating the development as well as building command-line applications. It offers a wide range of functionalities such as generating boilerplate code, scaffolds, templates, environment variables, sitemap, database operations, executing scripts, starting development server, and more.
 
 ***
-## Helps
+
+## Building CLI Tools in Luminova
+
+Creating command-line tools in Luminova is straightforward, thanks to its intuitive routing system, which mirrors HTTP routing. This makes it easy to apply familiar logic to your CLI commands.
+
+### Command Controllers
+
+To build a new command controller in Luminova:
+
+1. **Create Your Command Controller**: Place your command controller classes in the `/app/Controllers/` directory. Ensure these classes extend `Luminova\Base\BaseCommand`.
+
+2. **Command Execution Format**: To execute a command, use the following format:
+
+   ```bash
+   php index.php <group-name> <command> <argument>
+   ```
+
+   The group name should come immediately after `php index.php`, followed by the command name and any parameters. Arguments can be passed in any order after the command group name.
+
+### Examples
+
+**Example: Blog Command with Code-Based Routing**
+
+Define your commands in the routing configuration:
+
+```php
+$router->group('blog', static function(Router $router){
+    $router->command('list', 'BlogCommand::listBlog');
+});
+```
+
+**Example: Blog Command with Attribute-Based Routing**
+
+Add the `Route` attribute directly before the `listBlog` method:
+
+```php
+#[Route('list', group: 'blog')]
+```
+
+**Using Arguments**
+
+You can specify arguments for your commands in different ways:
+
+- **Using Options:**
+
+  ```bash
+  php index.php blog list --limit=3
+  ```
+
+  Corresponding controller method:
+
+  ```php
+  public function listBlog(): int 
+  {
+      $limit = $this->getAnyOption('limit', 'l', 50);
+      echo $limit;
+  }
+  ```
+
+- **Using Direct Arguments:**
+
+  ```bash
+  php index.php blog list limit=3
+  ```
+
+  Corresponding controller method:
+
+  ```php
+  public function listBlog(int $limit = 50): int 
+  {
+      echo $limit;
+  }
+  ```
+
+***
 
 ### Controller Help
 
-Print help information for a command group in the controller.
+Print help information related to a command controller group.
+
+```bash
+php index.php <command-group> --help
+```
+
+Print help for example `blog` command.
 
 ```bash
 php index.php blog --help
@@ -25,18 +105,36 @@ php index.php blog --help
 
 ***
 
+### Catch Exceptions
+
+Exceptions are handled by the framework in the `CLI`. To catch exceptions, you can enable it in your environment file by setting `throw.cli.exceptions` to `true`. Alternatively, you can enable it temporarily for the current script execution by calling the following function before your script or within the controller's `__construct` or `onCreate` method:
+
+```php
+setenv('throw.cli.exceptions', true);
+```
+
+***
+
 ### Novakit Help
 
-Print help all novakit help commands.
+To show help information related to `novakit` commands.
+
+Print `novakit` help information.
 
 ```bash
 php novakit --help
 ```
 
-To print help for a specific novakit help commands.
+Print help all `novakit` commands help information.
 
 ```bash
-php novakit --help create:controller
+php novakit --help --all
+```
+
+To print help information related to a specific `novakit` command.
+
+```bash
+php novakit create:controller --help
 ```
 
 ***

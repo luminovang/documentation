@@ -43,22 +43,22 @@ protected string $primaryKey
 
 ***
 
-### searchables
+### searchable
 
 Define your database table searchable columns, the fields that search will have to look for queries.
 
 ```php
-protected array<int,string> $searchables
+protected array<int,string> $searchable
 ```
 
 ***
 
-### cachable
+### cacheable
 
 Enable or disable database caching for model while calling `select`, `find`, `search`, `total` or `count`.
 
 ```php
-protected bool $cachable
+protected bool $cacheable
 ```
 
 ***
@@ -83,22 +83,22 @@ protected bool $readOnly
 
 ***
 
-### insertables
+### insertable
 
 Define fields that can be inserted into.
 
 ```php
-protected array $insertables
+protected array $insertable
 ```
 
 ***
 
-### updatables
+### updatable
 
 Define fields that can be updated.
 
 ```php
-protected array $updatables
+protected array $updatable
 ```
 
 ***
@@ -182,7 +182,7 @@ public insert(array<string,mixed> $values): bool
 
 **Throw Exception:**
 
-[\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - Throws if columns contains unallowed column.
+[\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - Throws if insert columns contains column names that isn't defined in `$insertable`.
 
 ***
 
@@ -208,7 +208,7 @@ public update(string|array<int,mixed> $key, array $data, int $max = 1): bool
 
 **Throw Exception:**
 
-[\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - Throws if columns contains unallowed column.
+[\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - Throws if update columns contains column names that isn't defined in `$updatable`.
 
 ***
 
@@ -399,22 +399,34 @@ public doSearch(string $query, array<int,string> $fields = ['*'], int $limit = 1
 Return search controller class instance.
 
 ```php
-protected searchInstance(string $flag): \Peterujah\NanoBlock\Searchable
+protected searchInstance(string $flag): \Peterujah\NanoBlock\SearchInstance
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$flag` | **string** | Search matching flag. |
+| `$flag` | **string** | Search matching flag (e.g `any`, `start`). |
 
 **Return Value:**
 
-`Searchable` - Search controller instance.
+`SearchInstance` - Search controller instance.
 
 **Throws:**
 
 - [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If the search controller class is not installed.
+
+### Search Flags
+
+The `$flags` keys to predefined search behaviors in the `SearchInstance` class. Here are the available flags and their corresponding behaviors:
+
+- **'start'**: Matches records that start with the query string.
+- **'end'**: Matches records that end with the query string.
+- **'any'**: Matches records that contain the query string anywhere within the field.
+- **'second'**: Matches records that contain the query string in the second position (specific use case).
+- **'length2'**: Matches records that start with a query string of length 2.
+- **'length3'**: Matches records that start with a query string of length 3.
+- **'startend'**: Matches records that start and end with the query string.
 
 ***
 

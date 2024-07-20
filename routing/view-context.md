@@ -10,26 +10,32 @@ The routing context class allows you to define a route URL prefix for capturing 
 
 ## Introduction
 
-The routing context is a powerful feature in the Luminova framework for managing your application's routing. It enables you to specify route URL prefixes and handle them in separate contexts, promoting separation of concerns.
+The **routing context** in the Luminova framework is a powerful tool for managing application routes. It allows you to organize routes by their URL prefixes, improving performance by loading only the relevant context file based on the request URL. This method not only enhances performance but also helps maintain a clean and organized codebase by promoting separation of concerns.
 
-By adding a new context in your `/public/index.php` and creating the corresponding routes file in `/routes/`, the framework automatically directs all URL prefixes starting with the context name to the relevant handler in `/routes/my-context.php`. This approach optimizes performance by loading only the necessary routes.
-
-You can set up contexts in two ways: using an `Array` for configuration or employing the `Context` class object. This flexibility allows you to choose the method that best fits your application's complexity and your coding style preferences.
+The context configuration, offers better readability and clarity, each context is explicitly defined with its type and associated error handler, this makes it easier to understand the routing configuration at a glance. 
 
 ***
 
-### Examples
+### Adding Context
 
-In your `index.php` located at `public/index.php`, and add a new argument to `$app->router->context()` method, representing a new context URI prefix.
+You can configure routing contexts in two ways: using the `Context` class object or an `Array`.
+To add a new context, you need to configure it in your `/public/index.php` file. 
 
-Using The `Context` class instance.
+**Using the Context Object**
+
+To add a context using the `Context` object. This setup automatically routes all `URLs` with the specified prefix to the corresponding file in `/routes/`. For example, `URLs` starting with `api` will be handled by `/routes/api.php`.
+
+The Context instance requires two arguments:
+
+- `name` (string) - Specifies the route URL prefix.
+- `onError` (\Closure|array<int,string>|null) - Defines the handler for 404 errors.
 
 ```php
 /public/index.php
 <?php
 use \Luminova\Boot;
 use \Luminova\Routing\Context;
-use App\Controller\Config\ViewErrors;
+use \App\Controller\Config\ViewErrors;
 //...
 
 Boot::http()->router->context(
@@ -38,35 +44,50 @@ Boot::http()->router->context(
 )->run();
 ```
 
-Using The `Array` to setup.
-The array setup expect only two elements as show below.
+**Using Array Configuration**
 
-`prefix` (string) - The URI prefix name.
-`error` (Closure|array|null) - The URI context 404 error handler.
+Alternatively, you can use an associative array to define contexts. This method is useful for managing performance when dealing with a large number of routes. Initializing context object on application runtime may impact performance of your application.
+
+Each prefix argument should be defined with an associative array containing two keys: `prefix` and `error`. For example:
+
+- `prefix` (string) - The URI prefix name.
+- `error` (Closure|array|null) - The URI context 404 error handler.
 
 ```php
 /public/index.php
 <?php
 use \Luminova\Boot;
 use \Luminova\Routing\Context;
-use App\Controller\Config\ViewErrors;
+use \App\Controller\Config\ViewErrors;
 //...
 
 Boot::http()->router->context(
-	[
-        'prefix' => 'admin', 
-        'error' => [ViewErrors::class, 'onAdminError']
+	  [
+        'prefix' => 'web', 
+        'error' => [ViewErrors::class, 'onWebError']
+    ],
+		[
+        'prefix' => 'api', 
+        'error' => [ViewErrors::class, 'onApiError']
+    ],
+		[
+        'prefix' => 'cli'
     ],
 	//...
 )->run();
 ```
 
-> *Note:* 
-> You will have to create the method `onAdminError` in your `ViewErrors` class.
+This configuration ensures that URLs starting with `api` are routed correctly and errors are handled by the specified method.
+
+> **Note:** 
+> For both `Context` object and `Array` configuration, ensure that the context name matches the file name in the `/routes/` directory for proper routing.
+> 
+> You will have to create the method `onApiError` in your `ViewErrors` class.
 
 ***
 
-After adding the new context to router `context` method in your `public/index.php`, create the corresponding handler file in the `/routes/` directory with the same name as the context URI prefix. 
+After adding the new context to router `context` method in your `public/index.php`, create the corresponding handler file in the `/routes/` directory with the same name as the context URI prefix name. 
+
 For instance, if you added a context prefix for `admin` in your `index.php`, create a file name `admin.php` in the routes directory.
 
 ```php
@@ -129,8 +150,7 @@ $router->get('/', function(Router $router, BaseApplication $app){
 
 ***
 
-The `Context` class, offers better readability and clarity, each context is explicitly defined with its type and associated error handler. 
-This makes it easier to understand the routing configuration at a glance. 
+## Context Class
 
 * Class namespace: `\Luminova\Routing\Context`
 * This class is marked as **final** and can't be subclassed
