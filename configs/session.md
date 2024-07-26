@@ -14,8 +14,8 @@ The `Session Configuration` class provides properties to configure various aspec
 
 ***
 
-* Class namespace: `\App\Controllers\Config\Session`
-* File path: `/app/Controllers/Config/Session.php`
+* Class namespace: `\App\Config\Session`
+* File path: `/app/Config/Session.php`
 * This class is marked as **final** and can't be subclassed
 
 ## Properties

@@ -64,7 +64,7 @@ echo lang('Context.foo.bar', 'Default message', 'fr', ['name' => 'Peter', '20'])
 
 ### Locals
 
-To begin with, you'll need to create translation locals in `/app/Controllers/Languages/` directory. 
+To begin with, you'll need to create translation locals in `/app/Languages/` directory. 
 
 The locale file will serve as translations based on your application's language locale or other languages you may want to add. 
 

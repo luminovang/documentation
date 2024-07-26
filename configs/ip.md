@@ -14,8 +14,8 @@ The `IP Configuration` class allows developers to configure settings related to 
 
 ***
 
-* Class namespace: `\App\Controllers\Config\IPConfig`
-* File path: `/app/Controllers/Config/IPConfig.php`
+* Class namespace: `\App\Config\IPConfig`
+* File path: `/app/Config/IPConfig.php`
 * This class is marked as **final** and can't be subclassed
 
 ## Properties

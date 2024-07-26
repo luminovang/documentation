@@ -30,25 +30,27 @@ Helper functions abstract away the complexity of certain operations, making the 
 
 ### app
 
-Get application container class shared instance or new instance if not shared.
+Get application container class shared instance or new instance if not shared. 
 
 ```php
-function app(): \Application
+function app(): \App\Application
 ```
 
 **Return Value:**
 
-`\Application` - Return base application instance.
+`\App\Application` - Return application shared instance.
 
 **See Also**
 
 [Base Application](/base/application.md) - See the documentation for base application methods and usages.
 
+> Avoid re-initializing application class if possible, always use the `app` function or grab the shared instance of your application by `Application::getInstance()`
+
 ***
 
 ### request
 
-Get request object
+Get the `HTTP` request object.
 
 ```php
 function request(bool $shared = true): ?\Luminova\Http\Request
@@ -86,7 +88,7 @@ function session(string|null $key = null): mixed
 
 **Return Value:**
 
-`mixed` - The session data if key is provided, otherwise the session class instance.
+`\Luminova\Sessions\Session|mixed` - The session data if key is provided, otherwise the session class instance.
 
 **See Also**
 
@@ -134,27 +136,30 @@ function factory(string|null $context = null, bool $shared = true, mixed ...$arg
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$context` | **string&#124;null** | The factory class name alias (e.g: `task`). |
+| `$context` | **string&#124;null** | The factory context name, e.g: `session`. (default: null). |
 | `$shared` | **bool** | Weather to return a shared instance (default: `true`). |
-| `$arguments` | **mixed** | Additional arguments to pass to class constructor. |
+| `$arguments` | **mixed** |  Optional class constructor initialization arguments. |
 
 **Return Value:**
 
 `class-object<\T>|Factory|null` - Return instance of factory class, instance of class called, otherwise null.
 
-**Available Factories Context**
+**Available Factory Context Names**
 
--   'task'      `\Luminova\Time\Task`
--   'session'   `\Luminova\Sessions\Session`
--   'functions' `\Luminova\Application\Functions`
--   'modules'   `\Luminova\Library\Modules`
--   'language'  `\Luminova\Languages\Translator`
--   'logger'    ` \Luminova\Logger\Logger`
--   'files'     `\Luminova\Application\FileSystem`
--   'validate'  `\Luminova\Security\InputValidator`
--   'response'  `\Luminova\Template\ViewResponse`
--   'services'  `\App\Controllers\Config\Services`
--   'request'   `\Luminova\Http\Request`
+-   'task'  -  Returns instance of `\Luminova\Time\Task`
+-   'session'  - Returns instance of `\Luminova\Sessions\Session`
+-   'cookie'  - Returns instance of `\Luminova\Cookies\Cookie`
+-   'functions'  - Returns instance of `\Luminova\Application\Functions`
+-   'modules'  - Returns instance of `\Luminova\Library\Modules`
+-   'language'  - Returns instance of `\Luminova\Languages\Translator`
+-   'logger'  - Returns instance of ` \Luminova\Logger\Logger`
+-   'fileManager'  - Returns instance of `\Luminova\Storages\FileManager`
+-   'validate'  - Returns instance of `\Luminova\Security\Validation`
+-   'response'  - Returns instance of `\Luminova\Template\Response`
+-   'services'  - Returns instance of `\App\Config\Services`
+-   'request'  - Returns instance of `\Luminova\Http\Request`
+-   'notification'  -  Returns instance of `\Luminova\Notifications\Firebase\Notification`
+-   'caller'  -  Returns instance of `\Luminova\Application\Caller`
 
 **Example**
 
@@ -367,40 +372,47 @@ function browser(?string $user_agent = null, string $return = 'object', bool $sh
 ### href
 
 Create a hyperlink to another view or file.
+This function creates a link to a view or file, ensuring the base starts from your application's public document root.
 
 ```php
-function href(string $view = ''): string
+function href(?string $view = null, bool $absolute = false): string 
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$view` | **string** | To view or file. |
+| `$view` | **string\|null** | The view path or file to create the link for (default: null).<br/> If null, an empty string is used. |
+| `$absolute` | **bool** | Whether to use an absolute URL (default: false). |
 
 **Return Value:**
 
-`string` - Return hyperlink of view or base controller if blank string is passed.
+`string` - Return link of view, If `$absolute` is true, the absolute URL is returned; otherwise, a relative URL is returned.
+
+> If an absolute URL is requested, concatenates the base URL (`APP_URL`) with the view path.
+> If a relative URL is requested, it concatenates it with the view path.
 
 ***
 
 ### asset
 
-Create a link to assets folder file.
+Create a link to a file in the assets folder.
+This function generates a `URL` to a file within the assets folder, ensuring the base starts from your application's public document root.
 
 ```php
-function asset(string $filename = ''): string
+function asset(?string $filename = null, bool $absolute = false): string 
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$filename` | **string** | Filename or path. |
+| `$filename` | **string\|null** | The filename or path within the assets folder (default: null).<br/> If null, an empty string is used. |
+| `$absolute` | **bool** | Whether to use an absolute URL (default: false). |
 
 **Return Value:**
 
-`string` - Return assets file or base asset folder if blank string is passed.
+`string` - Return asset link of view, If `$absolute` is true, the absolute URL is returned; otherwise, a relative URL is returned.
 
 ***
 
@@ -409,18 +421,18 @@ function asset(string $filename = ''): string
 Get the application root directory of your project anywhere, optionally pass a path to append the the root directory, all return path will be converted to `unix` or `windows` directory separator style.
 
 ```php
-function root(string $suffix = ''): string
+function root(?string $suffix = null): string
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$suffix` | **string** | Append a path to the root directory. |
+| `$suffix` | **string\|null** | Optional suffix to prepend to the root directory. |
 
 **Return Value:**
 
-`string` - Return path to the root directory with the suffix appended.
+`string` - Return application document root, and optional appended suffix.
 
 ***
 
@@ -436,7 +448,7 @@ function path(string $file): string
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$file` | **string&#124;null** | The path file name to return.<br />Possible values: 'system', 'plugins', 'library', 'controllers', 'writeable', 'logs', 'caches',<br />'public', 'assets', 'views', 'routes', 'languages', 'services'. |
+| `$file` | **string&#124;null** | The path file name to return.<br />Possible values: 'app', 'system', 'plugins', 'library', 'controllers', 'writeable', 'logs', 'caches',<br />'public', 'assets', 'views', 'routes', 'languages', 'services'. |
 
 **Return Value:**
 
@@ -450,7 +462,7 @@ function path(string $file): string
 
 ### env
 
-Get environment variables from `env` file, its a wrapper that combines both `$_ENV`, `$_SERVER` and `getenv`, with an additional feature to ensure the accuracy of the return type and default value if the key was not found in the environment.
+Get environment variable value from registered `ENV` variables, its a wrapper that combines both `$_ENV`, `$_SERVER` and `getenv`, with an additional feature to ensure the accuracy of the return type and default value if the key was not found in the environment.
 
 ```php
 function env(string  $key, mixed  $default = null): mixed
@@ -460,16 +472,18 @@ function env(string  $key, mixed  $default = null): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | The key to retrieve. |
-| `$default` | **mixed** | The default value to return if the key is not found. |
+| `$key` | **string** | The environment variable key to retrieve.. |
+| `$default` | **mixed** | Optional default value to return if the key is not found (default: null). |
 
 **Return Value:**
 
-`mixed` - The value of the environment variable or the default value if not found.
+`mixed` - Return the value of the specified environment key or default value if not found.
 
 **See Also**
 
-[ENV Variables](/running/env.md) - Learn more from documentation about Luminova's `env` variable keys.
+[Environment Variables](/running/env.md) - Learn more from documentation about Luminova's `env` variable keys.
+
+> If your variable value is like: `foo = [1, 2, 4]`, this function will return an array representation of the value.
 
 ***
 
@@ -487,17 +501,17 @@ function setenv(string $key, string $value, bool $append_to_env = false): bool
 |-----------|------|-------------|
 | `$key` | **string** | The key of the environment variable. |
 | `$value` | **string** | The value of the environment variable. |
-| `$append_to_env` | **bool** | Save or update to .env file |
+| `$append_to_env` | **bool** | Weather to save or update the value in .env file (default: false). |
 
 **Return Value:**
 
-`bool` - True on success or false on failure.
+`bool` - Return true on success, otherwise false on failure.
 
-> By default when you set an environment variable, it doesn't permanently stored in other to access it in other codebase.
+> By default when you set an environment variable, it doesn't permanently stored in other to access it in entire code-base.
 >
 > If you wish to write the key and value in your environment variables file `.env`, then you must specify the third argument `true`. 
 >
-> More efficient method of doing this is by utilizing the [NovaKit](/commands/novakit.md) cli command to write the key and value to `env` file by running command `php novakit env:add --key="my_new_key" --value="my key value"`.
+> More efficient method of doing this is by utilizing the [NovaKit Command](/commands/novakit.md) to write the key and value to `env` file. using command `php novakit env:add --key="my_new_key" --value="my key value"`.
 
 ***
 
@@ -563,7 +577,7 @@ function logger(string $level, string $message, array $context = []): void
 
 > All loges are located in `/writeable/log/`, each log level has it own file name (e.x., `warning.log`).
 >
-> To set your own logging handler class, it can be done in `App\Controllers\Config\Preference`, your logger must implement `PSR` logger interface.
+> To set your own logging handler class, it can be done in `App\Config\Preference`, your logger must implement `PSR` logger interface.
 
 ***
 
@@ -584,6 +598,34 @@ function locale(?string $locale = null): string|bool
 **Return Value:**
 
 `string|bool` - If locale is passed it will set it and return true, else return previous locale.
+
+***
+
+### uuid
+
+Generates a `UUID` string of the specified version such as `1, 2, 3, 4, or 5`.
+
+```php
+function uuid(int $version = 4, ?string $namespace = null, ?string $name = null): string 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$version` | **int** | The version of the UUID to generate (default: 4).. |
+| `$namespace` | **string\|null** | The namespace for versions 3 and 5. |
+| `$name` | **string\|null** | The name for versions 3 and 5. |
+
+**Return Value:**
+
+`string` -Return the generated UUID string.
+
+**Throws:**
+
+- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - f the namespace or name is not provided for versions 3 or 5.
+
+> To check if `UUID` is valid use `func()->isUuid(string, version)`
 
 ***
 
@@ -685,7 +727,7 @@ function lang(string $lookup, string|null $default = null, string|null $locale =
 
 - [\Luminova\Exceptions\NotFoundException](/exceptions/classes.md#notfoundexception) - If translation is not found and no default is provided.
 
-> To create a language translations you need to define it in `/app/Controllers/Languages/`.
+> To create a language translations you need to define it in `/app/Languages/`.
 > 
 > The file name format should be like `Example.en.php`, where the `Example` is the context and `en` is the locale.
 
@@ -733,7 +775,8 @@ echo  lang('Example.error.users.password', null, null, [
 
 ### write_content
 
-Write or append contents to a file.
+Write or append string contents or stream to file.
+This function is an alternative for `file_put_contents`, it uses `SplFileObject` to write contents to file. 
 
 ```php
 function write_content(string $filename, string|resource  $content, int  $flag, resource $context = null): bool
@@ -743,14 +786,14 @@ function write_content(string $filename, string|resource  $content, int  $flag, 
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$filename` | **string** | Path to the file where to write the data. |
+| `$filename` | **string** | Path to the file to write contents. |
 | `$content` | **string&#124;resource** | The contents to write to the file, either as a string or a stream resource. |
 | `$flag` | **int** | The value of flags can be combination of flags, joined with the binary OR (&#124;) operator.<br/>FILE_APPEND, LOCK_EX, FILE_USE_INCLUDE_PATH, FILE_APPEND,  LOCK_NB, LOCK_SH, LOCK_UN |
 | `$context` | **resource** | [optional] A valid context resource created with stream_context_create. |
 
 **Return Value:**
 
-`boo` - Return true on success, false on failure.
+`boo` - Return true if successful, otherwise false on failure.
 
 **Throws:**
 
@@ -759,6 +802,36 @@ function write_content(string $filename, string|resource  $content, int  $flag, 
 **See Also**
 
 [File Manager](/files/manager.md) - Also checkout the documentation for file manager methods and usages.
+
+***
+
+### get_content
+
+Reads the content of a file with options for specifying the length of data to read and the starting offset.
+This function is an alternative for `file_get_contents`, it uses `SplFileObject` to open the file and read its contents. 
+It can handle reading a specific number of bytes from a given offset in the file.
+
+```php
+function get_content(string $filename, int $length = 0, int $offset = 0,  bool $useInclude = false,  $context = null): string|bool;
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$filename` | **string** | The path to the file to be read.. |
+| `$length` | **int** | The maximum number of bytes to read, if set to `0`, it read `8192` bytes at a time (default: 0). |
+| `$offset` | **int** | The starting position in the file to begin reading from (default: 0). |
+| `$useInclude` | **bool** | If `true`, the file will be searched in the include path (default: false). |
+| `$context` | **resource** | A context resource created with `stream_context_create()` (default: null).. |
+
+**Return Value:**
+
+`string|false` - Returns the contents of the file as a string, or `false` on failure.
+
+**Throws:**
+
+- [\Luminova\Exceptions\FileException](/exceptions/classes.md#fileexception) - If unable to write file.
 
 ***
 
@@ -780,7 +853,7 @@ function make_dir(string  $path, int|null  $permissions = null, bool  $recursive
 
 **Return Value:**
 
-Returns true if the directory existed or was created, otherwise false.
+`bool` - Return true if files already existed or was created successfully, otherwise false.
 
 **Throws:**
 
@@ -798,7 +871,7 @@ Returns true if the directory existed or was created, otherwise false.
 Validate user input fields or get a validation instance.
 
 ```php
-function validate(array|null $inputs, array|null $rules, array $messages = []): Luminova\Interface\ValidationInterface
+function validate(?array $inputs = null, ?array $rules = null, array $messages = []): Luminova\Interface\ValidationInterface
 ```
 
 **Parameters:**
@@ -819,12 +892,18 @@ function validate(array|null $inputs, array|null $rules, array $messages = []): 
 
 **Sample Usages**
 
+Assuming you have a post or get request like below:
 ```php 
 <?php 
 	$inputs = [
 		'name' => 'Peter',
 		'email' => 'peter@example.com',
 	];
+	```
+	
+	Configure validation rules as below:
+	
+	```php
 	$rules = [
 		'name' => 'require|alphanumeric|max(50)',
 		'email' => 'require|email'
@@ -839,8 +918,11 @@ function validate(array|null $inputs, array|null $rules, array $messages = []): 
 			'require' => 'Email is required',
 			'email' => 'Invalid email address "{value}"'
 		]
-	]
+	];
+```
+Validating request against rules.
 
+```php
 	$validation = validate($inputs, $rules, array $messages);
 
 	if($validation->isPassed()){
@@ -855,27 +937,42 @@ function validate(array|null $inputs, array|null $rules, array $messages = []): 
 
 ### start_url
 
-Get start URL with hostname port suffix if available.
+Get the start URL with an optional suffix and port hostname if available.
+This function generates the base URL of the application, optionally appending a provided suffix. It includes the port hostname if available.
 
 ```php
-function start_url(string $suffix = ''): string
+function start_url(?string $suffix = null): string
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$suffix` | **string** | Optional pass a suffix to the start url. |
+| `$suffix` | **string** | Optional suffix to append to the start URL (default: null). |
 
 **Return Value:**
 
-`string` Return public start URL with port if available.
+`string` Return the generated start URL of your project.
+
+**Example** 
+If your application path is like: `/Some/Path/To/htdocs/my-project-path/public/`.
+It returns depending on your development environment and suffix if specified:
+
+- `https://localhost:8080`
+- `https://localhost/my-project-path/public/`
+- `https://localhost/public`
+- `https://example.com:8080`
+- `https://example.com/`
+
+> If the application is in production (`PRODUCTION`), it returns the base application URL (`APP_URL`) with the optional suffix.
+> If not in production, it constructs the URL using the server's `hostname` and the `PROJECT_ID`, and appends the optional suffix.
 
 ***
 
 ### absolute_url
 
-Convert application relative paths to absolute URL including hostname port if available.
+Convert an application-relative path to an absolute URL.
+This function converts a given application-relative path to its corresponding absolute URL.
 
 ```php
 function absolute_url(string $path): string
@@ -885,15 +982,15 @@ function absolute_url(string $path): string
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$path` | **string** | The path to convert to absolute url. |
+| `$path` | **string** | The relative path to convert to an absolute URL. |
 
 **Return Value:**
 
-`string` Return absolute url of the specified path.
+`string` - Return the absolute URL of the specified path.
 
-**Example:**
+**Examples:**
 
-On development server.
+If on development environment.
 
 ```php
 <?php 
@@ -901,7 +998,7 @@ echo absolute_url('/Applications/XAMPP/htdocs/project-base/public/asset/files/fo
 //Output: http://localhost/project-base/public/asset/files/foo.text.
 ```
 
-On projection server.
+If on projection environment.
 
 ```php
 <?php 
@@ -930,7 +1027,7 @@ function ip_address(bool $ip_info = false, array $options = []): string|object|n
 
 `string|object|null` - The IP address if `$ip_info` is false, else return IP address information or null if IP address cannot be determined.
 
-> Utilize a third-party API to fetch IP address information. Your API configuration can be done in `/app/Controllers/Config/IPConfig.php`.
+> Utilize a third-party API to fetch IP address information. Your API configuration can be done in `/app/Config/IPConfig.php`.
 
 ***
 

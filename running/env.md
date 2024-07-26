@@ -328,7 +328,7 @@ Luminova offers several optional features that are disabled by default. These fe
   - **Description**: Activates PSR-4 autoloading for your application, allowing for automatic class loading based on namespace and directory structure.
 
 - **`feature.app.dev.functions`** **(bool)**: 
-  - **Description**: Loads and initializes custom procedural functions defined in `app/Controllers/Utils/Global.php`.
+  - **Description**: Loads and initializes custom procedural functions defined in `app/Utils/Global.php`.
 
 - **`feature.route.dependency.injection`** **(bool)**: 
   - **Description**: Allows dependency injection type hinting for controller methods that are routable, enabling more flexible and testable code.

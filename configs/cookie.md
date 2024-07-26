@@ -14,8 +14,8 @@ The `Cookie Configuration` class provides properties to configure various aspect
 
 ***
 
-* Class namespace: `\App\Controllers\Config\Cookie`
-* File path: `/app/Controllers/Config/Cookie.php`
+* Class namespace: `\App\Config\Cookie`
+* File path: `/app/Config/Cookie.php`
 * This class is marked as **final** and can't be subclassed
 
 ***

@@ -31,7 +31,7 @@ Here is an example on how you can extend and use the base server.
 
 ```php 
 <?php 
-namespace App\Controllers\Config;
+namespace App\Config;
 
 use \Luminova\Base\BaseDatabase;
 
@@ -41,7 +41,7 @@ class Servers extends BaseDatabase
           [
                'port' => 0,
                'host' => 'my-db-host',
-               'pdo_driver' => 'mysql',
+               'pdo_engine' => 'mysql',
                'connection' => 'pdo',
                'charset' => 'utf8',
                'persistent' => true,

@@ -138,7 +138,7 @@ protected \Luminova\Database\Builder $builder
 Input validation class instance.
 
 ```php
-protected static \Luminova\Security\InputValidator $validation
+protected static \Luminova\Security\Validation $validation
 ```
 
 ***
@@ -353,12 +353,12 @@ public purge(): bool
 Initialize and ser validation class object.
 
 ```php
-protected validation(): Luminova\Security\InputValidator
+protected validation(): Luminova\Security\Validation
 ```
 
 **Return Value:**
 
-`Luminova\Security\InputValidator` - Return the number of records.
+`Luminova\Security\Validation` - Return the number of records.
 
 > After first initialization you can then use `static::$validation` to access the object.
 

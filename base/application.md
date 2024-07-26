@@ -12,13 +12,16 @@ The base application controller lays the foundation for handling your software d
 
 The Base Application serves as the foundational framework upon which your web application are built. It encapsulates essential functionalities, design patterns, and architectural principles that provide a solid starting point for developing complex applications. Essentially, the Base Application represents the core infrastructure and scaffolding upon which you can construct your application logic.
 
-Your application class must be located in the `/app/Controllers/` directory, and its name must remain unchanged under any circumstance.
+Your application class must be located in the `/app/` directory, and its name must remain unchanged under any circumstance.
+
+Additionally application class inherited the methods within the [\Luminova\Template\View](/templates/views.md) trait class.
+To lean more on how to render template views refer to the documentation.
 
 ***
 
 * Class namespace: `\Luminova\Base\BaseApplication`
 * This class is an **Abstract class**
-* Inherited class: [\Luminova\Template\TemplateView](/templates/views.md)
+* Inherited class: `\Luminova\Template\View`
 
 ***
 
@@ -28,7 +31,7 @@ This is an example a basic application class may look like using the `__construc
 
 ```php 
 <?php
-namespace App\Controllers;
+namespace App;
 
 use \Luminova\Base\BaseApplication;
 class Application extends BaseApplication  
@@ -44,7 +47,7 @@ Alternatively, this is an of application class may using the `onCreate` method.
 
 ```php 
 <?php
-namespace App\Controllers;
+namespace App;
 
 use \Luminova\Base\BaseApplication;
 class Application extends BaseApplication  
@@ -58,8 +61,19 @@ class Application extends BaseApplication
 
 ***
 
+## Properties
+
+### router
+
+The application  router class instance.
+
+```php
+public ?Router $router = null;
+```
+***
+
 ## Methods
-The methods and properties of the base application are a combination of those inherited from the `TemplateView`, your `Application`, and the `BaseApplication` class. These classes ensure that properties and methods are accessible wherever the application object is invoked, based on their visibility. You can access them accordingly.
+The methods and properties of the base application are a combination of those inherited from the `View`, your `Application`, and the `BaseApplication` class. These classes ensure that properties and methods are accessible wherever the application object is invoked, based on their visibility. You can access them accordingly.
 
 ###  getInstance
 
@@ -87,6 +101,23 @@ public final getView(): string
 
 ## Application Events
 To handle command events in your application controller class based on actions, below are the list of events to listen to.
+
+***
+
+### __on
+
+The `__on` method in your application class allows you trigger an application event methods.
+
+```php
+public __on(string $event, mixed ...$arguments): void 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$event` | **string** | The event method name to trigger. |
+| `...$arguments` | **mixed** | [mixed ...$] Optional event method arguments. |
 
 ***
 

@@ -44,7 +44,7 @@ By default a `Cron` configuration class is added to your application configurati
 
 ```php
 <?php 
-namespace App\Controllers\Config;
+namespace App\Config;
 
 use \Luminova\Base\BaseCron;
 final class Cron extends BaseCron

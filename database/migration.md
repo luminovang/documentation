@@ -24,7 +24,7 @@ Database migration is a process that allows you to manage your database schema c
 
 These methods ensure that database schema changes can be applied and reverted in a controlled manner, maintaining database integrity across different stages of development and deployment.
 
-3. **Migration Setup**: Create a class that extends `\Luminova\Database\Migration`. Ensure all migration classes are placed in the `/app/Controllers/Database/Migrations/` directory for proper execution.
+3. **Migration Setup**: Create a class that extends `\Luminova\Database\Migration`. Ensure all migration classes are placed in the `/app/Database/Migrations/` directory for proper execution.
 
 4. **Migration Management**: Luminova provides `novakit` commands to create, apply, and rollback migrations. These commands ensure that migrations are executed in the correct order and only once.
 

@@ -96,6 +96,14 @@ protected string $description = '';
 
 The base command extends the [Luminova Terminal class](/commands/terminal.md), making all the methods available and ready to use in command controller class. 
 
+### onCreate
+
+Command on create method, an alternative method to `__construct()`.
+
+```php
+protected onCreate(): void
+```
+
 ### help
 
 This allows you to override the default help display implementation.
@@ -111,20 +119,21 @@ abstract public help(array $helps): int;
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$helps` | **array** | Receives the command information. |
-
-**Help arguments array keys**
-
-* `class`: Command class name.
-* `group`: Command group name.
-* `name`: Command identifier name.
-* `description`: Command description.
-* `usages`: Command usages.
-* `options`: Command options.
+| `$helps` | **array<string,mixed>** | Receives the helps information about command. |
 
 **Return Value**
 
-`array` - Return Help information for the command group.
+`int` - Return status code success as implemented, error using default implementation.
+
+**Help arguments array keys**
+
+- `class` - The class name of the command (Note: this key may not be available if you extend `BaseConsole`).
+- `group`  - The group name of the command.
+- `name` - The name of the command.
+- `description` - The description of the command.
+- `usages` - The usages of the command.
+- `options` - The available options for the command.
+- `examples` - The examples of the command.
 
 ***
 

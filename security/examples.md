@@ -102,7 +102,7 @@ class UserController extends BaseController
 ### Callback
 
 Defining your own callback validation.
-> You can define your validation rule in your dev global helper file located in `/app/Controllers/Utils/Global.php`.
+> You can define your validation rule in your dev global helper file located in `/app/Utils/Global.php`.
 
 ```php
 <?php 

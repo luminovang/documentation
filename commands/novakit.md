@@ -12,6 +12,12 @@ Need to manage environment variables or create a sitemap? NovaKit has got you co
 
 NovaKit Command Line Tool is a powerful tool provided by Luminova framework, for simplifying command-line operations and facilitating the development as well as building command-line applications. It offers a wide range of functionalities such as generating boilerplate code, scaffolds, templates, environment variables, sitemap, database operations, executing scripts, starting development server, and more.
 
+**List Available NovaKit Command**
+
+```bash
+php novakit list
+```
+
 ***
 
 ## Building CLI Tools in Luminova
@@ -31,6 +37,8 @@ To build a new command controller in Luminova:
    ```
 
    The group name should come immediately after `php index.php`, followed by the command name and any parameters. Arguments can be passed in any order after the command group name.
+
+***
 
 ### Examples
 
@@ -145,7 +153,7 @@ The generator commands allow you to easily generate a skeleton for a controller 
 ### Utils Class
 
 To create a utility class for your application use the below example command.
-The class will be saved in `/app/Controllers/Utils/`
+The class will be saved in `/app/Utils/`
 
 ```bash
 php novakit create:class "myClass" --extend "baseClassName" --implement "myClassInterface"
@@ -156,7 +164,7 @@ php novakit create:class "myClass" --extend "baseClassName" --implement "myClass
 ### Model Class
 
 To create a database model class for your application use the below example command.
-The class will be saved in `/app/Controllers/Models/`
+The class will be saved in `/app/Models/`
 
 ```bash
 php novakit create:model "myModel" 
@@ -203,7 +211,7 @@ php novakit context "test"'
 > The above command will create a file in `/routes/` directory and update your `/public/index.php` with a new context.
 > 
 > To disable adding an error handler in `index.php` use flag `--no-error`
-> > *Note:* If the error handler is not disabled, you need to manually create the method name in your View errors class in `/app/Controllers/Config/ViewErrors.php`.
+> > *Note:* If the error handler is not disabled, you need to manually create the method name in your View errors class in `/app/Controllers/Errors/ViewErrors.php`.
 
 ***
 
@@ -215,7 +223,7 @@ To generate your website sitemap use the below command.
 php novakit generate:sitemap
 ```
 
-> To configure the sitemap domain and ignore list, it can be done here `/app/Controllers/Config/Sitemap.php`.
+> To configure the sitemap domain and ignore list, it can be done here `/app/Config/Sitemap.php`.
 
 ***
 

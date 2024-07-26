@@ -12,13 +12,13 @@ Render or download content with view response class or using its global procedur
 
 The View Response class simplifies APs, and WEB content responses within your application's controller class or routing closures. With its global procedural function, you can easily access the class instance without instantiating the class.
 
-* Class namespace: `\Luminova\Template\ViewResponse`
+* Class namespace: `\Luminova\Template\Response`
 
 ***
 
 ### Helper Function
 
-The global helper of ViewResponse class will return instance of this class.
+The global helper of Response class will return instance of this class.
 
 ```php
 <?php
@@ -39,7 +39,7 @@ response(int $status = 200)
 Initialize class constructor with HTTP status code .
 
 ```php
-new ViewResponse(int $status = 200)
+new Response(int $status = 200)
 ```
 
 **Parameters:**
@@ -66,7 +66,7 @@ public setStatus(int $status = 200): self
 
 **Return Value:**
 
-`ViewResponse` - Instance of view response class.
+`Response` - Instance of view response class.
 
 ***
 
@@ -86,7 +86,7 @@ public encode(bool $encode): self
 
 **Return Value:**
 
-`ViewResponse` - Instance of view response class.
+`Response` - Instance of view response class.
 
 ***
 
@@ -106,7 +106,7 @@ public minify(bool $minify): self
 
 **Return Value:**
 
-`ViewResponse` - Instance of view response class.
+`Response` - Instance of view response class.
 
 ***
 

@@ -14,8 +14,8 @@ The `Files Configuration` class provides properties to set the default Unix file
 
 ***
 
-* Class namespace: `\App\Controllers\Config\Files`
-* File path: `/app/Controllers/Config/Files.php`
+* Class namespace: `\App\Config\Files`
+* File path: `/app/Config/Files.php`
 * This class is marked as **final** and can't be subclassed
 
 ## Properties

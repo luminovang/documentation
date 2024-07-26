@@ -24,11 +24,11 @@ Services is a utility class designed to simplify the management of class instanc
 
 ### Usages
 
-Suppose you have a class named `YourClassName` that you want to discover using the service class loader. In this example, let's assume that your class is located at `app/Controllers/Utils/YourClassName.php`, with the namespace `App\Controllers\Utils`.
+Suppose you have a class named `YourClassName` that you want to discover using the service class loader. In this example, let's assume that your class is located at `app/Utils/YourClassName.php`, with the namespace `App\Utils`.
 
 ```php
 <?php
-namespace App\Controllers\Utils;
+namespace App\Utils;
 
 class YourClassName 
 {
@@ -156,7 +156,7 @@ public static delete(class-string|string $service): bool
 **Return Value:**
 `bool` - Return true if cached service was deleted, false otherwise.
 
-> To fully delete a service, you will need to unregister it from the bootstrap file `/app/Controllers/Config/Services.php`.
+> To fully delete a service, you will need to unregister it from the bootstrap file `/app/Config/Services.php`.
 
 ***
 

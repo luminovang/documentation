@@ -26,7 +26,7 @@ In this example, the `dailyBackup` method from the `DailyCommand` class is sched
 
 ```php
 <?php
-$this->service('\App\Controllers\DailyCommand::dailyBackup')
+$this->service('\\App\\Controllers\\DailyCommand::dailyBackup')
     ->days()
     ->log('info');
 ```
@@ -52,7 +52,7 @@ The `onComplete` method allows you to define actions to take when a job complete
 
 ```php
 <?php
-$this->service('\App\Controllers\DailyCommand::dailyBackup')
+$this->service('\\App\\Controllers\\DailyCommand::dailyBackup')
     ->days()
     ->onComplete(static function(array $task){
         // Code to execute upon successful completion of the task
@@ -67,7 +67,7 @@ The `onFailure` method allows you to define actions to take when a job fails to 
 
 ```php
 <?php
-$this->service('\App\Controllers\DailyCommand::dailyBackup')
+$this->service('\\App\\Controllers\\DailyCommand::dailyBackup')
     ->days()
     ->onFailure(static function(array $task){
         // Code to execute upon failure of the task
@@ -84,7 +84,7 @@ You can configure the service to ping specific URLs upon job completion or failu
 
 ```php
 <?php
-$this->service('\App\Controllers\DailyCommand::dailyBackup')
+$this->service('\\App\\Controllers\\DailyCommand::dailyBackup')
     ->days()
     ->pingOnComplete('https://example.com/ping/daily/success');
 ```
@@ -93,7 +93,7 @@ $this->service('\App\Controllers\DailyCommand::dailyBackup')
 
 ```php
 <?php
-$this->service('\App\Controllers\DailyCommand::dailyBackup')
+$this->service('\\App\\Controllers\\DailyCommand::dailyBackup')
     ->days()
     ->pingOnFailure('https://example.com/ping/daily/failure');
 ```
@@ -119,7 +119,7 @@ Here is a full example that demonstrates all available methods,
 
 ```php
 <?php
-$this->service('\App\Controllers\DailyCommand::dailyBackup')
+$this->service('\\App\\Controllers\\DailyCommand::dailyBackup')
     ->seconds()
     ->minutes()
     ->hours()

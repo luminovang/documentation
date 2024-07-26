@@ -22,7 +22,7 @@ Database seeding is a process that allows you to populate your database with ini
 
 3. **Calling Other Seeders**: Within a seeder's `run` method, you can call other seeders using the `invoke` method. This allows you to break down complex seeding operations into smaller, manageable tasks and maintain a clear seeding hierarchy.
 
-4. **Seeder Setup**: Create a class that extends `\Luminova\Database\Seeder`. Ensure all seed classes are placed in the `/app/Controllers/Database/Seeders/` directory for proper run.
+4. **Seeder Setup**: Create a class that extends `\Luminova\Database\Seeder`. Ensure all seed classes are placed in the `/app/Database/Seeders/` directory for proper run.
 
 5. **Seeding Management**: Luminova provides `novakit` commands to run, rollback, and manage seeders. These commands ensure that your seed data is applied in the correct order and allow you to easily revert changes if necessary.
 
@@ -59,7 +59,7 @@ This example demonstrates how to create a `seed` class to insert data into a dat
 
 ```php
 <?php
-namespace App\Controllers\Database\Seeders;
+namespace App\Database\Seeders;
 
 use \Luminova\Database\Seeder;
 use \Luminova\Database\Builder;

@@ -10,7 +10,7 @@ The AI Model class simplifies the interaction with different AI models by handli
 
 ## Introduction
 
-The `AI Model` class, allows easy interaction with different AI models interchangeably without the need to manually initialize the `AI` class and pass API keys every time. It leverages the AI configuration class `app\Controllers\Config\AI` to manage these settings.
+The `AI Model` class, allows easy interaction with different AI models interchangeably without the need to manually initialize the `AI` class and pass API keys every time. It leverages the AI configuration class `app\Config\AI` to manage these settings.
 
 ***
 

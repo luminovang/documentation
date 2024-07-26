@@ -89,7 +89,7 @@ This example will walk you through on how you can implement a login using Lumino
 <?php
 namespace App\Controllers;
 
-use \App\Controllers\Utils\Func;
+use \App\Utils\Func;
 use \Luminova\Base\BaseController;
 
 class UserController extends BaseController

@@ -237,7 +237,7 @@ To bind and access routes defined under `/blog` and its nested group `/blog/id/i
 ```php
 <?php
 use \Luminova\Routing\Router;
-use \App\Controllers\Application;
+use \App\Application;
 
 $router->bind('/blog', function(Router $router, Application $app) {
 	$router->get('/', 'UserController::blogs');
@@ -294,7 +294,7 @@ Alternatively, you can set the custom view folder within a specific route contex
 ```php
 <?php
 use \Luminova\Routing\Router;
-use \App\Controllers\Application;
+use \App\Application;
 
 // In context global scope
 $app->setFolder('panel');
@@ -354,7 +354,7 @@ Bellow example we register a command route with 'foo' name, mapped to 'CommandCo
 ```php
 <?php
 use \Luminova\Routing\Router;
-use \App\Controllers\Application;
+use \App\Application;
 
 $router->group("users", function(Router $router, Application $app){
     $router->before('users', 'UserCommandController::middleware');

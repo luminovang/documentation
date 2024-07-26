@@ -24,7 +24,7 @@ Customize your sitemap settings according to your project requirements. You will
 
 **Configuration**
 
-Open the sitemap configuration file located at `/app/Controllers/Config/Sitemap.php`, and modify the settings as needed.
+Open the sitemap configuration file located at `/app/Config/Sitemap.php`, and modify the settings as needed.
 
 > After configuring your settings, rerun sitemap generation command (`php novakit generate:sitemap`) to apply the changes
 

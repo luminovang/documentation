@@ -51,7 +51,7 @@ class MyController extends BaseController
 
 ### Class Alias
 
-`feature.app.class.alias` When enabled, the framework will create name alias for the listed classes in your controller configuration file `/app/Controllers/Config/Modules.php`.
+`feature.app.class.alias` When enabled, the framework will create name alias for the listed classes in your controller configuration file `/app/Config/Modules.php`.
 
 ```php 
 <?php 
@@ -67,7 +67,7 @@ return [
 
 ### Services
 
-`feature.app.services` When enabled, the framework will register all services listed in your controller Services configuration located in `/app/Controllers/Config/Services.php`.
+`feature.app.services` When enabled, the framework will register all services listed in your controller Services configuration located in `/app/Config/Services.php`.
 
 ```php 
 public function bootstrap(): void
@@ -82,7 +82,7 @@ public function bootstrap(): void
 
 ### PSR4 Autoloading
 
-`feature.app.autoload.psr4` When enabled, the framework will autoload all the listed classes using the psr-4 standard. To list your classes, locate the file in the controller configuration file `/app/Controllers/Config/Modules.php`.
+`feature.app.autoload.psr4` When enabled, the framework will autoload all the listed classes using the psr-4 standard. To list your classes, locate the file in the controller configuration file `/app/Config/Modules.php`.
 
 ```php 
 <?php 
@@ -119,7 +119,7 @@ import('example/MyClass');
 
 ### Dev Functions
 
-`feature.app.dev.functions` When enabled, the framework will automatically include your development global PHP file `/app/Controllers/Utils/Global.php`. This goal file allows you to define your own custom functions or overwrite PHP procedural functions to replace them with your own.
+`feature.app.dev.functions` When enabled, the framework will automatically include your development global PHP file `/app/Utils/Global.php`. This goal file allows you to define your own custom functions or overwrite PHP procedural functions to replace them with your own.
 
 **Example**
 

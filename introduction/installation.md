@@ -121,10 +121,10 @@ server {
 The above configuration assumes the project folder is located as follows:
 
 ```bash
-/var/www/?example.com/
+/var/www/example.com/
             └── public_html/                 (Framework Document Root)
-                ├── app/
-                │    └── Controllers/        (Controllers for handling application logic)
+                ├── app/                     (Application configurations, utils, models and other files)
+				|    └── Controllers/        (Controllers for handling application logic)
                 ├── public/                  (Document Root)
                 │       ├── index.php        (Front Controller)
                 │       └── assets/          (Static Assets)

@@ -10,11 +10,11 @@ The Storage Configuration allows you to set up multiple storage contexts in your
 
 ## Introduction
 
-To set up multiple storage contexts in your configuration file located at `/app/Controllers/Config/Storage.php`, you can define an array containing configurations for each storage context. Each context can have its own settings, such as the type of storage which is the `context`, (visibility, client configuration base, etc.).
+To set up multiple storage contexts in your configuration file located at `/app/Config/Storage.php`, you can define an array containing configurations for each storage context. Each context can have its own settings, such as the type of storage which is the `context`, (visibility, client configuration base, etc.).
 
 ***
 
-* File path: `/app/Controllers/Config/Storage.php`
+* File path: `/app/Config/Storage.php`
 
 ***
 

@@ -25,7 +25,7 @@ Bellow is an example how you can extend the `BaseConfig` class.
 
 ```php
 <?php 
-namespace App\Controllers\Utils;
+namespace App\Utils;
 
 use \luminova\Base\BaseConfig;
 class Config extends BaseConfig 

@@ -59,7 +59,7 @@ Each cipher entry specifies the size of the encryption key in bytes.
 
 ### getInstance
 
-Get an instance of OpenSSL or Sodium encryption depending on your configurations in encryption .class located in your controller configuration directory in `/app/Controllers/Config/Encryption.php`.
+Get an instance of OpenSSL or Sodium encryption depending on your configurations in encryption .class located in your controller configuration directory in `/app/Config/Encryption.php`.
 
 ```php
 public static getInstance(): \Luminova\Interface\EncryptionInterface
@@ -221,7 +221,7 @@ public static generate_key(string $type = 'random', array $options = []): string
 
 ### Configuration
 
-These `Configuration` properties allows you to configure encryption settings for your application. The location of the configuration class is `/app/Controllers/Config/Encryption.php`
+These `Configuration` properties allows you to configure encryption settings for your application. The location of the configuration class is `/app/Config/Encryption.php`
 
 #### `$handler`
 

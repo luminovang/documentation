@@ -94,7 +94,7 @@ public static metaToken(): void
 Validates a submitted CSRF token.
 
 ```php
-public static validate(string $token): bool
+public static validate(string $token, bool $reuse = false): bool
 ```
 
 **Parameters:**
@@ -102,10 +102,11 @@ public static validate(string $token): bool
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$token` | **string** | The token submitted by the user. |
+| `$reuse` | **bool** | Weather to retain or delete the token after successful verification (default: true). |
 
 **Return Value:**
 
-`bool` - True if the submitted token is valid, false otherwise.
+`bool` - Return true if the submitted token is valid, false otherwise.
 
 ***
 

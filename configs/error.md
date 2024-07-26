@@ -44,7 +44,7 @@ public static onWebError(Application $app): void
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$app` | **\App\Controllers\Application** | Application instance available |
+| `$app` | **\App\Application** | Application instance available |
 
 ***
 
@@ -60,7 +60,7 @@ public static onApiError(Application $app): void
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$app` | **\App\Controllers\Application** | Application instance available |
+| `$app` | **\App\Application** | Application instance available |
 
 ***
 
@@ -74,7 +74,7 @@ To register your error handler, it must be callable or pass an array where the f
 use \Luminova\Routing\Context;
 use App\Controllers\Errors\ViewErrors;
 
-$app->router->context($app, 
+$app->router->context( 
 	new Context(Context::FOO, [ViewErrors::class, 'onFooError']),
 	//...
 );

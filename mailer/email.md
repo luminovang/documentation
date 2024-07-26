@@ -22,7 +22,7 @@ It also supports third-party PHP mailer libraries like `PHPMailer` and `SwiftMai
 
 By default, the `Mailer` class uses a simple email class `NovaMailer` to send emails. If you wish to switch to a more advanced mailer, you can use `PHPMailer` or `SwiftMailer`, which are already implemented in the Luminova framework.
 
-To use another mailer library, you need to initialize the `Mailer` class with your preferred PHP mailer library like `PHPMailer` or `SwiftMailer`, or set your preferred mailer class in `/app/Controllers/Config/Preference.php`.
+To use another mailer library, you need to initialize the `Mailer` class with your preferred PHP mailer library like `PHPMailer` or `SwiftMailer`, or set your preferred mailer class in `/app/Config/Preference.php`.
 
 Initializing with `PHPMailer`:
 
@@ -345,7 +345,7 @@ Creating a mailer [template controller class](/base/mailer.md).
 namespace App\Controllers;
 
 use \Luminova\Base\BaseController;
-use \App\Controllers\Utils\OrderTemplate;
+use \App\Utils\OrderTemplate;
 use \Luminova\Email\Mailer;
 
 class MailerController extends BaseController

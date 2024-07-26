@@ -10,7 +10,7 @@ This class provides configuration options related to browsers and user agents.
 
 ## Introduction
 
-The `Browser` configuration, located at `\app\Controllers\Config\Browser.php`, provides essential configuration options related to browsers and user agents. This class is designed to help define and manage common patterns and keywords found in user agent strings, enabling developers to customize the behavior of their applications based on browser or device information.
+The `Browser` configuration, located at `\app\Config\Browser.php`, provides essential configuration options related to browsers and user agents. This class is designed to help define and manage common patterns and keywords found in user agent strings, enabling developers to customize the behavior of their applications based on browser or device information.
 
 ### Purpose
 
@@ -18,8 +18,8 @@ The purpose of the `Browser` class is to centralize configuration settings relat
 
 ***
 
-* Class namespace: `\App\Controllers\Config\Browser`
-* File path: `/app/Controllers/Config/Browser.php`
+* Class namespace: `\App\Config\Browser`
+* File path: `/app/Config/Browser.php`
 * This class is marked as **final** and can't be subclassed
 
 ***

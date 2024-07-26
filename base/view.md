@@ -61,13 +61,13 @@ protected ?\Luminova\Http\Request $request = null;
 Access to input validation object.
 
 ```php
-protected ?\Luminova\Security\InputValidator $validate = null;
+protected ?\Luminova\Security\Validation $validate = null;
 ```
 
 Access to application object.
 
 ```php
-protected ?\App\Controllers\Application $app = null;
+protected ?\App\Application $app = null;
 ```
 
 > *Note:*  In `BaseViewController`, the `$validate` or `$request` object is not initialized by default.
@@ -96,12 +96,12 @@ protected final request(): \Luminova\Http\Request
 Initializes the input validation class instance.
 
 ```php
-protected final validate(): \Luminova\Security\InputValidator
+protected final validate(): \Luminova\Security\Validation
 ```
 
 **Return Value:**
 
-`InputValidator` - Return input validation class instance.
+`Validation` - Return input validation class instance.
 
 ***
 
@@ -110,7 +110,7 @@ protected final validate(): \Luminova\Security\InputValidator
 Initializes the application class instance.
 
 ```php
-protected final app(): \App\Controllers\Application
+protected final app(): \App\Application
 ```
 
 **Return Value:**

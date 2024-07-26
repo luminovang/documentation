@@ -14,8 +14,8 @@ The `Security Configuration` class provides properties to configure security-rel
 
 ***
 
-* Class namespace: `\App\Controllers\Config\Security`
-* File path: `/app/Controllers/Config/Security.php`
+* Class namespace: `\App\Config\Security`
+* File path: `/app/Config/Security.php`
 * This class is marked as **final** and can't be subclassed
 
 ***

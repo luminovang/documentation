@@ -14,8 +14,8 @@ The `Encryption Configuration` class provides properties to configure encryption
 
 ***
 
-* Class namespace: `\App\Controllers\Config\Encryption`
-* File path: `/app/Controllers/Config/Encryption.php`
+* Class namespace: `\App\Config\Encryption`
+* File path: `/app/Config/Encryption.php`
 * This class is marked as **final** and can't be subclassed
 
 ***

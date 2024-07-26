@@ -278,7 +278,7 @@ public static fileManager(bool $shared = true): \Luminova\Storages\FileManager
 Input validation class.
 
 ```php
-public static validate(bool $shared = true): \Luminova\Security\InputValidator
+public static validate(bool $shared = true): \Luminova\Security\Validation
 ```
 
 **Parameters:**
@@ -289,7 +289,7 @@ public static validate(bool $shared = true): \Luminova\Security\InputValidator
 
 **Return Value** 
 
-`InputValidator` - Instance of the input validation class.
+`Validation` - Instance of the input validation class.
 
 ***
 
@@ -298,7 +298,7 @@ public static validate(bool $shared = true): \Luminova\Security\InputValidator
 Render response class.
 
 ```php
-public static response(int $status = 200, bool $shared = true): \Luminova\Template\ViewResponse
+public static response(int $status = 200, bool $shared = true): \Luminova\Template\Response
 ```
 
 **Parameters:**
@@ -310,7 +310,7 @@ public static response(int $status = 200, bool $shared = true): \Luminova\Templa
 
 **Return Value** 
 
-`ViewResponse` - Instance of the render response class.
+`Response` - Instance of the render response class.
 
 ***
 

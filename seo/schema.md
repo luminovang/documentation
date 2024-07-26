@@ -123,7 +123,7 @@ public setConfig(array $config): void
 - `string` - search_query: The search query URL format.
 - `string` - search_input: The name of the search input field.
 
-> Initial non-dynamic configurations can be set in your application's controller config directory, located at `/app/Controllers/Config/Schema.php`.
+> Initial non-dynamic configurations can be set in your application's controller config directory, located at `/app/Config/Schema.php`.
 
 ***
 

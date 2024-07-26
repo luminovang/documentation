@@ -27,7 +27,7 @@ By default base function inherited methods from `Normalizer` class which also ha
 
 To utilize the functionality provided by the Base Functions class, you can either use the global helper function `func()` or import the namespace and call the methods statically.
 
-You can find your functions class which is located in `/app/Controllers/Utils/Functions.php` .
+You can find your functions class which is located in `/app/Utils/Functions.php` .
 
 ### Helper Function
 
@@ -46,7 +46,7 @@ Using use keyword to import the namespace in your context.
 
 ```php 
 <?php
-use App\Controllers\Utils\Functions;
+use App\Utils\Functions;
 
 Functions::methodName()
 ```
@@ -105,7 +105,7 @@ Check if user ip address is a not exit node ip.
 
 ```php
 <?php
-use App\Controllers\Utils\Functions;
+use App\Utils\Functions;
 
 if(Functions::tor()->isTor(ip_address())){
 	echo 'Your ip address is detected in tor exit not, we have ban your account.'
@@ -391,12 +391,12 @@ public static strength(string $password, int $complexity = 4, int $min = 6, int 
 
 ***
 
-### strictInput
+### strictType
 
 Sanitize user input to protect against cross-site scripting attacks.
 
 ```php
-public static strictInput(string $string, string $type = 'name', string $replacement = ''): string
+public static strictType(string $string, string $type = 'name', string $replacement = ''): string
 ```
 
 **Parameters:**

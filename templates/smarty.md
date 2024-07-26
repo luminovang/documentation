@@ -30,7 +30,7 @@ composer require "smarty/smarty"
 
 To call a static method in `Smarty`, you first need to register your class using the Smarty API method `registerClass`.
 
-Using Luminova, you can register your class to be accessible in Smarty templates by adding class name in `/app/Controllers/Config/Templates/Smarty/Classes.php`. under the `registerClasses` method, define your class alias as the array key and the string class name as the array value.
+Using Luminova, you can register your class to be accessible in Smarty templates by adding class name in `/app/Config/Templates/Smarty/Classes.php`. under the `registerClasses` method, define your class alias as the array key and the string class name as the array value.
 
 However, a more recommended approach is to use the built-in method `call_static` to access any class object without manually registering each class you need.
 
@@ -42,7 +42,7 @@ function call_static(string $className, string $method, ?string $class = null, m
 
 #### Usage
 
-To call a method previously defined with `private static array $classes = [];` in `/app/Controllers/Config/Templates/Smarty/Classes.php`:
+To call a method previously defined with `private static array $classes = [];` in `/app/Config/Templates/Smarty/Classes.php`:
 
 ```tpl
 {call_static->foo method='myMethod'}
@@ -153,11 +153,11 @@ Here's an example of how to export the required classes within your application 
 
 ```php 
 <?php 
-namespace App\Controllers;
+namespace App;
 
 use \Luminova\Base\BaseApplication;
-use \App\Controllers\Utils\FooClass;
-use \App\Controllers\Utils\BarStaticClass;
+use \App\Utils\FooClass;
+use \App\Utils\BarStaticClass;
 
 class Application extends BaseApplication 
 {

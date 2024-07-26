@@ -14,8 +14,8 @@ The `Service Configuration` class allows you to register services to be autoload
 
 ***
 
-* Class namespace: `\App\Controllers\Config\Services`
-* File path: `/app/Controllers/Config/Services.php`
+* Class namespace: `\App\Config\Services`
+* File path: `/app/Config/Services.php`
 * Parent class: [\Luminova\Base\BaseServices](/base/services.md)
 
 ***
@@ -45,10 +45,10 @@ public bootstrap(): void
 
 ```php
 <?php
-namespace App\Controllers\Config;
+namespace App\Config;
 
 use Luminova\Base\BaseServices;
-use App\Controllers\Utils\YourServiceClassName;
+use App\Utils\YourServiceClassName;
 
 class Services extends BaseServices
 {

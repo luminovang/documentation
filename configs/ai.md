@@ -14,8 +14,8 @@ These properties serve as essential configurations needed to set up before using
 
 ***
 
-* Class namespace: `\App\Controllers\Config\AI`
-* File path: `/app/Controllers/Config/AI.php`
+* Class namespace: `\App\Config\AI`
+* File path: `/app/Config/AI.php`
 * This class is marked as **final** and can't be subclassed
 
 ***

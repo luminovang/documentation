@@ -13,7 +13,7 @@ Autoload modules in your application
 Autoload modules in your application.
 
 ***
-* File path: `/app/Controllers/Config/Modules.php`
+* File path: `/app/Config/Modules.php`
 
 ***
 

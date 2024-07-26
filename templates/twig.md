@@ -29,7 +29,7 @@ composer require "twig/twig:^3.0"
 
 To call a static method in `Twig`, you first need to extend `Twig's` `AbstractExtension` and register your Twig functions in the overridden `getFunctions` method, and also call the `addExtension` method to add your extensions, before you can then access these functions using `{{ myFunction() }}` in your templates.
 
-In the Luminova framework, registering Twig functions can be done in `/app/Controllers/Config/Templates/Twig/Functions.php`. Within the `registerFunctions` method, define your Twig functions in the array within the method.
+In the Luminova framework, registering Twig functions can be done in `/app/Config/Templates/Twig/Functions.php`. Within the `registerFunctions` method, define your Twig functions in the array within the method.
 
 However, a more recommended approach is to use the built-in `call_static` method to access any class object and functions without manually registering each class and function you need.
 
@@ -41,7 +41,7 @@ function call_static(string $className, string $method, mixed ...$arguments): mi
 
 #### Usage
 
-Optionally, you can define a list of classes with aliases in `protected static array $classes = []` within the Twig function class at `/app/Controllers/Config/Templates/Twig/Functions.php`.
+Optionally, you can define a list of classes with aliases in `protected static array $classes = []` within the Twig function class at `/app/Config/Templates/Twig/Functions.php`.
 
 To call a method previously defined with a static class method:
 
@@ -154,11 +154,11 @@ Here's an example of how to export the required classes within your application 
 
 ```php
 <?php 
-namespace App\Controllers;
+namespace App;
 
 use \Luminova\Base\BaseApplication;
-use \App\Controllers\Utils\FooClass;
-use \App\Controllers\Utils\BarStaticClass;
+use \App\Utils\FooClass;
+use \App\Utils\BarStaticClass;
 
 class Application extends BaseApplication 
 {
@@ -206,7 +206,7 @@ Accessing the static class by its reference will output the class namespace:
 ```html
 <p>{{ BadStaticClass }}</p>
 ```
-> **Outputs**: \App\Controllers\Utils\BadStaticClass
+> **Outputs**: \App\Utils\BadStaticClass
 
 ***
 

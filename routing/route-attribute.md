@@ -116,7 +116,7 @@ public __construct(string $pattern = '/', array $methods = ['GET'], bool $error 
 | `$methods` | **array** | The HTTP methods this route should responds to. (default: ['GET']). |
 | `$error` | **bool** | Indicates if this is an error handler route for HTTP methods. |
 | `$group` | **string&#124;null** | The command group name for CLI route (default: NULL). |
-| `$middleware` | **string&#124;null** | Middleware type (default: NULL).<br />-   HTTP middleware route - `before` or `after`.<br />-   CLI middleware rote `any` for global middleware or `before` for command group middleware. |
+| `$middleware` | **string&#124;null** | Middleware type (default: NULL).<br />-   HTTP middleware route - `before` or `after`.<br />-   CLI middleware rote `global` for global middleware or `before` for command group middleware. |
 
 ***
 
@@ -229,10 +229,12 @@ $route->group('bar', static function(Router $router){
 
 #### CLI Route with Middleware
 
+For `CLI` middleware, it support only `global` and `before` middleware.
+
 Define a CLI route with middleware that executes before the command group handler.
 
 ```php
-#[Route(group: 'bar', middleware: 'after')]
+#[Route(group: 'bar', middleware: 'before')]
 public function middleware(): int
 {
     // Your code here
@@ -251,7 +253,7 @@ $route->group('bar', static function(Router $router){
 
 #### Global Command Middleware
 
-Define a global command middleware that executes before any command. The middleware name can be `global` or `before`.
+Define a global command middleware that executes before any command. The middleware name can be `global`.
 
 ```php
 #[Route(group: 'bar', middleware: 'global')]
@@ -335,8 +337,8 @@ public ?string $middleware = null;
 
 - **HTTP Before Middleware Example**: `'before'` - Middleware will execute before the route handler.
 - **HTTP After Middleware Example**: `'after'` - Middleware will execute after the route handler.
-- **CLI Middleware Example**: `'global|before'` - Middleware applies globally to CLI commands.
-- **CLI After Middleware Example**: `'after'` - Middleware applies to a specific command group.
+- **CLI Global Middleware Example**: `'global'` - Middleware applies globally to CLI commands.
+- **CLI Before Group Middleware Example**: `'before'` - Middleware applies to a specific command group.
 
 ***
 

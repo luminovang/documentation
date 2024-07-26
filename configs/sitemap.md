@@ -14,8 +14,8 @@ The `Sitemap Configuration` class provides properties to configure the generatio
 
 ***
 
-* Class namespace: `\App\Controllers\Config\Sitemap`
-* File path: `/app/Controllers/Config/Sitemap.php`
+* Class namespace: `\App\Config\Sitemap`
+* File path: `/app/Config/Sitemap.php`
 * This class is marked as **final** and can't be subclassed
 
 ## Properties

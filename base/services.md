@@ -54,12 +54,12 @@ Add a service class to the service autoloading.
 
 ### Service Registration
 
-To register a class that should be discoverable in service, you must configure your class in service controller configuration folder located at [/app/Controllers/Config/Services.php](/configs/service.md).
+To register a class that should be discoverable in service, you must configure your class in service configuration folder located at [/app/Config/Services.php](/configs/service.md).
 
 Additionally, enable the service feature by setting `feature.app.services = enable` in your environment configuration file.
 
 ```php 
-namespace App\Controllers\Config;
+namespace App\Config;
 
 use \Luminova\Base\BaseServices;
 use \Some\Class\Foo\YourServiceClassName;

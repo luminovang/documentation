@@ -16,7 +16,7 @@ Before using Luminova's Crypter, ensure that your application key is properly co
 It is recommended to utilize the `php novakit generate:key` command for generating a new key when necessary. 
 By default, an application key is generated during the installation of Luminova.
 
-Furthermore, you can configure additional optional settings in `/app/Controllers/Config/Encryption.php`, such as the encryption handler class, encryption mode, hash digest, etc.
+Furthermore, you can configure additional optional settings in `/app/Config/Encryption.php`, such as the encryption handler class, encryption mode, hash digest, etc.
 
 #### Encrypting
 

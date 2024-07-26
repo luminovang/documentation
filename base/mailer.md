@@ -90,9 +90,9 @@ public getFiles(): array&lt;string,string&gt;|null
 To create a custom email template, you can extend the `BaseMailer` class and implement the required methods for subject, HTML content, alternative text body, and attachments.
 
 ```php
-// app/Controllers/Utils/
+// app/Utils/OrderTemplate.php
 <?php
-namespace App\Controllers\Utils;
+namespace App\Utils;
 
 use \Luminova\Base\BaseMailer;
 
@@ -128,12 +128,12 @@ In this example, `OrderTemplate` extends `BaseMailer` and provides implementatio
 To send an email using the `OrderTemplate`, you can use the `Mailer` class provided by Luminova framework.
 
 ```php
-// app/Controllers/
+// app/Controllers/MailerController.php
 <?php
 namespace App\Controllers;
 
 use \Luminova\Email\Mailer;
-use \App\Controllers\Utils\OrderTemplate;
+use \App\Utils\OrderTemplate;
 
 class MailerController extends BaseController
 {

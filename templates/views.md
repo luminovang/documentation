@@ -1,33 +1,43 @@
-# View Handling
+# Template View Rendering
 
 ***
 
 ## Overview
 
-Managing and customizing your template view rendering and behavior with Luminova's TemplateTrait class.
+The View class is an essential component of Luminova template management for compiling, presenting, and caching capabilities. 
 
 ***
 
 ## Introduction
 
-In this documentation, we'll delve into the functionalities of the `TemplateView` class, which acts as the core controller for Luminova templates. This class is responsible in compiling, presenting, and caching application views. Its adaptable nature enables it to handle various content types, while its rendering mode can be customized to suit your coding style and business logic. The template object is automatically inherited by `BaseApplication` class, providing a convenient access to its methods throughout your application codebase.
+The `View` class serves as the central controller for presenting templates in Luminova. It is designed to compile, present, and cache application views efficiently. The class is highly adaptable, capable of handling various content types, and offers customizable rendering modes to fit different coding styles and business logic needs. 
+
+In Luminova, the `View` class is automatically inherited by the `BaseApplication` class, ensuring seamless access to its methods throughout your application.
+
+### Core Functionalities
+
+1. **Compiling Views**: The `View` class processes template files, transforming them into optimized content for rendering.
+2. **Presenting Views**: It controls the display of templates, ensuring that the correct content is shown to the user.
+3. **Caching Views**: To enhance performance, the `View` class can cache compiled templates, reducing the need for repeated processing.
+4. **Content Adaptability**: It can handle various content types, making it versatile for different presentation needs.
+5. **Customizable Rendering**: The rendering mode can be customized to match your specific coding style and business logic requirements [Template Configuration](/configs/template.md).
+
+***
+
+* Class namespace: `\Luminova\Template\View`
 
 ***
 
 ### Class Access
 
-- Within the `App\Controllers\Application` class, access to it methods should be through the `$this->foo()`.
-- Within the view controllers classes, access to it methods should be through the application object `$this->app->foo()`.
-- Within the routing context files, access it methods through application global variable  `$app->foo()`.
-- Within the view files, access the methods using `$this->foo()`, only if template isolation is not enabled and you are using the `default` template engine.
-- In your global scope, you can use the global helper function `app` to access it methods `app()->foo()`.
+- **Within the `App\Application` Class**: Access methods using `$this->foo()`.
+- **Within View Controller Classes**: Access methods through the application object using `$this->app->foo()`.
+- **Within Routing Context Files**: Access methods via the global application variable `$app->foo()`.
+- **Within View Files**: Access methods using `$this->foo()` only if template isolation is disabled and the `default` template engine is used.
+- **Other Global Scope**: Use the global helper function `app()` to access methods with `app()->foo()`.
 
-> *Note:* Avoid re-initializing your `Application` class multiple times as this may cause unintended error, instead always use helper function `app()`, to return a shared instance of your application object.
-
-***
-
-* Class namespace: `\Luminova\Template\TemplateView`
-* Configuration: [Template Configuration](/configs/template.md) 
+> **Note:** 
+> Avoid re-initializing the `Application` class multiple times, as this may lead to unintended errors. Instead, always use the `app()` helper function to return a shared instance of your application object.
 
 ***
 
@@ -48,7 +58,7 @@ public codeblock(bool $minify, bool $button = false): self
 
 **Return Value:**
 
-`self` - Returns the class object, including the application object.
+`self` - Return instance of of View class or BaseApplication depending where its called.
 
 > Enabling the `codeblock` button option adds a copy button to your HTML code blocks, allowing easy code copying for users. However, implementing the copy functionality requires `JavaScript` integration.
 
@@ -71,7 +81,7 @@ public setFolder(string $path): self
 
 **Return Value:**
 
-`self` - Returns the class object, including the application object.
+`self` - Return instance of of View class or BaseApplication depending where its called.
 
 > *Note:* For `setFolder` to function properly, you must create the sub-folder within the `resources/views/` directory.
 
@@ -80,6 +90,7 @@ public setFolder(string $path): self
 To set a custom directory where your view files should be looked for in view folder e.g `resources/views/example/`
 
 ```php
+// /app/Controllers/ExampleController.php
 <?php 
 namespace App\Controllers;
 
@@ -124,7 +135,7 @@ public noCaching(string|array<int,string> $viewName): self
 
 **Return Value:**
 
-`self` - Returns the class object, including the application object.
+`self` - Return instance of of View class or BaseApplication depending where its called.
 
 **Example**
 
@@ -142,6 +153,7 @@ $router->post('/edit', 'ApiController::edit');
 In your `ApiController` class, within the `onCreate` or `__construct` method.
 
 ```php
+// /app/Controllers/ApiController.php
 <?php
 namespace App\Controllers;
 
@@ -195,7 +207,7 @@ public cacheable(bool $allow): self
 
 **Return Value:**
 
-`self` - Returns the class object, including the application object.
+`self` - Return instance of of View class or BaseApplication depending where its called.
 
 ***
 
@@ -205,6 +217,7 @@ The `cacheable` method can be called in the controller's `onCreate` method or `_
 But in this example we will use `onCreate` method to disable caching for all `API` routes.
 
 ```php
+// /app/Controllers/ApiController.php
 <?php
 namespace App\Controllers;
 
@@ -229,7 +242,7 @@ class ApiController extends BaseController
 
 The `export` method allows you to inject dependencies making them accessible within your `template` files, controllers, and anywhere you have access to `Application` object. 
 
-Injections should be performed in your `App\Controllers\Application` controller class, either after calling `parent::__construct()` in the constructor or within the `onCreate()` method of your application class depending on your choice.
+Injections should be performed in your `App\Application` controller class, either after calling `parent::__construct()` in the constructor or within the `onCreate` method of your application class depending on your choice.
 
 ```php
 public export(string|object $class, string|null $alias = null, bool $initialize =true): true
@@ -334,7 +347,7 @@ public cache(\DateTimeInterface|int|null $expiry = null): self
 
 **Return Value:**
 
-`self` - Returns the class object, including the application object.
+`self` - Return instance of of View class or BaseApplication depending where its called.
 
 **Example**
 
@@ -343,6 +356,7 @@ In this example we check if cache exist and not expired before processing heavy 
 <p style="color:red;">*Note:* Passing different expiration other than the expiration used during cache will not take effect in checking the expiration.</p>
 
 ```php
+// /app/Controllers/ExampleController.php
 <?php
 namespace App\Controllers;
 
@@ -420,7 +434,7 @@ public view(string $viewName, string $viewType = 'html'): self
 
 **Return Value:**
 
-`self` - Returns the class object, including the application object.
+`self` - Return instance of of View class or BaseApplication depending where its called.
 
 **Supported View Types:**
 
@@ -443,6 +457,7 @@ public view(string $viewName, string $viewType = 'html'): self
 In your controller class.
 
 ```php
+// /app/Controllers/FooController.php
 <?php
 namespace App\Controllers;
 
@@ -466,7 +481,7 @@ class FooController extends BaseController
 
 The `render` method allows you to present your application's view content to users, with additional options provided as an array of key-value pairs. 
 These options can be accessed within the template view file using `$this->_myVar` or `$_myVar` when view isolation is enabled. 
-If variable prefixing is disabled in `/app/Controllers/Config/Template.php`, then you can access your options directly as variables `$this->myVar` or `$myVar`.
+If variable prefixing is disabled in `/app/Config/Template.php`, then you can access your options directly as variables `$this->myVar` or `$myVar`.
 
 ```php
 public render(array&lt;string,mixed&gt; $options = [], int $status = 200): int
@@ -517,6 +532,7 @@ public respond(array $options = [], int $status = 200): string
 In your controller class.
 
 ```php
+// /app/Controllers/FooController.php
 <?php
 namespace App\Controllers;
 
@@ -567,6 +583,7 @@ public viewInfo(): array
 **Return Value:**
 
 `array` - An associative array containing information about the view file:
+    
 -  'location': The full path to the view file.
 -  'engine': The template engine.
 -  'size': The size of the view file in bytes.

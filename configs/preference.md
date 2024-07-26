@@ -14,8 +14,8 @@ The `Preference Configuration` class provides methods to specify preferred compo
 
 ***
 
-* Class namespace: `\App\Controllers\Config\Preference`
-* File path: `/app/Controllers/Config/Preference.php`
+* Class namespace: `\App\Config\Preference`
+* File path: `/app/Config/Preference.php`
 * This class is marked as **final** and can't be subclassed
 
 ***

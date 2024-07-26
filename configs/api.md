@@ -14,8 +14,8 @@ These properties serve as essential configuration and security measures for your
 
 ***
 
-* Class namespace: `\App\Controllers\Config\Apis`
-* File path: `/app/Controllers/Config/Apis.php`
+* Class namespace: `\App\Config\Apis`
+* File path: `/app/Config/Apis.php`
 * This class is marked as **final** and can't be subclassed
 
 ***
