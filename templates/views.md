@@ -24,6 +24,24 @@ In Luminova, the `View` class is automatically inherited by the `BaseApplication
 
 ***
 
+### Static Content
+
+Luminova allows you to serve partially static content. This means that the `Router` and `ViewCache` must run first to load the cached view and render the generated content. While considered partially static, this approach can reduce view response time by up to `10%` compared to not using the dot `extension` suffix for page caches. This is because your controller methods and other modules will not be loaded when using static pages.
+
+#### How Static Cache Works
+
+1. **Enable Page Caching:** Ensure that `page.caching` is enabled in your `env` file to cache pages upon request.
+2. **Append Extension:** Add content extension type e.g, `.html` to your request URL. This ensures that the `Router` tries to load the cached page first if it is available and not expired. If not, it will render the view as usual. Supported extension types: `html`, `json`, `text`, `xml`, `rdf`, `atom`, `rss`, `css`, `js`.
+
+#### Examples
+
+Suppose you have a blog page accessible at `https://example.com/blog/how-to-install-luminova`. To serve it as static content, simply append `.html` at the end, like this: `https://example.com/blog/how-to-install-luminova.html`.
+
+> **Note:**
+> When content `.extension` type is specified in the view request URL, application events, `middleware`, and `after` middleware will not be called, as this is treated as static content.
+
+***
+
 * Class namespace: `\Luminova\Template\View`
 
 ***
