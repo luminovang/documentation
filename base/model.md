@@ -1,4 +1,4 @@
-# Base Model
+# Base Class for Model Implementation
 
 ***
 
@@ -182,7 +182,7 @@ public insert(array<string,mixed> $values): bool
 
 **Throw Exception:**
 
-[\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - Throws if insert columns contains column names that isn't defined in `$insertable`.
+[\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - Throws if insert columns contains column names that isn't defined in `$insertable`.
 
 ***
 
@@ -208,7 +208,7 @@ public update(string|array<int,mixed> $key, array $data, int $max = 1): bool
 
 **Throw Exception:**
 
-[\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - Throws if update columns contains column names that isn't defined in `$updatable`.
+[\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - Throws if update columns contains column names that isn't defined in `$updatable`.
 
 ***
 
@@ -388,7 +388,7 @@ public doSearch(string $query, array<int,string> $fields = ['*'], int $limit = 1
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If search controller class is not installed.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If search controller class is not installed.
 
 > To use this method or `searchInstance` you will first have to install a third party library by running composer command `composer require peterujah/php-search-controller` .
 
@@ -414,7 +414,7 @@ protected searchInstance(string $flag): \Peterujah\NanoBlock\SearchInstance
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If the search controller class is not installed.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If the search controller class is not installed.
 
 ### Search Flags
 

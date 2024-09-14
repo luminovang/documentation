@@ -1,4 +1,4 @@
-# OpenAI Models
+# Integration of OpenAI Models
 
 ***
 
@@ -99,8 +99,8 @@ public completion(string $prompt, array $options = []): array
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If an error is encountered during the network request.
-- [\Luminova\Exceptions\JsonException](/exceptions/classes.md#jsonexception) - If an error is encountered during JSON decoding.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If an error is encountered during the network request.
+- [\Luminova\Exceptions\JsonException](/running/exceptions.md#jsonexception) - If an error is encountered during JSON decoding.
 
 ***
 
@@ -124,8 +124,8 @@ public suggestions(string $prompt, array $options = []): array
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If an error is encountered during the network request.
-- [\Luminova\Exceptions\JsonException](/exceptions/classes.md#jsonexception) - If an error is encountered during JSON decoding.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If an error is encountered during the network request.
+- [\Luminova\Exceptions\JsonException](/running/exceptions.md#jsonexception) - If an error is encountered during JSON decoding.
 
 ***
 
@@ -149,8 +149,8 @@ public message(string $prompt, array $options = []): array
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If an error is encountered during the network request.
-- [\Luminova\Exceptions\JsonException](/exceptions/classes.md#jsonexception) - If an error is encountered during JSON decoding.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If an error is encountered during the network request.
+- [\Luminova\Exceptions\JsonException](/running/exceptions.md#jsonexception) - If an error is encountered during JSON decoding.
 
 ***
 
@@ -174,8 +174,8 @@ public image(string $prompt, array $options = []): array|false
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If an error is encountered during the network request.
-- [\Luminova\Exceptions\JsonException](/exceptions/classes.md#jsonexception) - If an error is encountered during JSON decoding.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If an error is encountered during the network request.
+- [\Luminova\Exceptions\JsonException](/running/exceptions.md#jsonexception) - If an error is encountered during JSON decoding.
 
 ***
 
@@ -199,8 +199,8 @@ public imageEdit(string $prompt, array $options): array|false
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If an error is encountered during the network request.
-- [\Luminova\Exceptions\JsonException](/exceptions/classes.md#jsonexception) - If an error is encountered during JSON decoding.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If an error is encountered during the network request.
+- [\Luminova\Exceptions\JsonException](/running/exceptions.md#jsonexception) - If an error is encountered during JSON decoding.
 
 ***
 
@@ -224,8 +224,8 @@ public fineTune(string $trainingFile, array $options = []): array
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If an error is encountered during the network request.
-- [\Luminova\Exceptions\JsonException](/exceptions/classes.md#jsonexception) - If an error is encountered during JSON decoding.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If an error is encountered during the network request.
+- [\Luminova\Exceptions\JsonException](/running/exceptions.md#jsonexception) - If an error is encountered during JSON decoding.
 
 ***
 
@@ -249,8 +249,8 @@ public embed(string|array $input, array $options = []): array
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If an error is encountered during the network request.
-- [\Luminova\Exceptions\JsonException](/exceptions/classes.md#jsonexception) - If an error is encountered during JSON decoding.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If an error is encountered during the network request.
+- [\Luminova\Exceptions\JsonException](/running/exceptions.md#jsonexception) - If an error is encountered during JSON decoding.
 
 ***
 
@@ -274,8 +274,8 @@ public speech(string $text, array $options = []): string|false
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If an error is encountered during the network request.
-- [\Luminova\Exceptions\JsonException](/exceptions/classes.md#jsonexception) - If an error is encountered during JSON decoding.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If an error is encountered during the network request.
+- [\Luminova\Exceptions\JsonException](/running/exceptions.md#jsonexception) - If an error is encountered during JSON decoding.
 
 ***
 
@@ -299,8 +299,8 @@ public audio(string $filename, array $options = []): string|false
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If an error is encountered during the network request.
-- [\Luminova\Exceptions\JsonException](/exceptions/classes.md#jsonexception) - If an error is encountered during JSON decoding.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If an error is encountered during the network request.
+- [\Luminova\Exceptions\JsonException](/running/exceptions.md#jsonexception) - If an error is encountered during JSON decoding.
 
 ***
 
@@ -323,8 +323,8 @@ public models(string|null $name = null): array
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If an error is encountered during the network request.
-- [\Luminova\Exceptions\JsonException](/exceptions/classes.md#jsonexception) - If an error is encountered during JSON decoding.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If an error is encountered during the network request.
+- [\Luminova\Exceptions\JsonException](/running/exceptions.md#jsonexception) - If an error is encountered during JSON decoding.
 
 ***
 

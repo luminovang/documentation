@@ -1,49 +1,50 @@
-# Database Manager
+# Database Backup and Export manager
 
 ***
 
 ## Overview
 
-Database manager class allows you to create a backup of your database or export table in CSV or JSON format.
+Database manager class allows you to create a backup of your database and tables, and export them as a CSV or JSON format.
 
 ***
 
 ## Introduction
 
-With database manager class, you can create a backup of your database or export, download database table columns as CSV or JSOn file format. All your backup and backup will be stored in `/luminova.ng/writeable/caches/database/`
+The `Manager` class allows you to create backups of your database, database table or export specific table columns as `CSV` or `JSON` files. All backups and exports are stored in `/writeable/backups/` directory.
 
+***
 * Class namespace: `\Luminova\Database\Manager`
 
 ***
+
+## Methods
 
 ### constructor
 
 Initializes database manager class with `DriversInterface` you are using.
 
 ```php
-new Manager(\Luminova\Interface\DriversInterface $db, null|string $table = null): mixed
-```
-
-Get database manager instance from `QueryBulder` class.
-
-```php
-$manager = $bilder->manager(): Manager;
+public __construct(\Luminova\Interface\DriversInterface $db, ?string $table = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$db` | **\Luminova\Interface\DriversInterface** |  |
-| `$table` | **null&#124;string** |  |
+| `$db` | **\Luminova\Interface\DriversInterface** | The database driver interface. |
+| `$table` | **string&#124;null** | The name of the table to manage. |
+
+**Get database manager instance from `QueryBulder` class.**
+
+```php
+$manager = $bilder->manager(): Manager;
+```
 
 ***
 
-## Methods
-
 ### setTable
 
-Set the databse table to backup.
+Sets the database table to backup or export.
 
 ```php
 public setTable(string $table): void
@@ -53,25 +54,25 @@ public setTable(string $table): void
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$table` | **string** | Database table name to export. |
+| `$table` | **string** | The database table name. |
 
 ***
 
 ### export
 
-Export database table and download it to browser as JSON or CSV format.
+Exports the specified table and downloads it as a `CSV` or `JSON` file.
 
 ```php
-public export(string $as = 'csv', string $filename = null, array $columns = ['*']): bool
+public export(string $as = 'csv', ?string $filename = null, array $columns = ['*']): bool
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$as` | **string** | Expirt as csv or json format. |
-| `$filename` | **string** | Filename to download it as. |
-| `$columns` | **array** | Table columns to export (default: all) |
+| `$as` | **string** | Format to export (e.g, `csv` or `json`). |
+| `$filename` | **string&#124;null** | The name of the file to download. |
+| `$columns` | **array** | The columns to export (default: `[*] `all columns). |
 
 **Return Value:**
 
@@ -79,25 +80,24 @@ public export(string $as = 'csv', string $filename = null, array $columns = ['*'
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If invalid format is provided.
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If unable to create export temp directory.
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If failed to create export.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - If an invalid format is provided or if the export fails.
 
 ***
 
 ### backup
 
-Create a database backup file.
+Creates a backup of the current database or a specific table.
 
 ```php
-public backup(string $filename = null): bool
+public backup(?string $filename = null, bool $forTable = false): bool
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$filename` | **string** | Filename to store backup as. |
+| `$filename` | **string&#124;null** | The name of the backup file. |
+| `$forTable` | **bool** | Whether to back up a specific table or the entire database (default: false). |
 
 **Return Value:**
 
@@ -105,5 +105,4 @@ public backup(string $filename = null): bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If unable to create backup directory.
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If failed to create backup.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - If the backup fails or the directory cannot be created.

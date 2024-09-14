@@ -1,4 +1,4 @@
-# Cookie Configuration
+# Client-Side Cookie Configuration
 
 ***
 

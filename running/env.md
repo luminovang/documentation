@@ -1,4 +1,4 @@
-# Env Configuration
+# Environment Variable Configurations and Managment
 
 ***
 
@@ -82,6 +82,9 @@ php novakit env:remove --key=MY_FOO
 - **`blank`**: 
   - **Description**: Represents an empty string `''`, often used when a value needs to be provided but no actual content is required.
 
+- **`array`**: 
+  - **Description**: When a variable value is specified in this format `['foo', 'bar']`, `[1,2,3]`, calling `env` with the variable key will return and array of the values.
+
 ***
 
 ## Environment Variables
@@ -121,6 +124,9 @@ php novakit env:remove --key=MY_FOO
 - **`app.maintenance.retry`** **(int)**: 
   - **Description**: Specifies the number of seconds to wait before retrying a connection during maintenance mode. Default is 3600 seconds (1 hour).
 
+- **`app.api.prefix`** **(string)**: 
+  - **Description**: Defines the URI prefix for your `API` endpoints. The default prefix is `api`. If you choose a different prefix, ensure that `Foundation::isApiContext(`) continues to function correctly with your new prefix
+
 ***
 
 ### CLI
@@ -140,6 +146,9 @@ php novakit env:remove --key=MY_FOO
 
 - **`page.cache.expiry`** **(int)**:
   - **Description**: Sets the duration (in seconds) for which cached pages are considered valid before being refreshed or invalidated. For example, a value of `3600` means cached pages are valid for one hour.
+
+- **`page.caching.statics`** **(string)**:  
+  - **Description**: Specifies the types of content that should be served as static cached pages. The types are separated by the pipe symbol (`|`). For example, `html|json` means that static caching will be applied to pages with `.html` and `.json` extensions. Ensure there are no spaces around the pipe symbol. 
 
 - **`page.minification`** **(bool)**:
   - **Description**: Enables or disables minification of page content, including inline CSS, and JavaScript, to reduce file size and improve loading times.
@@ -187,6 +196,25 @@ php novakit env:remove --key=MY_FOO
 
 - **`throw.cli.exceptions`** **(bool)**:
   - **Description**: Allows you to catch and handle exceptions thrown in CLI (Command Line Interface) commands outside of command controller classes. When set to `true`, raw exceptions are thrown in CLI environments.
+
+***
+
+### Memcached 
+
+- **`memcached.persistent.id`** **(string|null)**:  
+  - **Description**: Specifies the persistent connection ID for the Memcached server. If set to `null`, a default value will be used. This ID allows for reusing the same connection across multiple requests, improving performance.
+
+- **`memcached.key.prefix`** **(string|null)**:  
+  - **Description**: Defines an optional prefix to be added to all cache keys. This is useful for avoiding key collisions between different applications or environments. If set to `null`, no prefix will be used.
+
+- **`memcached.host`** **(string)**:  
+  - **Description**: The hostname or IP address of the Memcached server. The default value is `localhost`, indicating that the Memcached server is running on the same machine. 
+
+- **`memcached.port`** **(int)**:  
+  - **Description**: The port number on which the Memcached server is listening. The default value is `11211`, which is the standard port for Memcached.
+
+- **`memcached.server.weight`** **(int)**:  
+  - **Description**: Specifies the weight of the Memcached server. This value influences the distribution of cache requests among multiple servers. A higher weight means the server will handle a larger portion of the cache requests. The default value is `0`, which means the server’s weight is not explicitly set.
 
 ***
 
@@ -251,6 +279,9 @@ These configuration variables are used to set up the default database connection
 
 - **`database.emulate.preparse`** **(bool)**:
   - **Description**: Emulation of the preparse feature, which is used to prepare and optimize SQL queries before execution. This can enhance query performance by reducing the parsing and compilation overhead during runtime. It's particularly useful for databases that do not natively support query preparation.
+
+- **`database.caching.driver`** **(string)**:
+  - **Description**: Specify the cache driver to be used in database `Builder` class. Available drivers (`memcached` or `filesystem`)
 
 - **`database.connection`** **(string)**:
   - **Description**: Specifies the database connection driver to use. Available drivers (`MYSQLI` or `PDO`).

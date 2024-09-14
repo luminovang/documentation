@@ -1,4 +1,4 @@
-# Base Mailer
+# Base Email Template Base Classes
 
 ***
 

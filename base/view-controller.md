@@ -1,4 +1,4 @@
-# Base View Controller
+# Base Class for HTTP Routing View Controllers
 
 ***
 
@@ -79,7 +79,7 @@ protected ?\App\Application $app = null;
 
 ### request
 
-Initializes the HTTP request class instance
+Initializes the HTTP request class instance.
 
 ```php
 protected final request(): \Luminova\Http\Request
@@ -135,9 +135,9 @@ protected final view(string $view, array $options = [], string $type = 'html'): 
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$view` | **string** | The view name to render. |
-| `$options` | **array** | Optional options to be passed to view template. |
-| `$type` | **string** | The type of view content you are compiling (default: `html`). |
+| `$view` | **string** | The view file name without extension type. |
+| `$options` | **array<string,mixed>** | Optional options to be passed to view template. |
+| `$type` | **string** | The view content extension type (default: `html`). |
 
 ***
 
@@ -157,9 +157,25 @@ protected final respond(string $view, array $options = [], string $type = 'html'
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$view` | **string** | The view name to respond with. |
-| `$options` | **array** | Optional options to be passed to view template. |
-| `$type` | **string** | The type of view content you are compiling (default: `html`). |
+| `$view` | **string** | The view file name without extension type. |
+| `$options` | **array<string,mixed>** | Optional options to be passed to view template. |
+| `$type` | **string** | The view content extension type (default: `html`). |
+
+***
+
+**View Types:**
+
+Any of these types are supported view type argument for `respond` and `view` method.
+   
+- `html` - View will render HTML content.
+- `json` - View will render JSON content.
+- `text` - View will render Plain text content.
+- `xml`  - View will render XML content.
+- `js`   - View will render JavaScript content.
+- `css`  - View will render  CSS content.
+- `rdf`  - View will render RDF content.
+- `atom` - View will render Atom content.
+- `rss`  - View will render  RSS feed content.
 
 ***
 

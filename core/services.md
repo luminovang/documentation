@@ -1,4 +1,4 @@
-# Base Services
+# Core Custom Service Layer Autoloading Class
 
 ***
 
@@ -10,11 +10,11 @@ Define your application shared and serializable classes instance in Base Service
 
 ## Introduction
 
-Base Services in the Luminova Framework provide a foundational layer for implementing various business logic and functionalities within your application. These services offer versatility, enabling the retrieval of a shared instance of a class, reinitialization of a class with new arguments, or caching and serializing class instances for seamless utilization throughout your application or by third-party modules.
+Core Services in the Luminova Framework provide a foundational layer for implementing various business logic and functionalities within your application. These services offer versatility, enabling the retrieval of a shared instance of a class, reinitialization of a class with new arguments, or caching and serializing class instances for seamless utilization throughout your application or by third-party modules.
 
 ***
 
-* Class namespace: `\Luminova\Base\BaseServices`
+* Class namespace: `\Luminova\Base\CoreServices`
 * This class implements:
 [\Luminova\Interface\ServicesInterface](/interface/classes.md#servicesinterface)
 * This class is an **Abstract class**
@@ -46,7 +46,7 @@ Add a service class to the service autoloading.
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If the service already exists or class argument is not an array list.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If the service already exists or class argument is not an array list.
 
 ***
 
@@ -61,10 +61,10 @@ Additionally, enable the service feature by setting `feature.app.services = enab
 ```php 
 namespace App\Config;
 
-use \Luminova\Base\BaseServices;
+use \Luminova\Base\CoreServices;
 use \Some\Class\Foo\YourServiceClassName;
 
-class Services extends BaseServices
+class Services extends CoreServices
 {
   public function bootstrap(): void
   {

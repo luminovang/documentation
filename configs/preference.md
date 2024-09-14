@@ -1,4 +1,4 @@
-# Preference Configuration
+# Class and Module Preference Configurations
 
 ***
 

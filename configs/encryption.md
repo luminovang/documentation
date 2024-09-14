@@ -1,4 +1,4 @@
-# Encryption Configuration
+# Encryption and Decryption Configurations
 
 ***
 

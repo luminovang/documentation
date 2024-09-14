@@ -1,4 +1,4 @@
-# Error Attribute
+# Request Error Handling Attributes
 
 ***
 

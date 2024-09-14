@@ -1,4 +1,4 @@
-# Factories
+# Management of Core Factory Classes
 
 ***
 

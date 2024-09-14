@@ -1,4 +1,4 @@
-# Database Configuration
+# Database Backup Connection Configuration
 
 ***
 
@@ -16,7 +16,7 @@ The `Database Configuration` allows you to specify optional backup database serv
 
 * Class namespace: `\App\Config\Database`
 * File path: `/app/Config/Database.php`
-* Parent class: [\Luminova\Base\BaseDatabase](/base/database.md)
+* Parent class: [\Luminova\Base\CoreDatabase](/base/database.md)
 
 ***
 

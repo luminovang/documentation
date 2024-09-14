@@ -1,4 +1,4 @@
-# Smarty Implementation
+# Smarty Templete Engine Implementation
 
 ***
 
@@ -155,11 +155,11 @@ Here's an example of how to export the required classes within your application 
 <?php 
 namespace App;
 
-use \Luminova\Base\BaseApplication;
+use \Luminova\Core\CoreApplication;
 use \App\Utils\FooClass;
 use \App\Utils\BarStaticClass;
 
-class Application extends BaseApplication 
+class Application extends CoreApplication 
 {
 	public function __construct()
 	{

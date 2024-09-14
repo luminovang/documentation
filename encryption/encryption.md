@@ -32,7 +32,7 @@ public __construct(string $key = ''): mixed
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#invalidexception) - If the method or block size is invalid while using openssl.
+- [\Luminova\Exceptions\InvalidException](/running/exceptions.md#invalidexception) - If the method or block size is invalid while using openssl.
 
 ***
 
@@ -101,7 +101,7 @@ public setCypherAlgo(int|null $blockSize, string $mode): void
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#invalidexception) - If the method or block size is invalid.
+- [\Luminova\Exceptions\InvalidException](/running/exceptions.md#invalidexception) - If the method or block size is invalid.
 
 ***
 
@@ -139,7 +139,7 @@ public encrypt(): string|bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#invalidexception) - If encryption fails due to invalid parameters.
+- [\Luminova\Exceptions\InvalidException](/running/exceptions.md#invalidexception) - If encryption fails due to invalid parameters.
 
 ***
 
@@ -157,7 +157,7 @@ public decrypt(): string|bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidException](/exceptions/classes.md#invalidexception) - If decryption fails due to invalid parameters.
+- [\Luminova\Exceptions\InvalidException](/running/exceptions.md#invalidexception) - If decryption fails due to invalid parameters.
 
 ***
 

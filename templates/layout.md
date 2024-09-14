@@ -1,4 +1,4 @@
-# PHP Layout Inheritance
+# PHP Layout Inheritance and Extension Implementation
 
 ***
 
@@ -168,7 +168,7 @@ public layout(string $layout): self
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - Throws when layout file is not found.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - Throws when layout file is not found.
 
 ***
 
@@ -204,7 +204,7 @@ protected end(string|null $name = null): void
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - Throws when end is called without active section to end.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - Throws when end is called without active section to end.
 
 ***
 

@@ -1,52 +1,116 @@
-# View Response
+# Custom Content Responses in Controllers
 
 ***
 
 ## Overview
 
-Render or download content with view response class or using its global procedural function.
+Response class allows you to render or download content without processing, which gives you full control over the output and processing of the content.
 
 ***
 
 ## Introduction
 
-The View Response class simplifies APs, and WEB content responses within your application's controller class or routing closures. With its global procedural function, you can easily access the class instance without instantiating the class.
+The `View Response` class simplifies the rendering of content within your application's controller methods or routing closures. Unlike the [template View](/templates/response.md) class, this class allows you to render content directly without additional processing, giving you complete control over the output.
+
+This is suitable to use in responding `APIs` content without an addition overhead in processing the contents.
+
+**Key Features:**
+
+- **Direct Rendering:** Easily render content within your application's controllers or routes without reprocessing.
+- **Global Access:** Use the global procedural function to access the class instance without explicit instantiation.
+
+**Limitations:**
+
+- **No View Caching:** This method does not support view caching. Implement custom caching if needed.
+- **No Template Support:** This class does not support the use of `Smarty` or `Twig` templates.
+
+***
 
 * Class namespace: `\Luminova\Template\Response`
 
 ***
 
-### Helper Function
+### Usages
 
-The global helper of Response class will return instance of this class.
+**Helper Function Initialization**
+
+The global helper of Response class will return a shared instance of response class.
 
 ```php
 <?php
-response(int $status = 200)
+$response = response(200);
 ```
 
-**Parameters:**
+Initialize class directly.
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$status` | **int** | HTTP status code (default: 200 OK) |
-| `$encode` | **bool** | Enable content encoding like gzip, deflate. |
+```php
+<?php 
+use \Luminova\Template\Response;
+
+$response = new Response(200);
+```
+
+To output json content.
+
+```php 
+<?php 
+$response->json([
+    'message' => 'Foo bar'
+]);
+```
+
+To output html content.
+
+```php 
+<?php 
+$response->html('<p>Foo bar</p>');
+```
+
+To output file content in browser.
+
+```php
+<?php 
+$response->stream('/path/to/file/', 'large-pdf.pdf', [
+    'Content-Type' => 'application/pdf'
+], true, 3600);
+```
+
+To download file from browser.
+
+```php
+<?php 
+$response->download('/path/to/file/document.pdf', 'large-pdf.pdf', [
+    'Content-Type' => 'application/pdf'
+]);
+```
+To download content from browser.
+
+```php
+<?php 
+$response->download('Hello world!', 'hello.txt', [
+    'Content-Type' => 'text/plain'
+]);
+```
 
 ***
 
+## Methods
+
 ### constructor
 
-Initialize class constructor with HTTP status code .
+Initialize response class constructor with HTTP status code and optional headers.
 
 ```php
-new Response(int $status = 200)
+<?php 
+function __construct(int $status = 200, array<string,mixed> $headers = [])
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$status` | **int** | HTTP status code (default: 200 OK) |
+| `$status` | **int** | HTTP status code (default: 200 OK). |
+| `$headers` | **array<string,mixed>** | The header key-pair (default: []). |
 
 ***
 
@@ -66,7 +130,7 @@ public setStatus(int $status = 200): self
 
 **Return Value:**
 
-`Response` - Instance of view response class.
+`Response` - Return response class instance.
 
 ***
 
@@ -86,13 +150,13 @@ public encode(bool $encode): self
 
 **Return Value:**
 
-`Response` - Instance of view response class.
+`Response` - Return response class instance.
 
 ***
 
 ### minify
 
-Set enable or disable content minification, otherwise it will use default flag in env file `page.minification
+Set enable or disable content minification, otherwise it will use default flag in env file `page.minification`.
 
 ```php
 public minify(bool $minify): self
@@ -106,7 +170,70 @@ public minify(bool $minify): self
 
 **Return Value:**
 
-`Response` - Instance of view response class.
+`Response` - Return response class instance.
+
+***
+
+### codeblock
+
+Set if `HTML` codeblock tags should be ignore during content minification.
+For this to work correctly `minification` of content must be enabled either by calling method `minify` or enabling minification in `env` file.
+
+```php
+public codeblock(bool $minify, bool $button = false): self 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$minify` | **bool** | Indicate if codeblocks should be minified. |
+| `$button` | **bool** | Indicate if codeblock tags should include a copy button (default: false). |
+
+**Return Value:**
+
+`Response` - Return response class instance.
+
+***
+
+### header
+
+Set response header to use.
+
+```php
+public header(string $key, mixed $value): self 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$key` | **string** | The header key. |
+| `$value` | **mixed** | The header value for key. |
+
+**Return Value:**
+
+`Response` - Return response class instance.
+
+***
+
+### headers
+
+Set response headers to use.
+
+```php
+public headers(array<string,mixed> $headers): self 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$headers` | **array<string,mixed>** | The headers key-pair. |
+
+**Return Value:**
+
+`Response` - Return response class instance.
 
 ***
 
@@ -116,26 +243,24 @@ Render any content format anywhere with your own customizations.
 Using this method allows you to pass `encode` or `minify` without using the default from `env`.
 
 ```php
-public render(mixed $content, $status = 200, array $headers = [],  bool $encode = true, bool $minify = false): int
+public render(mixed $content, int $status = 200, array $headers = [],  bool $encode = false, bool $minify = false): int
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$content` | **mixed** | Response content |
-| `$status` | **int** | HTTP status code (default: 200 OK) |
-| `$headers` | **array** | Additional headers. |
-| `$encode` | **bool** | Enable content encoding like gzip. |
-| `$minify` | **bool** | Enable content minification and compress. |
+| `$content` | **mixed** | The content to render. |
+| `$status` | **int** | The HTTP status code (default: 200 OK). |
+| `$headers` | **array** | Additional output headers. |
+| `$encode` | **bool** | Weather to enable content encoding like gzip (default: false). |
+| `$minify` | **bool** | Weather to minify content (default: false). |
 
 **Return Value:**
 
 `int` - Return status code success as STATUS_SUCCESS, otherwise failure as STATUS_ERROR.
 
-> This can be used in router or APIs to respond content without an addition overhead in processing the contents.
-> 
-> *Note:* The default content type is `application/json` if not was provided in `$headers`.
+> **Note:** The default content type is `application/json` if non was provided in `$headers`.
 
 ***
 
@@ -151,7 +276,7 @@ public json(array|object $content): int
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$content` | **array&#124;object** | Data to be encoded as JSON |
+| `$content` | **array&#124;object** | The array or json object to be rendered as JSON. |
 
 **Return Value:**
 
@@ -171,7 +296,7 @@ public text(string $content): int
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$content` | **string** | Text content |
+| `$content` | **string** | The plain text content to render. |
 
 **Return Value:**
 
@@ -191,7 +316,7 @@ public html(string $content): int
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$content` | **string** | HTML content |
+| `$content` | **string** | The HTML content to render. |
 
 **Return Value:**
 
@@ -211,7 +336,7 @@ public xml(string $content): int
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$content` | **string** | XML content |
+| `$content` | **string** | The XML content to render. |
 
 **Return Value:**
 
@@ -224,26 +349,51 @@ public xml(string $content): int
 Download file from server or download response string content.
 
 ```php
-public download(string $fileOrContent, string|null $name = null, array $headers = []): bool
+public download(string $fileOrContent, ?string $name = null, array $headers = []): bool
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$path` | **string** | Path to the file or content to be downloaded |
-| `$name` | **string&#124;null** | Optional name to be used for the downloaded file |
+| `$path` | **string** | Path to the file or content to be downloaded. |
+| `$name` | **string&#124;null** | Optional name to be used for the downloaded file. |
 | `$headers` | **array** | Optional download headers. |
 
 **Return Value:**
 
-`bool` - Return true if the download was successful, false otherwise
+`bool` - Return true if the download was successful, false otherwise.
+
+***
+
+### stream
+
+Streaming large files.
+This allows you to display any file on browser.
+
+```php
+public stream(string $path, string $basename, array $headers = [], bool $eTag = true, int $expiry = 0): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$path` | **string** | The path to file storage (e.g: `/writeable/storages/images/`). |
+| `$name` | **string** | The file name (e.g: image.png). |
+| `$headers` | **array** | Optional stream output headers. |
+| `$eTag` | **bool** | Whether to generate ETag headers (default: true). |
+| `$expiry` | **int** | Expiry time in seconds for cache control (default: 0), indicating no cache. |
+
+**Return Value:**
+
+`bool` - Return true if file streaming was successful, false otherwise.
 
 ***
 
 ### redirect
 
-URL redirection, redirect to another URL.
+Redirect to a another `URL` location.
 
 ```php
 public redirect(string $url = '/', int $response_code): void
@@ -254,4 +404,4 @@ public redirect(string $url = '/', int $response_code): void
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$url` | **string** | URL location to redirect. |
-| `$response_code` | **int** | Response status code |
+| `$response_code` | **int** | Response status code. |

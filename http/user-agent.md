@@ -1,4 +1,4 @@
-# User Agent
+# Incoming Request User Agents Management
 
 ***
 
@@ -10,7 +10,7 @@ The UserAgent class is a valuable tool for devs building web applications or ser
 
 ## Introduction
 
-The `UserAgent` class is a utility class designed to parse and extract information from User-Agent strings. User-Agent strings are sent by web browsers and other clients to identify themselves to servers. This class makes it easy to work with User-Agent strings, allowing developers to extract useful information such as the browser name, version, operating system, and device type.
+The `UserAgent` class is a utility class designed to parse and extract information from User-Agent strings. The User-Agent information are sent by web browsers and other clients to identify themselves to servers. This class makes it easy to work with User-Agent strings, allowing developers to extract useful information such as the browser name, version, operating system, and device type.
 
 ***
 
@@ -71,7 +71,7 @@ echo $ua->platformversion;
 Constructor
 
 ```php
-public __construct(string|null $useragent = null): mixed
+public __construct(?string $useragent = null): mixed
 ```
 
 Sets the User Agent and runs the compilation routine.
@@ -80,7 +80,7 @@ Sets the User Agent and runs the compilation routine.
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$useragent` | **string&#124;null** | The User Agent string. If not provided, it defaults to $_SERVER['HTTP_USER_AGENT']. |
+| `$useragent` | **string&#124;null** | The User Agent string. If not provided, it defaults to `HTTP_USER_AGENT`. |
 
 ***
 

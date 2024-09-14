@@ -1,4 +1,4 @@
-# Services
+# Management of Loaded Custom Service Layer Classes
 
 ***
 
@@ -195,7 +195,7 @@ public static add(string|object $service, \Luminova\Application\arguments $argum
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If service already exist or unable to initiate class.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If service already exist or unable to initiate class.
 
 > *Note:*
 >

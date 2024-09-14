@@ -1,4 +1,4 @@
-# Storages Configuration
+# Local and Cloud Storage Configurations
 
 ***
 

@@ -1,4 +1,4 @@
-# URI Routing
+# Request Routing Handler
 
 ***
 
@@ -10,13 +10,31 @@ Luminova's routing module simplifies capturing, processing, and executing both w
 
 ## Introduction
 
-Routing is a crucial part of the Luminova framework, responsible for receiving, matching, and handling URL requests to ensure the appropriate controller method is executed based on the request URL. Luminova provides an efficient routing module and methods for both `HTTP` and `CLI`  capturing, matching, command, and authenticating URI patterns with middleware upon requests. It simplifies routing initialization by using [Routing Context](/routing/view-context.md) to match the first URL prefix and load only the necessary route to execute the request. This approach ensures better performance than loading all routes before matching the required route to render.
+**Routing** is an essential part of the Luminova framework. It handles incoming URL requests, matches them to the right controller methods, and manages request authentication based on the URI and prefix.
 
-Router handling can be done using either a `closure` or a `string` in the format like you are calling a static method (e.g, `ClassBaseName::methodName`) for view rendering.
+Luminova simplifies and speeds up routing by using a [Routing URLPrefix](/routing/url-prefix.md) to quickly match the initial part of the URL path. This means only the necessary routes are loaded, improving performance compared to loading all routes first.
 
-Luminova's routing supports dependency injection, allowing you to type-hint your controller method parameters with the modules you want. By default, route dependency injection is disabled. To enable it, update your [environment configuration file](/running/env.md) with `feature.route.dependency.injection`.
+Luminova's routing module works efficiently for both `HTTP` and `CLI` requests. It captures and matches URI patterns, handles commands, and manages authentication with middleware.
 
-### Prefer PHP Attributes?
+When rendering views, you can use either a `Closure` or a `string` format similar to calling a static method. You don’t need to specify the namespace, just the base name of the class (e.g., `ControllerBaseName::methodName`).
+
+Controller methods that are routeable support dependency injection. This means you can specify the types of modules you want as parameters in your controller methods. By default, this feature is off. To enable it, update your [environment configuration file](/running/env.md) with `feature.route.dependency.injection`.
+
+***
+
+* Class namespace: `\Luminova\Routing\Router`
+* This class is marked as **final** and can't be subclassed
+* This class is a **Final class**
+
+***
+
+### View Caching
+
+To learn about how Luminova view caching and static content serving work [read the documentation](/cache/view-caching.md).
+
+***
+
+### PHP Attributes
 
 Luminova provides a `Route` attribute, allowing you to define both `HTTP` and `CLI` routes using attributes. [Read the documentation here](/routing/attribute.md).
 
@@ -24,20 +42,20 @@ Luminova provides a `Route` attribute, allowing you to define both `HTTP` and `C
 
 ### Base Usages
 
-In your route context file `/routes/*.php`, the `Router $router`, `BaseApplication $app` variable is already available as a global variable. Therefore, there's no need to specify the `use` keyword or import the router instance anymore except if it required.
+In your route context file `/routes/*.php`, the `Router $router`, `CoreApplication $app` variable is already available as a global variable. Therefore, there's no need to specify the `use` keyword or import the router instance anymore except if it required.
 
 ```php 
 <?php
 $router->get('/',  function () use($app) {
     $app->view('index')->render([
-		// Options to pass to the view
+	    // Options to pass to the view
 	]);
 });
 ```
 
 **Using Controller Class**
 
-When passing your controller class, you only need to provide the class base name and method, without the full namespace (e.g., `ExampleController::about`) instead of `App\Controllers\ExampleController`. The namespace is already registered with the `BaseApplication` class, allowing you to pass only a controller class that extends `Luminova\Base\BaseController` by default.
+When passing your controller class, you only need to provide the class base name and method, without the full namespace (e.g., `ExampleController::about`) instead of `App\Controllers\ExampleController`. The namespace is already registered with the `CoreApplication` class, allowing you to pass only a controller class that extends `Luminova\Base\BaseController` by default.
 
 ```php 
 <?php
@@ -51,12 +69,12 @@ If you need to register a URI group for routing, you can use `bind` method which
 ```php 
 <?php
 use \Luminova\Routing\Router;
-use \Luminova\Base\BaseApplication;
+use \Luminova\Core\CoreApplication;
 
-$router->bind('/blog', function(Router $router, BaseApplication $app) {
-  $router->middleware('GET', '/?.*', 'ExampleController::isAllowed');
-	$router->get('/', 'ExampleController::blogs');
-	$router->get('/([a-zA-Z0-9]+)', 'ExampleController::blog');
+$router->bind('/blog', function(Router $router, CoreApplication $app) {
+    $router->middleware('GET', '/?.*', 'ExampleController::isAllowed');
+    $router->get('/', 'ExampleController::blogs');
+    $router->get('/([a-zA-Z0-9]+)', 'ExampleController::blog');
 });
 ```
 
@@ -76,7 +94,7 @@ Alternatively, you can achieve the same functionality using the `capture` method
 $router->capture(Router::HTTP_METHODS, '/contact', 'ExampleController::contact');
 ```
 
-Using `capute` for selective `HTTP` methods.
+Using `capture` for selective `HTTP` methods.
 
 ```php 
 <?php
@@ -90,11 +108,13 @@ Luminova routing supports dependency injection for controller methods. You can t
 **Using Controller Class Method:**
 
 ```php
+// /app/controllers/ExampleController.php
+<?php 
 class ExampleController extends BaseController
 {
     public function userInfo(Request $request): int 
     {
-		     $name = $request->getGet('name');
+        $name = $request->getGet('name');
         // Method implementation
     }
 }
@@ -123,10 +143,10 @@ To register commands, you will need to first call the `group` method which is li
 ```php
 <?php
 use \Luminova\Routing\Router;
-use \Luminova\Base\BaseApplication;
+use \Luminova\Core\CoreApplication;
 use \Luminova\Command\Terminal;
 
-$router->group("blog", function(Router $router, BaseApplication $app) {
+$router->group("blog", function(Router $router, CoreApplication $app) {
     $router->command("list", 'Command::listBlogs');
     $router->command('id/(:int)', 'Command::showBlog');
 });
@@ -142,12 +162,6 @@ To get a single blog by its ID based on the above example.
 ```bash
 php index.php blog id=2
 ```
-
-***
-
-* Class namespace: `\Luminova\Routing\Router`
-* This class is marked as **final** and can't be subclassed
-* This class is a **Final class**
 
 ***
 
@@ -168,29 +182,29 @@ This method is flexible in its argument approach, supporting a `Context` object,
 Using an array is particularly useful for scenarios with complex routing requirements or a large number of contexts. It offers better scalability and maintainability. Choose the method that best aligns with your specific use case and coding style preferences.
 
 ```php
-public context(\Luminova\Routing\Context|array<string,mixed>|null ...$contexts): \Luminova\Routing\Router
+public context(\Luminova\Routing\Prefix|array<string,mixed>|null ...$contexts): \Luminova\Routing\Router
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$contexts` | **Luminova\Routing\Context&#124;array<string,mixed>&#124;null** | Arguments containing routing context or an array of arguments. Pass `null` or leave blank only when using route attributes. |
+| `$contexts` | **Luminova\Routing\Prefix&#124;array<string,mixed>&#124;null** | Arguments containing routing prefix or an array of arguments. Pass `null` or leave blank only when using route attributes. |
 
 **Return Value**
 
 `Router` - Return router instance class.
 
 **Throws:**
-- [\Luminova\Exceptions\RouterException](/exceptions/classes.md#routerexception) - Thrown if no context arguments are passed and route attributes are not enabled.
+- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - Thrown if no context arguments are passed and route attributes are not enabled.
 
 **See Also:**
 
-- [Routing Context](/routing/view-context.md) - Learn more about how routing prefixes work and their usage.
+- [Routing Context](/routing/url-prefix.md) - Learn more about how routing prefixes work and their usage.
 - [Index Controller Handler](/public/index.md) - See an example of the front controller index file handler.
 
 > **Note:** 
-> The context name must be unique based on your URLs to discover and load only the required files. 
+> The prefix name must be unique based on your `URLs` to discover and load only the required files. 
 > Additionally, mixing context arguments with arrays and `Context` instances may produce unintended errors.
 
 ***
@@ -470,7 +484,7 @@ public bind(string $prefix, \Closure $callback): void
 | `$callback` | **\Closure** | The callback function to handle routes group binding. |
 
 **Throws:**
-- [\Luminova\Exceptions\RouterException](/exceptions/classes.md#routerexception) - If invalid callback is provided
+- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - If invalid callback is provided
 
 ***
 
@@ -490,7 +504,7 @@ public group(string $group, \Closure $callback): void
 | `$callback` | **\Closure** | Callback command function to handle group.), are made available. |
 
 **Throws:**
-- [\Luminova\Exceptions\RouterException](/exceptions/classes.md#routerexception) - If invalid callback is provided
+- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - If invalid callback is provided
 
 > *Note:* Your group name must match with the defined group name in controller class.
 
@@ -512,7 +526,7 @@ public addNamespace(string $namespace): void
 | `$namespace` | **string** | Class namespace string |
 
 **Throws:**
-- [\Luminova\Exceptions\RouterException](/exceptions/classes.md#routerexception) - If namespace string is empty or contains invalid namespace characters.
+- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - If namespace string is empty or contains invalid namespace characters.
 
 ***
 
@@ -526,7 +540,7 @@ public run(): void
 ```
 
 **Throws:**
-- [\Luminova\Exceptions\RouterException](/exceptions/classes.md#routerexception) - Encounter error while executing controller callback
+- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - Encounter error while executing controller callback
 
 ***
 
@@ -596,4 +610,4 @@ public getSegment(): \Luminova\Routing\Segments
 
 **See Also**
 
-[View Segment Instance](/routing/view-segment.md) - Helper class to retrieve view segments.
+[View Segment Instance](/routing/url-paths.md) - Helper class to retrieve view segments.

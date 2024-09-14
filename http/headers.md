@@ -1,41 +1,90 @@
-# Request Header
+# Management of Incoming HTTP Request Headers
 
 ***
 
 ## Overview
 
-The header class functions similarly to the Server class, but it specifically focuses on managing request headers. It provides methods to interact with and manage request headers in a structured way.
+The header class specifically focuses on managing request headers. It provides methods to interact with and manage request headers easily.
 
 ***
 
 ## Introduction
 
-The `Header` class functions similarly to the `Server` class, but it specifically focuses on managing request headers. It provides methods to interact with and manage request headers in a structured manner.
+The `Header` class in Luminova is designed to manage HTTP request headers in a structured and efficient manner, similar to the way the `Server` class handles server-related data. It provides methods to interact with, retrieve, and manipulate request headers, simplifying the process of managing HTTP requests.
 
 ***
 
 * Class namespace: `\Luminova\Http\Header`
 
+***
+
+### Example Usage:
+
+The `Header` object is available in the `Request` class object as a public property `$request->header`.
+
+**Get the value for a specific key:**
+
+```php
+<?php
+$value = $header->get('User-Agent');
+```
+
+**Set a new value for a key:**
+
+```php
+<?php
+$header->set('User-Agent', 'New User Agent');
+```
+
+**Remove a key:**
+
+```php
+<?php
+$header->remove('Accept');
+```
+
+**Search for a value:**
+
+```php
+<?php
+$key = $header->search('Host');
+```
+**Check if a key exists:**
+
+```php
+<?php
+if ($header->has('Accept-Encoding')) {
+    // Key exists
+}
+```
+
+**Count the number of elements:**
+
+```php
+<?php
+$count = $header->count();
+```
+
+***
+
 ## Properties
 
 ### httpMethods
 
-All allowed HTTP request methods, must be in upper case.
+List of all allowed HTTP request methods, which must be in uppercase.
 
 ```php
-public static array&lt;int,string&gt; $httpMethods
+public static string[] $httpMethods = [];
 ```
-
-* This property is **static**.
 
 ***
 
 ### variables
 
-Header variables.
+Array containing header variables.
 
 ```php
-protected array $variables
+protected array<string,mixed> $variables = [];
 ```
 
 ***
@@ -44,7 +93,7 @@ protected array $variables
 
 ### constructor
 
-Initializes the header constructor.
+Initializes the `Header` object with optional headers. If no headers are passed, it will use the request headers.
 
 ```php
 public __construct(?array $variables = null): mixed
@@ -54,13 +103,13 @@ public __construct(?array $variables = null): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$variables` | **?array** |  |
+| `$variables` | **array<string,mixed>|null** | Optional key-value pairs of header variables. |
 
 ***
 
 ### get
 
-Get header variables.
+Retrieves the value of a specific header or all headers if no name is provided.
 
 ```php
 public get(string|null $name = null, mixed $default = null): mixed|array|string|null
@@ -75,30 +124,30 @@ public get(string|null $name = null, mixed $default = null): mixed|array|string|
 
 **Return Value:**
 
-`mixed|array|string|null` - The value of the specified server variable, or all server variables if $name is null.
+`mixed|array|string|null` - Return the value of the specified header, or all headers if `$name` is null.
 
 ***
 
 ### set
 
-Set server variable.
+Sets the value for a specific header.
 
 ```php
-public set(string $key, string $value): void
+public set(string $key, mixed $value): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | The server variable key to set. |
-| `$value` | **string** | The server variable value. |
+| `$key` | **string** | The header key to set. |
+| `$value` | **string** | The value to set for the header key. |
 
 ***
 
 ### remove
 
-Removes a server variable by key
+Removes a specific header by its key.
 
 ```php
 public remove(string $key): void
@@ -108,13 +157,13 @@ public remove(string $key): void
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | The key to remove. |
+| `$key` | **string** | The key of the header to remove. |
 
 ***
 
 ### has
 
-Check if request header key exist.
+Checks if a specific header key exists.
 
 ```php
 public has(string $key): bool
@@ -124,17 +173,17 @@ public has(string $key): bool
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | Header key to check. |
+| `$key` | **string** | The header key to check. |
 
 **Return Value:**
 
-`bool` - Return true if key exists, false otherwise.
+`bool` - Return true if the key exists, false otherwise.
 
 ***
 
 ### count
 
-Get the total number of server variables.
+Gets the total number of header variables.
 
 ```php
 public count(): int
@@ -142,27 +191,27 @@ public count(): int
 
 **Return Value:**
 
-`int` - Number of server variables
+`int` - Return the number of header variables.
 
 ***
 
 ### getHeaders
 
-Get all request headers.
+Extracts all request headers using `apache_request_headers` or the `$_SERVER` variables.
 
 ```php
-public static getHeaders(): array&lt;string,string&gt;
+public static getHeaders(): array<string,string>
 ```
 
 **Return Value:**
 
-`array&lt;string,string&gt;` - The request headers.
+`array<string,string>` - Return the request headers.
 
 ***
 
 ### getContentType
 
-Get the content type based on file extension and charset.
+Determines the content type based on the file extension and charset.
 
 ```php
 public static getContentType(string $extension = 'html', string $charset = null): string
@@ -177,62 +226,24 @@ public static getContentType(string $extension = 'html', string $charset = null)
 
 **Return Value:**
 
-`string` - The content type.
+`string` - Return the content type and optional charset.
 
 ***
 
 ### getContentTypes
 
-Get content types by name
+Retrieves content types by name.
 
 ```php
-public static getContentTypes(string $type): array&lt;int,array&gt;
+public static getContentTypes(string $type): array<string,array>
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$type` | **string** | Type of content types to retrieve. |
+| `$type` | **string** | The type of content types to retrieve. |
 
 **Return Value:**
 
-`array&lt;int,array&gt;` - Array of content types or null if not found.
-
-***
-
-### Example Usage:
-
-The header object is available in `request` class object as public property `request()->header`
-
-Get value for a specific key.
-
-```php
-$value = $header->get('User-Agent');
-```
-Set a new value for a key.
-
-```php
-$header->set('User-Agent', 'New User Agent');
-```
-Remove a key.
-
-```php
-$header->remove('Accept');
-```
-Search for a value
-```php
-$key = $header->search('Host');
-```
-Check if a key exists
-```php
-if ($header->has('Accept-Encoding')) {
-    // Key exists
-}
-```
-
-Count the number of elements.
-
-```php
-$count = $header->count();
-```
+`array<string,array>` - Return array, string of content types or null if not found.

@@ -1,4 +1,4 @@
-# URI Routing Examples
+# Examples of Request Routing
 
 ***
 
@@ -22,13 +22,13 @@ Similarly, requests to `https://example.com/console/foo` or any URI starting wit
 
 ***
 
-### Registering Routes Context
+### Registering Routes Prefix
 
-To register a route context, it can be done in `public/index.php` and also create the handler PHP file in `routes/`.
-The handler file name must match with routing context name registered in `context` in your `public/index.php`, see below examples.
+To register a route prefix, it can be done in `public/index.php` and also create the handler file in `routes/`.
+The handler file name must match with routing prefix name registered in `context` method at `public/index.php`, see below examples.
 
-In `public/index.php`, add a route context, to `$app->router->context()` method for routing. The context method accepts arguments of the `\Luminova\Routing\Context` class instance. 
-You can register as many routes as needed, ensuring that each route name is unique. It's important to ensure that the URI start segments are also unique and match your desired route handler to avoid conflicts.
+In `public/index.php`, add a route prefix, to `$app->router->context()` method for routing. The context method accepts arguments of the `\Luminova\Routing\Prefix` class instance or an  `Array`. 
+You can register as many prefix as needed, ensuring that each route prefix name is unique. It's important to ensure that the start URI are also unique and match your desired route handler to avoid conflicts.
 
 ***
 
@@ -47,10 +47,10 @@ Once done you can now use `Route` attribute before methods and use `Error` attri
 
 ```php 
 <?php
-new Context('routing name', 'callback function for error handling');
+new Prefix('routing name', 'callback function for error handling');
 ```
 
-To learn more about routing context  [See Documentation](/routing/view-context.md)
+To learn more about routing context  [See Documentation](/routing/url-prefix.md)
 
 ***
 
@@ -60,7 +60,7 @@ The below context can be accessed in browser by visiting `https://example.com/pa
 
 ```php
 <?php
-$app->router->context(new Context('panel', [ViewErrors::class, 'myErrorMethodName']));
+$app->router->context(new Prefix('panel', [ViewErrors::class, 'myErrorMethodName']));
 ```
 
 > *IMPORTANT*
@@ -101,7 +101,7 @@ In `/routes/panel.php`, add your routings
 
 Middleware are designed to intercept requests before they reach your controllers, allowing you to perform security checks or other pre-processing tasks. If middleware authentication fails, error will be triggered and controllers will not be called. 
 
-To set up global middleware security for websites and API requests in your application route handler file, create middleware that returns an integer value of `STATUS_SUCCESS` to indicate success or `STATUS_ERROR` to indicate failure.
+To set up global middleware security for websites and APIs request in your application route handler file, create middleware that returns an integer value of `STATUS_SUCCESS` to indicate success or `STATUS_ERROR` to indicate failure.
 
 Here is an example of how you can implement your middleware:
 
@@ -113,6 +113,7 @@ $router->middleware('GET|POST', '/.*', 'HomeController::middleware');
 Implementation example in closure.
 
 ```php 
+// routes/web.php
 <?php
 $router->middleware('GET|POST', '/.*', static function (): int {
     if(doAuthenticatedPassed()){
@@ -127,13 +128,14 @@ $router->middleware('GET|POST', '/.*', static function (): int {
 **Using Attribute**
 
 ```php
+// app/Controllers/HomeController.php
 <?php
 use \Luminova\Attributes\Route;
 
 #[Route('/.*', methods: ['GET', 'POST']), middleware: 'before']
 public function middleware(): int
 {
-     //...
+    //...
 }
 ```
 
@@ -146,6 +148,7 @@ To present your application's views, you can define a route in your `routes/pane
 Here's an example of how to set up a landing page route:
 
 ```php
+// routes/web.php
 <?php
 $router->get('/', 'HomeController::index');
 ```
@@ -153,6 +156,7 @@ $router->get('/', 'HomeController::index');
 It can also be done using closure.
 
 ```php
+// routes/web.php
 <?php
 $router->get('/', static function(Application $app): int {
     return $app->view("index")->render();
@@ -162,6 +166,7 @@ $router->get('/', static function(Application $app): int {
 **Using Attribute**
 
 ```php
+// app/Controllers/HomeController.php
 <?php
 use \Luminova\Attributes\Route;
 
@@ -183,20 +188,22 @@ Here's how you can set up the route using a regular expression pattern in your r
 Define the route using a regular expression pattern for the username after `user/` segment in a url.
  
 ```php
+// routes/user.php
 <?php
-    $router->get('/user/([a-zA-Z0-9-]+)', 'UserController::profile');
+$router->get('/user/([a-zA-Z0-9-]+)', 'UserController::profile');
 ```
 
 **Using Attribute**
 
 ```php
+// app/Controllers/UserController.php
 <?php
 use \Luminova\Attributes\Route;
 
 #[Route('/user/([a-zA-Z0-9-]+)', methods: ['GET'])]
 public function profile(): int
 {
-     //...
+    //...
 }
 ```
 
@@ -211,6 +218,7 @@ When implementing functionality to update user profiles via POST requests, it's 
 Here's an example of defining a route for updating user profiles using a POST request:
 
 ```php
+// routes/user.php
 <?php
 $router->post('/user', 'UserController::update');
 ```
@@ -218,6 +226,7 @@ $router->post('/user', 'UserController::update');
 **Using Attribute**
 
 ```php
+// app/Controllers/UserController.php
 <?php
 use \Luminova\Attributes\Route;
 
@@ -235,19 +244,21 @@ public function update(): int
 To bind and access routes defined under `/blog` and its nested group `/blog/id/id7366` using the following setup:
 
 ```php
+// routes/blog.php
 <?php
 use \Luminova\Routing\Router;
 use \App\Application;
 
 $router->bind('/blog', function(Router $router, Application $app) {
-	$router->get('/', 'UserController::blogs');
-	$router->get('/id/([a-zA-Z0-9]+)', 'UserController::blog');
+	$router->get('/', 'BlogController::blogs');
+	$router->get('/id/([a-zA-Z0-9]+)', 'BlogController::blog');
 });
 ```
 
 **Using Attribute**
 
 ```php
+// app/Controllers/BlogController.php
 <?php
 use \Luminova\Attributes\Route;
 
@@ -277,6 +288,7 @@ This allows you to organize views based on directory `Hierarchy` and archive `HM
 To set a custom view folder globally for all routes within a context file or the context controllers class (e.g., `panel`), use the `setFolder()` method in your view controller initialization method like `onCreate`, `__construct` or `middleware` method if in use.
 
 ```php
+// app/Controllers/Controller.php
 <?php
 use \Luminova\Base\BaseController;
 
@@ -292,15 +304,16 @@ class Controller extends BaseController
 Alternatively, you can set the custom view folder within a specific route context in a global scope, withing `bind` method for group global scope or before calling `view` method.
 
 ```php
+// routes/panel.php
 <?php
 use \Luminova\Routing\Router;
 use \App\Application;
 
-// In context global scope
+// In context global scope.
 $app->setFolder('panel');
 		 
-$router->bind('/admin', function(Router $router, Application $app) {
-    // In bind global scope
+$router->bind('/admin', static function(Router $router, Application $app) {
+    // Or in bind global scope.
     $app->setFolder('panel');
 
     $router->get('/', function() use ($app) {
@@ -323,6 +336,7 @@ You can register global before middleware security checks, similar to those used
 You can define a global before middleware for command using `any` as the group name.
 
 ```php
+// routes/cli.php
 <?php
 $router->before('any', 'CommandController::middleware');
 ```
@@ -330,12 +344,16 @@ $router->before('any', 'CommandController::middleware');
 Alternatively, you can pass a `Closure` as the `before` callback method to use. This allows you to define a single authentication check that applies to all `CLI` routes.
 
 ```php
+// routes/cli.php
 <?php
 $router->before('any', function(): int {
+    // Authentication passed
     if (doAuthenticationPassed()) {
-        return STATUS_SUCCESS; // Authentication passed
+        return STATUS_SUCCESS;
     }
-    return STATUS_ERROR; // Authentication failed
+
+    // Authentication failed
+    return STATUS_ERROR; 
 });
 ```
 
@@ -352,6 +370,7 @@ To register command controllers and grouped middleware security, use the `comman
 Bellow example we register a command route with 'foo' name, mapped to 'CommandController::foo' to handle the execution.
 
 ```php
+// routes/cli.php
 <?php
 use \Luminova\Routing\Router;
 use \App\Application;
@@ -365,6 +384,7 @@ $router->group("users", function(Router $router, Application $app){
 **Using Attribute**
 
 ```php
+// app/Controllers/UserCommandController.php
 <?php
 use \Luminova\Attributes\Route;
 
@@ -402,6 +422,7 @@ In `CLI` routing, you can define routes with dynamic segments to capture variabl
 This example shows how you can create a route with dynamic segments.
 
 ```php
+// routes/cli.php
 <?php
 use \Luminova\Routing\Router;
 
@@ -413,6 +434,7 @@ $router->group("users", function(Router $router){
 **Using Attribute**
 
 ```php
+// app/Controllers/UserCommandController.php
 <?php
 use \Luminova\Attributes\Route;
 
@@ -489,9 +511,8 @@ $router->group("blogs", function((Router $router){
 This `UserController` class is an example of HTTP controller class that extends `BaseController` from the Luminova's component. It defines methods to handle specific URI request and actions.
 
 ```php
-<?php
 // app/Controllers/UserController.php
-
+<?php
 namespace App\Controllers;
 
 use Luminova\Base\BaseController;
@@ -542,9 +563,8 @@ class UserController extends BaseController
 This `CommandController` class is an example of a `CLI` controller that extends `BaseCommand` from the Luminova's `Terminal` component. It defines methods to handle specific command and actions based on command arguments.
 
 ```php
-<?php 
 // app/Controllers/BlogCommandController.php
-
+<?php 
 namespace App\Controllers;
 
 use Luminova\Base\BaseCommand;
@@ -567,7 +587,7 @@ class BlogCommandController extends BaseCommand
     public function foo(): int
     {
         echo $this->getOption('bar');
-        var_export($this->getQueries());
+        echo $this->getAnyOption('bar', 'baz');
 
         return STATUS_SUCCESS;
     }

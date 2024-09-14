@@ -1,4 +1,4 @@
-# User Session Examples
+# Examples of Backend Client Session Management
 
 ***
 
@@ -20,11 +20,11 @@ Initialize the session class with your proffered storage manager in your applica
 <?php
 namespace App\Controllers;
 
-use \Luminova\Base\BaseApplication;
+use \Luminova\Core\CoreApplication;
 use \Luminova\Sessions\Session;
 use \Luminova\Sessions\SessionManager;
 
-class Application extends BaseApplication
+class Application extends CoreApplication
 {
 	protected ?Session $session = null;
     

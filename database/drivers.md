@@ -1,4 +1,4 @@
-# Database Drivers
+# Database Driver Interface Specification
 
 ***
 
@@ -23,24 +23,24 @@ Initialize database driver with your database connection configurations.
 `\Luminova\Database\Drivers\MySqliDriver` - Mysqli connection driver.
 
 ```php
-new MySqliDriver(\Luminova\Base\BaseDatabase $config): mixed
+new MySqliDriver(\Luminova\Base\CoreDatabase $config): mixed
 ```
 
 `\Luminova\Database\Drivers\PdoDriver` - PDO connection driver.
 
 ```php
-new PdoDriver(\Luminova\Base\BaseDatabase $config): mixed
+new PdoDriver(\Luminova\Base\CoreDatabase $config): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$config` | **\Luminova\Base\BaseDatabase** | Database configuration. |
+| `$config` | **\Luminova\Base\CoreDatabase** | Database configuration. |
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If the database connection fails.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - If the database connection fails.
 
 ***
 
@@ -259,7 +259,7 @@ public beginTransaction(int $flags = 0, ?string $name = null): bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - Throws exception on `PDO` if failure to set transaction isolation level or create `savepoint`.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - Throws exception on `PDO` if failure to set transaction isolation level or create `savepoint`.
 
 > **Note:** 
 > - If `$flags` is set to `4` in `PDO`, which is equivalent to `MYSQLI_TRANS_START_READ_ONLY`, a read-only isolation level will be established. If the transaction starts successfully, it will return true.
@@ -310,7 +310,7 @@ public rollback(int $flags = 0, ?string $name = null): bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - Throws exception on `PDO` if failure to create `SAVEPOINT`.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - Throws exception on `PDO` if failure to create `SAVEPOINT`.
 
 ***
 
@@ -412,7 +412,7 @@ public execute(array|null $params = null): bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - Query statment  encounter error.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - Query statment  encounter error.
 
 ***
 

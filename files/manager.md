@@ -1,4 +1,4 @@
-# File Manager
+# File System Management Utilities
 
 ***
 
@@ -192,7 +192,7 @@ public static permission(string $permission = 'rw', string|null $file = null, bo
 
 **Throws:**
 
-- [\Luminova\Exceptions\FileException](/exceptions/classes.md#fileexception) - If permission is not granted and quiet is not passed true.
+- [\Luminova\Exceptions\FileException](/running/exceptions.md#fileexception) - If permission is not granted and quiet is not passed true.
 
 ***
 
@@ -280,7 +280,7 @@ public static write(string $filename, string|resource $content, int $flags, reso
 
 **Throws:**
 
-- [\Luminova\Exceptions\FileException](/exceptions/classes.md#fileexception) - If unable to write file.
+- [\Luminova\Exceptions\FileException](/running/exceptions.md#fileexception) - If unable to write file.
 
 ***
 
@@ -307,7 +307,7 @@ public static stream(string $filename, resource $resource, int $flags, resource 
 
 **Throws:**
 
-- [\Luminova\Exceptions\FileException](/exceptions/classes.md#fileexception) - If unable to write file or invalid resource.
+- [\Luminova\Exceptions\FileException](/running/exceptions.md#fileexception) - If unable to write file or invalid resource.
 
 ***
 
@@ -333,8 +333,8 @@ public static mkdir(string $path, int $permissions = 0777, bool $recursive = tru
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If path is not readable.
-- [\Luminova\Exceptions\FileException](/exceptions/classes.md#fileexception) - If unable to create directory
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If path is not readable.
+- [\Luminova\Exceptions\FileException](/running/exceptions.md#fileexception) - If unable to create directory
 
 ***
 
@@ -403,7 +403,7 @@ public static size(string $path): int
 
 **Throws:**
 
-[\Luminova\Exceptions\FileException](/exceptions/classes.md#fileexception) - Throws If the path does not exist.
+[\Luminova\Exceptions\FileException](/running/exceptions.md#fileexception) - Throws If the path does not exist.
 
 ***
 

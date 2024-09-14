@@ -1,4 +1,4 @@
-# View Error Controller
+# Implementation of Custom Error View Controllers for Pages
 
 ***
 
@@ -10,7 +10,8 @@ Customize or add new error handlers for different routing contexts. By default, 
 
 ## Introduction
 
-The `ViewErrors` class allows you define and manage error-handling methods to customize how view errors are displayed. Error-handling methods for `404` error type that may occur during the execution of your application `web` or `api` views, provide a way to display meaningful error messages to users.
+The `ViewErrors` class allows you define and manage error-handling methods to customize how view errors are displayed. Error-handling methods for `404` error type that may occur during the execution of your application routing or view rendering.
+This provide a way to display meaningful error messages to users.
 
 ***
 
@@ -19,7 +20,6 @@ The `ViewErrors` class allows you define and manage error-handling methods to cu
 - Error handler methods can be either static or non-static.
 - Methods must be declared as `public`, not `protected` or `private`.
 - Dependency injection is enabled by default for error handlers, allowing you to pass any class you need as a parameter in the method signature.
-- After adding a new method for a context error handler or modifying a method name, you must update the corresponding name in the `context` method located in the `/public/index.php` file.
 
 ***
 
@@ -71,11 +71,11 @@ To register your error handler, it must be callable or pass an array where the f
 ```php
 // public/index.php
 <?php
-use \Luminova\Routing\Context;
+use \Luminova\Routing\Prefix;
 use App\Controllers\Errors\ViewErrors;
 
 $app->router->context( 
-	new Context(Context::FOO, [ViewErrors::class, 'onFooError']),
+	new Prefix('foo', [ViewErrors::class, 'onFooError']),
 	//...
 );
 ``` 

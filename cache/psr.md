@@ -1,4 +1,4 @@
-# PSR Cache Interface
+# PSR Cache Integration
 
 ***
 

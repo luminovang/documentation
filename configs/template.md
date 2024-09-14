@@ -1,4 +1,4 @@
-# Template Configuration
+# Template and View Rendering Configurations
 
 ***
 
@@ -63,8 +63,8 @@ public bool $templateIsolation = false;
 // /app/Application.php
 <?php
 namespace App;
-use \Luminova\Base\BaseApplication;
-class Application extends BaseApplication 
+use \Luminova\Core\CoreApplication;
+class Application extends CoreApplication 
 {
 	public function __construct()
 	{
@@ -79,8 +79,8 @@ Or using `onCreate` method.
 // /app/Application.php
 <?php
 namespace App;
-use \Luminova\Base\BaseApplication;
-class Application extends BaseApplication 
+use \Luminova\Core\CoreApplication;
+class Application extends CoreApplication 
 {
 	protected function onCreate()
 	{

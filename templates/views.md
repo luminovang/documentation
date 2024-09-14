@@ -1,4 +1,4 @@
-# Template View Rendering
+# Template and View Rendering
 
 ***
 
@@ -12,7 +12,7 @@ The View class is an essential component of Luminova template management for com
 
 The `View` class serves as the central controller for presenting templates in Luminova. It is designed to compile, present, and cache application views efficiently. The class is highly adaptable, capable of handling various content types, and offers customizable rendering modes to fit different coding styles and business logic needs. 
 
-In Luminova, the `View` class is automatically inherited by the `BaseApplication` class, ensuring seamless access to its methods throughout your application.
+In Luminova, the `View` class is automatically inherited by the `CoreApplication` class, ensuring seamless access to its methods throughout your application.
 
 ### Core Functionalities
 
@@ -21,24 +21,6 @@ In Luminova, the `View` class is automatically inherited by the `BaseApplication
 3. **Caching Views**: To enhance performance, the `View` class can cache compiled templates, reducing the need for repeated processing.
 4. **Content Adaptability**: It can handle various content types, making it versatile for different presentation needs.
 5. **Customizable Rendering**: The rendering mode can be customized to match your specific coding style and business logic requirements [Template Configuration](/configs/template.md).
-
-***
-
-### Static Content
-
-Luminova allows you to serve partially static content. This means that the `Router` and `ViewCache` must run first to load the cached view and render the generated content. While considered partially static, this approach can reduce view response time by up to `10%` compared to not using the dot `extension` suffix for page caches. This is because your controller methods and other modules will not be loaded when using static pages.
-
-#### How Static Cache Works
-
-1. **Enable Page Caching:** Ensure that `page.caching` is enabled in your `env` file to cache pages upon request.
-2. **Append Extension:** Add content extension type e.g, `.html` to your request URL. This ensures that the `Router` tries to load the cached page first if it is available and not expired. If not, it will render the view as usual. Supported extension types: `html`, `json`, `text`, `xml`, `rdf`, `atom`, `rss`, `css`, `js`.
-
-#### Examples
-
-Suppose you have a blog page accessible at `https://example.com/blog/how-to-install-luminova`. To serve it as static content, simply append `.html` at the end, like this: `https://example.com/blog/how-to-install-luminova.html`.
-
-> **Note:**
-> When content `.extension` type is specified in the view request URL, application events, `middleware`, and `after` middleware will not be called, as this is treated as static content.
 
 ***
 
@@ -76,7 +58,7 @@ public codeblock(bool $minify, bool $button = false): self
 
 **Return Value:**
 
-`self` - Return instance of of View class or BaseApplication depending where its called.
+`self` - Return instance of of View class or CoreApplication depending where its called.
 
 > Enabling the `codeblock` button option adds a copy button to your HTML code blocks, allowing easy code copying for users. However, implementing the copy functionality requires `JavaScript` integration.
 
@@ -84,8 +66,7 @@ public codeblock(bool $minify, bool $button = false): self
 
 ### setFolder
 
-The `setFolder` method can be used to achieve a Hierarchical Model-View-Controller (HMVC) structure. It allows you to organize your application's view files into subdirectories. 
-This method informs the framework's template engine where to look for template files for an entire controller class, a specific controller method, or an entire route context.
+The `setFolder` method allows you to define a base directory for view file resolution, making it easier to organize your application's view files. By using this method, you can control where the framework searches for view files associated with a specific controller, method, or the entire application.
 
 ```php
 public setFolder(string $path): self
@@ -95,17 +76,21 @@ public setFolder(string $path): self
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$path` | **string** | Directory path to search for view. |
+| `$path`   | string | The directory path relative to `resources/views/` where the view files will be searched. |
 
 **Return Value:**
 
-`self` - Return instance of of View class or BaseApplication depending where its called.
+`self` - Returns the current instance of the `View` class or `CoreApplication`, depending on where it is called.
 
-> *Note:* For `setFolder` to function properly, you must create the sub-folder within the `resources/views/` directory.
+**Usage Scenarios:**
 
-**Example**
+- **Controller Global Scope:** If `setFolder` is invoked within a controller's `onCreate` or `__construct` method, all views related to that controller will be searched within the specified folder.
+- **Application Global Scope:** When `setFolder` is called in the application's `onCreate` or `__construct` method, the folder will apply to all views across the entire application.
+- **Method-Specific Scope:** Calling `setFolder` just before rendering a view within a controller method restricts the folder to that specific method's view resolution.
 
-To set a custom directory where your view files should be looked for in view folder e.g `resources/views/example/`
+**Example Usage:**
+
+In this example, the `setFolder` method is used to direct the framework to look for view files in a custom directory (`resources/views/example/`) for all views within a specific controller.
 
 ```php
 // /app/Controllers/ExampleController.php
@@ -126,20 +111,33 @@ class ExampleController extends BaseController
         return $this->view('show');
     }
 
+    public function foo(): int
+    {
+        // Overrides the default folder for the current method.
+        $this->app->setFolder('example2');
+        return $this->view('foo');
+    }
+
     //...
 }
 ```
 
-> In this example, the `setFolder` method is used to set the view folder to `example`, so when you call the `show` method, it will look for the view file in `resources/views/example/show.php`.
->
-> This approach helps maintain a clear and organized structure for your view files, especially in large applications with many views.
+**Explanation:**
+
+- **Controller Global Usage:** Here, `setFolder('example')` in `onCreate` ensures that all view lookups in `ExampleController` will be within `resources/views/example/`.
+- **Method-Specific Usage:** If you need a different view directory for a specific method, you can call `setFolder` before rendering that method's view.
+
+> **Important Notes:** 
+> 
+> **Directory Structure:** Ensure that the specified sub-folder exists within `resources/views/` for `setFolder` to function correctly.
+> **Organized Views:** This method helps maintain a clear and organized directory structure in your application, particularly as the number of views grows.
 
 ***
 
 ### noCaching
 
 By default when `page.caching = true` is enabled in `env` file, all views will be cached and reused. The `noCaching` method allows you to specify views that should be excluded from page caching making it useful for selectively excluding views from page caching, ensuring that dynamic content is always up-to-date. 
-This can be configured either in your `routes/context.php` file, `Application` class or your view `Controller` class.
+This can be configured either in your `routes/context.php` file, `Application` class or your view `Controller` class, but the recommended way is to call it within the application `onCreate` or `__construct` method.
 
 ```php
 public noCaching(string|array<int,string> $viewName): self
@@ -153,7 +151,7 @@ public noCaching(string|array<int,string> $viewName): self
 
 **Return Value:**
 
-`self` - Return instance of of View class or BaseApplication depending where its called.
+`self` - Return instance of of View class or CoreApplication depending where its called.
 
 **Example**
 
@@ -168,7 +166,24 @@ $router->post('/edit', 'ApiController::edit');
 
 **Controller Implementation**
 
-In your `ApiController` class, within the `onCreate` or `__construct` method.
+In your `Application` class, within the `onCreate` or `__construct` method.
+
+```php
+// /app/Application.php
+<?php
+namespace App;
+
+use \Luminova\Core\CoreApplication;
+class Application extends CoreApplication
+{
+    protected function onCreate(): void
+    {
+        $this->noCaching(['insert_view', 'edit_view']);
+    }
+}
+```
+
+Now in your controller class, when excluded views are rendered it won't be cached.
 
 ```php
 // /app/Controllers/ApiController.php
@@ -176,14 +191,8 @@ In your `ApiController` class, within the `onCreate` or `__construct` method.
 namespace App\Controllers;
 
 use \Luminova\Base\BaseController;
-
 class ApiController extends BaseController
 {
-    protected function onCreate(): void
-    {
-        $this->app->noCaching(['insert_view', 'edit_view']);
-    }
-
     public function insert(): int 
     {
         return $this->view('insert_view');
@@ -203,15 +212,60 @@ class ApiController extends BaseController
 }
 ```
 
-> The `noCaching` method can also be called in the application's `onCreate` method or `__construct` method.
-> But to have more convenient access in customizing based on controller, it is recommended to call it within your view controller class instead.
+***
+
+### cacheOnly
+
+Unlike `noCaching` method, the `cacheOnly` method allows you to specify which views should be exclusively cached. This is useful when you want to ensure that only certain views are stored in the cache, while all other views are excluded from caching.
+
+```php
+public cacheOnly(string|array<int,string> $viewName): self
+```
+
+**Parameters:**
+
+| Parameter  | Type                        | Description                      |
+|------------|-----------------------------|----------------------------------|
+| `$viewName` | **string&#124;array<int,string>** | A single view name or an array of view names to cache. |
+
+**Return Value:**
+
+`self` - Returns the instance of the View class or `CoreApplication`, depending on where it's called.
+
+**Applicable Usage:**
+
+Let assume you have `100` views but want to cache only three specific views, `home`, `about`, and `contact`, using the `noCaching` method would require listing all `97` other views individually. Instead, you can simplify this by using the `cacheOnly` method. This method allows you to specify only the views you want to cache, while automatically ignoring the rest. By listing just the three views you want to cache, you ensure that only these are cached, and all others are excluded.
+
+---
+
+**Example:**
+
+Enable caching for only 'home', 'about', and 'contact' views
+
+```php
+// /app/Application.php
+<?php 
+namespace App;
+
+use Luminova\Base\CoreApplication;
+
+class Application extends CoreApplication
+{
+    protected function onCreate(): void 
+    {
+        $this->cacheOnly(['home', 'about', 'contact']);
+    }
+}
+```
 
 ***
 
 ### cacheable
 
-Unlike the `noCaching` method that disables caching for specific views, the `cacheable` method allows you to disable view caching for an entire routing context or controller class. 
-Optionally, you can call this method globally in the routing context file within the `middleware` method to disable caching for the entire route context.
+Unlike the `noCaching` method that disables caching for selected views, the `cacheable` method allows you to disable view caching for the entire application or controller views. 
+
+If called in a controller's `onCreate` or `__construct` method, **view caching will be disabled** for all views within that controller.  
+If called in the application's `onCreate` or `__construct` method, **view caching will be disabled** for the entire application.
 
 ```php
 public cacheable(bool $allow): self
@@ -221,18 +275,18 @@ public cacheable(bool $allow): self
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$allow` | **bool** | Set the caching status true or false. |
+| `$allow` | **bool** |  Weather to allow caching of views. |
 
 **Return Value:**
 
-`self` - Return instance of of View class or BaseApplication depending where its called.
+`self` - Return instance of of View class or CoreApplication depending where its called.
 
 ***
 
 **Example**
 
-The `cacheable` method can be called in the controller's `onCreate` method or `__construct` method.
-But in this example we will use `onCreate` method to disable caching for all `API` routes.
+The `cacheable` method can be called in the controller's or application's `onCreate` or `__construct` method.
+But in this example we will use `Controller` method to disable caching for all `API` routes.
 
 ```php
 // /app/Controllers/ApiController.php
@@ -240,7 +294,6 @@ But in this example we will use `onCreate` method to disable caching for all `AP
 namespace App\Controllers;
 
 use \Luminova\Base\BaseController;
-
 class ApiController extends BaseController
 {
     protected function onCreate(): void
@@ -263,15 +316,15 @@ The `export` method allows you to inject dependencies making them accessible wit
 Injections should be performed in your `App\Application` controller class, either after calling `parent::__construct()` in the constructor or within the `onCreate` method of your application class depending on your choice.
 
 ```php
-public export(string|object $class, string|null $alias = null, bool $initialize =true): true
+public export(string|object $class, ?string $alias = null, bool $initialize =true): true
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$class` | **class-string&#124;class-object** | The class name or instance of a class to register. |
-| `$alias` | **string&#124;null** | Optional class name alias. |
+| `$class` | **class-string<\T>&#124;class-object<\T>** | The class name or instance of a class to register. |
+| `$alias` | **string&#124;null** | Optional class alias to use in accessing class object (default: null). |
 | `$initialize` | **bool** | Whether to initialize class-string or leave it as static class (default: true). |
 
 **Return Value:**
@@ -280,8 +333,8 @@ public export(string|object $class, string|null $alias = null, bool $initialize 
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If the class does not exist or failed.
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - If there is an error during registration.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If the class does not exist or failed.
+- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - If there is an error during registration.
 
 **Examples**
 
@@ -365,13 +418,13 @@ public cache(\DateTimeInterface|int|null $expiry = null): self
 
 **Return Value:**
 
-`self` - Return instance of of View class or BaseApplication depending where its called.
+`self` - Return instance of of View class or CoreApplication depending where its called.
 
 **Example**
 
 In this example we check if cache exist and not expired before processing heavy database operation.
 
-<p style="color:red;">*Note:* Passing different expiration other than the expiration used during cache will not take effect in checking the expiration.</p>
+<p class="text-danger">*Note:* Passing different expiration other than the expiration used during cache will not take effect in checking the expiration.</p>
 
 ```php
 // /app/Controllers/ExampleController.php
@@ -405,14 +458,28 @@ class ExampleController extends BaseController
 The `expired` method checks whether a cached item has expired, allowing you to decide whether to renew the view or reuse the cached version.
 
 ```php
-public expired(): bool
+public expired(string|null $viewType = 'html'): bool
 ```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$viewType` | **string&#124;null** | The view content extension type (default: `html`). |
 
 **Return Value:**
 
 `bool` - Returns `true` if the cache doesn't exist or has expired.
 
-> **Note:** Before calling this method, you must first instantiate the cache with the `cache()` method.
+**Throws**
+
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - Throw if the cached version doesn't match with the current view type.
+
+> **Note:** 
+> 
+> Before calling this method, you must first call `cache` method instantiate it for use.
+> 
+> For the expiration check, we use the expiration set in `env` while saving cache, also don't worry about the cache key as it handled internally to save your precious time.
 
 ***
 
@@ -430,14 +497,123 @@ public reuse(): int
 
 **Throws**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - Throws an exception if called without first calling the `cache` method or if the cache file is not 
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - Throws an exception if called without first calling the `cache` method or if the cache file is not.
+
+***
+
+### delete
+
+The `delete` method removes the cache entry for the current request view. 
+
+You can optionally specify an application version to delete its corresponding cache entry, this can be useful in a situation where new contents has been cached using the the old version or vise versa.
+
+```php
+public function delete(?string $version = null): bool
+```
+
+**Parameters:**
+
+| Parameter | Type         | Description                                                          |
+|-----------|--------------|----------------------------------------------------------------------|
+| `$version`| **string\|null** | Optional application version whose cache entry should be deleted (default: null). If set to `null`, it deleted cache for the current version. |
+
+**Return Value:**
+
+`bool` - Returns `true` if the cache entry was successfully deleted; `false` otherwise.
+
+**Example Usage:**
+
+Delete the cache entry for the current view.
+```php
+$deleted = $this->delete();
+```
+
+Delete the cache entry for a specific application version.
+```
+$deleted = $this->delete('1.0.0');
+```
+
+***
+
+### clear
+
+The `clear` method removes all cache entries associated with view files. You can optionally specify an application version to clear its corresponding cache entries.
+
+```php
+public function clear(?string $version = null): int
+```
+
+**Parameters:**
+
+| Parameter | Type         | Description                                                          |
+|-----------|--------------|----------------------------------------------------------------------|
+| `$version`| **string\|null** | Optional application version whose cache entries should be cleared (default: null). If set to `null`, which clears cache entries for the current version. |
+
+**Return Value:**
+
+`int` - Returns the number of cache entries that were successfully deleted.
+
+**Example Usage:**
+
+Clear all cache entries for the current application version.
+```php
+$total = $this->clear();
+```
+
+Clear cache entries for a specific application version.
+```php
+$total = $this->clear('1.0.0');
+```
+
+***
+
+### header
+
+To optionally set customer headers which will be included in response header.
+
+```php
+public header(string $key, mixed $value): self 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$key` | **string** | The header key. |
+| `$value` | **mixed** | The header value for key. |
+
+**Return Value:**
+
+`self` - Return instance of of View class or CoreApplication depending where its called.
+
+***
+
+### headers
+
+To optionally set customer headers at once which will be included in response header.
+
+```php
+public headers(array $headers): self 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$headers` | **array<string,mixed>** | The headers key-pair. |
+
+**Return Value:**
+
+`self` - Return instance of of View class or CoreApplication depending where its called.
 
 ***
 
 ### view
 
 The `view` method allows you to specify the name and type of the view content to be rendered or returned. 
-This method must be called before using the `respond` or `render` methods.
+This method must be called before using the `respond` or `render` method.
+
+Additionally, do not include the extension type for argument `$viewName` (e.g, `.php`, `.tpl`, `.twg`), only the file name.
 
 ```php
 public view(string $viewName, string $viewType = 'html'): self
@@ -447,26 +623,30 @@ public view(string $viewName, string $viewType = 'html'): self
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$viewName` | **string** | The view name to render or respond with. |
-| `$viewType` | **string** | Type of content, differs from Content-Type and file formats. |
+| `$viewName` | **string** | The view file name without extension type (e.g, `index`). |
+| `$viewType` | **string** | The view content type (default: `html`). |
 
 **Return Value:**
 
-`self` - Return instance of of View class or BaseApplication depending where its called.
+`self` - Return instance of of View class or CoreApplication depending where its called.
 
-**Supported View Types:**
+**Throws**
+
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - Throw if invalid or unsupported view type specified.
+
+**Supported View Content Types:**
 
 | Type  | Description     |
 |------------|----------|
-| `html` | HTML content. |
-| `json` | JSON content. |
-| `text` | Plain text content. |
-| `xml` | XML content. |
-| `js` | JavaScript content. |
-| `css` | CSS content. |
-| `rdf` | RDF content. |
-| `atom` | Atom content. |
-| `rss` | RSS feed content. |
+| `html` | The view contents is HTML format. |
+| `json` | The view contents is JSON format. |
+| `text\|txt` | The view contents is Plain text (use txt if you want to serve static content). |
+| `xml` | The view contents is XML format. |
+| `js` | The view contents is JavaScript. |
+| `css` | The view contents is CSS. |
+| `rdf` | The view contents is RDF format. |
+| `atom` | The view contents is Atom format. |
+| `rss` | The view contents is RSS feed format. |
 
 ***
 
@@ -485,7 +665,7 @@ class FooController extends BaseController
 {
     public function show(): int
     {
-        return $this->app->view('show_view')->render(['foo' => 'bar']);
+        return $this->app->view('show_view', 'html')->render(['foo' => 'bar'], 200);
     }
 }
 ```
@@ -509,18 +689,16 @@ public render(array&lt;string,mixed&gt; $options = [], int $status = 200): int
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$options` | **array<string,mixed>** | additional parameters to pass in the template file $this-&gt;_myOption |
-| `$status` | **int** | HTTP status code (default: 200 OK) |
+| `$options` | **array<string,mixed>** |  Additional parameters to pass in the template file. |
+| `$status` | **int** | The HTTP status code (default: `200` OK). |
 
 **Return Value:**
 
-`int` - Return status code.
+`int` - Return status code `STATUS_SUCCESS` or `STATUS_ERROR` on failure.
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - If invalid view type was passed.
-- [\Luminova\Exceptions\ViewNotFoundException](/exceptions/classes.md#viewnotfoundexception) - If the view is not found
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If read and write permission to writable was denied.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If read and write permission to writable was denied.
 
 ***
 
@@ -529,19 +707,23 @@ public render(array&lt;string,mixed&gt; $options = [], int $status = 200): int
 Unlike the `render` method, the `respond` method returns the compiled view content as a string instead of presenting it. If caching is enabled, it will store the content for later use.
 
 ```php
-public respond(array $options = [], int $status = 200): string
+public respond(array<string,mixed> $options = [], int $status = 200): string
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$options` | **array<string,mixed>** | Additional options to pass in the template file. |
-| `$status` | **int** | HTTP status code (default: 200 OK) |
+| `$options` | **array<string,mixed>** |  Additional parameters to pass in the template file. |
+| `$status` | **int** | The HTTP status code (default: `200` OK). |
 
 **Return Value:**
 
-`string` - Return compiled view contents.
+`string` - Return the compiled view contents.
+
+**Throws:**
+
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If read and write permission to writable was denied.
 
 ***
 
@@ -578,15 +760,55 @@ class FooController extends BaseController
 To transit from one view URI to another.
 
 ```php
-public redirect(string $view, int $response_code): void
+public redirect(string $view, int $response_code = 0): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$view` | **string** | view name or name with segments |
-| `$response_code` | **int** | response status code |
+| `$view` | **string** | The view name or view path to redirect to. |
+| `$response_code` | **int** | The redirect response status code (default: 0). |
+
+***
+
+### link
+
+Creates a relative `URLs` to views or files, ensure the `url` starts from the public root directory. 
+These method automatically handle the base path and avoid common pitfalls with relative `URLs`.
+
+For example, if the current view URL is `https://example.com/some/view/foo/bar/baz` and you have a link like `<a href='./bra'>Bra</a>`, this can lead to broken links, particularly during development. 
+
+**Reason**: Relative URLs like `./bra` are resolved relative to the current path. In development or different directory levels, this may not point to the correct location, leading to broken links. 
+
+**Recommended Practices**:
+
+- Use predefined variables within your view files such as `$this->_href` or `$this->_asset`.
+- Utilize global functions for generating links, like `href('foo')` for view URLs and `asset('foo')` for asset URLs. 
+
+```php
+public static link(string $filename = ''): string 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$filename` | **string** | Optional view, path or file to prepend to root URL. |
+
+**Return Value:**
+
+`string` - Return full URL to view or file.
+
+**Examples**
+
+To ensure links, images or asset links are not broken, you can use below method:
+
+```php
+<?php
+$this->app->link('bra'); 
+//Returns: /bra
+```
 
 ***
 
@@ -600,16 +822,18 @@ public viewInfo(): array
 
 **Return Value:**
 
-`array` - An associative array containing information about the view file:
-    
--  'location': The full path to the view file.
--  'engine': The template engine.
--  'size': The size of the view file in bytes.
--  'timestamp': The last modified timestamp of the view file.
--  'modified': The last modified date and time of the view file (formatted as 'Y-m-d H:i:s').
--  'dirname': The directory name of the view file.
--  'extension': The extension of the view file.
--  'filename': The filename (without extension) of the view file.
+`array<string,mixed>` - Return an associative array containing information about the view file.
+
+**Return Keys:**
+
+-  `location`: - The full path to the view file.
+-  `engine`: - The template engine.
+-  `size`: - The size of the view file in bytes.
+-  `timestamp`: - The last modified timestamp of the view file.
+-  `modified`: - The last modified date and time of the view file (formatted as `Y-m-d H:i:s`).
+-  `dirname`: - The directory name of the view file.
+-  `extension`: - The extension of the view file.
+-  `filename`: - The filename (without extension) of the view file.
 
 ***
 
@@ -621,16 +845,16 @@ When rendering views within the Luminova application, certain default view optio
 
 The following view options are considered immutable and cannot be overridden when rendering views:
 
-1. `viewType` *(string)* - Indicates the view type being rendered.
-2. `active` *(string)* - Indicate the view name which is currently been rendered. 
-3. `asset` *(string)* - Alternative to create a link to asset folder `<img src="<?= $this->_asset;?>images/file.png">`. 
-4. `href` *(string)* - Alternative to create a link to another view `<a href="<?= $this->_href;?>foo">`. 
+1. `viewType` **(string)** - Indicates the view type being rendered.
+2. `active` **(string)** - Indicate the view name which is currently been rendered. 
+3. `asset` **(string)** - Alternative to create a link to asset folder `<img src="<?= $this->_asset;?>images/file.png">`. 
+4. `href` **(string)** - Alternative to create a link to another view `<a href="<?= $this->_href;?>foo">Foo</a>`. 
 5. `ALLOW_ACCESS` *(true)* - Constant, use this to deny access to files that only template should have access to
 
 **Mutable Options**
 
 The remaining view options can be customized and overridden based on specific rendering requirements.
 
-1. `nocache` *(bool)* - Optionally define view cache control to exclude view from caching.
-2. `title` *(string)* - Specifies the title of the view. If not explicitly set, the default title is derived from the active view and application name .
-3. `subtitle` *(string)* - Sets the subtitle of the view. If not provided, the subtitle is automatically generated based on the active view.
+1. `nocache` **(bool)** - Optionally define view cache control to exclude view from caching.
+2. `title` **(string)** - Specifies the title of the view. If not explicitly set, the default title is derived from the active view and application name .
+3. `subtitle` **(string)** - Sets the subtitle of the view. If not provided, the subtitle is automatically generated based on the active view.

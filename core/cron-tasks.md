@@ -1,4 +1,4 @@
-# Base Cron Jobs
+# Core Class for Cron Job Task Management
 
 ***
 
@@ -10,13 +10,13 @@ The Luminova Base Cron class offers advanced scheduling capabilities, allowing y
 
 ## Introduction
 
-The `BaseCron` class provides useful methods for creating cron jobs, allowing you to define task execution times using simple predefined methods like `seconds` and `years`, as well as custom cron expressions via the `cronTime` method.
+The `CoreCronTasks` class provides useful methods for creating cron jobs, allowing you to define task execution times using simple predefined methods like `seconds` and `years`, as well as custom cron expressions via the `cronTime` method.
 
 ### Usages
 
-To use the `BaseCron` class, follow these steps:
+To use the `CoreCronTasks` class, follow these steps:
 
-1. **Extend the BaseCron Class**: Create a new class that extends `BaseCron`.
+1. **Extend the CoreCronTasks Class**: Create a new class that extends `CoreCronTasks`.
 2. **Register Your Tasks**: Define your tasks within the protected `schedule` method.
 
 Once your jobs are registered, you can schedule the cron execution in your `cPanel` or server's crontab by using the `NovaKit` command:
@@ -31,9 +31,9 @@ This command ensures that the job execution times are properly monitored and exe
 >
 > **Cron Time in `cPanel`**: Set the cron job in your `cPanel` to run every minute to ensure that your jobs are executed promptly. You can adjust this based on your specific needs.
 >
-> **Execution Time in `BaseCron`**: The execution time set in the `service` time methods within `BaseCron` does not depend on the `cPanel` cron time. It is used only to determine when your commands should be executed.
+> **Execution Time in `CoreCronTasks`**: The execution time set in the `service` time methods within `CoreCronTasks` does not depend on the `cPanel` cron time. It is used only to determine when your commands should be executed.
 
-By following these steps, you can effectively manage and schedule your cron jobs using the `BaseCron` class.
+By following these steps, you can effectively manage and schedule your cron jobs using the `CoreCronTasks` class.
 
 ***
 
@@ -46,8 +46,8 @@ By default a `Cron` configuration class is added to your application configurati
 <?php 
 namespace App\Config;
 
-use \Luminova\Base\BaseCron;
-final class Cron extends BaseCron
+use \Luminova\Core\CoreCronTasks;
+final class Cron extends CoreCronTasks
 {
     /**
      * Schedule the task for execution.
@@ -69,7 +69,7 @@ final class Cron extends BaseCron
 
 ***
 
-* Class namespace: `\Luminova\Base\BaseCron`
+* Class namespace: `\Luminova\Core\CoreCronTasks`
 * This class is an **Abstract class**
 
 ***
@@ -96,7 +96,7 @@ public __construct(string|null $path = null, ?string $filename = null): mixed
 
 ### schedule
 
-To define scheduled cron jobs within the extended `BaseCron` class, use this method.
+To define scheduled cron jobs within the extended `CoreCronTasks` class, use this method.
 Called method `service` withing the `schedule` method, each service should have its own configurations.
 
 ```php
@@ -472,7 +472,7 @@ protected cronTime(string $expression): self
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If invalid expression is provided.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If invalid expression is provided.
 
 ***
 

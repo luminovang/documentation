@@ -1,4 +1,4 @@
-# AI Model
+# Artificial Intelligence (AI) Model Integration Class
 
 ***
 

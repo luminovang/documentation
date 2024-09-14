@@ -1,4 +1,4 @@
-# Tasks
+# Date &amp; Time Task Management
 
 ***
 
@@ -103,6 +103,6 @@ public static before(string $datetime, int $days = 2, null|\DateTimeZone|string 
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - If invalid days was passed.
+- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - If invalid days was passed.
 
 > This method is useful to check and send notification days before subscription expiration.

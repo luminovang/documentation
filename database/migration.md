@@ -1,4 +1,4 @@
-# Database Migration
+# Database Migration Management
 
 ***
 
@@ -293,7 +293,7 @@ public static create(string $tableName, \Closure $tableCallback): void
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If any error occurred.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - If any error occurred.
 
 > The `Closure` table callback function must return an instance of `\Luminova\Database\Table`.
 >
@@ -319,7 +319,7 @@ public static modify(string $tableName, \Closure $tableCallback): void
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If any error occurred.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - If any error occurred.
 
 > The `Closure` table callback function must return an instance of `\Luminova\Database\Table`.
 >
@@ -346,7 +346,7 @@ public static rename(string $from, string $to, string $database = 'mysql'): void
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If any error occurred.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - If any error occurred.
 
 ***
 

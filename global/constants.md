@@ -1,4 +1,4 @@
-# Constant Variables
+# Global Constants
 
 ***
 

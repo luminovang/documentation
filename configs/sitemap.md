@@ -1,4 +1,4 @@
-# Sitemap Configuration
+# Nova-Kit Sitemap Generator Configurations
 
 ***
 
@@ -10,7 +10,14 @@ Sitemap configuration provides flexibility and control over the sitemap generati
 
 ## Introduction
 
-The `Sitemap Configuration` class provides properties to configure the generation of sitemaps in your application, allowing you to set limits on the number of URLs to scan, specify URLs to ignore, and define patterns for extracting URLs view last-modified timestamp.
+The `Sitemap Configuration` class offers properties to customize the behavior of [sitemap generation](/seo/sitemap.md) in your application. With this class, you can:
+
+- Set limits on the number of URLs to scan.
+- Specify URLs to ignore.
+- Define a scan prefix.
+- Establish patterns for extracting the last-modified timestamps of URLs.
+
+This flexibility allows you to customize the sitemap generation process to meet your application's specific needs.
 
 ***
 
@@ -31,6 +38,31 @@ public int $maxScan = 0;
 > A value of `0 (zero)` indicates no limit, meaning all accessible URLs will be scanned.
 >
 > If you encounter performance issues or memory constraints, consider setting a reasonable limit.
+
+***
+
+### scanUrlPrefix
+
+Sets the allowed scan start URI prefix for sitemap generation. This option restricts the URLs included in the sitemap to those that match a specific prefix. The specified prefix is appended to your start URL.
+
+```php
+public string $scanUrlPrefix = '';
+```
+
+**How It Works**: 
+
+- If your start URL is `http://localhost/example.com/` and you specify the prefix as `blog`, the generated sitemap will only include URLs that match the pattern `http://localhost/example.com/blog/*`.
+- To include all URLs starting from the start URL, set this variable to an empty string (`''`).
+
+### Example Usage:
+Set prefix to restrict sitemap generation
+
+```php
+public string $scanUrlPrefix = 'blog'; 
+// This will include only URLs like http://localhost/example.com/blog/*
+```
+
+> **Note:** Ensure that the `scanUrlPrefix` is configured according to the desired URL structure you want to include in your sitemap or leave blank to include all valid URLs.
 
 ***
 

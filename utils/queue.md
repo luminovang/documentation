@@ -1,4 +1,4 @@
-# Job Queuing
+# Job Queue Management Module
 
 ***
 

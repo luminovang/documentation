@@ -1,4 +1,4 @@
-# URI View Segments
+# URL Path Structure and Segmentation
 
 ***
 

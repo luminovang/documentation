@@ -1,4 +1,4 @@
-# Command Text Util
+# Formatting Command Outputs Using the Text Utils Module
 
 ***
 
@@ -14,17 +14,19 @@ Text Utils is one of the many powerful features offered by Luminova's Framework 
 
 ***
 
-* Class namespace: `\Luminova\Command\TextUtils`
+* Class namespace: `\Luminova\Command\Utils\Text`
+
+***
 
 ## Constants
 
-| Constant | Visibility | Type | Value |
-|:---------|:-----------|:-----|:------|
-|`ANSI_RESET`|public|int|0|
-|`ANSI_BOLD`|public|int|1|
-|`ANSI_ITALIC`|public|int|3|
-|`ANSI_UNDERLINE`|public|int|4|
-|`ANSI_STRIKETHROUGH`|public|int|9|
+| Constant | Description | Type | Value |
+|:---------|:------------|:-----|:------|
+| `ANSI_RESET` | ANSI character reset flag. | int | 0 |
+| `ANSI_BOLD` | ANSI character bold flag. | int | 1 |
+| `ANSI_ITALIC` | ANSI character italic flag. | int | 3 |
+| `ANSI_UNDERLINE` | ANSI character underline flag. | int | 4 |
+| `ANSI_STRIKETHROUGH` | ANSI character strikethrough flag. | int | 9 |
 
 ***
 
@@ -42,9 +44,13 @@ public static padStart(string $text, int $length, string $char = ' '): string
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$text` | **string** | string to pad |
-| `$length` | **int** |  |
-| `$char` | **string** | Padding character |
+| `$text` | **string** | The text string to pad. |
+| `$length` | **int** | The maximum length of padding. |
+| `$char` | **string** | The padding character to use (default: `' '`). |
+
+**Return Value:**
+
+`string` - Return the the text with left padded.
 
 ***
 
@@ -53,16 +59,20 @@ public static padStart(string $text, int $length, string $char = ' '): string
 Pads string right
 
 ```php
-public static padEnd(string $text, int $max, string $char = ' '): string
+public static padEnd(string $text, int $length, string $char = ' '): string
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$text` | **string** | string to pad |
-| `$max` | **int** | maximum padding |
-| `$char` | **string** | Padding character |
+| `$text` | **string** | The text string to pad. |
+| `$length` | **int** | The maximum length of padding. |
+| `$char` | **string** | The padding character to use (default: `' '`). |
+
+**Return Value:**
+
+`string` - Return the the text with right padded.
 
 ***
 
@@ -78,8 +88,8 @@ public static border(string $text, ?int $padding = null): string
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$text` | **string** | string to pad |
-| `$padding` | **?int** |  |
+| `$text` | **string** | The string to add border. |
+| `$padding` | **int** | Additional optional padding to apply (default: null). |
 
 **Return Value:**
 
@@ -92,15 +102,15 @@ public static border(string $text, ?int $padding = null): string
 Create a centered text
 
 ```php
-public static center(string $text, int|null $padding = null): string
+public static center(string $text, ?int $padding = null): string
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$text` | **string** | string to pad |
-| `$padding` | **int&#124;null** | maximum padding |
+| `$text` | **string** | The text string to center. |
+| `$padding` | **int** | Additional optional padding to apply (default: null). |
 
 **Return Value:**
 
@@ -113,63 +123,65 @@ public static center(string $text, int|null $padding = null): string
 Pads string both left and right.
 
 ```php
-public static padding(string $text, int $max, string $char = ' ', int $padd = STR_PAD_BOTH): string
+public static padding(string $text, int $length, string $char = ' ', int $position = STR_PAD_BOTH): string
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$text` | **string** | string to pad |
-| `$max` | **int** | maximum padding |
-| `$char` | **string** | Padding character |
-| `$padd` | **int** | Padding location default is both left and right |
+| `$text` | **string** | The text string to apply padding. |
+| `$length` | **int** | The maximum length of padding. |
+| `$char` | **string** | The padding character to use (default: `' '`). |
+| `$pad` | **int** | The position of the text to apply padding (e.g, `STR_PAD_*`), (default: `STR_PAD_BOTH`). |
 
 ***
 
 ### fit
 
-Pads string to fit same length
+Pads string to fit same length.
 
 ```php
-public static fit(string $text, int $max, int $extra = 2, int $indent): string
+public static fit(string $text, int $max, int $extra = 2, int $indent = 0): string
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$text` | **string** | string to pad |
-| `$max` | **int** | maximum padding |
-| `$extra` | **int** | How many extra spaces to add at the end |
-| `$indent` | **int** |  |
+| `$text` | **string** | The text string to apply fit length. |
+| `$max` | **int** | The maximum padding to apply. |
+| `$extra` | **int** | How many extra spaces to add at the end (default: 2) |
+| `$indent` | **int** | An optional indent to apply (default: 0). |
 
 ***
 
 ### strlen
 
-Get the length of characters in a string and ignore styles
+Get the length of characters in a string and ignore `ANSI` that was applied to the text.
 
 ```php
-public static strlen(string $string = null, string $encoding = 'UTF-8'): int
+public static strlen(?string $string = null, string $encoding = 'UTF-8'): int
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$string` | **string** | Optional string |
-| `$encoding` | **string** | Text encoding |
+| `$string` | **string** | The string to calculate it's length. |
+| `$encoding` | **string** | Text encoding to use (default: `UTF-8`). |
 
 **Return Value:**
 
-`int` - The number of characters in the string
+`int` - Return the number of characters in the string.
+
+ > It replace all ANSI color codes and styles with an empty string before calculating the string length.
 
 ***
 
 ### style
 
-Apply style format on text string
+Apply `ANSI` style formatting to a text string.
 
 ```php
 public static style(string $text, int|null $format = null, bool $formatted = true): string
@@ -179,19 +191,19 @@ public static style(string $text, int|null $format = null, bool $formatted = tru
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$text` | **string** | Text to style |
-| `$format` | **int&#124;null** | Style to apply text. |
-| `$formatted` | **bool** | Return a formatted string or ansi style code |
+| `$text` | **string** | Text to apply style. |
+| `$format` | **int&#124;null** | The style to apply constant code identifier to use (e.g, `Text::ANSI_*`). |
+| `$formatted` | **bool** | Weather to return a text with applied style or just style code (default: true). |
 
 **Return Value:**
 
-`string` - A style formatted ansi string
+`string` - Return style formatted string or ansi string.
 
 ***
 
 ### hasAnsi
 
-Check if text already has ANSI method in place
+Check if text already has `ANSI` method in place
 
 ```php
 public static hasAnsi(string $text): bool
@@ -201,20 +213,20 @@ public static hasAnsi(string $text): bool
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$text` | **string** | Text string |
+| `$text` | **string** | The text string to check. |
 
 **Return Value:**
 
-`bool` - true or false
+`bool` - Return true if text contains ANSI, otherwise false.
 
 ***
 
 ### largest
 
-Get the largest line from text.
+Get the longest line from a text string that may contain various newline formats.
 
 ```php
-public static largest(string $text): array&lt;int,mixed&gt;
+public static largest(string $text): array<int,mixed>
 ```
 
 **Parameters:**
@@ -225,4 +237,4 @@ public static largest(string $text): array&lt;int,mixed&gt;
 
 **Return Value:**
 
-`array&lt;int,mixed&gt;` - Return largest line from text and it length.
+`array<int,mixed>` - Returns the longest line as the first element and its length as the second element.

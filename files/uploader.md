@@ -1,4 +1,4 @@
-# File Uploader
+# File Upload Integration with Uploader Module
 
 ***
 
@@ -114,7 +114,7 @@ public static upload(\Luminova\Http\File $file, string|null $path = null): bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\StorageException](/exceptions/classes.md#storageexception) - If upload path is not specified in configuration.
+- [\Luminova\Exceptions\StorageException](/running/exceptions.md#storageexception) - If upload path is not specified in configuration.
 
 ***
 
@@ -139,7 +139,7 @@ public static move(\Luminova\Http\File $file, string|null $path = null): bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\StorageException](/exceptions/classes.md#storageexception) - If upload path is not specified in configuration.
+- [\Luminova\Exceptions\StorageException](/running/exceptions.md#storageexception) - If upload path is not specified in configuration.
 
 ***
 
@@ -167,7 +167,7 @@ public static chunk(\Luminova\Http\File $file, string|null $path = null, int $ch
 
 **Throws:**
 
-- [\Luminova\Exceptions\StorageException](/exceptions/classes.md#storageexception) - If upload path is not specified in configuration.
+- [\Luminova\Exceptions\StorageException](/running/exceptions.md#storageexception) - If upload path is not specified in configuration.
 
 ***
 

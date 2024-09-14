@@ -1,4 +1,4 @@
-# File Upload
+# File Upload Object
 
 ***
 
@@ -222,7 +222,7 @@ public setName(string $name): self
 
 **Throws:**
 
-- [\Luminova\Exceptions\StorageException](/exceptions/classes.md#storageexception) - If the filename contains paths or does not have a valid file extension type.
+- [\Luminova\Exceptions\StorageException](/running/exceptions.md#storageexception) - If the filename contains paths or does not have a valid file extension type.
 
 ***
 

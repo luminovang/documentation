@@ -1,4 +1,4 @@
-# Database Table Schema
+# Database Table Schema Definitions
 
 ***
 
@@ -178,7 +178,7 @@ public __construct(string $tableName, bool $ifNotExists = false, ?string $collat
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If the table name is an empty string.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - If the table name is an empty string.
 
 ***
 
@@ -925,7 +925,7 @@ public index(string $index = self::INDEX_INDEX): self
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If an unsupported index type is provided.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - If an unsupported index type is provided.
 
 **Constants Index Types:**
 
@@ -1042,7 +1042,7 @@ public primary(bool $constraint = false): self
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If attempting to add a primary key constraint while multiple columns are already designated as primary key.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - If attempting to add a primary key constraint while multiple columns are already designated as primary key.
 
 **Example Usages:*
 

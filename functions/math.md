@@ -1,4 +1,4 @@
-# Maths Helper
+# Basic Mathematical Operations Helper with the Math Class
 
 ***
 
@@ -10,15 +10,49 @@ This class has basic mathematical calculation methods to convert currency, units
 
 ## Introduction
 
-This class provides a set of fundamental mathematical calculation methods currency conversions and unit conversions. They are designed to assist developers in performing common mathematical tasks while we add more for advance usages. 
-
-***
+The `Maths` module offers a suite of essential mathematical functions to support your development needs. It includes fundamental methods for tasks such as currency and unit conversions, calculating discounts, interest, and more. These tools are designed to simplify common mathematical operations, with plans to expand functionality for advanced use cases in the future.
 
 * Class namespace: `\Luminova\Functions\Maths`
-
-***
+* This class is marked as **final** and can't be subclassed
 
 ## Methods
+
+The methods can be accessed through global function  helper, `Factory` instance or call statically.
+
+```php
+<?php
+func('math')->money(5000);
+// 5000.00
+```
+
+Or directly call math method.
+
+```php
+<?php
+func()->math()->money(5000);
+// 5000.00
+```
+
+Or using factory instance to initialize function and call math method.
+
+```php
+<?php
+use Luminova\Application\Factory;
+
+Factory::functions()->math()->money(5000);
+// 5000.00
+```
+
+Or continently call it statically.
+
+```php
+<?php
+use \Luminova\Functions\Maths;
+
+Maths::money(5000);
+```
+
+***
 
 ### toUnit
 
@@ -33,11 +67,11 @@ public static toUnit(int $bytes, bool $add_name = false): string
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$bytes` | **int** | The number of bytes to convert. |
-| `$add_name` | **bool** | Whether to include the unit name in the result. Default is false. |
+| `$add_name` | **bool** | Whether to include the unit name in the result (default: false). |
 
 **Return Value:**
 
-`string` - The converted value with optional unit name.
+`string` - Return the converted value with optional unit name.
 
 ***
 
@@ -57,7 +91,7 @@ public static toBytes(string $units): int
 
 **Return Value:**
 
-`int` - The size in bytes.
+`int` - Return the size in bytes.
 
 ***
 
@@ -66,18 +100,18 @@ public static toBytes(string $units): int
 Calculate the average of a giving numbers.
 
 ```php
-public static average(int|float $numbers): float|null
+public static average(int|float ...$numbers): float|null
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$numbers` | **int&#124;float** | Input arguments integers or float values to calculate the average<br />- @example average(10, 20, 30, 40, 50) - return 30 as the average. |
+| `$numbers` | **int&#124;float** | The arguments integers or float values to calculate the average<br />- @example average(10, 20, 30, 40, 50) - return 30 as the average. |
 
 **Return Value:**
 
-`float|null` - The average of the passed numbers.
+`float|null` - Return the average of the passed numbers.
 
 ***
 
@@ -93,13 +127,22 @@ public static rating(int $reviews, float $rating, bool $round = false): float
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$reviews` | **int** | Total number of reviews. |
-| `$rating` | **float** | Total sum of rating points. |
-| `$round` | **bool** | Whether to round the average to 2 decimal places.<br /><br />- @example averageRating(5, 42.5, true) The average rating is: 8.50 |
+| `$reviews` | **int** | The total number of reviews. |
+| `$rating` | **float** | The total sum of rating points. |
+| `$round` | **bool** | Whether to round the average to 2 decimal places (default: false). |
 
 **Return Value:**
 
-`float` - The average rating.
+`float` - Return the average rating.
+
+**Example**
+
+The average of the below rating is: `8.50`.
+
+```
+<?php 
+echo Math::rating(5, 42.5, true)
+```
 
 ***
 
@@ -108,19 +151,19 @@ public static rating(int $reviews, float $rating, bool $round = false): float
 Formats currency with decimal places and comma separation.
 
 ```php
-public static money(mixed $amount, bool $decimals = 2): string
+public static money(mixed $amount, int $decimals = 2): string
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$amount` | **mixed** | Amount you want to format. |
-| `$decimals` | **bool** | Decimals places. |
+| `$amount` | **mixed** | The amount you want to format. |
+| `$decimals` | **int** | The decimals places. |
 
 **Return Value:**
 
-`string` - Formatted currency string.
+`string` - Return formatted currency string.
 
 ***
 
@@ -142,16 +185,16 @@ public static currency(float $number, string $code = 'USD', string|null $locale 
 
 **Return Value:**
 
-`string|false` - The formatted currency string, or false if unable to format.
+`string|false` - Return the formatted currency string, or false if unable to format.
 
 ***
 
 ### crypto
 
-Convert a number to cryptocurrency.
+Format a number to it's cryptocurrency length.
 
 ```php
-public static crypto(int|float|string $amount, string $network = 'BTC'): float|false
+public static crypto(int|float|string $amount, string $network = 'BTC'): string|false
 ```
 
 **Parameters:**
@@ -163,7 +206,15 @@ public static crypto(int|float|string $amount, string $network = 'BTC'): float|f
 
 **Return Value:**
 
-`float|false` - The equivalent amount in cryptocurrency.
+`string|false` - The equivalent amount in cryptocurrency.
+
+**Available Cryptos**
+
+- `BTC` - Bitcoin.
+- `ETH` - Ethereum.
+- `LTC` - Litecoin.
+- `XRP` - Ripple Credits.
+- `DOGE` - Doge Coin.
 
 ***
 
@@ -172,24 +223,30 @@ public static crypto(int|float|string $amount, string $network = 'BTC'): float|f
 Calculate the distance between two points on the Earth's surface.
 
 ```php
-public static distance(float|string $olat, float|string $olon, float|string $dlat, float|string $dlon, string $unit = 'km'): float|false
+public static distance(float|string $origin_lat, float|string $origin_lng, float|string $dest_lat, float|string $dest_lng, string $unit = 'km'): float|false
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$olat` | **float&#124;string** | The latitude of the origin point. |
-| `$olon` | **float&#124;string** | The longitude of the origin point. |
-| `$dlat` | **float&#124;string** | The latitude of the destination point. |
-| `$dlon` | **float&#124;string** | The longitude of the destination point. |
-| `$unit` | **string** | The unit of distance to be returned (default is 'km').<br />Supported units: 'km', 'mi', 'nmi'. |
+| `$origin_lat` | **float&#124;string** | The latitude of the origin point. |
+| `$origin_lng` | **float&#124;string** | The longitude of the origin point. |
+| `$dest_lat` | **float&#124;string** | The latitude of the destination point. |
+| `$dest_lng` | **float&#124;string** | The longitude of the destination point. |
+| `$unit` | **string** | The unit of distance to be returned (default is 'km'). |
 
 **Return Value:**
 
-`float|false` - The distance between the two points, or false on invalid input.
+`float|false` - Return the distance between the two points, or false on invalid input.
 
-> If you are passing a string, make sure its a float string.
+Supported units:
+
+- 'km' - Kilometers,
+- 'mi' - Miles,
+- 'nmi' - Nautical miles.
+
+> **Note:** If you are passing a string, make sure its a float string.
 
 ***
 
@@ -210,13 +267,13 @@ public static fixed(float|int|string $number, int|null $decimals = null): string
 
 **Return Value:**
 
-`string` - The formatted number.
+`string` - Return the formatted and rounded number.
 
 ***
 
 ### discount
 
-Calculate the discounted amount.
+Calculate the discounted amount based on rate given.
 
 ```php
 public static discount(float|int|string $total, float|int|string $rate): float
@@ -231,13 +288,13 @@ public static discount(float|int|string $total, float|int|string $rate): float
 
 **Return Value:**
 
-`float` - The discounted amount.
+`float` - Return the discounted amount.
 
 ***
 
 ### interest
 
-Calculate the total amount after adding interest.
+Calculate the total amount after adding an interest based on rete.
 
 ```php
 public static interest(float|int|string $total, float|int|string $rate): float
@@ -252,4 +309,4 @@ public static interest(float|int|string $total, float|int|string $rate): float
 
 **Return Value:**
 
-`float` - The total amount after adding interest.
+`float` - Return he total amount with an interest rate.

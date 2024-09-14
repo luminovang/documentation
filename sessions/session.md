@@ -1,4 +1,4 @@
-# User Session Handling
+# Backend Client Session Management
 
 ***
 

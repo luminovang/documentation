@@ -1,4 +1,4 @@
-# Route Attribute
+# Request Route Attributes
 
 ***
 
@@ -57,9 +57,9 @@ If your `public/index.php` router context initialization looks like this:
 <?php 
 //....
 Boot::http()->router->context(
-    new Context(Context::WEB, [ViewErrors::class, 'onWebError']),
-    new Context(Context::API, [ViewErrors::class, 'onApiError']),
-    new Context(Context::CLI)
+    new Prefix(Prefix::WEB, [ViewErrors::class, 'onWebError']),
+    new Prefix(Prefix::API, [ViewErrors::class, 'onApiError']),
+    new Prefix(Prefix::CLI)
 )->run();
 ```
 

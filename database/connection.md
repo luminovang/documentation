@@ -1,4 +1,4 @@
-# Database Connection
+# Database Connection Management
 
 ***
 
@@ -42,9 +42,8 @@ new Connection()
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If all retry attempts fail or an error occurs during connection.
-- [\Luminova\Exceptions\DatabaseLimitException](/exceptions/classes.md#databaselimitexception) - When the maximum connection limit is reached.
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - If an invalid connection configuration or driver is passed.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - Throws if all retry attempts fail, the maximum connection limit is reached, an invalid database driver is provided, an error occurs during connection, or an invalid driver interface is detected.
+- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - If an invalid connection configuration or driver is passed.
 
 ***
 
@@ -82,9 +81,8 @@ public static getInstance(): self
 `self` - Connection class instance.
 
 **Throws:**
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If all retry attempts fail or an error occurs during connection.
-- [\Luminova\Exceptions\DatabaseLimitException](/exceptions/classes.md#databaselimitexception) - When the maximum connection limit is reached.
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - If an invalid connection configuration or driver is passed.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - Throws if all retry attempts fail, the maximum connection limit is reached, an invalid database driver is provided, an error occurs during connection, or an invalid driver interface is detected.
+- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - If an invalid connection configuration or driver is passed.
 
 ***
 
@@ -95,14 +93,14 @@ Retrieves a new database driver instance based on the provided configuration.
 If no configuration is provided, the default configuration will be used.
 
 ```php
-public static newInstance(\Luminova\Base\BaseDatabase|null $config = null): \Luminova\Interface\DriversInterface|null
+public static newInstance(\Luminova\Base\CoreDatabase|null $config = null): \Luminova\Interface\DriversInterface|null
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$config` | **\Luminova\Base\BaseDatabase&#124;null** | Database configuration (default: null). |
+| `$config` | **\Luminova\Base\CoreDatabase&#124;null** | Database configuration (default: null). |
 
 **Return Value:**
 
@@ -110,9 +108,8 @@ public static newInstance(\Luminova\Base\BaseDatabase|null $config = null): \Lum
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If all retry attempts fail, an error occurs during connection, or an invalid driver interface is detected.
-- [\Luminova\Exceptions\DatabaseLimitException](/exceptions/classes.md#databaselimitexception) - When the maximum connection limit is reached.
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - If an invalid database driver is provided.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - Throws if all retry attempts fail, the maximum connection limit is reached, an invalid database driver is provided, an error occurs during connection, or an invalid driver interface is detected.
+- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - If an invalid database driver is provided.
 
 ***
 
@@ -130,9 +127,8 @@ public connect(): \Luminova\Interface\DriversInterface|null
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If all retry attempts fail or an error occurs during connection.
-- [\Luminova\Exceptions\DatabaseLimitException](/exceptions/classes.md#databaselimitexception) - When the maximum connection limit is reached.
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - If an invalid connection configuration or driver is passed.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - Throws if all retry attempts fail, the maximum connection limit is reached, an invalid database driver is provided, an error occurs during connection, or an invalid driver interface is detected.
+- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - If an invalid connection configuration or driver is passed.
 
 > Optionally retries failed connections based on the retry attempt value set in the .env file (`database.connection.retry`).
 
@@ -158,9 +154,8 @@ public retry(int|null $retry = 1): \Luminova\Interface\DriversInterface|null
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/exceptions/classes.md#databaseexception) - If all retry attempts fail or an error occurs during connection.
-- [\Luminova\Exceptions\DatabaseLimitException](/exceptions/classes.md#databaselimitexception) - When the maximum connection limit is reached.
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - If an invalid connection configuration or driver is passed.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - Throws if all retry attempts fail, the maximum connection limit is reached, an invalid database driver is provided, an error occurs during connection, or an invalid driver interface is detected.
+- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - If an invalid connection configuration or driver is passed.
 
 > If the retry parameter is set to null, retries the connection with backup servers if available.
 

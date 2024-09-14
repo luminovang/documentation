@@ -1,4 +1,4 @@
-# File Delivery Manager
+# Secure File Access and Browser Delivery with FileDelivery Module
 
 ***
 
@@ -181,8 +181,8 @@ public outputImage(string $basename, int $expiry = 0, array $options = [], array
 
 **Throws:**
 
-[\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - Throws if NanoImage image is not installed.
-[\Luminova\Exceptions\StorageException](/exceptions/classes.md#storageexception) - Throws if error occurred during image processing.
+[\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - Throws if NanoImage image is not installed.
+[\Luminova\Exceptions\StorageException](/running/exceptions.md#storageexception) - Throws if error occurred during image processing.
 
 > To use this method you need to install `NanoImage` first by running command `composer require peterujah/nano-image`
 

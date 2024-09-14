@@ -1,4 +1,4 @@
-# Cookie Manager
+# Client Side Cookie Management
 
 ***
 
@@ -71,7 +71,7 @@ new Cookie(string $name, mixed $value = '', array $options = []): mixed
 
 **Throws:**
 
-- [\Luminova\Exceptions\CookieException](/exceptions/classes.md#cookieexception) - Throws cookie exception.
+- [\Luminova\Exceptions\CookieException](/running/exceptions.md#cookieexception) - Throws cookie exception.
 
 ***
 

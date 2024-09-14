@@ -1,4 +1,4 @@
-# Command Color Util
+# Styling Command Text Outputs Using the Color Utils Module
 
 ***
 
@@ -16,54 +16,52 @@ Whether you're highlighting important information, organizing output for better 
 
 ***
 
-* Class namespace: `\Luminova\Command\Colors`
-
-## Properties
-
-### foregroundColors
-
-Text foreground color list
-
-```php
-protected static array&lt;string,string&gt; $foregroundColors = [
-    'black'        => '0;30',
-    'darkGray'     => '1;30',
-    'blue'         => '0;34',
-    'darkBlue'     => '0;34',
-    'lightBlue'    => '1;34',
-    'green'        => '0;32',
-    'lightGreen'   => '1;32',
-    'cyan'         => '0;36',
-    'lightCyan'    => '1;36',
-    'red'          => '0;31',
-    'lightRed'     => '1;31',
-    'purple'       => '0;35',
-    'lightPurple'  => '1;35',
-    'yellow'       => '0;33',
-    'lightYellow'  => '1;33',
-    'lightGray'    => '0;37',
-    'white'        => '1;37',
-];
-```
+* Class namespace: `\Luminova\Command\Utils\Color`
 
 ***
 
-### backgroundColors
+## ANSI Color Codes
 
-Text background color list.
+### Foreground Colors
 
-```php
-protected static array&lt;string,string&gt; $backgroundColors = [
-    'black'      => '40',
-    'red'        => '41',
-    'green'      => '42',
-    'yellow'     => '43',
-    'blue'       => '44',
-    'magenta'    => '45',
-    'cyan'       => '46',
-    'lightGray'  => '47',
-];
-```
+List of text foreground colors with their ANSI codes.
+
+| Color Key     | Color Name     | ANSI Code |
+|---------------|----------------|-----------|
+| `black`       | Black          | `0;30`    |
+| `darkGray`    | Dark Gray      | `1;30`    |
+| `blue`        | Blue           | `0;34`    |
+| `darkBlue`    | Dark Blue      | `0;34`    |
+| `lightBlue`   | Light Blue     | `1;34`    |
+| `green`       | Green          | `0;32`    |
+| `lightGreen`  | Light Green    | `1;32`    |
+| `cyan`        | Cyan           | `0;36`    |
+| `lightCyan`   | Light Cyan     | `1;36`    |
+| `red`         | Red            | `0;31`    |
+| `lightRed`    | Light Red      | `1;31`    |
+| `purple`      | Purple         | `0;35`    |
+| `lightPurple` | Light Purple   | `1;35`    |
+| `yellow`      | Yellow         | `0;33`    |
+| `lightYellow` | Light Yellow   | `1;33`    |
+| `lightGray`   | Light Gray     | `0;37`    |
+| `white`       | White          | `1;37`    |
+
+***
+
+### Background Colors
+
+List of text background colors with their ANSI codes.
+
+| Color Key     | Color Name     | ANSI Code |
+|---------------|----------------|-----------|
+| `black`       | Black          | `40`      |
+| `red`         | Red            | `41`      |
+| `green`       | Green          | `42`      |
+| `yellow`      | Yellow         | `43`      |
+| `blue`        | Blue           | `44`      |
+| `magenta`     | Magenta        | `45`      |
+| `cyan`        | Cyan           | `46`      |
+| `lightGray`   | Light Gray     | `47`      |
 
 ***
 
@@ -71,7 +69,7 @@ protected static array&lt;string,string&gt; $backgroundColors = [
 
 ### apply
 
-Returns the given text with the correct color codes for a foreground and optional background color.
+Applies foreground and optional background colors to the given text.
 
 ```php
 public static apply(string $text, int|null $format = null, string|null $foreground = null, string|null $background = null): string
@@ -81,11 +79,46 @@ public static apply(string $text, int|null $format = null, string|null $foregrou
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$text` | **string** | Text to color |
-| `$format` | **int&#124;null** |  Optionally apply text formatting (ex: TextUtils::ANSI_BOLD). |
-| `$foreground` | **string&#124;null** | Foreground color name |
-| `$background` | **string&#124;null** | Optional background color name |
+| `$text` | **string** | The text to color. |
+| `$format` | **int&#124;null** | Optionally apply text formatting (e.g, `Text::ANSI_BOLD`). |
+| `$foreground` | **string&#124;null** | The foreground color name. |
+| `$background` | **string&#124;null** | Optional background color name. |
 
 **Return Value:**
 
-`string` - A colored text if color is supported
+`string` - Return the formatted text with ANSI color codes, or the original text if unsupported.
+
+***
+
+### length
+
+Calculates the length of the ANSI formatting codes applied to a given text. This method helps determine the exact length of ANSI sequences in a text, which can be useful when subtracting the ANSI codes from the overall text length.
+
+```php
+public static length(int|null $format = null, string|null $foreground = null, string|null $background = null): int
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$format` | **int&#124;null** | And optional text formatting to include (e.g., `Text::ANSI_*`). |
+| `$foreground` | **string&#124;null** | An optional foreground color name to include (default: null). |
+| `$background` | **string&#124;null** | An optional background color name to include (default: null). |
+
+**Return Value:**
+
+`int` - Return the total length of ANSI formatting codes that is included.
+
+**Example**
+
+Apply bold formatting with a red foreground and black background.
+
+```php
+<?php
+$text = Text::apply('Hello, World!', Text::ANSI_BOLD, 'red', 'black');
+$ansiLength = Text::length(Text::ANSI_BOLD, 'red', 'black');
+
+echo $text; // Outputs: Hello, World! (with bold red text on a black background)
+echo "\nANSI Length: " . $ansiLength; // Outputs: ANSI Length: <calculated length>
+```

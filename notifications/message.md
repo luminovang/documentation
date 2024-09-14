@@ -1,4 +1,4 @@
-# Message Model
+# Notification Service Message Model
 
 ***
 

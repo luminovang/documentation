@@ -1,4 +1,4 @@
-# Services Configuration
+# Services Layer Autoloading Configurations
 
 ***
 
@@ -16,7 +16,7 @@ The `Service Configuration` class allows you to register services to be autoload
 
 * Class namespace: `\App\Config\Services`
 * File path: `/app/Config/Services.php`
-* Parent class: [\Luminova\Base\BaseServices](/base/services.md)
+* Parent class: [\Luminova\Base\CoreServices](/base/services.md)
 
 ***
 
@@ -37,7 +37,7 @@ Register services to autoload and make them discoverable.
 public bootstrap(): void
 ```
 
-> To register a classes, use the static `newService` method available in `BaseServices` within the `bootstrap` method as shown below.
+> To register a classes, use the static `newService` method available in `CoreServices` within the `bootstrap` method as shown below.
 > 
 > Do not create a duplicate of the `bootstrap` method or the `Service` class. To register multiple classes, simply add each class in a new line within the `bootstrap` method using `newService`.
 
@@ -47,10 +47,10 @@ public bootstrap(): void
 <?php
 namespace App\Config;
 
-use Luminova\Base\BaseServices;
+use Luminova\Base\CoreServices;
 use App\Utils\YourServiceClassName;
 
-class Services extends BaseServices
+class Services extends CoreServices
 {
     public function bootstrap(): void
     {

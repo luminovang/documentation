@@ -1,4 +1,4 @@
-# Features Customization
+# Customization of Optional Features and Framework Behavior
 
 ***
 
@@ -39,7 +39,7 @@ use Luminova\Attributes\Error;
 #[Error('web', pattern: '/.*', onError: [ViewErrors::class, 'onWebError'])]
 class MyController extends BaseController
 {
-	#[Route('/', methods: ['GET', 'POST'])]`)
+	#[Route('/', methods: ['GET', 'POST'])]
 	public function index(SomeClass $class): int 
 	{
 		// your code here
@@ -47,11 +47,13 @@ class MyController extends BaseController
 }
 ```
 
+Additionally you can enable `feature.route.cache.attributes` also, in production to cache attributes this is recommended for better performance instead of reading and passing attributes every time request is made.
+
 ***
 
 ### Class Alias
 
-`feature.app.class.alias` When enabled, the framework will create name alias for the listed classes in your controller configuration file `/app/Config/Modules.php`.
+`feature.app.class.alias` When enabled, the framework will create name alias for the listed classes in your modules configuration file `/app/Config/Modules.php`.
 
 ```php 
 <?php 
@@ -63,26 +65,53 @@ return [
 ];
 ```
 
+**Usage Example**
+
+Now `ExampleFoo` can be initialized using the alias instead of the original class name.
+
+```php
+<?php 
+use \SomeClass\Foo;
+$foo = new Foo();
+```
+
 ***
 
 ### Services
 
-`feature.app.services` When enabled, the framework will register all services listed in your controller Services configuration located in `/app/Config/Services.php`.
+`feature.app.services` When enabled, the framework will register all services listed in your Services configuration located in `/app/Config/Services.php`.
 
 ```php 
 public function bootstrap(): void
-    {
-        static::newService(Adapter::class, 'adapter', true, true, []); // service('adapter)
-		static::newService(ExampleClass::class, null, true, true, []); // service('ExampleClass')
-		//...
-    }
+{
+    static::newService(Adapter::class, 'adapter', true, true, []); // Has alias "adapter"
+    static::newService(ExampleClass::class, null, true, true, []);  // No alias, it will use class base name instead.
+    //...
+}
+```
+
+**Usage Example**
+
+Initializing with your registered alias.
+
+```php
+<?php 
+$adapter = service('adapter');
+$adapter->fooBar();
+```
+Initializing without any registered alias.
+
+```php
+<?php 
+$example = service('ExampleClass');
+$example->fooBar();
 ```
 
 ***
 
 ### PSR4 Autoloading
 
-`feature.app.autoload.psr4` When enabled, the framework will autoload all the listed classes using the psr-4 standard. To list your classes, locate the file in the controller configuration file `/app/Config/Modules.php`.
+`feature.app.autoload.psr4` When enabled, the framework will autoload all the listed classes using the psr-4 standard. To list your classes, locate the file in the modules configuration file `/app/Config/Modules.php`.
 
 ```php 
 <?php 
@@ -96,9 +125,12 @@ return [
 ];
 ```
 
-> Note: Luminova is all about code organization. To maintain good practice and application maintainability.
+> Note: 
+> Framework is all about code organization. To maintain good practice and application maintainability.
 > 
 >  All your class files must be placed in the `/libraries/libs/` directory to load them.
+
+***
 
 ##### Single File Import
 
@@ -119,7 +151,8 @@ import('example/MyClass');
 
 ### Dev Functions
 
-`feature.app.dev.functions` When enabled, the framework will automatically include your development global PHP file `/app/Utils/Global.php`. This goal file allows you to define your own custom functions or overwrite PHP procedural functions to replace them with your own.
+`feature.app.dev.functions` When enabled, the framework will automatically include your PHP procedural global functions file `/app/Utils/Global.php`.
+This global file allows you to define your own custom functions or overwrite `PHP` procedural functions to replace them with your own.
 
 **Example**
 
@@ -137,7 +170,9 @@ if (!function_exists('my_string_count')) {
 
 ### Dependency Injection
 
-`feature.route.dependency.injection` By default, dependency injection in the router is disabled to optimize performance. You can enable it in the environment file. Once enabled, you can specify a type hint for your router parameter with the desired class to be loaded.
+`feature.route.dependency.injection` By default, dependency injection in the controller methods is disabled to optimize performance. 
+You can enable it in the environment file. Once enabled, you can specify a type hint for your controller routeable methods or closures parameter with the desired class to be loaded.
+This promotes easy initialization and clean code.
 
 ```php 
 <?php
@@ -177,9 +212,11 @@ namespace App\Controllers;
 use \Luminova\Base\BaseController;
 use \Luminova\Security\Crypter;
 
-class UserController extends BaseController {
+class UserController extends BaseController 
+{
 	public function hashToken(Crypter $crypt, String $token): void 
 	{
 		$crypt->encrypt($token);
 	}
 }
+```

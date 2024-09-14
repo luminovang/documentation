@@ -1,4 +1,4 @@
-# HTTP Request
+# Incoming HTTP Request Management Class
 
 ***
 
@@ -10,7 +10,62 @@ The Request class plays a crucial role in web applications by providing a struct
 
 ## Introduction
 
-The `Request` class represents an incoming HTTP request received by a server. It encapsulates various aspects of the request, such as headers, query parameters, form data, uploaded files, and more. This class provides a convenient and structured way to access and manipulate incoming HTTP requests, with built-in authentication mechanisms to validate requests based on factors such as origin, proxies, or allowed domains.
+The `Request` class represents an incoming HTTP request to a server, encapsulating various components such as headers, query parameters, form data, and uploaded files. This class offers a structured approach to access and manipulate incoming HTTP requests, including built-in authentication mechanisms to validate requests based on origin, proxies, or allowed domains.
+
+## Accessing the Request Object
+
+The request object can be accessed in multiple ways, depending on the context. You can use the global helper function, the `Factory` class, or the `Controller` class.
+
+### Access Methods
+
+#### 1. Using Global Helper Function
+
+```php
+$request = request();
+```
+
+#### 2. Accessing Through the Factory Class
+
+```php
+use Luminova\Application\Factory;
+
+$request = Factory::request();
+```
+
+#### 3. Initializing the Request Instance Directly
+
+```php
+use Luminova\Http\Request;
+
+$request = new Request();
+```
+
+#### 4. Accessing in Controller Classes
+
+If your controller extends `BaseController`:
+
+```php
+$this->request->foo();
+```
+
+If your controller extends `BaseViewController`, you can access it in two ways:
+
+**Direct Access:**
+
+```php
+$this->request()->foo();
+```
+
+**Initializing in the `onCreate` Method:**
+
+You can initialize the request instance once, then access it later:
+
+```php
+$this->request(); // Initialize
+
+// Then access it.
+$this->request->foo();
+```
 
 ***
 
@@ -21,7 +76,7 @@ The `Request` class represents an incoming HTTP request received by a server. It
 Http server instance.
 
 ```php
-public null|\Luminova\Http\Server $server
+public ?\Luminova\Http\Server $server = null;
 ```
 
 ***
@@ -31,7 +86,7 @@ public null|\Luminova\Http\Server $server
 Http request header instance.
 
 ```php
-public null|\Luminova\Http\Header $header
+public ?\Luminova\Http\Header $header = null;
 ```
 
 ***
@@ -41,7 +96,7 @@ public null|\Luminova\Http\Header $header
 Browser request user-agent information.
 
 ```php
-public null|\Luminova\Http\UserAgent $agent
+public ?\Luminova\Http\UserAgent $agent = null;
 ```
 
 ***
@@ -344,7 +399,7 @@ public getUnlock(string $key, mixed $default = null): mixed
 
 ### getArray
 
-Get a value from the request method context array.
+Get a value from the request body as an array.
 
 ```php
 public getArray(string $method, string $key, array $default = []): array
@@ -354,9 +409,9 @@ public getArray(string $method, string $key, array $default = []): array
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$method` | **string** | HTTP request method context. |
-| `$key` | **string** | Request body key. |
-| `$default` | **array** | Default value. |
+| `$method` | **string** | The HTTP request method (e.g, `GET`, `POST`, etc..). |
+| `$key` | **string** | The request body name to return. |
+| `$default` | **array** | Optional default value to return (default: `[]`). |
 
 **Return Value:**
 
@@ -364,13 +419,13 @@ public getArray(string $method, string $key, array $default = []): array
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - Throws if unsupported HTTP method was passed.
+- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - Throws if unsupported HTTP method was passed.
 
 ***
 
 ### getBody
 
-Get the request body as an array or json object.
+Get the entire request body as an `Array` or `JSON` object.
 
 ```php
 public getBody(bool $object = false): array|object
@@ -384,55 +439,51 @@ public getBody(bool $object = false): array|object
 
 **Return Value:**
 
-`array|object` - Return the request body as an array or json object.
+`array|object` - Return the request body as an `array` or `json` object.
 
 ***
 
 ### getFile
 
-Get the uploaded file information by its input name.
+Get an uploaded file object by its input name.
 
 ```php
-public getFile(string $name): \Luminova\Http\File|false
+public getFile(string $name): ?\Luminova\Http\File
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$name` | **string** | File input name. |
+| `$name` | **string** | The input file name. |
 
 **Return Value:**
 
-`\Luminova\Http\File|false` - Uploaded file information or false if file not found.
+`\Luminova\Http\File|null` - Return uploaded file instance or null if file input name not found.
 
 **See Also:**
 
-[File Upload Object](/http/file.md)
+To learn more about [File Upload Object](/http/file-object.md), refer to the documentation.
 
 ***
 
 ### getFiles
 
-Get the uploaded files information irritable array.
+Get irritable array of uploaded files information.
 
 ```php
-public getFiles(): false|array&lt;int,\Luminova\Http\File&gt;
+public getFiles(): \Luminova\Http\File[]|false
 ```
 
 **Return Value:**
 
-`false|array&lt;int,\Luminova\Http\File&gt;` - Uploaded files information or false if no files found.
-
-**See Also:**
-
-[File Upload Object](/http/file.md)
+`\Luminova\Http\File[]|false` - Return an array containing uploaded files information or false if no files found.
 
 ***
 
 ### getMethod
 
-Get the request method.
+Get the current request method.
 
 ```php
 public getMethod(): string
@@ -440,13 +491,13 @@ public getMethod(): string
 
 **Return Value:**
 
-`string` - Return the request method in lowercased.
+`string` - Return the HTTP request method.
 
 ***
 
 ### isGet
 
-Check if the request method is GET.
+Check if the request method is `GET`.
 
 ```php
 public isGet(): bool
@@ -454,13 +505,13 @@ public isGet(): bool
 
 **Return Value:**
 
-`bool` - Returns true if the request method is GET, false otherwise.
+`bool` - Returns true if the request method is `GET`, false otherwise.
 
 ***
 
 ### isPost
 
-Check if the request method is POST.
+Check if the request method is `POST`.
 
 ```php
 public isPost(): bool
@@ -468,7 +519,7 @@ public isPost(): bool
 
 **Return Value:**
 
-`bool` - Returns true if the request method is POST, false otherwise.
+`bool` - Returns true if the request method is `POST`, false otherwise.
 
 ***
 
@@ -484,7 +535,7 @@ public isMethod(string $method): bool
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$method` | **string** | The method to check against. |
+| `$method` | **string** | The method to check against (e.g, `POST`, `GET`). |
 
 **Return Value:**
 
@@ -502,16 +553,16 @@ public getContentType(): string
 
 **Return Value:**
 
-`string` - The request content type.
+`string` - Return the request content type or blank string if not available.
 
 ***
 
 ### getAuth
 
-Get HTTP request header authorization [HTTP_AUTHORIZATION, Authorization].
+Get HTTP request header authorization from  (e.g, `HTTP_AUTHORIZATION`, `Authorization` or `REDIRECT_HTTP_AUTHORIZATION`).
 
 ```php
-public getAuth(): string|null
+public getAuth(): ?string
 ```
 
 **Return Value:**
@@ -519,14 +570,6 @@ public getAuth(): string|null
 `string|null` - Return the authorization header value or null if no authorization header was sent.
 
 ***
-
-### isCommand
-
-Check to see if a request was made from the command line.
-
-```php
-public isCommand(): bool
-```
 
 **Return Value:**
 
@@ -536,7 +579,7 @@ public isCommand(): bool
 
 ### isSecure
 
-Check if the current connection is secure
+Check if the current request connection is secure.
 
 ```php
 public isSecure(): bool
@@ -550,7 +593,7 @@ public isSecure(): bool
 
 ### isAJAX
 
-Check if request is ajax request, see if a request contains the HTTP_X_REQUESTED_WITH header.
+Check if request is `ajax` request, see if a request contains the `HTTP_X_REQUESTED_WITH` header.
 
 ```php
 public isAJAX(): bool
@@ -558,35 +601,28 @@ public isAJAX(): bool
 
 **Return Value:**
 
-`bool` - Return true if request is ajax request, false otherwise
+`bool` - Return true if request is `ajax` request, false otherwise
 
 ***
 
 ### isApi
 
-Check if the request URL indicates an API endpoint.
+Check if the request URL indicates an `API` request endpoint.
+This method checks if the URL path prefix matched any of  `/api` or `public/api` or your custom defined API URL prefix.
 
 ```php
-public isApi(string|null $url = null): bool
+public isApi(): bool
 ```
-
-This method checks if the URL path starts with '/api' or 'public/api'.
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$url` | **string&#124;null** | The request URL to check. |
 
 **Return Value:**
 
-`bool` - Returns true if the URL indicates an API endpoint, false otherwise.
+`bool` - Returns true if the URL indicates an `API` endpoint, false otherwise.
 
 ***
 
 ### getQuery
 
-Get the request url query string.
+Get the request URL query string.
 
 ```php
 public getQuery(): string
@@ -594,13 +630,13 @@ public getQuery(): string
 
 **Return Value:**
 
-`string` - Return url query string.
+`string` - Return the request URL query parameters as string.
 
 ***
 
 ### getQueries
 
-Get current url query parameters as an array.
+Get current URL query parameters as an associative array using the parameter name as key.
 
 ```php
 public getQueries(): array&lt;string,mixed&gt;
@@ -608,13 +644,13 @@ public getQueries(): array&lt;string,mixed&gt;
 
 **Return Value:**
 
-`array&lt;string,mixed&gt;` - Url query parameters.
+`array<string,mixed>` - Return the request URL query parameters as an array.
 
 ***
 
 ### getUri
 
-Get current request url
+Get current request URL including the scheme, host and query parameters.
 
 ```php
 public getUri(): string
@@ -622,13 +658,13 @@ public getUri(): string
 
 **Return Value:**
 
-`string` - Return request url or null if not set.
+`string` - Return the request full URL.
 
 ***
 
 ### getPaths
 
-Get current request url path information
+Get current request URL path information.
 
 ```php
 public getPaths(): string
@@ -636,13 +672,13 @@ public getPaths(): string
 
 **Return Value:**
 
-`string` - Return request url paths.
+`string` - Return the request URL paths.
 
 ***
 
 ### getRequestUri
 
-Returns the requested URI (path and query string).
+Returns un-decoded request URI, path and query string.
 
 ```php
 public getRequestUri(): string
@@ -650,13 +686,13 @@ public getRequestUri(): string
 
 **Return Value:**
 
-`string` - The raw URI (i.e. not URI decoded)
+`string` - Return the raw request URI (i.e. URI not decoded).
 
 ***
 
 ### getHost
 
-Get current hostname without port, if allowed host is set it will check if host is in allowed list or patterns.
+Get current request `hostname` without port, if allowed host is set it will check if host is in allowed list or patterns.
 
 ```php
 public getHost(bool $extension = false): string
@@ -666,21 +702,21 @@ public getHost(bool $extension = false): string
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$extension` | **bool** | Should throw an exception if invalid host or not allowed host (default: false). |
+| `$extension` | **bool** | Weather to throw an exception if invalid host or not allowed host (default: false). |
 
 **Return Value:**
 
-`string` - Return hostname.
+`string` - Throw if host is invalid or not allowed.
 
 **Throws:**
 
-- [\Luminova\Exceptions\SecurityException](/exceptions/classes.md#securityexception) - If host is invalid or not allowed.
+- [\Luminova\Exceptions\SecurityException](/running/exceptions.md#securityexception) - Throw if host is invalid or not allowed.
 
 ***
 
 ### getHostname
 
-Get current hostname with port if port is available.
+Get current request `hostname` with port if port is available.
 If allowed host is set it will check if host is in allowed list or patterns.
 
 ```php
@@ -691,38 +727,36 @@ public getHostname(bool $extension = false, bool $port = true): string
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$extension` | **bool** | Should throw an exception if invalid host or not allowed host (default: false). |
-| `$port` | **bool** | Should return hostname with port (default: true). |
+| `$extension` | **bool** | Weather to throw an exception if invalid host or not allowed host (default: false). |
+| `$port` | **bool** | Weather to return hostname with port (default: true). |
 
 **Return Value:**
 
-`string` - Return hostname.
+`string` - Return request hostname and port.
 
 **Throws:**
 
-- [\Luminova\Exceptions\SecurityException](/exceptions/classes.md#securityexception) - If host is invalid or not allowed.
+- [\Luminova\Exceptions\SecurityException](/running/exceptions.md#securityexception) - If host is invalid or not allowed.
 
 ***
 
 ### getOrigin
 
-Get the origin domain if list of trusted origin domains are specified.
+Get the request origin domain, if the list of trusted origin domains are specified, it will check if the origin is a trusted origin domain.
 
 ```php
-public getOrigin(): string|null
+public getOrigin(): ?string
 ```
-
-It will check if the origin is a trusted origin domain.
 
 **Return Value:**
 
-`string|null` - Origin domain if found and trusted, otherwise null.
+`string|null` - Return the request origin domain if found and trusted, otherwise null.
 
 ***
 
 ### getPort
 
-Get the request origin port.
+Get the request origin port from `X_FORWARDED_PORT` or `SERVER_PORT` if available.
 
 ```php
 public getPort(): int|string|null
@@ -730,37 +764,50 @@ public getPort(): int|string|null
 
 **Return Value:**
 
-`int|string|null` - Can be a string if fetched from the server bag
+`int|string|null` - Return either a string if fetched from the server available, or integer, otherwise null.
 
 > Check if X-Forwarded-Port header exists and use if available.
-> 
 > If not available check for server-port header if also not available return NULL as default.
 
 ***
 
 ### getScheme
 
-Gets the request's scheme.
+Gets the request scheme name.
 
 ```php
 public getScheme(): string
 ```
 
+**Return Value:**
+
+`string` - Return request scheme, if secured return `https` otherwise `http`.
+
 ***
 
 ### getProtocol
 
-Gets the request server protocol (e.g: HTTP/1.1).
+Gets the request server protocol name and version (e.g: `HTTP/1.1`).
 
 ```php
-public getProtocol(): string
+public getProtocol(string $default = 'HTTP/1.1'): string
 ```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$default` | **string** | The default server protocol to return if no available (default: `HTTP/1.1`). |
+
+**Return Value:**
+
+`string` - Return Request protocol name and version, if available, otherwise default is return `HTTP/1.1`.
 
 ***
 
 ### getBrowser
 
-Get user browser information.
+Get the request browser name and platform from user-agent information.
 
 ```php
 public getBrowser(): string
@@ -774,7 +821,7 @@ public getBrowser(): string
 
 ### getUserAgent
 
-Get browser user-agent information.
+Get request browser user-agent information.
 
 ```php
 public getUserAgent(?string $useragent = null): UserAgent
@@ -784,37 +831,37 @@ public getUserAgent(?string $useragent = null): UserAgent
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$useragent` | **string&#124;null** | The User Agent string. If not provided, it defaults to $_SERVER['HTTP_USER_AGENT']. |
+| `$useragent` | **string&#124;null** | The User Agent string, if not provided, it defaults to (`HTTP_USER_AGENT`). |
 
 **Return Value:**
 
-`UserAgent` - Return user agent instance.
+`UserAgent` - Return instance user-agent class containing browser information.
 
 ***
 
 ### isSameOrigin
 
-Check if the request's origin matches the current host.
+Check if the request origin matches the current application host.
 
 ```php
-public isSameOrigin(bool $subdomains = true): bool
+public isSameOrigin(bool $subdomains = false): bool
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$subdomains` | **bool** | Whether to consider subdomains or not. Default is true. |
+| `$subdomains` | **bool** | Whether to consider sub-domains or not (default: false). |
 
 **Return Value:**
 
-`bool` - Returns true if the request's origin matches the current host as define in env `app.hostname`, false otherwise.
+`bool` - Returns true if the request origin matches the current host, false otherwise.
 
 ***
 
 ### isTrusted
 
-Check if the given (hostnames, origins, proxy ip or subnet) matches any of the trusted patterns.
+Validates if the given (`hostname`, `origin`, `proxy ip` or `subnet`) matches any of the trusted patterns.
 
 ```php
 public static isTrusted(string $input, string $context = 'hostname'): bool
@@ -824,8 +871,8 @@ public static isTrusted(string $input, string $context = 'hostname'): bool
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$input` | **string** | The domain, origin or ip address to check. |
-| `$context` | **string** | The context to check (hostname, origin or proxy). |
+| `$input` | **string** | The domain, origin or IP address to check. |
+| `$context` | **string** | The context to check input for (e.g, `hostname`). |
 
 **Return Value:**
 
@@ -833,13 +880,21 @@ public static isTrusted(string $input, string $context = 'hostname'): bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - If invalid context is provided.
+- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - If invalid context is provided.
+
+**Supported Context:**
+
+- `hostname` - Validates a host name.
+- `origin` - Validates an origin hostname.
+- `proxy` Validates an IP address or proxy.
+
+> **Note:** This will consider the defined configuration in `App\Config\Security` during validation.
 
 ***
 
 ### isTrustedProxy
 
-Check whether this request origin ip address is from a trusted proxy.
+Check whether this request origin IP address is from a trusted proxy.
 
 ```php
 public isTrustedProxy(): bool
@@ -847,7 +902,7 @@ public isTrustedProxy(): bool
 
 **Return Value:**
 
-`bool` - Return true if the request origin ip address is trusted false otherwise.
+`bool` - Return true if the request origin IP address is trusted false otherwise.
 
 ***
 

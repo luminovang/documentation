@@ -1,4 +1,4 @@
-# Base Database
+# Core Database Backup Connection Class
 
 ***
 
@@ -12,9 +12,9 @@ Define your backup database connection server with Luminova Base Server, to auto
 
 Automatic Backup Database Connectivity to ensure your application is always online when needed.
 
-`BaseDatabase` enables you to specify backup database servers. If the main database specified in the environment file fails to connect, the framework automatically attempts to connect to your backup servers if defined to ensure your application is always ready when users request for it.
+`CoreDatabase` enables you to specify backup database servers. If the main database specified in the environment file fails to connect, the framework automatically attempts to connect to your backup servers if defined to ensure your application is always ready when users request for it.
 
-* Class namespace: `\Luminova\Base\BaseDatabase`
+* Class namespace: `\Luminova\Base\CoreDatabase`
 * This class is an **Abstract class**
 
 ***
@@ -33,9 +33,9 @@ Here is an example on how you can extend and use the base server.
 <?php 
 namespace App\Config;
 
-use \Luminova\Base\BaseDatabase;
+use \Luminova\Base\CoreDatabase;
 
-class Servers extends BaseDatabase
+class Servers extends CoreDatabase
 {
      protected $databaseBackups = [
           [

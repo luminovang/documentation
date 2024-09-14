@@ -1,4 +1,4 @@
-# Public Entry Controller
+# Public Controller Entry Point
 
 ***
 
@@ -31,7 +31,7 @@ Below are several examples of how `index.php` might be configured.
 
 ### Basic Setup
 
-The context URI prefix `web` serves as a default handler for all URLs if no other custom context prefix matches the request. This does not mean that only URLs starting with `web` are handled by this context. Instead, it is a generic way for Luminova to manage all web-related routes when no specific context prefix is defined or matched. 
+The URI prefix name `web` serves as a default handler for all incoming `URLs` if no other custom context prefix matches the request url prefix. This does not mean that only URLs starting with `web` are handled by this context. Instead, it is a generic way for Luminova to manage all web-related routes when no specific context prefix is defined or matched. 
 
 If other custom context prefixes are defined, they will be matched first, and the `web` context will serve as the fallback for any remaining URLs.
 
@@ -40,7 +40,7 @@ If other custom context prefixes are defined, they will be matched first, and th
 declare(strict_types=1);
 
 use \Luminova\Boot;
-use \Luminova\Routing\Context;
+use \Luminova\Routing\Prefix;
 use \App\Controllers\Errors\ViewErrors;
 
 // Boot framework classes 
@@ -54,9 +54,9 @@ if (getcwd() . DIRECTORY_SEPARATOR !== FRONT_CONTROLLER) {
 }
 
 Boot::http()->router->context(
-    new Context(Context::WEB, [ViewErrors::class, 'onWebError']),
-    new Context(Context::API, [ViewErrors::class, 'onApiError']),
-    new Context(Context::CLI)
+    new Prefix(Prefix::WEB, [ViewErrors::class, 'onWebError']),
+    new Prefix(Prefix::API, [ViewErrors::class, 'onApiError']),
+    new Prefix(Prefix::CLI)
 )->run();
 ```
 
@@ -73,11 +73,11 @@ This example demonstrates using anonymous functions (callbacks) for error handli
 
 ```php
 Boot::http()->router->context(
-    new Context(Context::WEB, fn(Application $app): int => ViewErrors::onWebError($app)),
-    new Context(Context::API, function(){
+    new Prefix(Prefix::WEB, fn(Application $app): int => ViewErrors::onWebError($app)),
+    new Prefix(Prefix::API, function(){
         echo "Error";
     }),
-    new Context(Context::CLI)
+    new Prefix(Prefix::CLI)
 )->run();
 ```
 
@@ -124,7 +124,7 @@ The `context` method accepts multiple arguments, which can be instances of `Cont
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$contexts` | **Luminova\Routing\Context\|array<string,mixed>\|null** | Arguments containing routing contexts or an array of arguments. Pass `null` or leave blank only when using route attributes. |
+| `$contexts` | **Luminova\Routing\Prefix\|array<string,mixed>\|null** | Arguments containing routing contexts or an array of arguments. Pass `null` or leave blank only when using route attributes. |
 
 **Return Value:**
 
@@ -132,7 +132,7 @@ The `context` method accepts multiple arguments, which can be instances of `Cont
 
 **Throws:**
 
-- [\Luminova\Exceptions\RouterException](/exceptions/classes.md#routerexception) - Thrown if no context arguments are passed and route attributes are not enabled.
+- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - Thrown if no context arguments are passed and route attributes are not enabled.
 
 ### Notes
 
@@ -142,8 +142,8 @@ The `context` method accepts multiple arguments, which can be instances of `Cont
 ***
 ### See Also
 
-- [Routing Context](/routing/view-context.md) - Learn more about how routing prefixes work and their usage.
-- [Routing Class](/routing/view-uri.md) -  Learn more about how routing and their usage.
+- [Routing Prefix](/routing/url-prefix.md) - Learn more about how routing prefixes work and their usage.
+- [Routing Class](/routing/url-routing.md) -  Learn more about how routing and their usage.
 - [Routing Attribute](/routing/route-attribute.md) -  Learn more about how PHP attribute routing and its usage.
 
 This documentation should provide a clear understanding of how to configure and use the `index.php` file as the entry point for a Luminova application.

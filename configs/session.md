@@ -1,4 +1,4 @@
-# Session Configuration
+# Backend Session Management Configurations
 
 ***
 

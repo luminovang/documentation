@@ -1,4 +1,4 @@
-# CSRF Protection
+# Cross-Site Request Forgery (CSRF) Protection Module
 
 ***
 

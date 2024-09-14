@@ -1,4 +1,4 @@
-# Base Config
+# Base Class for Application Configuration Classes
 
 ***
 
@@ -45,13 +45,104 @@ class Config extends BaseConfig
 An alternative to the global helper function `env`, the `getEnv` method allows you to retrieve an environment variable with a specific return type.
 
 ```php
-public static final getEnv(string $key, mixed $default = null, string|null $return = null): mixed
+final public static getEnv(string $key, mixed $default = null, string|null $return = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | The key to retrieve. |
+| `$key` | **string** | The environment variable key to retrieve. |
 | `$default` | **mixed** | The default value to return if the key is not found. |
-| `$return` | **string&#124;null** | Optional return types<br />- [bool, int, float, double, nullable, string] |
+| `$return` | **string&#124;null** | The expected return type. Can be one of: |
+
+**Return Value:**
+
+`mixed` - Returns the environment variable cast to the specified type, or default if not found.
+
+**Supported Return Types:**
+
+- `bool`.
+- `int`.
+- `float`.
+- `double`.
+- `nullable`.
+- `string`.
+
+***
+
+### removeCsp
+
+Remove a directive from the Content-Security-Policy (CSP).
+
+```php
+public removeCsp(string $directive): self
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$directive` | **string** | The CSP directive to remove. |
+
+**Return Value:**
+
+`self` - Returns the instance of configuration class.
+
+***
+
+### clearCsp
+
+Clear all directives from the Content-Security-Policy (CSP).
+
+```php
+public clearCsp(): self
+```
+
+**Return Value:**
+
+`self` - Returns the instance of configuration class.
+
+***
+
+### getCsp
+
+Build and return the Content-Security-Policy (CSP) as a string.
+
+```php
+public getCsp(): string
+```
+
+**Return Value:**
+
+`string` - Returns the CSP policy string in the correct format.
+
+***
+
+### getCspMetaTag
+
+Generate the `<meta>` tag for embedding the CSP in HTML documents.
+
+```php
+public getCspMetaTag(string $id = ''): string
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$id` | **string** | The CSP element identifier (default: none). |
+
+**Return Value:**
+
+`string` - Returns the `<meta>` tag with the CSP as the content.
+
+***
+
+### getCspHeader
+
+Send the Content-Security-Policy (CSP) as an HTTP header.
+
+```php
+public getCspHeader(): void
+```

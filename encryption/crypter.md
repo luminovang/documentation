@@ -1,4 +1,4 @@
-# Crypter
+# Data Encryption and Decryption with the Crypter Module
 
 ***
 
@@ -71,8 +71,8 @@ public static getInstance(): \Luminova\Interface\EncryptionInterface
 
 **Throws:**
 
-- [\Luminova\Exceptions\EncryptionException](/exceptions/classes.md#encryptionexception) - Throws when an empty encryption key is passed.
-- [\Luminova\Exceptions\EncryptionException](/exceptions/classes.md#encryptionexception) - Throws when an invalid handler is specified or handler extension is not loaded.
+- [\Luminova\Exceptions\EncryptionException](/running/exceptions.md#encryptionexception) - Throws when an empty encryption key is passed.
+- [\Luminova\Exceptions\EncryptionException](/running/exceptions.md#encryptionexception) - Throws when an invalid handler is specified or handler extension is not loaded.
 
 ***
 
@@ -92,11 +92,18 @@ public static encrypt(string $data): string|bool
 
 **Return Value:**
 
-`string|bool` -  The encrypted data, or false if encryption fails.
+`string|bool` -  Return the encrypted data, or false if encryption fails.
 
 **Throws:**
 
-- [\Luminova\Exceptions\EncryptionException](/exceptions/classes.md#encryptionexception) - Throws when invalid encryption data is passed.
+- [\Luminova\Exceptions\EncryptionException](/running/exceptions.md#encryptionexception) - Throws when invalid encryption data is passed.
+
+**Encryption Example**
+
+```php
+<?php
+$encrypted = Crypter::encrypt('Hello world');
+```
 
 ***
 
@@ -116,11 +123,18 @@ public static decrypt(string $data): string|null
 
 **Return Value:** 
 
-`string|null` -  The decrypted data, or null if decryption fails.
+`string|null` - Return the decrypted data, or null if decryption fails.
 
 **Throws:**
 
-- [\Luminova\Exceptions\EncryptionException](/exceptions/classes.md#encryptionexception) - Throws when invalid encryption data is passed.
+- [\Luminova\Exceptions\EncryptionException](/running/exceptions.md#encryptionexception) - Throws when invalid encryption data is passed.
+
+**Decryption Example**
+
+```php
+<?php
+echo Crypter::decrypt($encrypted);
+```
 
 ***
 
@@ -129,35 +143,42 @@ public static decrypt(string $data): string|null
 Generate a hash representation of user login password string.
 
 ```php
-public static password(string $password, array|null $options = null): string|bool
+public static password(string $password, ?array $options = null): string|false
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$password` | **string** | password string |
-| `$options` | **array&#124;null** | Optional hashing options  |
+| `$password` | **string** | The actual password to hash. |
+| `$options` | **array&#124;null** |Optional password hash options.  |
 
 **Return Value:**
 
-`string|bool` - Return hashed password otherwise false on empty password.
+`string|false` - Return hashed password otherwise false on empty password.
 
-**Options**
+**Default Options:**
 
 ```php
-$options array<string, mixed> = [
+[
 	'cost' => 12,
 	'salt' => 'custom_salt', // You can optionally specify a custom salt
 	'algorithm' => PASSWORD_BCRYPT, // Optionally specify the algorithm
 ];
 ```
 
+**Hashing Password Example**
+
+```php
+<?php
+$hash = Crypter::password('12345@123');
+```
+
 ***
 
 ### verify
 
-Verify a user login password against it stored hash and determine if it match.
+Verify user password against it stored hash value to determine if if they match.
 
 ```php
 public static verify(string $password, string $hash): bool
@@ -167,12 +188,19 @@ public static verify(string $password, string $hash): bool
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$password` | **string** | User submitted password string |
-| `$hash` | **string** | Store password hash |
+| `$password` | **string** | The password string to verify. |
+| `$hash` | **string** | The password stored hash value. |
 
 **Return Value:**
 
-`bool` - Return true if the password match, otherwise false.
+`bool` - Return true if password matches with the hash, otherwise false.
+
+**Verifying Password Hash Value Example**
+
+```php
+<?php
+$ok = Crypter::password('12345@123', $hash);
+```
 
 ***
 
@@ -188,8 +216,8 @@ public static supported(string $key, string $method): bool
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | Encryption key |
-| `$method` | **string** | Cipher method |
+| `$key` | **string** | The encryption key. |
+| `$method` | **string** | The encryption cipher method. |
 
 **Return Value:**
 
@@ -199,8 +227,8 @@ public static supported(string $key, string $method): bool
 
 ### generate_key
 
-Generate a random encryption key string using your default encryption handler.
-For private and public key generation it uses openssl RSA.
+Generates a random encryption key or a pair of private and public keys using the default encryption handler. 
+For `RSA` key generation, `OpenSSL` is utilized.
 
 ```php
 public static generate_key(string $type = 'random', array $options = []): string|array|false
@@ -210,12 +238,45 @@ public static generate_key(string $type = 'random', array $options = []): string
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$type` | **string** | The type of key to generate: 'random', 'private', or 'public'. |
-| `$options` | **array** | Additional options for key generation.<br />- For 'random' type: 'length' specifies the length of the random string.<br />- For 'private' type: 'private_key_bits' specifies the number of bits in the private key,<br />  and 'private_key_type' specifies the type of the private key (e.g., OPENSSL_KEYTYPE_RSA).<br />- For 'public' type: 'private_key' is the private key string from which to derive the public key. |
+| `$type` | **string** | The type of key to generate: (e.g, 'random', 'private', or 'public'). |
+| `$options` | **array** | Associative array of options for key generation. |
 
 **Return Value:**
 
-`string|array|false` - The generated key(s), an array of private and public key, or false on failure.
+`string|array|false` - Returns the generated key(s), an array containing private and public keys, or `false` on failure.
+
+**Options Keys:**
+
+- For `random` type:
+  - `length`: Specifies the length of the random string to generate.
+
+- For `private` type:
+  - `private_key_bits`: (default: 2048) Specifies the number of bits in the private key.
+  - `private_key_type`: (default: `OPENSSL_KEYTYPE_RSA`) Specifies the type of the private key (e.g., `OPENSSL_KEYTYPE_RSA`).
+
+- For `public` type:
+  - `private_key`: Specifies the private key string from which to derive the public key. If not provided, a new private key will be generated.
+
+**Example Usage:**
+
+Generate a random key:
+
+```php
+$key = Crypter::generate_key('random', ['length' => 32]);
+```
+
+Generate a private key:
+```php
+$privateKey = Crypter::generate_key('private', [
+    'private_key_bits' => 2048,
+    'private_key_type' => OPENSSL_KEYTYPE_RSA
+]);
+```
+
+Generate a public key:
+```php
+$keys = Crypter::generate_key('public', ['private_key' => $privateKey]);
+```
 
 ***
 

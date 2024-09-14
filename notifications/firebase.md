@@ -1,4 +1,4 @@
-# Firebase Cloud Messaging
+# Integration with Firebase Cloud Messaging
 
 ***
 
@@ -91,7 +91,7 @@ public __construct(\Kreait\Firebase\Factory|string|array $config = 'ServiceAccou
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If the Factory class is not found or the service account file is missing.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If the Factory class is not found or the service account file is missing.
 
 > If you are using service account `JSON` file, you service account json file must be stored in `/writeable/credentials/`.
 > 
@@ -126,7 +126,7 @@ public static getInstance(\Kreait\Firebase\Factory|string|array $config = 'Servi
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If the Factory class is not found or the service account file is missing.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If the Factory class is not found or the service account file is missing.
 
 ***
 
@@ -151,7 +151,7 @@ public static getFactory(string|array $account = 'ServiceAccount.json'): \Kreait
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If the Factory class is not found or the service account file is missing.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If the Factory class is not found or the service account file is missing.
 
 **Configuration Guide**
 
@@ -182,7 +182,7 @@ public send(\Luminova\Notifications\Models\Message|array<string,mixed> $config, 
 
 **Throws:**
 
-- [\Luminova\Exceptions\ErrorException](/exceptions/classes.md#errorexception) - If token is not valid or an error occurred while sending notification.
+- [\Luminova\Exceptions\ErrorException](/running/exceptions.md#errorexception) - If token is not valid or an error occurred while sending notification.
 
 ***
 
@@ -207,7 +207,7 @@ public channel(\Luminova\Notifications\Models\Message|array<string,mixed> $confi
 
 **Throws:**
 
-- [\Luminova\Exceptions\ErrorException](/exceptions/classes.md#errorexception) - If topic is not valid or an error occurred while sending notification.
+- [\Luminova\Exceptions\ErrorException](/running/exceptions.md#errorexception) - If topic is not valid or an error occurred while sending notification.
 
 ***
 
@@ -232,7 +232,7 @@ public condition(\Luminova\Notifications\Models\Message|array<string,mixed> $con
 
 **Throws:**
 
-- [\Luminova\Exceptions\ErrorException](/exceptions/classes.md#errorexception) - If the topic is not provided correctly.
+- [\Luminova\Exceptions\ErrorException](/running/exceptions.md#errorexception) - If the topic is not provided correctly.
 
 ***
 
@@ -257,7 +257,7 @@ public broadcast(\Luminova\Notifications\Models\Message|array<string,mixed> $con
 
 **Throws:**
 
-- [\Luminova\Exceptions\ErrorException](/exceptions/classes.md#errorexception) - If tokens are not provided or if an error occurs during message construction.
+- [\Luminova\Exceptions\ErrorException](/running/exceptions.md#errorexception) - If tokens are not provided or if an error occurs during message construction.
 
 ***
 

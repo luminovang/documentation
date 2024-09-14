@@ -1,4 +1,4 @@
-# HTTP Status Codes
+# Management of HTTP Status Codes
 
 ***
 
@@ -14,11 +14,12 @@ The `HttpCode` class is a helper class that provides a list of HTTP status codes
 
 Additionally, you can use magic getter methods like `HttpCode::status200()` to directly retrieve the message of a specific status code.
 
+> **Note:** This class cannot be initialized, to use it you need to call the methods or property statically.
+
 ***
 
 * Class namespace: `\Luminova\Http\HttpCode`
 * This class is marked as **final** and can't be subclassed
-* This class is a **Final class**
 
 ***
 
@@ -26,7 +27,7 @@ Additionally, you can use magic getter methods like `HttpCode::status200()` to d
 
 ### codes
 
-Http status code.
+Array of all HTTP status codes and messages.
 
 ```php
 public static array<int,string>$codes = [
@@ -41,65 +42,62 @@ public static array<int,string>$codes = [
 
 ### get
 
-Return a status code title, if `$code` is null return array of all status codes and it title.
+Return an HTTP status code message or the entire status codes if null is passed.
 
 ```php
-public static get(int|null $code = null): string|null|array
+public static get(?int $code = null): array|string|null
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$code` | **int&#124;null** | Status code. |
+| `$code` | **int&#124;null** | The HTTP status code (e.g, 200, 404 etc) (default: null). |
 
 **Return Value:**
 
-`string|null|array` - Status code title or array of status codes.
+`array<int,string>string|null` - Return the status code message, null if code not found or array of status codes if null is passed.
 
 ***
 
 ### statusxxx
 
-Get a status code title using a fancy magic method call. The `xxx` represent the status code you want to return it title
+Get a status code message using PHP's magic method call. 
+Your method call must follow this pattern: `status followed by the http status code`. Example, `xxx` represent the status code you want to return it message the prefix `status` must come before the HTTP code `HttpCode::status404()`.
 
 ```php
-public static status[xxx](): string|null
+public static status[xxx](): ?string
 ```
 
 **Return Value:**
 
-`string|null` - Status code title.
-
-> *Note:* When using the magic call method, prefix `status` with the code you want to retrieve.
-> 
-> e.g. you need to type `status` following by the status code int `HttpCode::status404()`.
+`string|null` - Return the HTTP status code message, otherwise null.
 
 ***
 
 ### Examples
 
-array with all status codes and messages
+Retrieve an array with all status codes and messages.
 
 ```php
 <?php
 var_dump(HttpCode::get());
 // OR
-var_dump((new HttpCode())->codes);
+var_dump(HttpCode::$codes);
 ```
 
-Returning status name for HTTP `200` status code.
+Returning status message for HTTP `200` status code.
 
 ```php 
 <?php 
-    echo HttpCode::status200(); // OK
+echo HttpCode::status200(); // OK
 ```
 
-Returning status name for HTTP `503` status code.
+Returning status message for HTTP `503` status code.
 
 ```php 
 <?php 
-    echo HttpCode::status503(); // Service Unavailable
+echo HttpCode::status503(); // Service Unavailable
 ```
 
 ```php

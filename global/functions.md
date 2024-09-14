@@ -1,4 +1,4 @@
-# Helper Functions
+# Global Utility Helper Functions
 
 ***
 
@@ -42,7 +42,7 @@ function app(): \App\Application
 
 **See Also**
 
-[Base Application](/base/application.md) - See the documentation for base application methods and usages.
+[Core Application](/core/application.md) - See the documentation for base application methods and usages.
 
 > Avoid re-initializing application class if possible, always use the `app` function or grab the shared instance of your application by `Application::getInstance()`
 
@@ -74,17 +74,19 @@ function request(bool $shared = true): ?\Luminova\Http\Request
 
 ### session
 
-Return session data if key is present, otherwise return the session instance.
+Return session data if key is present, otherwise return the session class instance.
 
 ```php
-function session(string|null $key = null): mixed
+function session(?string $key = null, bool $shared = true, ?\Luminova\Interface\SessionManagerInterface $manager = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string&#124;null** | The key to retrieve the data. |
+| `$key` | **string&#124;null** |Optional key to retrieve the data (default: null). |
+| `$shared` | **bool** | Weather to use shared instance (default: true). |
+| `$manager` | **class-object<\SessionManagerInterface>&#124;null** | The session manager interface to use (default: `SessionManager`). |
 
 **Return Value:**
 
@@ -144,12 +146,16 @@ function factory(string|null $context = null, bool $shared = true, mixed ...$arg
 
 `class-object<\T>|Factory|null` - Return instance of factory class, instance of class called, otherwise null.
 
+**Throws:**
+
+- [\Luminova\Exceptions\AppException](/running/exceptions.md#appexception) - Throws an exception if factory context does not exist or error occurs.
+
 **Available Factory Context Names**
 
 -   'task'  -  Returns instance of `\Luminova\Time\Task`
 -   'session'  - Returns instance of `\Luminova\Sessions\Session`
 -   'cookie'  - Returns instance of `\Luminova\Cookies\Cookie`
--   'functions'  - Returns instance of `\Luminova\Application\Functions`
+-   'functions'  - Returns instance of `\Luminova\Base\CoreFunction`
 -   'modules'  - Returns instance of `\Luminova\Library\Modules`
 -   'language'  - Returns instance of `\Luminova\Languages\Translator`
 -   'logger'  - Returns instance of ` \Luminova\Logger\Logger`
@@ -160,6 +166,7 @@ function factory(string|null $context = null, bool $shared = true, mixed ...$arg
 -   'request'  - Returns instance of `\Luminova\Http\Request`
 -   'notification'  -  Returns instance of `\Luminova\Notifications\Firebase\Notification`
 -   'caller'  -  Returns instance of `\Luminova\Application\Caller`
+-   'escaper'  -  Returns instance of `\Luminova\Functions\Escape`
 
 **Example**
 
@@ -189,13 +196,17 @@ function service(class-string<\T>|string|null $service = null, bool $shared = tr
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$service` | **class-string<\T>&#124;string&#124;null** | The service class name or alias. |
-| `$shared` | **bool** | Weather to return a shared instance of class (default: true).. |
+| `$shared` | **bool** | Weather to return a shared instance of class (default: true). |
 | `$serialize` | **bool** | Weather to serialize and store class object as cache (default: false). |
 | `$arguments` | **mixed** | Additional parameters to pass to class constructor. |
 
 **Return Value:**
 
 `class-object<\T>|Services|null` - Return service class instance or instance of called class.
+
+**Throws:**
+
+- [\Luminova\Exceptions\AppException](/running/exceptions.md#appexception) - Throws an exception if service does not exist or error occurs.
 
  **See Also**
 
@@ -245,7 +256,7 @@ function layout(string $file): \Luminova\Template\Layout
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) -Throws if layout file is not found.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) -Throws if layout file is not found.
 
 **See Also**
 
@@ -262,7 +273,7 @@ Initiate a view response object and render any response content.
 It allows you to render content of any format in view or download content within the view controller.
 
 ```php
-function response(int $status = 200, bool $encode = true): \Luminova\Template\ViewResponse
+function response(int $status = 200, ?array $headers = null, bool $encode = true, bool $shared = true): \Luminova\Template\ViewResponse
 ```
 
 **Parameters:**
@@ -270,7 +281,9 @@ function response(int $status = 200, bool $encode = true): \Luminova\Template\Vi
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$status` | **int** | HTTP status code (default: 200 OK) |
-| `$encode` | **bool** | Enable content encoding like gzip, deflate. |
+| `$headers` | **array<string,mixed>\|null** | Additional response headers (default: null). |
+| `$encode` | **bool** | Enable content encoding like gzip, deflate (default: true). |
+| `$shared` | **bool** | Weather to return shared instance (default: true). |
 
 **Return Value:**
 
@@ -284,39 +297,38 @@ function response(int $status = 200, bool $encode = true): \Luminova\Template\Vi
 
 ### func
 
-Return instance a specific context if specified, otherwise get the instance `BaseFunction`.
+Return instance a specific context if specified, otherwise get the instance anonymous class which extended `CoreFunction`.
 
 ```php
-function func(string|null $context = null, mixed $params): mixed
+function func(string|null $context = null, mixed ...$arguments): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$context` | **string&#124;null** | The context to return instance for. |
-| `$params` | **mixed** | Additional parameters to be passed to context. |
+| `$context` | **string&#124;null** | The context to return it's instance (default: null). |
+| `$arguments` | **mixed** | [, mixed $... ] Optional initialization arguments based on context. |
 
 **Supported contexts:**
 
- -   ip,
- -   document,
- -   escape,
- -   tor,
- -   math.
+ -   `ip` - Return instance of `Luminova\Functions\IP`.
+ -   `document` - Return instance of `Luminova\Functions\IP`.
+ -   `tor` - Return instance of `Luminova\Functions\Tor`,
+ -   `math` - Return instance of `Luminova\Functions\Maths`.
 
 **Return Value:**
 
-`mixed` - Returns an instance of Functions, object, string, or boolean value depending on the context.
+`class-object<CoreFunction>|class-object<\T>|mixed` - Returns an instance of Functions, object, string, or boolean value depending on the context.
 
 **Throws:**
 
-- [\Exception](/exceptions/classes.md#exception) - If an error occurs.
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If unable to initialize method.
+- [\Exception](/running/exception-handling.md) - If an error occurs.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If unable to call method.
 
 **See Also**
 
-[Base Functions](/base/functions.md) - Learn more about the Luminova's `BaseFunction` documentation.
+[Core Functions](/base/functions.md) - Learn more about the Luminova's `CoreFunction` documentation.
 
 ***
 
@@ -531,7 +543,7 @@ function  import(string $library): bool
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If the library could not be found
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If the library could not be found
 
 **Return Value:**
 
@@ -573,7 +585,7 @@ function logger(string $level, string $message, array $context = []): void
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception)
+- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception)
 
 > All loges are located in `/writeable/log/`, each log level has it own file name (e.x., `warning.log`).
 >
@@ -623,7 +635,7 @@ function uuid(int $version = 4, ?string $namespace = null, ?string $name = null)
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - f the namespace or name is not provided for versions 3 or 5.
+- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - f the namespace or name is not provided for versions 3 or 5.
 
 > To check if `UUID` is valid use `func()->isUuid(string, version)`
 
@@ -633,49 +645,74 @@ function uuid(int $version = 4, ?string $namespace = null, ?string $name = null)
 
 Escapes a string or array of strings based on the specified context.
 
+This is particularly useful when dealing with escaping and sanitizing inputs and output to prevent cross-site scripting `(XSS)` and other injection attacks, the `escape` context parameter accept values like `html`, `js`, `css`, `url`, `attr`, and `raw` are used to specify the context in which the data is being output. Each context requires different escaping rules to ensure the output is safe.
+
 ```php
-function escape(string|array $input, string $context = 'html', string|null $encoding = null): array|string 
+function escape(string|array $input, string $context = 'html', string|null $encoding = 'utf-8'): array|string
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$input` | **string&#124;array** | The string or array of strings to be escaped.<br /> *example*<br/>- array&lt;string, string&gt; - Use the key as the context.<br />- array&lt;int, string&gt; Use the default context for all values. |
-| `$context` | **string** | The context in which the escaping should be performed. Defaults to 'html'.<br />Possible values: 'html', 'js', 'css', 'url', 'attr', 'raw'. |
-| `$encoding` | **string&#124;null** | The character encoding to use. Defaults to null. |
+| `$input` | **string&#124;array&#124;null** | The string or array of strings to be escaped. |
+| `$context` | **string** | The escaper context in which the escaping should be performed (default:'html'). |
+| `$encoding` | **string&#124;null** | The escape character encoding to use (default: 'utf-8'). |
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidArgumentException](/exceptions/classes.md#invalidargumentexception) - When an invalid or blank encoding is provided.
-- [\Luminova\Exceptions\BadMethodCallException](/exceptions/classes.md#badmethodcallexception) - When an invalid context is called
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - When the string is not valid UTF-8 or cannot be converted.
+- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) -  When an invalid, blank encoding is provided or unsupported encoding or empty string is provided.
+- [\Luminova\Exceptions\BadMethodCallException](/running/exceptions.md#badmethodcallexception) - When an invalid context is called.
 
 **Return Value:**
 
-`array|string ` - The escaped string or array of strings.
+`array|string` - Return the escaped string or array of strings.
 
-> You can optionally specify the context name `$context` in the array key when you want to escape array values.
+**Input Argument**
+
+- **Associative Array** `array<string, string>`: Use the keys of the array to specify the escape context for each value. Each key-value pair determines the context in which the corresponding value should be escaped.
+
+- **Indexed Array** `array<int, string>`: Apply the default escape context to all values in the array. The default context will be used for escaping each value uniformly.
+
+**Supported Context**
+
+Context names and a brief explanation of each:
+
+1. **`html`**:
+   - **Purpose**: Escapes characters that could be interpreted as HTML tags or entities. It replaces characters like `<`, `>`, and `&` with their corresponding HTML entities (`&lt;`, `&gt;`, `&amp;`), ensuring that they are displayed as plain text and not interpreted as HTML.
+
+2. **`js`**:
+   - **Purpose**: Escapes characters that have special meanings in `JavaScript`, such as quotes and backslashes, to prevent injection attacks when inserting data into `JavaScript` strings or variables.
+
+3. **`css`**:
+   - **Purpose**: Escapes characters that could affect `CSS` styling or lead to `CSS` injection attacks, such as special characters in style attributes or css rules.
+
+4. **`url`**:
+   - **Purpose**: Escapes characters that are not valid in `URLs` or could break URL structure. This ensures that user-provided data included in `URL`s does not lead to unexpected behavior or vulnerabilities.
+
+5. **`attr`**:
+   - **Purpose**: Escapes characters that could interfere with `HTML` attributes, such as quotes and angle brackets, to prevent breaking out of the attribute value or introducing additional attributes.
+
+6. **`raw`**:
+   - **Purpose**: No escaping is applied; the data is output as-is. This is used when you are certain that the data is safe and does not need to be sanitized.
 
 ***
 
 ### strict
 
-Sanitize user input, unlike the `escape` function, this method replaces user input, retaining only the allowed characters.
+Sanitize user input by removing disallowed characters, retaining only those permitted. Unlike the `escape` function, which encodes characters for safe output, the `strict` function replaces unwanted characters in the input string with `$replacer` and returns the sanitized value. This method is particularly useful when you need to enforce strict input validation, ensuring that only expected characters are present.
 
 ```php
 function strict(string $input, string $type = 'default', string $replacer = ''): string
 ```
 
-> It removes unwanted characters from a given string and return only allowed characters.
-
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$input` | **string** |  Input to format |
-| `$type` | **string** | The expected filter type. |
-| `$replacer` | **string** | Replace with default is blank string. |
+| `$input` | **string** | The input string to be sanitized. |
+| `$type` | **string** | The expected input filter type. |
+| `$replacer` | **string** | The symbol to replace disallowed characters with (default: `blank string`). |
 
 **Filters Types**
 
@@ -716,16 +753,16 @@ function lang(string $lookup, string|null $default = null, string|null $locale =
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$lookup` | **string** | The key to lookup in the translation files. |
-| `$default` | **string&#124;null** | Fallback translation if not found. |
+| `$default` | **string&#124;null** | The default fallback translation if not found. |
 | `$locale` | **string&#124;null** | The locale to use for translation (optional). |
-| `$placeholders` | **array** | Matching placeholders for translation.<br />- *examples*<br/> array ['Peter', 'peter@foo.com'] "Error name {0} and email {1}"<br />- array ['name' => 'Peter', 'email' => 'peter@foo.com'] "Error name {name} and email {email}" |
+| `$placeholders` | **array** | Matching placeholders for translation. |
 
 **Return Value:**
 `string` - The translated text.
 
 **Throws:**
 
-- [\Luminova\Exceptions\NotFoundException](/exceptions/classes.md#notfoundexception) - If translation is not found and no default is provided.
+- [\Luminova\Exceptions\NotFoundException](/running/exceptions.md#notfoundexception) - If translation is not found and no default is provided.
 
 > To create a language translations you need to define it in `/app/Languages/`.
 > 
@@ -773,6 +810,61 @@ echo  lang('Example.error.users.password', null, null, [
 
 ***
 
+### configs
+
+Retrieves the configurations for the specified context.
+This function can only be use to return configuration array stored in `app/Configs/` directory.
+
+```php
+function configs(string $filename, array|null $default = null): ?array
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$filename` | **string** | The configuration filename (without extension). |
+| `$default` | **array&#124;null** | The default configuration if file could not be load (default: null). |
+
+**Return Value:**
+
+`array|null` - Return array of the configurations for the filename, or false if not found.
+
+***
+
+### cache
+
+Initialize or retrieve a new instance of the cache class.
+
+```php
+function cache(string $driver, ?string $storage = null, ?string $persistentIdOrSubfolder = null): \Luminova\Base\BaseCache
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$driver` | **string** | The cache driver to return instance of [filesystem or memcached](default: `filesystem`). |
+| `$storage` | **string&#124;null** | The name of the cache storage. If null, you must call the `setStorage` method later (default: null). |
+| `$persistentIdOrSubfolder` | **string&#124;null** | Optional persistent id or subfolder for storage (default: null): |
+
+**Persistent Id Or Subfolder Param**
+
+- For Memcached: A unique persistent connection ID. If null, the default ID from environment variables is used, or `default` if not set.
+- For Filesystem Cache: A subdirectory within the cache directory. If null, defaults to the base cache directory.
+
+**Return Value:**
+
+`\Luminova\Base\BaseCache` - Return new instance of instance of `FileCache` or `MemoryCache` cache based on specified driver.
+
+**Throws:**
+
+- [\Luminova\Exceptions\ClassException](/running/exceptions.md#classexception) - If unsupported driver is specified.
+- [\Luminova\Exceptions\CacheException](/running/exceptions.md#cacheexception) - If there is an issue initializing the cache.
+- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - If an invalid subdirectory is provided for the filesystem cache.
+
+***
+
 ### write_content
 
 Write or append string contents or stream to file.
@@ -797,7 +889,7 @@ function write_content(string $filename, string|resource  $content, int  $flag, 
 
 **Throws:**
 
-- [\Luminova\Exceptions\FileException](/exceptions/classes.md#fileexception) - If unable to write file.
+- [\Luminova\Exceptions\FileException](/running/exceptions.md#fileexception) - If unable to write file.
 
 **See Also**
 
@@ -831,7 +923,7 @@ function get_content(string $filename, int $length = 0, int $offset = 0,  bool $
 
 **Throws:**
 
-- [\Luminova\Exceptions\FileException](/exceptions/classes.md#fileexception) - If unable to write file.
+- [\Luminova\Exceptions\FileException](/running/exceptions.md#fileexception) - If unable to write file.
 
 ***
 
@@ -857,8 +949,8 @@ function make_dir(string  $path, int|null  $permissions = null, bool  $recursive
 
 **Throws:**
 
-- [\Luminova\Exceptions\FileException](/exceptions/classes.md#fileexception) - If unable to create directory.
-- [\Luminova\Exceptions\RuntimeException](/exceptions/classes.md#runtimeexception) - If the path is not readable.
+- [\Luminova\Exceptions\FileException](/running/exceptions.md#fileexception) - If unable to create directory.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If the path is not readable.
 
 **See Also**
 
@@ -1159,6 +1251,28 @@ function to_object(array|string $input): object|false
 
 ***
 
+### array_merge_recursive_distinct
+
+Recursively merges two arrays, ensuring unique values in nested arrays.
+The first array will be updated with values from the second array.
+
+```php
+public static array_merge_recursive_distinct(array &$array1, array &$array2): array
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$array1` | **array<string&#124;int,mixed>** | The array to merge into, passed by reference. |
+| `$array2` | **array<string&#124;int,mixed>** | The array to merge from, passed by reference. |
+
+**Return Value:**
+
+`array` - Return the merged array with unique values.
+
+***
+
 ### string_length
 
 Calculate string length based on different `charsets`.
@@ -1257,6 +1371,29 @@ function status_code(mixed $result = null, bool $return_int = true): int|bool
 > If passed result is `boolean` (false), `integer` (1) or `NULL`, the method  will return `STATUS_ERROR`.
 > 
 > If passed result is `boolean` (true), `integer` (0), `VOID` or any other values, the method will return `STATUS_SUCCESS`.
+
+***
+
+### http_status_header
+
+Sets the HTTP response status code and sends appropriate headers.
+
+This function sets the HTTP status code and sends the corresponding status message header.
+If the status code is not predefined, it returns `false`. For predefined status codes, it sends headers including the status message. The function determines the HTTP protocol version based on the server's protocol.
+
+```php
+function http_status_header(int $status): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$status` | **int** | The HTTP status code to set (e.g., 200, 404). |
+
+**Return Value:**
+
+`bool` - Returns true if the status code is found in the predefined list and headers are set, otherwise false.
 
 ***
 
@@ -1467,9 +1604,10 @@ function is_empty(mixed  $values): bool
 ### is_nested
 
 Determine if an array is a nested array.
+If recursive is false it only checks one level of depth.
 
 ```php
-function is_nested(array $array): bool
+function is_nested(array $array, bool $recursive = false): bool 
 ```
 
 **Parameters:**
@@ -1477,10 +1615,14 @@ function is_nested(array $array): bool
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$array` | **array** | The array to check. |
+| `$recursive` | **bool** | Determines whether to check nested array values (default: false). |
 
 **Return Value:**
 
 `bool` - Return true if the array is nested, false otherwise.
+
+> **Note:**
+> An empty array is considered as none nested array, so it will return false.
 
 ***
 
@@ -1573,3 +1715,27 @@ function is_utf8(string $input): bool
 **Return Value:**
 
 `bool` - Returns true if the string is UTF-8 encoded, false otherwise.
+
+***
+
+### function_exists_cached
+
+Checks if a function exists and caches the result to avoid repeated checks.
+
+This function uses a static cache to store whether a function exists or not.
+If the function's existence has been checked before, the cached result is returned.
+Otherwise, it checks the function's existence using `function_exists()` and caches the result, improving performance by avoiding repeated function existence checks.
+
+```php
+function function_exists_cached(string $function): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$function` | **string** | The name of the function to check for existence. |
+
+**Return Value:**
+
+`bool` - Returns true if the function exists, false otherwise.

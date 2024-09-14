@@ -1,4 +1,4 @@
-# Input Validation
+# User Input Validation Module
 
 ***
 
@@ -60,7 +60,7 @@ class SignUpController extends BaseController
     {
         $this->validate->rules = [
             'email' => 'required|email',
-            'phone' => 'required|phone',
+            'phone' => 'required|phone(10)',
             'name' => 'required|alphabet',
         ];
 
@@ -343,34 +343,34 @@ These rules provide useful validation for various types of data, ensuring that y
 
 | Rule            | Parameter    | Description                                                                                              |
 |-----------------|--------------|----------------------------------------------------------------------------------------------------------|
-| **none**        | Void         | Ignore the field and return true.                                                                        |
-| **required**    | Void         | The field is required and cannot be empty.                                                               |
-| **max_length()**| Integer      | The field's maximum allowed length, alias `max()`.                                                       |
-| **min_length()**| Integer      | The field's minimum allowed length, alias `min()`.                                                       |
-| **alphanumeric**| Void         | The field should contain only alphanumeric characters (a-Z, A-Z, 0-9).                                   |
-| **email**       | Void         | The field must be a valid email address.                                                                 |
-| **string**      | Void         | The field must be a valid string value.                                                                  |
-| **integer()**   | String       | The field must be an integer value. Optional parameter to specify if it should be positive or negative.  |
-| **equals()**    | String       | The field value must match the value of another specified field.                                         |
-| **url**         | Void         | The field must be a valid URL.                                                                           |
-| **alphabet**    | Void         | The field must contain only alphabetic characters (a-Z, A-Z).                                            |
-| **uuid()**      | Integer      | The field value must be a valid UUID string. Optional parameter to specify the UUID version.             |
-| **exact_length()** | Integer  | The field value must have the exact specified length, alias `length()`.                                   |
-| **in_array()**  | String       | The field value must be in the specified array list.                                                     |
-| **is_list**     | Void         | The field value must be a valid string list (e.g, `foo,bar,baz,bra`).                                                             |
-| **keys_exist()**| String       | The field's array values must match the specified validation list.                                       |
-| **callback()**  | Callable     | A callback function `myFunction(value, field)` that returns a boolean value.                             |
-| **ip()**        | Integer      | The field value must be a valid IP address. Optional parameter to specify the IP version (4 or 6).       |
-| **decimal**     | Void         | The field must be a valid decimal value.                                                                 |
-| **match()**     | Regex        | The field value must match the specified regular expression pattern.                                     |
-| **fallback()**  | Mixed        | If the field value is empty, replace it with the default value. If the parameter is empty, an empty string will be used. |
-| **phone**       | Void         | The field value must be a valid phone number.                                                            |
+| **none**        | void         | Ignore the field and return true or alias`nullable`.                                                                        |
+| **required**    | void         | The field is required and cannot be empty.                                                               |
+| **max()**| integer      | The field's maximum allowed length or alias `max_length()`.                                                       |
+| **min()**| integer      | The field's minimum allowed length or alias `min_length()`.                                                       |
+| **alphanumeric**| void         | The field should contain only alphanumeric characters (a-Z, A-Z, 0-9).                                   |
+| **email**       | void         | The field must be a valid email address.                                                                 |
+| **string**      | void         | The field must be a valid string value.                                                                  |
+| **integer()**   | string       | The field must be an integer value. Optional parameter to specify if it should be positive or negative.  |
+| **equals()**    | string       | The field value must match the value of another specified field.                                         |
+| **url**         | void         | The field must be a valid URL.                                                                           |
+| **alphabet**    | void         | The field must contain only alphabetic characters (a-Z, A-Z).                                            |
+| **uuid()**      | integer      | The field value must be a valid UUID string. Optional parameter to specify the UUID version.             |
+| **length()** | integer  | The field value must have the exact specified length, alias `exact_length()`.                                   |
+| **in_array()**  | string       | The field value must be in the specified array list.                                                     |
+| **is_list**     | void         | The field value must be a valid string list (e.g, `foo,bar,baz,bra`).                                                             |
+| **keys_exist()**| string       | The field's array values must match the specified validation list.                                       |
+| **callback()**  | callable     | A callback function `myFunction(value, field)` that returns a boolean value.                             |
+| **ip()**        | integer      | The field value must be a valid IP address. Optional parameter to specify the IP version (`4`, `6` or `0` for any).       |
+| **decimal**     | void         | The field must be a valid decimal value.                                                                 |
+| **match()**     | regex        | The field value must match the specified regular expression pattern.                                     |
+| **fallback()**  | mixed        | If the field value is empty, replace it with the default value. If the parameter is empty, an empty string will be used. |
+| **phone**       | string\|void         | The field value must be a valid phone number, optionally pass minimum allow length for phone number                                                            |
 | **binary**      | Void         | The field value must be a valid binary value.                                                            |
-| **hexadecimal** | Void         | The field value must be a valid hexadecimal value.                                                      |
-| **array**       | Void         | The field value must be a valid array.                                                                   |
-| **json**        | Void         | The field value must be a valid JSON object.                                                             |
-| **path()**      | String       | The field value must be a valid directory path. If the parameter is `true`, it will check if the path is readable. |
-| **scheme()**    | String       | The field value must match the specified URL scheme.                                                     |
+| **hexadecimal** | void         | The field value must be a valid hexadecimal value.                                                      |
+| **array**       | void         | The field value must be a valid array.                                                                   |
+| **json**        | void         | The field value must be a valid JSON object.                                                             |
+| **path()**      | string\|void       | The field value must be a valid directory path. If the parameter is `readable`, it will check if the path is readable or `writable`. |
+| **scheme()**    | string       | The field value must match the specified URL scheme.                                                     |
 
 ### Custom Validation Rule
 

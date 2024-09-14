@@ -1,4 +1,4 @@
-# Browser Configuration
+# Incoming Browser Request Configurations
 
 ***
 

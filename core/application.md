@@ -1,4 +1,4 @@
-# Base Application
+# Core Application Architecture Class
 
 ***
 
@@ -10,7 +10,7 @@ The base application controller lays the foundation for handling your software d
 
 ## Introduction
 
-The Base Application serves as the foundational framework upon which your web application are built. It encapsulates essential functionalities, design patterns, and architectural principles that provide a solid starting point for developing complex applications. Essentially, the Base Application represents the core infrastructure and scaffolding upon which you can construct your application logic.
+The Core Application serves as the foundational framework base architecture upon which your web application are built. It encapsulates essential functionalities, design patterns, and architectural principles that provide a solid starting point for developing complex applications. Essentially, the Core Application represents the core infrastructure and scaffolding upon which you can construct your application logic.
 
 Your application class must be located in the `/app/` directory, and its name must remain unchanged under any circumstance.
 
@@ -19,7 +19,7 @@ To lean more on how to render template views refer to the documentation.
 
 ***
 
-* Class namespace: `\Luminova\Base\BaseApplication`
+* Class namespace: `\Luminova\Core\CoreApplication`
 * This class is an **Abstract class**
 * Inherited class: `\Luminova\Template\View`
 
@@ -33,8 +33,8 @@ This is an example a basic application class may look like using the `__construc
 <?php
 namespace App;
 
-use \Luminova\Base\BaseApplication;
-class Application extends BaseApplication  
+use \Luminova\Core\CoreApplication;
+class Application extends CoreApplication  
 {
 	public function __construct()
 	{
@@ -49,8 +49,8 @@ Alternatively, this is an of application class may using the `onCreate` method.
 <?php
 namespace App;
 
-use \Luminova\Base\BaseApplication;
-class Application extends BaseApplication  
+use \Luminova\Core\CoreApplication;
+class Application extends CoreApplication  
 {
 	protected function onCreate(): void
 	{
@@ -73,7 +73,7 @@ public ?Router $router = null;
 ***
 
 ## Methods
-The methods and properties of the base application are a combination of those inherited from the `View`, your `Application`, and the `BaseApplication` class. These classes ensure that properties and methods are accessible wherever the application object is invoked, based on their visibility. You can access them accordingly.
+The methods and properties of the base application are a combination of those inherited from the `View`, your `Application`, and the `CoreApplication` class. These classes ensure that properties and methods are accessible wherever the application object is invoked, based on their visibility. You can access them accordingly.
 
 ###  getInstance
 

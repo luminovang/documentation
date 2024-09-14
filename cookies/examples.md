@@ -1,4 +1,4 @@
-# Cookie Examples
+# Examples of Client-Side Cookie Management
 
 ***
 
