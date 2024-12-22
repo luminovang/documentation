@@ -18,6 +18,7 @@ It allows you to define basic rules for your models, like fields that are allowe
 
 * Class namespace: `\Luminova\Base\BaseModel`
 * This class is an **Abstract class**
+* This class implements: [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface)
 
 ***
 
@@ -191,20 +192,20 @@ public insert(array<string,mixed> $values): bool
 Update current record in the database.
 
 ```php
-public update(string|array<int,mixed> $key, array $data, int $max = 1): bool
+public update(array<int,mixed>|string|float|int|null $key, array $data, int $max = 1): bool
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string&#124;array<int,mixed>** | The key?s to update its record. |
-| `$data` | **array** | Columns key and value to update. |
+| `$key` | **string\|float\|int\|array<int,mixed>\|null** | The key?s to update its record or null to update all records in table. |
+| `$data` | **array** | An associative array of columns and values to update. |
 | `$max` | **int** | The maximum number of records to update. |
 
 **Return Value:**
 
-`bool` - Return true if records was updated., otherwise false
+`bool` - Return true if records was updated, otherwise false.
 
 **Throw Exception:**
 
@@ -217,14 +218,14 @@ public update(string|array<int,mixed> $key, array $data, int $max = 1): bool
 Fine next or a single record from the database table.
 
 ```php
-public find(string|array<int,mixed> $key, array<int,string> $fields = ['*']): mixed
+public find(array<int,mixed>|string|float|int $key, array<int,string> $fields = ['*']): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string&#124;array<int,mixed>** | The key?s to find its record |
+| `$key` | **string&#124;array<int,mixed>\|float\|int** | The key?s to find its record |
 | `$fields` | **array<int,string>** | The fields to retrieve (default is all). |
 
 **Return Value:**
@@ -238,14 +239,19 @@ public find(string|array<int,mixed> $key, array<int,string> $fields = ['*']): mi
 Select records from the database table.
 
 ```php
-public select(string|array<int,mixed> $key = null, array<int,string> $fields = ['*'], int $limit = 100, int $offset = 0): mixed
+public select(
+	string|int|float|array<int,mixed>|null $key = null, 
+	array<int,string> $fields = ['*'], 
+	int $limit = 100, 
+	int $offset = 0
+): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string&#124;array<int,mixed>** | The key?s to select its record, if null all record in table will be selected. |
+| `$key` | **string&#124;array<int,mixed>\|float\|int\|null** | The key?s to select its record, if null all record in table will be selected. |
 | `$fields` | **array<int,string>** | The fields to retrieve (default is all). |
 | `$limit` | **int** | Select result limit (default: 100). |
 | `$offset` | **int** | Select limit offset (default: 0). |
@@ -284,14 +290,14 @@ public search(string $query, array<int,string> $fields = ['*'], int $limit = 100
 Delete a record from the database.
 
 ```php
-public delete(string|array<int,mixed> $key = null, int $max = 1): bool
+public delete(string|array<int,mixed>|float|int|null $key = null, int $max = 1): bool
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string&#124;array<int,mixed>** | The keys to delete, if null all record in table will be deleted. |
+| `$key` | **string&#124;array<int,mixed>\|float\|int\|null** | The keys to delete, if null all record in table will be deleted. |
 | `$max` | **int** | The maximum number of records to delete. |
 
 **Return Value:**
@@ -319,14 +325,14 @@ public total(): int|bool
 Get total number of records in the database based on the keys.
 
 ```php
-public count(string|array<int,mixed> $key): int|bool 
+public count(array<int,mixed>|string|float|int $key): int|bool 
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string&#124;array<int,mixed>** | The key?s to find total number of matched. |
+| `$key` | **array<int,mixed>\|string\|float\|int** | The key?s to find total number of matched. |
 
 **Return Value:**
 
@@ -336,7 +342,9 @@ public count(string|array<int,mixed> $key): int|bool
 
 ### purge
 
-Delete all model database caches.
+Deletes all cache entries related to the current model.
+
+This method removes all cache files for the model from the cache directory. The path is constructed based on the model's class name and is expected to be within the filesystem cache directory.
 
 ```php
 public purge(): bool
@@ -344,7 +352,7 @@ public purge(): bool
 
 **Return Value:**
 
-`bool` - Return true if all caches are deleted, false otherwise.
+`bool` - Returns true if the cache files are successfully deleted, false otherwise.
 
 ***
 
@@ -366,10 +374,16 @@ protected validation(): Luminova\Security\Validation
 
 ### doSearch
 
-Run a database search current model table.
+Run a search in database table using the `$searchable` to index search columns. This method uses third-party libraries to search database table.
 
 ```php
-public doSearch(string $query, array<int,string> $fields = ['*'], int $limit = 100, string $offset, string $flag = 'any'): mixed
+public doSearch(
+	string $query, 
+	array $fields = ['*'], 
+	int $limit = 100, 
+	int $offset = 0, 
+	string $flag = 'any'
+): mixed
 ```
 
 **Parameters:**
@@ -378,8 +392,8 @@ public doSearch(string $query, array<int,string> $fields = ['*'], int $limit = 1
 |-----------|------|-------------|
 | `$query` | **string** | search query string, escape string before passing. |
 | `$fields` | **array<int,string>** | The fields to retrieve (default is all). |
-| `$limit` | **int** | search limit default is 100. |
-| `$offset` | **string** | search limit offset default is 0. |
+| `$limit` | **int** | Search result limit (default: 100). |
+| `$offset` | **int** | Search limit offset (default: 0). |
 | `$flag` | **string** | Search matching flag, default is (any) any matching keyword. |
 
 **Return Value:**
@@ -440,7 +454,7 @@ public getTable(): string
 
 **Return Value:**
 
-`string` - The name of the database table.
+`string` - Return the name of the database table.
 
 ***
 
@@ -454,7 +468,7 @@ public getKey(): string
 
 **Return Value:**
 
-`string` - The primary key field name.
+`string` - Return the primary key field name.
 
 ***
 
@@ -469,6 +483,72 @@ public getSearchable(): array<int,string>
 **Return Value:**
 
 `array<int, string>` - Return table searchable column names.
+
+***
+
+### getConn
+
+Get instance of database connection.
+
+```php
+public getConn(): Luminova\Interface\DatabaseInterface
+```
+
+**Return Value:**
+
+`DatabaseInterface` - Return database driver connection instance.
+
+**Throws:**
+
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - Throws if database connection failed.
+
+***
+
+### getBuilder
+
+Get instance of database builder class.
+
+```php
+public getBuilder(): ?Luminova\Database\Builder
+```
+
+**Return Value:**
+
+`Builder|null` - Return the instance database builder.
+
+***
+
+### getLastInsertedId
+
+Retrieve last inserted id from database after insert method is called.
+
+```php
+public getLastInsertedId(): mixed
+```
+
+**Return Value:**
+
+`mixed` - Return last inserted id from database.
+
+***
+
+### setReturn
+
+Change the database result return type (e.g, array or object).
+
+```php
+public setReturn(string $returns): self
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$returns` | **string** | The result returned as (e.g, `array` or `object`). |
+
+**Return Value:**
+
+`self ` - Return instance of model class.
 
 ***
 

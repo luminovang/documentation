@@ -209,9 +209,9 @@ After setting up the `Schema` in your application controller, you can include it
 **Overriding Default Configuration**
 
 ```php
-// /app/Controllers/PageController.php
+// /app/Controllers/Http/PageController.php
 <?php 
-namespace App\Controllers;
+namespace App\Controllers\Http;
 use \Luminova\Base\BaseViewController;
 use \App\Models\BlogModel;
 
@@ -241,10 +241,10 @@ class PageController extends BaseViewController
 
 ### Finalize Schema Setup
 
-Now within your `template` view file in `/resources/views/`, call the schema methods `getMeta`, `getScript` and `getTitle` to finalize the setup.
+Now within your `template` view file in `/resources/Views/`, call the schema methods `getMeta`, `getScript` and `getTitle` to finalize the setup.
 
 ```html
-<!-- /resources/views/blog.php -->
+<!-- /resources/Views/blog.php -->
 <!DOCTYPE html>
 <html lang="en"> 
 <head>

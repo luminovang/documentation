@@ -35,9 +35,9 @@ This allows for more flexible and maintainable code by abstracting the creation 
 #### Controllers Example
 
 ```php
-// /app/Controllers/MyController.php
+// /app/Controllers/Http/MyController.php
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Http;
 
 use Luminova\Base\BaseController;
 use App\Utils\SomeService;
@@ -123,13 +123,13 @@ Define a route that maps to a controller method.
 // /routes/cli.php
 <?php 
 
-$router->get('/example/{id}', 'MyController::handle');
+$router->get('/example/(:int)', 'MyController::handle');
 ```
 
 **Controller Method:**
 
 ```php
-namespace App\Controllers;
+namespace App\Controllers\Http;
 
 use Luminova\Base\BaseController;
 use App\Utils\SomeService;

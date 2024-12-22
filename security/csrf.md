@@ -23,6 +23,8 @@ The CSRF class generates unique tokens for each user session and verifies these 
 
 ***
 
+## Class Definition
+
 * Class namespace: `\Luminova\Security\Csrf`
 
 ***

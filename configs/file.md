@@ -25,7 +25,7 @@ The `Files Configuration` class provides properties to set the default Unix file
 Set Unix file permission, to use while creating a new file in your application.
 
 ```php
-public int $filePermissions = 0644;
+public static int $filePermissions = 0644;
 ```
 
 ***
@@ -35,5 +35,28 @@ public int $filePermissions = 0644;
 Set Unix directory permission, to use while creating a new directory.
 
 ```php
-public int $dirPermissions = 0755;
+public static int $dirPermissions = 0755;
+```
+
+***
+
+### extensions
+
+File extensions based on MIME types, where the key is the MIME type and the value is the extension.
+
+This property allows you to specify more extensive mime types their extensions.
+
+```php
+protected static array $extensions = [
+    'image/jpeg' => 'jpg',
+    'image/png' => 'png',
+	// Add more...
+];
+```
+
+**Usages:**
+
+```php
+$file = 'path/to/file/text.txt';
+echo Files::getExtension(get_mime($file)); // Outputs: txt
 ```

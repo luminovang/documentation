@@ -56,7 +56,7 @@ public string $apiKey = '';
 List of trusted proxy IP addresses or subnets.
 
 ```php
-public array&lt;int,string&gt; $trustedProxies = [];
+public array<int,string> $trustedProxies = [];
 ```
 
 > This will be used in conjunction with `Request` class to determine if incoming request is from a truest proxy or ip address. If none is provided then no additional authentication will be done in incoming request.

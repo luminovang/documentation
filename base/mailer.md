@@ -17,6 +17,7 @@ It serves as a template for defining email templates with customizable subjects,
 
 * Class namespace: `\Luminova\Base\BaseMailer`
 * This class is an **Abstract class**
+* This class implements: [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface)
 
 ***
 
@@ -128,9 +129,9 @@ In this example, `OrderTemplate` extends `BaseMailer` and provides implementatio
 To send an email using the `OrderTemplate`, you can use the `Mailer` class provided by Luminova framework.
 
 ```php
-// app/Controllers/MailerController.php
+// app/Controllers/Http/MailerController.php
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Http;
 
 use \Luminova\Email\Mailer;
 use \App\Utils\OrderTemplate;

@@ -487,6 +487,8 @@ public __toString(): string
 ### log
 
 Logs the exception message to a specified log file.
+Based on your `App\Config\Logger`, if asynchronous logging is enabled, all log will use Fiber for asynchronous logging.
+If on production, `logger.mail.logs` or `logger.remote.logs` is set, the log will be redirected to email or remote server.
 
 ```php
 public log(string $level = 'exception'): void

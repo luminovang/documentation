@@ -18,8 +18,12 @@ To allow connections through the CLI, specify your `MYSQL` socket path in the `E
 
 ***
 
-* Class namespace: `\Luminova\Database\Connection`
+## Class Definition
 
+* Class namespace: `\Luminova\Database\Connection`
+* This class implements: [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface), [\Countable](https://www.php.net/manual/en/class.countable.php)
+
+***
 ## Properties
 
 Database connection driver instance.
@@ -37,7 +41,7 @@ protected \Luminova\Interface\DriversInterface|null $db
 Initializes the Connection class constructor based on configuration in the `ENV` file.
 
 ```php
-new Connection()
+$conn = new Connection();
 ```
 
 **Throws:**
@@ -49,7 +53,7 @@ new Connection()
 
 ### database
 
-Retrieves the database connection instance.
+Retrieves the database driver connection instance.
 
 ```php
 public database(): \Luminova\Interface\DriversInterface|null
@@ -57,7 +61,9 @@ public database(): \Luminova\Interface\DriversInterface|null
 
 **Return Value:**
 
-`DriversInterface|null` - The database driver connection instance if connected; otherwise, returns null.
+`DriversInterface|null` - Return the driver connection instance, or null if not connected.
+
+**Usage:**
 
 To get the raw database connection instance of `PDO` or `mysqli`.
 
@@ -132,6 +138,19 @@ public connect(): \Luminova\Interface\DriversInterface|null
 
 > Optionally retries failed connections based on the retry attempt value set in the .env file (`database.connection.retry`).
 
+### disconnect
+
+Frees up the statement cursor and close current database connection.
+
+```php
+public disconnect(): bool
+```
+**Return Value:**
+
+`bool` - Always return true.
+
+> **Note:** To close all connections including pools use `purge` method instead.
+
 ***
 
 ### retry
@@ -150,7 +169,7 @@ public retry(int|null $retry = 1): \Luminova\Interface\DriversInterface|null
 
 **Return Value:**
 
-`DriversInterface|null` - Connection instance or null if all retry attempts fail.
+`DriversInterface|null` - Return connection instance or null if all retry attempts fail.
 
 **Throws:**
 
@@ -181,16 +200,20 @@ public release(\Luminova\Interface\DriversInterface|null $connection): void
 
 ### purge
 
-Purges all stacked pool connections and optionally closes the database connection.
+Purges all pooled connections and optionally closes the current database connection.
 
 ```php
-public purge(bool $conn = false): void
+public purge(bool $close_current = false): bool
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$conn` | **bool** | If true, close the database connection. Default is false. |
+| `$close_current` | **bool** | If true, close the current database connection also (default: false). |
+
+**Return Value:**
+
+`bool` - Always true when connection are closed.
 
 > If the conn parameter is true, the database connection will be closed; otherwise, only the pool connections will be closed.

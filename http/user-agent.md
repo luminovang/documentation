@@ -60,7 +60,10 @@ echo $ua->platformversion;
 
 ***
 
+## Class Definition
+
 * Class namespace: `\Luminova\Http\UserAgent`
+* This class implements: [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface), [\Stringable](https://www.php.net/manual/en/class.stringable.php)
 
 ***
 

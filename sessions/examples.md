@@ -17,8 +17,9 @@ Back-end session storage is a convenient way to temporarily store user data on t
 Initialize the session class with your proffered storage manager in your application controller class like `SessionManager` or `CookieManager`.
 
 ```php
+// /app/Application.php
 <?php
-namespace App\Controllers;
+namespace App;
 
 use \Luminova\Core\CoreApplication;
 use \Luminova\Sessions\Session;
@@ -87,7 +88,7 @@ This example will walk you through on how you can implement a login using Lumino
 
 ```php
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Http;
 
 use \App\Utils\Func;
 use \Luminova\Base\BaseController;

@@ -41,7 +41,7 @@ To activate maintenance mode, simply set the `app.maintenance.mode` variable to 
 
 You can also specify how often the client's browser should refresh to check if the service has been restored by setting the `app.maintenance.retry` variable to the desired number of seconds. This feature is helpful for ensuring that users can automatically return to your site as soon as maintenance is completed.
 
-For a more tailored experience, you can customize the maintenance page to match your application's design and needs. This can be done by modifying the `/resources/views/system_errors/maintenance.php` file. 
+For a more tailored experience, you can customize the maintenance page to match your application's design and needs. This can be done by modifying the `/resources/Views/system_errors/maintenance.php` file. 
 
 > **Important:** When customizing the maintenance page, ensure that any modules or resources it depends on are available during maintenance. This prevents errors from being displayed instead of your intended message.
 

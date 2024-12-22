@@ -77,6 +77,39 @@ public static get(): string
 
 ***
 
+### getLocalAddress
+
+Get the local IP address of the machine.
+
+This method first attempts to retrieve the machine's IP address via its hostname. 
+If that fails or returns an invalid IP address, it falls back to using platform-specific shell commands (`ipconfig` on Windows or `ifconfig` on Linux/macOS) to retrieve the IP.
+
+```php
+public static getLocalAddress(): string|false
+```
+
+**Return Value:**
+
+`string|false` - Returns the local IP address as a string, or false if unable to retrieve it.
+
+***
+
+### getLocalNetworkAddress
+
+Get the local network IP address (not the loopback address).
+
+This method attempts to retrieve the machine's IP address on the network, avoiding the loopback IP (127.0.0.1). It first checks platform-specific network interfaces using shell commands (`ipconfig` on Windows, `ifconfig` on Linux/macOS).
+
+```php
+public static getLocalNetworkAddress(): string|false
+```
+
+**Return Value:**
+
+`string|false` - Returns the local network IP address as a string, or false if unable to retrieve it.
+
+***
+
 ### info
 
 Fetches and stores information about an IP address from third-party `APIs`, either `ipapi` or `iphub`. An API key is required for both providers which can be configured in `app/Config/IPConfig.php`. 
@@ -84,7 +117,7 @@ Fetches and stores information about an IP address from third-party `APIs`, eith
 The method caches the IP address information in the `filesystem` to avoid repeated network requests. The cache is stored in the directory `/writeable/caches/ip/` with filenames in the format `ip_info_<IP_ADDRESS>.json` and does not expire automatically. The cached data remains until the cache file or directory is manually deleted.
 
 ```php
-public static info(string|null $ip = null, array $options = []): ?object
+public static info(?string $ip = null, array $options = []): ?object
 ```
 
 **Parameters:**

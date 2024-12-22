@@ -14,8 +14,11 @@ The base configuration service as the foundation of your application's configura
 
 ***
 
+## Class Declaration
+
 * Class namespace: `\Luminova\Base\BaseConfig`
 * This class is an **Abstract class**
+* This class implements: [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface)
 
 ***
 
@@ -24,10 +27,12 @@ The base configuration service as the foundation of your application's configura
 Bellow is an example how you can extend the `BaseConfig` class.
 
 ```php
+// app/Config/Config.php
 <?php 
-namespace App\Utils;
+namespace App\Config;
 
 use \luminova\Base\BaseConfig;
+
 class Config extends BaseConfig 
 {
 	public const MY_VAR = 'var';
@@ -35,6 +40,21 @@ class Config extends BaseConfig
 ```
 
 > Now you can import your configuration class anywhere you would like to use it or register in service to make it available anywhere.
+
+***
+
+## Properties
+
+File extensions based on MIME types. Where the key is the MIME type and the value is the extension.
+
+```php 
+protected static array $extensions = [
+	'image/jpeg' => 'jpg',
+	'image/png' => 'png',
+	// ...
+];
+```
+> **Note:** Only define this property in `App\Config\Files` class.
 
 ***
 
@@ -68,6 +88,27 @@ final public static getEnv(string $key, mixed $default = null, string|null $retu
 - `double`.
 - `nullable`.
 - `string`.
+
+***
+
+### getNonce
+
+Generate or retrieve a nonce with an optional prefix.
+
+```php
+final public static getNonce(int $length = 16, string $prefix = ''): string
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$length` | **int** | The length of the random bytes to generate (default: 16). |
+| `$prefix` | **string** | An optional prefix for the nonce (default: ''). |
+
+**Return Value:**
+
+`string` Return a cached generated nonce value.
 
 ***
 
@@ -139,10 +180,41 @@ public getCspMetaTag(string $id = ''): string
 
 ***
 
-### getCspHeader
+### sendCspHeader
 
 Send the Content-Security-Policy (CSP) as an HTTP header.
 
 ```php
-public getCspHeader(): void
+public sendCspHeader(): void
+```
+
+### getExtension
+
+Get the file extension based on the MIME type.
+
+This function returns the appropriate file extension for a given MIME type. It first checks if the MIME type exists in the developer defined static $extensions array, and if not, it uses a match expression to determine the extension.
+
+```php
+public static getExtension(string $mimeType): string 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$mimeType` | **string** | The MIME type of the file. |
+
+**Return Value:**
+
+`string` - Return the corresponding file extension (without the dot), or 'bin' if the MIME type is not recognized.
+
+**Example:**
+
+```php
+<?php
+use App\Config\Files;
+
+$file = 'path/to/file.png';
+
+Files::getExtension(get_mime($file));
 ```

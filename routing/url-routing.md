@@ -10,21 +10,25 @@ Luminova's routing module simplifies capturing, processing, and executing both w
 
 ## Introduction
 
-**Routing** is an essential part of the Luminova framework. It handles incoming URL requests, matches them to the right controller methods, and manages request authentication based on the URI and prefix.
+**Routing** is an essential part of the Luminova framework to handle incoming URI requests and matches them to the right controller methods. Its also manages request middleware authentication based on the URI prefix and patterns.
 
-Luminova simplifies and speeds up routing by using a [Routing URLPrefix](/routing/url-prefix.md) to quickly match the initial part of the URL path. This means only the necessary routes are loaded, improving performance compared to loading all routes first.
+Luminova simplifies and speeds up routing by using a [Routing URI Prefix](/routing/url-prefix.md) to quickly match the initial part of the URI as context and load the `routes/<context>.php` to handle request controller routing. This means only the necessary routes are loaded, improving performance compared to loading all routes in a single context.
 
-Luminova's routing module works efficiently for both `HTTP` and `CLI` requests. It captures and matches URI patterns, handles commands, and manages authentication with middleware.
+The routing module works efficiently for both `HTTP` and `CLI` requests, it captures and matches URI patterns, handles commands, and manages authentication with middleware as needed.
 
-When rendering views, you can use either a `Closure` or a `string` format similar to calling a static method. You don’t need to specify the namespace, just the base name of the class (e.g., `ControllerBaseName::methodName`).
-
-Controller methods that are routeable support dependency injection. This means you can specify the types of modules you want as parameters in your controller methods. By default, this feature is off. To enable it, update your [environment configuration file](/running/env.md) with `feature.route.dependency.injection`.
+In Luminova routing, routeable controller methods support dependency injection. This means you can specify the types of modules you want as parameters in your controller methods. By default, this feature is disabled. To enable it, update your [environment configuration file](/running/env.md) setting the value of `feature.route.dependency.injection` to `enable`.
 
 ***
 
-* Class namespace: `\Luminova\Routing\Router`
-* This class is marked as **final** and can't be subclassed
-* This class is a **Final class**
+### Defining Controller Method
+
+When defining controller methods or rendering callback handlers, you can use either a `Closure` or a string format that resembles a static method call (e.g., `ControllerBaseName::methodName`). The key difference is that you don’t need to specify the full class namespace, as it has already been registered in your application. You only need to provide the class base name and the method name (e.g., `ControllerBaseName::methodName`).
+
+***
+
+### Segment Capturing
+
+Segment capturing is way to capture URL segments and pass them to controller as arguments for further processing, the capture pattern uses various methods like regular expression patterns (e.g., `/foo/([a-zA-Z0-9]+)/([0-9]+)`), named placeholders (e.g., `/foo/{title}/{id}`), or predefined strict placeholders (e.g., `/foo/(:string)/(int)`). While regular expressions offer flexibility, named and strict placeholders provide a more convenient and developer-friendly approach, making them especially suitable for beginners.
 
 ***
 
@@ -42,11 +46,13 @@ Luminova provides a `Route` attribute, allowing you to define both `HTTP` and `C
 
 ### Base Usages
 
-In your route context file `/routes/*.php`, the `Router $router`, `CoreApplication $app` variable is already available as a global variable. Therefore, there's no need to specify the `use` keyword or import the router instance anymore except if it required.
+In your route context file `/routes/<context>.php`, the variable holding `Luminova\Routing\Router $router` and `App\Application $app` object  is already available as a global variable. Therefore, there's no need to specify the `use` keyword or import the router instance anymore except if it required which is usually for `bind` or `groupt` method.
 
 ```php 
+// /routes/web.php
+
 <?php
-$router->get('/',  function () use($app) {
+$router->get('/',  function (Application $app) {
     $app->view('index')->render([
 	    // Options to pass to the view
 	]);
@@ -55,7 +61,7 @@ $router->get('/',  function () use($app) {
 
 **Using Controller Class**
 
-When passing your controller class, you only need to provide the class base name and method, without the full namespace (e.g., `ExampleController::about`) instead of `App\Controllers\ExampleController`. The namespace is already registered with the `CoreApplication` class, allowing you to pass only a controller class that extends `Luminova\Base\BaseController` by default.
+When passing your controller class, you only need to provide the class base name and method, without the full namespace (e.g., `ExampleController::about`) instead of `App\Controllers\Http\ExampleController`. The namespace is already registered with the `CoreApplication` class, allowing you to pass only a controller class that extends `Luminova\Base\BaseController` by default.
 
 ```php 
 <?php
@@ -72,9 +78,9 @@ use \Luminova\Routing\Router;
 use \Luminova\Core\CoreApplication;
 
 $router->bind('/blog', function(Router $router, CoreApplication $app) {
-    $router->middleware('GET', '/?.*', 'ExampleController::isAllowed');
+    $router->middleware('GET', '/(:root)', 'Authentication::isAllowed');
     $router->get('/', 'ExampleController::blogs');
-    $router->get('/([a-zA-Z0-9]+)', 'ExampleController::blog');
+    $router->get('/(:alphanumeric)', 'ExampleController::blog');
 });
 ```
 
@@ -88,10 +94,10 @@ For example, to handle all HTTP methods for a "Contact Us" page:
 $router->any('/contact', 'ExampleController::contact');
 ```
 
-Alternatively, you can achieve the same functionality using the `capture` method with `Router::HTTP_METHODS`:
+Alternatively, you can achieve the same functionality using the `capture` method with `Router::ANY_METHODS` or `ANY`:
 
 ```php
-$router->capture(Router::HTTP_METHODS, '/contact', 'ExampleController::contact');
+$router->capture('ANY', '/contact', 'ExampleController::contact');
 ```
 
 Using `capture` for selective `HTTP` methods.
@@ -108,8 +114,11 @@ Luminova routing supports dependency injection for controller methods. You can t
 **Using Controller Class Method:**
 
 ```php
-// /app/controllers/ExampleController.php
+// /app/Controllers/Http/ExampleController.php
 <?php 
+namespace App\Controllers\Http;
+
+use Luminova\Base\BaseController;
 class ExampleController extends BaseController
 {
     public function userInfo(Request $request): int 
@@ -165,9 +174,16 @@ php index.php blog id=2
 
 ***
 
+### Class Definition
+
+* Class namespace: `\Luminova\Routing\Router`
+* This class is marked as **final** and can't be subclassed
+
+***
+
 ## Methods
 
-To see more usages examples read [Routing Example Documentation](/routing/examples.md).
+Explore additional usage examples in the [Routing Example Documentation](/routing/examples.md). For insights on using [Dynamic Segment Strict Placeholders in Routing](/routing/route-placeholders.md), visit the dedicated guide.
 
 ***
 
@@ -200,7 +216,7 @@ public context(\Luminova\Routing\Prefix|array<string,mixed>|null ...$contexts): 
 
 **See Also:**
 
-- [Routing Context](/routing/url-prefix.md) - Learn more about how routing prefixes work and their usage.
+- [Routing URL Prefix](/routing/url-prefix.md) - Learn more about how routing prefixes work and their usage.
 - [Index Controller Handler](/public/index.md) - See an example of the front controller index file handler.
 
 > **Note:** 
@@ -225,7 +241,7 @@ public get(string $pattern, \Closure|string $callback): void
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])`). |
+| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
 | `$callback` | **\Closure&#124;string** | The callback to execute (e.g `ClassBaseName::methodName`). |
 
 ***
@@ -242,7 +258,7 @@ public post(string $pattern, \Closure|string $callback): void
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])`). |
+| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
 | `$callback` | **\Closure&#124;string** | The callback to execute (e.g `ClassBaseName::methodName`). |
 
 ***
@@ -259,7 +275,7 @@ public patch(string $pattern, \Closure|string $callback): void
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])`). |
+| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
 | `$callback` | **\Closure&#124;string** | The callback to execute (e.g `ClassBaseName::methodName`). |
 
 ***
@@ -276,7 +292,7 @@ public delete(string $pattern, \Closure|string $callback): void
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])`). |
+| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
 | `$callback` | **\Closure&#124;string** | The callback to execute (e.g `ClassBaseName::methodName`). |
 
 ***
@@ -293,7 +309,7 @@ public put(string $pattern, \Closure|string $callback): void
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])`). |
+| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
 | `$callback` | **\Closure&#124;string** | The callback to execute (e.g `ClassBaseName::methodName`). |
 
 ***
@@ -310,7 +326,7 @@ public options(string $pattern, \Closure|string $callback): void
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])`). |
+| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
 | `$callback` | **\Closure&#124;string** | The callback to execute (e.g `ClassBaseName::methodName`). |
 
 ***
@@ -332,7 +348,7 @@ public middleware(string $methods, string $pattern, \Closure|string $callback): 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$methods` | **string** | The allowed methods, can be serrated with `&amp;#124;` pipe symbol (e.g. `GET&amp;#124;POST`). |
-| `$pattern` | **string** | The route URL pattern or template view name (e.g `/.*`, `/home`, `/user/([0-9])`). |
+| `$pattern` | **string** | The route URL pattern or template view name (e.g `/.*`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
 | `$callback` | **\Closure&#124;string** | Callback controller or closure to execute. |
 
 ***
@@ -389,8 +405,8 @@ public capture(string $methods, string $pattern, \Closure|string $callback): voi
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$methods` | **string** | The allowed methods, can be separated with `&amp;#124;` pipe symbol (e.g `GET\|POST\|PUT`). |
-| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])`). |
+| `$methods` | **string** | The allowed methods, can be separated with `&amp;#124;` pipe symbol (e.g `GET\|POST\|PUT` or `ANY`). |
+| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
 | `$callback` | **\Closure&#124;string** | The callback function to execute (e.g `ClassBaseName::methodName`). |
 
 ***
@@ -413,16 +429,6 @@ public command(string $command, \Closure|string $callback): void
 |-----------|------|-------------|
 | `$command` | **string** | The allowed command name or command with filters (e.g `foo`, `foo/(:int)/bar/(:string)`). |
 | `$callback()` | **\Closure&#124;string** | The callback function to execute (e.g `ClassBaseName::methodName`). |
-
-**Pattern Filters**
-
-- `(:mixed)`: - Indicates that the expected parameter can be any value.
-- `(:optional)`: - Indicates that the expected parameter can be blank (the parameter must be called).
-- `(:int`): - Indicates that the expected parameter must be a valid integer.
-- `(:float)`: - Indicates that the expected parameter must be a valid float value.
-- `(:string)`: - Indicates that the expected parameter must consist of alphanumeric characters, underscores, and hyphens.
-- `(:alphabet)`: - Indicates that the expected parameter must consist of alphabetic characters only.
-- `(:path)`: - Indicates that the expected parameter must be a valid file path (e.g., `/path/to/foo`).
 
 **Example Usage:**
 
@@ -451,7 +457,7 @@ $router->group('blog', function(Router $router){
 
 ### any
 
-A shorthand for route `capture` method to handle any type `HTTP` request methods.
+A shorthand for route `capture` method to handle any type of `HTTP` request methods.
 
 ```php
 public any(string $pattern, \Closure|string $callback): void
@@ -480,7 +486,7 @@ public bind(string $prefix, \Closure $callback): void
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$prefix` | **string** | The path prefix name or pattern (e.g. `/blog`, `/account/([a-z])`). |
+| `$prefix` | **string** | The path prefix name or pattern (e.g. `/blog`, `/account/([a-z])` or `/account/(:placeholder)`). |
 | `$callback` | **\Closure** | The callback function to handle routes group binding. |
 
 **Throws:**
@@ -501,19 +507,19 @@ public group(string $group, \Closure $callback): void
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$group` | **string** | The command group name. |
-| `$callback` | **\Closure** | Callback command function to handle group.), are made available. |
+| `$callback` | **\Closure** | Callback command function to handle grouped commands under same group name. |
 
 **Throws:**
 - [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - If invalid callback is provided
 
-> *Note:* Your group name must match with the defined group name in controller class.
+> **Note:** Your group name must match with the defined group name in controller class.
 
 ***
 
 ### addNamespace
 
-To register controller class `namespace` that router is allowed to lookup classed in.
-If you wish to register more namespace this should method should ne called in your application class either within `constructor` or `onCreate` method.
+To register module controller class `namespace` group that router is allowed to lookup classed in.
+If you wish to register more namespace this method should be called in your application class either within `constructor` or `onCreate` method.
 
 ```php
 public addNamespace(string $namespace): void
@@ -528,6 +534,8 @@ public addNamespace(string $namespace): void
 **Throws:**
 - [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - If namespace string is empty or contains invalid namespace characters.
 
+> **Note:** When registering a route namespace, omit the suffix like `Cli` or `Http`. Instead, register your module's namespace ending with `Controllers` (e.g., `App\Modules\Foo\Controllers`, `App\Controllers`, `App\Modules\Controllers`) rather than `App\Modules\Foo\Controllers\Http` or `App\Modules\Foo\Controllers\Cli`.
+
 ***
 
 ### run
@@ -540,7 +548,7 @@ public run(): void
 ```
 
 **Throws:**
-- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - Encounter error while executing controller callback
+- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - Encounter error while executing controller callback.
 
 ***
 
@@ -556,10 +564,13 @@ public setErrorListener(\Closure|string|array $match, \Closure|array|null $callb
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$match` | **\Closure&#124;string&#124;array<int,string>** | Match route pattern or a callback. |
+| `$match` | **\Closure&#124;string&#124;array<int,string>** | Matching route callback or segment pattern for error handling. |
 | `$callback` | **\Closure&#124;string&#124;array<int,string>&#124;null** | Optional error callback handler function. |
 
-> If the `$match` parameter is passed a callback handler and `$callback` parameter is passed `NULL`, then the handler will trigger the error callback whenever any `404` error occurred within the routing context.
+**Throws:**
+- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - EThrows if callback is specified and `$match` is not a segment pattern.
+
+> If the `$match` parameter is passed a callback handler and `$callback` parameter is passed `NULL`, then the handler will trigger the error callback whenever any `404` error occurred within the routing prefix context.
 > 
 > To define a custom error based on `group` or `patterns`, You must define your match patterns before callback method or closure.
 

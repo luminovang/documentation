@@ -1,4 +1,4 @@
-# Request Routing Prefix
+# Route Prefixing Context for URI Handling
 
 ***
 
@@ -112,7 +112,7 @@ Setting a subdirectory for your prefix helps organize your application view file
 
 To achieve this, follow these steps.
 
-1. Create a sub-folder in your `/resources/views/` directory for each context. For example, create an `admin` folder: `/resources/views/admin/`.
+1. Create a sub-folder in your `/resources/Views/` directory for each context. For example, create an `admin` folder: `/resources/Views/admin/`.
 
 2. Instruct the framework to look for your view files in the corresponding subdirectory. 
 This can be done by calling the `setFolder` method of the application template view in your controller class `onCreate` or within the file `/routes/admin.php`, before rendering view.
@@ -166,7 +166,7 @@ $router->get('/', function(Router $router, CoreApplication $app){
 
 ***
 
-## Prefix Class
+## Class Definition
 
 * Class namespace: `\Luminova\Routing\Prefix`
 * This class is marked as **final** and can't be subclassed

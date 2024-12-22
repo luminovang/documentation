@@ -95,6 +95,28 @@ public static toBytes(string $units): int
 
 ***
 
+### toTimeUnit
+
+Converts a given time in milliseconds to a human-readable format with appropriate time units (e.g., milliseconds, seconds, minutes, etc.).
+
+```php
+public static toTimeUnit(float|int $milliseconds, bool $add_name = false, bool $full_name = false): string
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$milliseconds` | **float\|int** | The time duration in milliseconds to be converted. |
+| `$add_name` | **bool** | Whether to include the unit name in the output (default: false). |
+| `$full_name` | **bool** | Whether to use the full name of the unit (e.g., 'seconds' instead of 's'). |
+
+**Return Value:**
+
+`string` - Return the formatted time duration with up to two decimal precision.
+
+***
+
 ### average
 
 Calculate the average of a giving numbers.

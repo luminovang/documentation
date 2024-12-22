@@ -14,8 +14,12 @@ Automatic Backup Database Connectivity to ensure your application is always onli
 
 `CoreDatabase` enables you to specify backup database servers. If the main database specified in the environment file fails to connect, the framework automatically attempts to connect to your backup servers if defined to ensure your application is always ready when users request for it.
 
+***
+## Class Definition
+
 * Class namespace: `\Luminova\Base\CoreDatabase`
 * This class is an **Abstract class**
+* This class implements: [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface)
 
 ***
 

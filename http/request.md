@@ -42,30 +42,18 @@ $request = new Request();
 
 #### 4. Accessing in Controller Classes
 
-If your controller extends `BaseController`:
+If your controller extends `Luminova\Base\BaseController` or ``Luminova\Base\BaseViewController`:
 
 ```php
-$this->request->foo();
+$this->request->fooMethod();
 ```
 
-If your controller extends `BaseViewController`, you can access it in two ways:
+***
 
-**Direct Access:**
+## Class Definition
 
-```php
-$this->request()->foo();
-```
-
-**Initializing in the `onCreate` Method:**
-
-You can initialize the request instance once, then access it later:
-
-```php
-$this->request(); // Initialize
-
-// Then access it.
-$this->request->foo();
-```
+* Class namespace: `Luminova\Http\Request`
+* This class implements:  [\Luminova\Interface\HttpRequestInterface](/interface/classes.md#httprequestinterface), [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface), [\Stringable](https://www.php.net/manual/en/class.stringable.php)
 
 ***
 
@@ -103,297 +91,424 @@ public ?\Luminova\Http\UserAgent $agent = null;
 
 ## Methods
 
-### getGet
+### constructor
 
-Get a value from the GET request.
+Initializes a new Request object, representing an HTTP request.
+
+This constructor optionally accept request properties like method, URI, body, files, raw body, server variables, and headers. allowing you to create a custom HTTP request.
 
 ```php
-public getGet(string $key, mixed $default = null): mixed
+public function __construct(
+    private ?string $method = null,
+    private ?string $uri = null,
+    private array $body = [],
+    private array $files = [],
+	private array $cookies = [],
+    private ?string $raw = null,
+    ?array $server = null,
+    ?array $headers = null
+)
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | The key of the value to retrieve. |
-| `$default` | **mixed** | (optional) The default value to return if the key is not found. |
+| `$method` | **string\|null** | Optional HTTP method used for the request (e.g., 'GET', 'POST').. |
+| `$uri` | **string\|null** | Optional request URI, typically the path and query string. |
+| `$body` | **array<string,mixed>** | Optional request body, provided as an associative array (e.g., `['field' => 'value']`).<br/>This may include form data, JSON, etc.. |
+| `$files` | **array<string,mixed>** | Optional request files, provided as an associative array (e.g., `['field' => array|string]`). |
+| `$cookies` | **array<string,mixed>** | Optional. An associative array of Cookies (e.g, $_COOKIE). |
+| `$raw` | **string\|null** | Optional request raw-body string. |
+| `$server` | **array<string,mixed>\|null** | Optional server variables (e.g., `$_SERVER`).<br/>If not provided, defaults to global `$_SERVER`.. |
+| `$headers` | **array<string,mixed>\|null** | Optional associative array of HTTP headers.<br/>If not provided, headers request headers will be extracted from `apache_request_headers` or `$_SERVER`. |
+
+**Example**
+
+Create a new request-response object by passing appropriate values.
+
+```php
+$request = new Luminova\Http\Request(
+    method: 'POST',
+    uri: 'https://example.com/api/v1/users',
+    body: ['name' => 'John Doe', 'email' => 'john@example.com'], 
+    files: [
+        'image' => [
+            'name' => 'profile.jpg',
+            'type' => 'image/jpeg',
+            'tmp_name' => '/tmp/phpYzdqkD',
+            'error' => 0,
+            'size' => 123456
+        ]
+    ],
+    server: [
+        'REQUEST_METHOD' => 'POST',
+        'REMOTE_ADDR' => '192.168.1.10',
+        'HTTP_USER_AGENT' => 'Mozilla/5.0',
+        'SERVER_PROTOCOL' => 'HTTP/1.1',
+        'SERVER_NAME' => 'example.com',
+        'REQUEST_URI' => '/api/v1/users',
+    ],
+    headers: [
+        'Content-Type' => 'application/json',
+        'Authorization' => 'Bearer some-token',
+        'Accept' => 'application/json',
+        'X-Custom-Header' => 'CustomValue'
+    ] 
+);
+
+echo $request->getPost('name') //John Doe
+```
+
+***
+
+### toString
+
+Converts the request body to a raw string format based on the content type.
+
+```php
+public toString(): string
+```
 
 **Return Value:**
 
-`mixed` - Response from HTTP GET request.
+`string` - Return the raw string representation of the request body.
+
+ **Supported Content Types:**
+
+- `application/x-www-form-urlencoded`: Converts the body to a URL-encoded query string.
+- `application/json`: Converts the body to a JSON string.
+- `multipart/form-data`: Converts the body to a multipart/form-data format.
+
+***
+
+### toMultipart
+
+Converts the request body to a `multipart/form-data` string format.
+
+```php
+public toMultipart(): string
+```
+
+**Return Value:**
+
+`string` - Return the multipart form-data representation of the request body.
+
+***
+
+### setField
+
+Set a specific field in the request body for the given HTTP method.
+
+```php
+public setField(string $field, mixed $value, ?string $method = null): self
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$field` | **string\|null** | The name of the field to set. |
+| `$value` | **mixed** | The value to assign to the field. |
+| `$method` | **string\|null** | Optional HTTP method, if null the current request method will be used (e.g, `GET`, `POST`). |
+
+**Return Value:**
+
+`self` - Returns the instance request class.
+
+***
+
+### getGet
+
+Get a field value from HTTP `GET` request method or entire fields if `$field` parameter is `null`.
+
+```php
+public getGet(string|null $field, mixed $default = null): mixed
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
+
+**Return Value:**
+
+`mixed` - Return the value from HTTP request method body based on field name.
 
 ***
 
 ### getPost
 
-Get a value from the POST request.
+Get a field value from HTTP `POST` request method or entire fields if `$field` parameter is `null`.
 
 ```php
-public getPost(string $key, mixed $default = null): mixed
+public getPost(string|null $field, mixed $default = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | The key of the value to retrieve. |
-| `$default` | **mixed** | (optional) The default value to return if the key is not found. |
+| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
 
-`mixed` - Response from HTTP POST request.
+`mixed` - Return the value from HTTP request method body based on field name.
 
 ***
 
 ### getPut
 
-Get a value from the PUT request.
+Get a value from the `PUT` request or entire fields if `$field` parameter is `null`.
 
 ```php
-public getPut(string $key, mixed $default = null): mixed
+public getPut(string|null $field, mixed $default = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | The key of the value to retrieve. |
-| `$default` | **mixed** | (optional) The default value to return if the key is not found. |
+| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
 
-`mixed` - Response from HTTP PUT request.
+`mixed` - Return the value from HTTP request method body based on field name.
 
 ***
 
 ### getOptions
 
-Get a value from the OPTIONS request.
+Get a value from the `OPTIONS` request or entire fields if `$field` parameter is `null`.
 
 ```php
-public getOptions(string $key, mixed $default = null): mixed
+public getOptions(string|null $field, mixed $default = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | The key of the value to retrieve. |
-| `$default` | **mixed** | (optional) The default value to return if the key is not found. |
+| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
 
-`mixed` - Response from HTTP OPTIONS request.
+`mixed` - Return the value from HTTP request method body based on field name.
 
 ***
 
 ### getPatch
 
-Get a value from the PATCH request.
+Get a value from the `PATCH` request method or entire fields if `$field` parameter is `null`.
 
 ```php
-public getPatch(string $key, mixed $default = null): mixed
+public getPatch(string|null $field, mixed $default = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | The key of the value to retrieve. |
-| `$default` | **mixed** | (optional) The default value to return if the key is not found. |
+| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
 
-`mixed` - Response from HTTP PATCH request.
+`mixed` - Return the value from HTTP request method body based on field name.
 
 ***
 
 ### getHead
 
-Get a value from the HEAD request.
+Get a value from the `HEAD` request method or entire fields if `$field` parameter is `null`.
 
 ```php
-public getHead(string $key, mixed $default = null): mixed
+public getHead(string|null $field, mixed $default = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | The key of the value to retrieve. |
-| `$default` | **mixed** | (optional) The default value to return if the key is not found. |
+| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
 
-`mixed` - Response from HTTP HEAD request.
+`mixed` - Return the value from HTTP request method body based on field name.
 
 ***
 
 ### getConnect
 
-Get a value from the CONNECT request.
+Get a value from the `CONNECT` request method or entire fields if `$field` parameter is `null`.
 
 ```php
-public getConnect(string $key, mixed $default = null): mixed
+public getConnect(string|null $field, mixed $default = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | The key of the value to retrieve. |
-| `$default` | **mixed** | (optional) The default value to return if the key is not found. |
+| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
 
-`mixed` - Response from HTTP CONNECT request.
+`mixed` - Return the value from HTTP request method body based on field name.
 
 ***
 
 ### getTrace
 
-Get a value from the TRACE request.
+Get a value from the `TRACE` request method or entire fields if `$field` parameter is `null`.
 
 ```php
-public getTrace(string $key, mixed $default = null): mixed
+public getTrace(string|null $field, mixed $default = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | The key of the value to retrieve. |
-| `$default` | **mixed** | (optional) The default value to return if the key is not found. |
+| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
 
-`mixed` - Response from HTTP TRACE request.
+`mixed` - Return the value from HTTP request method body based on field name.
 
 ***
 
 ### getPropfind
 
-Get a value from the PROPFIND request.
+Get a value from the `PROPFIND` request method or entire fields if `$field` parameter is `null`.
 
 ```php
-public getPropfind(string $key, mixed $default = null): mixed
+public getPropfind(string|null $field, mixed $default = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | The key of the value to retrieve. |
-| `$default` | **mixed** | (optional) The default value to return if the key is not found. |
+| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
 
-`mixed` - Response from HTTP PROPFIND request.
+`mixed` - Return the value from HTTP request method body based on field name.
 
 ***
 
 ### getMkcol
 
-Get a value from the MKCOL request.
+Get a value from the `MKCOL` request method or entire fields if `$field` parameter is `null`.
 
 ```php
-public getMkcol(string $key, mixed $default = null): mixed
+public getMkcol(string|null $field, mixed $default = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | The key of the value to retrieve. |
-| `$default` | **mixed** | (optional) The default value to return if the key is not found. |
+| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
 
-`mixed` - Response from HTTP MKCOL request.
+`mixed` - Return the value from HTTP request method body based on field name.
 
 ***
 
 ### getCopy
 
-Get a value from the COPY request.
+Get a value from the `COPY` request method or entire fields if `$field` parameter is `null`.
 
 ```php
-public getCopy(string $key, mixed $default = null): mixed
+public getCopy(string|null $field, mixed $default = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | The key of the value to retrieve. |
-| `$default` | **mixed** | (optional) The default value to return if the key is not found. |
+| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
 
-`mixed` - Response from HTTP COPY request.
+`mixed` - Return the value from HTTP request method body based on field name.
 
 ***
 
 ### getMove
 
-Get a value from the MOVE request.
+Get a value from the `MOVE` request method or entire fields if `$field` parameter is `null`.
 
 ```php
-public getMove(string $key, mixed $default = null): mixed
+public getMove(string|null $field, mixed $default = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | The key of the value to retrieve. |
-| `$default` | **mixed** | (optional) The default value to return if the key is not found. |
+| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
 
-`mixed` - Response from HTTP MOVE request.
+`mixed` - Return the value from HTTP request method body based on field name.
 
 ***
 
 ### getLock
 
-Get a value from the LOCK request.
+Get a value from the `LOCK` request method or entire fields if `$field` parameter is `null`.
 
 ```php
-public getLock(string $key, mixed $default = null): mixed
+public getLock(string|null $field, mixed $default = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | The key of the value to retrieve. |
-| `$default` | **mixed** | (optional) The default value to return if the key is not found. |
+| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
 
-`mixed` - Response from HTTP LOCK request.
+`mixed` - Return the value from HTTP request method body based on field name.
 
 ***
 
 ### getUnlock
 
-Get a value from the UNLOCK request.
+Get a value from the `UNLOCK` request method or entire fields if `$field` parameter is `null`.
 
 ```php
-public getUnlock(string $key, mixed $default = null): mixed
+public getUnlock(string|null $field, mixed $default = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$key` | **string** | The key of the value to retrieve. |
-| `$default` | **mixed** | (optional) The default value to return if the key is not found. |
+| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
 
-`mixed` - Response from HTTP UNLOCK request.
+`mixed` - Return the value from HTTP request method body based on field name.
 
 ***
 
@@ -402,24 +517,52 @@ public getUnlock(string $key, mixed $default = null): mixed
 Get a value from the request body as an array.
 
 ```php
-public getArray(string $method, string $key, array $default = []): array
+public getArray(string $field, array $default = [], ?string $method = null): array
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$method` | **string** | The HTTP request method (e.g, `GET`, `POST`, etc..). |
-| `$key` | **string** | The request body name to return. |
+| `$field` | **string** | The request body field name to return. |
 | `$default` | **array** | Optional default value to return (default: `[]`). |
+| `$method` | **string\|null** | Optional HTTP request method, if null current request method will be used (e.g, `GET`, `POST`, etc..). |
 
 **Return Value:**
 
 `array` - Return array of HTTP request method key values.
 
-**Throws:**
+***
 
-- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - Throws if unsupported HTTP method was passed.
+### getCookie
+
+Retrieves the instance of cookie jar containing the cookies from the request headers.
+
+This method parses the `Cookie` header, identifies session cookies, and initializes a cookie jar. It supports session-specific configurations and handles both session and non-session cookies.
+
+```php
+public getCookie(?string $name = null): Luminova\Interface\CookieJarInterface
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$name` | **string\|null** | An optional cookie name to pre-initialize. |
+
+**Return Value:**
+
+`Luminova\Interface\CookieJarInterface` - Return the cookie jar instance populated with parsed cookies.
+
+**Line**
+
+* See also [HTTP Cookie File Jar Class](/cookies/cookie-file-jar.md).
+
+**Example:**
+
+```php
+print_r($request->getCookie()->getCookieNames())
+```
 
 ***
 
@@ -435,49 +578,127 @@ public getBody(bool $object = false): array|object
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$object` | **bool** | Whether to return an array or a json object (default: false). |
+| `$object` | **bool** | Whether to return an array or a JSON object (default: false). |
 
 **Return Value:**
 
-`array|object` - Return the request body as an `array` or `json` object.
+`array<string,mixed>|object` - Return the request body as an `array` or `json` object.
 
 ***
 
 ### getFile
 
-Get an uploaded file object by its input name.
+Get an uploaded file instance or any generator yielding file instances for multiple files.
 
 ```php
-public getFile(string $name): ?\Luminova\Http\File
+public getFile(string $name, ?int $index = null): Generator<int, File>|File|null
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$name` | **string** | The input file name. |
+| `$name` | **string** | The file input field name. |
+| `$index` | **int\|null** |  Optional file index for multiple files (default: null). |
 
 **Return Value:**
 
-`\Luminova\Http\File|null` - Return uploaded file instance or null if file input name not found.
+`Generator<int, \Luminova\Http\File>|\Luminova\Http\File|null` - Return uploaded `File` instance, a generator yielding `File` instances. or null if input name was not found.
 
 **See Also:**
 
-To learn more about [File Upload Object](/http/file-object.md), refer to the documentation.
+To learn more about [File Upload Object](/http/files.md), refer to the documentation.
+
+**Process File Object:**
+
+Handle file upload based on multiple files or single file.
+
+```php
+<?php
+use Luminova\Storages\Uploader;
+use Luminova\Http\File;
+use \Generator;
+
+$images = $request->getFiles('images');
+$config = [
+    'upload_path' => root('writeable/storages/foo/'),
+    'if_existed' => File::IF_EXIST_OVERWRITE
+];
+
+if ($images instanceof Generator) {
+    foreach ($images as $index => $image) {
+        if($image->valid()){
+            $image->setConfig($config);
+            $status = Uploader::upload($image);
+        }
+    }
+}else if ($images instanceof File) {
+    if($images->valid()){
+        $images->setConfig($config);
+        $status = Uploader::upload($images);
+    }
+}
+```
 
 ***
 
 ### getFiles
 
-Get irritable array of uploaded files information.
+Get raw array of original uploaded file information without any modification.
 
 ```php
-public getFiles(): \Luminova\Http\File[]|false
+public getFiles(): array
 ```
 
 **Return Value:**
 
-`\Luminova\Http\File[]|false` - Return an array containing uploaded files information or false if no files found.
+`array<string,array>` -  Return an array containing uploaded files information.
+
+**Array Structure for Multiple File Uploads**
+
+```php
+[
+    'images' => [
+        'name'      => ['file1.jpg', 'file2.png', 'file3.gif'],
+        'type'      => ['image/jpeg', 'image/png', 'image/gif'],
+        'tmp_name'  => ['/tmp/phpYzdqkD', '/tmp/phpeEwEWq', '/tmp/php7sdfXy'],
+        'error'     => [0, 0, 0],
+        'size'      => [123456, 234567, 345678]
+    ]
+];
+```
+
+**Also Support Flat File Structure:**
+
+```php
+[
+    'images' => [
+        [
+            'name' => 'file1.jpg',
+            'type' => 'image/jpeg',
+            'tmp_name' => '/tmp/phpYzdqkD',
+            'error' => 0,
+            'size' => 123456
+        ],
+        [
+            'name' => 'file2.png',
+            'type' => 'image/png',
+            'tmp_name' => '/tmp/phpeEwEWq',
+            'error' => 0,
+            'size' => 234567
+        ],
+        [
+            'name' => 'file3.gif',
+            'type' => 'image/gif',
+            'tmp_name' => '/tmp/php7sdfXy',
+            'error' => 0,
+            'size' => 345678
+        ]
+    ]
+];
+```
+
+> **Note:** This structure may be developer-friendly, but it isn't the standard way PHP handles uploaded files.
 
 ***
 
@@ -495,51 +716,41 @@ public getMethod(): string
 
 ***
 
-### isGet
+### getBoundary
 
-Check if the request method is `GET`.
+Extract the boundary from the Content-Type header.
 
 ```php
-public isGet(): bool
+public getBoundary(): ?string
 ```
 
 **Return Value:**
 
-`bool` - Returns true if the request method is `GET`, false otherwise.
+`string|null` - Returns the boundary string or null if not found.
 
 ***
 
-### isPost
+### getFromMultipart
 
-Check if the request method is `POST`.
-
-```php
-public isPost(): bool
-```
-
-**Return Value:**
-
-`bool` - Returns true if the request method is `POST`, false otherwise.
-
-***
-
-### isMethod
-
-Check if the request method is the provided method.
+Parses a multipart/form-data string into an associative array with form fields and file data.
 
 ```php
-public isMethod(string $method): bool
+public getFromMultipart(string $data, string $boundary): array
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$method` | **string** | The method to check against (e.g, `POST`, `GET`). |
+| `$data` | **string** | The raw multipart form data content. |
+| `$boundary` | **string** | The boundary string used to separate form data parts. |
 
 **Return Value:**
 
-`bool` - Returns true if the request method matches the provided method, false otherwise.
+`array{param:array,files:array}` - Return an array containing two keys `params` and `files`.
+
+- `params` - Associative array of form field names and values
+- `files` - Associative array of files with metadata and binary content
 
 ***
 
@@ -571,55 +782,6 @@ public getAuth(): ?string
 
 ***
 
-**Return Value:**
-
-`bool` - Return true if the request was made from the command line.
-
-***
-
-### isSecure
-
-Check if the current request connection is secure.
-
-```php
-public isSecure(): bool
-```
-
-**Return Value:**
-
-`bool` - Return true if the connection is secure false otherwise.
-
-***
-
-### isAJAX
-
-Check if request is `ajax` request, see if a request contains the `HTTP_X_REQUESTED_WITH` header.
-
-```php
-public isAJAX(): bool
-```
-
-**Return Value:**
-
-`bool` - Return true if request is `ajax` request, false otherwise
-
-***
-
-### isApi
-
-Check if the request URL indicates an `API` request endpoint.
-This method checks if the URL path prefix matched any of  `/api` or `public/api` or your custom defined API URL prefix.
-
-```php
-public isApi(): bool
-```
-
-**Return Value:**
-
-`bool` - Returns true if the URL indicates an `API` endpoint, false otherwise.
-
-***
-
 ### getQuery
 
 Get the request URL query string.
@@ -648,9 +810,23 @@ public getQueries(): array&lt;string,mixed&gt;
 
 ***
 
+### getUrl
+
+Get the full URL of the current request, including the scheme, host and query parameters. (e.g, `https://example.com/foo/bar?query=123`)
+
+```php
+public getUrl(): string
+```
+
+**Return Value:**
+
+`string` - Return the full URL of the request.
+
+***
+
 ### getUri
 
-Get current request URL including the scheme, host and query parameters.
+Get the URI (path and query string) of the current request (e.g, `/foo/bar?query=123`).
 
 ```php
 public getUri(): string
@@ -658,7 +834,7 @@ public getUri(): string
 
 **Return Value:**
 
-`string` - Return the request full URL.
+`string` - Return the URI of the request (path and query string).
 
 ***
 
@@ -759,15 +935,15 @@ public getOrigin(): ?string
 Get the request origin port from `X_FORWARDED_PORT` or `SERVER_PORT` if available.
 
 ```php
-public getPort(): int|string|null
+public getPort(): int
 ```
 
 **Return Value:**
 
-`int|string|null` - Return either a string if fetched from the server available, or integer, otherwise null.
+`int` - Return the port number, otherwise default to `443` secured or `80` for insecure.
 
 > Check if X-Forwarded-Port header exists and use if available.
-> If not available check for server-port header if also not available return NULL as default.
+> If not available check for server-port header if also not available return default port.
 
 ***
 
@@ -839,6 +1015,158 @@ public getUserAgent(?string $useragent = null): UserAgent
 
 ***
 
+### hasField
+
+Check if a specific field exists in the request body for the given HTTP method.
+
+```php
+public hasField(string $field, ?string $method = null): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$field` | **string** | The name of the field to check. |
+| `$method` | **string&#124;null** | Optional HTTP method, if null the current request method will be used (e.g, `GET`, `POST`). |
+
+**Return Value:**
+
+`bool` - Returns true if the field exists for the given method; otherwise, false.
+
+***
+
+### isGet
+
+Check if the request method is `GET`.
+
+```php
+public isGet(): bool
+```
+
+**Return Value:**
+
+`bool` - Returns true if the request method is `GET`, false otherwise.
+
+***
+
+### isPost
+
+Check if the request method is `POST`.
+
+```php
+public isPost(): bool
+```
+
+**Return Value:**
+
+`bool` - Returns true if the request method is `POST`, false otherwise.
+
+***
+
+### isMethod
+
+Check if the request method is the provided method.
+
+```php
+public isMethod(string $method = 'GET'): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$method` | **string** | The method to check against (e.g, `POST`, `GET`). |
+
+**Return Value:**
+
+`bool` - Returns true if the request method matches the provided method, false otherwise.
+
+***
+
+### isAuth
+
+Check if the Authorization header matches the specified type.
+
+```php
+public isAuth(string $type = 'Bearer'): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$type` | **string** | The expected type of authorization (e.g., 'Bearer', 'Basic'). |
+
+**Return Value:**
+
+`bool` - Returns true if the Authorization header matches the specified type, otherwise false.
+
+***
+
+**Return Value:**
+
+`bool` - Return true if the request was made from the command line.
+
+***
+
+### isSecure
+
+Check if the current request connection is secure.
+
+```php
+public isSecure(): bool
+```
+
+**Return Value:**
+
+`bool` - Return true if the connection is secure false otherwise.
+
+***
+
+### isProxy
+
+Checks if the request is routed through a proxy server by inspecting various proxy-related headers.
+
+```php
+public isProxy(): bool
+```
+
+**Return Value:**
+
+`bool` - Returns true if the request is likely from proxy, false otherwise.
+
+***
+
+### isAJAX
+
+Check if request is `ajax` request, see if a request contains the `HTTP_X_REQUESTED_WITH` header.
+
+```php
+public isAJAX(): bool
+```
+
+**Return Value:**
+
+`bool` - Return true if request is `ajax` request, false otherwise
+
+***
+
+### isApi
+
+Check if the request URL indicates an `API` request endpoint.
+This method checks if the URL path prefix matched any of  `/api` or `public/api` or your custom defined API URL prefix.
+
+```php
+public isApi(): bool
+```
+
+**Return Value:**
+
+`bool` - Returns true if the URL indicates an `API` endpoint, false otherwise.
+
+***
+
 ### isSameOrigin
 
 Check if the request origin matches the current application host.
@@ -871,7 +1199,7 @@ public static isTrusted(string $input, string $context = 'hostname'): bool
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$input` | **string** | The domain, origin or IP address to check. |
+| `$input` | **string** | The domain, origin or IP address to check (e.g, `example.com`, `192.168.0.1`). |
 | `$context` | **string** | The context to check input for (e.g, `hostname`). |
 
 **Return Value:**

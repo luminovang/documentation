@@ -71,7 +71,8 @@ $app->router->context(new Prefix('panel', [ViewErrors::class, 'myErrorMethodName
 
 ```php
 <?php
-use \Luminova\Attributes\Error;
+use Luminova\Attributes\Error;
+use App\Controllers\Errors\ViewErrors;
 
 #[Error('panel', onError: [ViewErrors::class, 'myErrorMethodName')]
 class PanelController extends BaseController
@@ -107,7 +108,7 @@ Here is an example of how you can implement your middleware:
 
 ```php
 <?php 
-$router->middleware('GET|POST', '/.*', 'HomeController::middleware');
+$router->middleware('ANY', '/(:root)', 'HomeController::middleware');
 ```
 
 Implementation example in closure.
@@ -115,7 +116,7 @@ Implementation example in closure.
 ```php 
 // routes/web.php
 <?php
-$router->middleware('GET|POST', '/.*', static function (): int {
+$router->middleware('ANY', '/(:root)', static function (): int {
     if(doAuthenticatedPassed()){
         return STATUS_OK;
     }
@@ -123,16 +124,16 @@ $router->middleware('GET|POST', '/.*', static function (): int {
 });
 ```
 
-> You can also implement middleware in `bind` method for group capture.
+> **Note:** You can also implement middleware in `bind` method for group capture.
 
 **Using Attribute**
 
 ```php
-// app/Controllers/HomeController.php
+// /app/Controllers/Http/HomeController.php
 <?php
 use \Luminova\Attributes\Route;
 
-#[Route('/.*', methods: ['GET', 'POST']), middleware: 'before']
+#[Route('/(:root)', methods: ['ANY']), middleware: 'before']
 public function middleware(): int
 {
     //...
@@ -166,7 +167,7 @@ $router->get('/', static function(Application $app): int {
 **Using Attribute**
 
 ```php
-// app/Controllers/HomeController.php
+// /app/Controllers/Http/HomeController.php
 <?php
 use \Luminova\Attributes\Route;
 
@@ -185,23 +186,23 @@ To define a route for URL parameter with dynamic value (e.g., `https://example.c
 
 Here's how you can set up the route using a regular expression pattern in your route file (`routes/web.php` or similar):
 
-Define the route using a regular expression pattern for the username after `user/` segment in a url.
+Define the route using a regular expression pattern for the username after `user/` segment in a URL.
  
 ```php
-// routes/user.php
+// /routes/user.php
 <?php
-$router->get('/user/([a-zA-Z0-9-]+)', 'UserController::profile');
+$router->get('/user/(:alphanumeric)', 'UserController::profile');
 ```
 
 **Using Attribute**
 
 ```php
-// app/Controllers/UserController.php
+// /app/Controllers/Http/UserController.php
 <?php
 use \Luminova\Attributes\Route;
 
-#[Route('/user/([a-zA-Z0-9-]+)', methods: ['GET'])]
-public function profile(): int
+#[Route('/user/(:alphanumeric)', methods: ['GET'])]
+public function profile(string $name): int
 {
     //...
 }
@@ -218,7 +219,7 @@ When implementing functionality to update user profiles via POST requests, it's 
 Here's an example of defining a route for updating user profiles using a POST request:
 
 ```php
-// routes/user.php
+// /routes/user.php
 <?php
 $router->post('/user', 'UserController::update');
 ```
@@ -226,7 +227,7 @@ $router->post('/user', 'UserController::update');
 **Using Attribute**
 
 ```php
-// app/Controllers/UserController.php
+// /app/Controllers/Http/UserController.php
 <?php
 use \Luminova\Attributes\Route;
 
@@ -251,14 +252,14 @@ use \App\Application;
 
 $router->bind('/blog', function(Router $router, Application $app) {
 	$router->get('/', 'BlogController::blogs');
-	$router->get('/id/([a-zA-Z0-9]+)', 'BlogController::blog');
+	$router->get('/id/(:alphanumeric)', 'BlogController::blog');
 });
 ```
 
 **Using Attribute**
 
 ```php
-// app/Controllers/BlogController.php
+// /app/Controllers/Http/BlogController.php
 <?php
 use \Luminova\Attributes\Route;
 
@@ -268,8 +269,8 @@ public function blogs(): int
     //...
 }
 
-#[Route('/blog/id/([a-zA-Z0-9]+)', methods: ['POST'])]
-public function blog(): int
+#[Route('/blog/id/(:int)', methods: ['POST'])]
+public function blog(int $id): int
 {
     //...
 }
@@ -279,7 +280,7 @@ public function blog(): int
 
 #### Custom View Hierarchy
 
-You can load template views from a sub-folder within the `resources/views` directory, set a custom view folder using the `setFolder()` method in your controller `onCreate`  or `__construct` method, it can also be done within specific route context file. 
+You can load template views from a sub-folder within the `resources/Views` directory, set a custom view folder using the `setFolder()` method in your controller `onCreate`  or `__construct` method, it can also be done within specific route context file. 
 
 This allows you to organize views based on directory `Hierarchy` and archive `HMVC` implementation, for better structure, organization and separation of concern.
 
@@ -288,7 +289,7 @@ This allows you to organize views based on directory `Hierarchy` and archive `HM
 To set a custom view folder globally for all routes within a context file or the context controllers class (e.g., `panel`), use the `setFolder()` method in your view controller initialization method like `onCreate`, `__construct` or `middleware` method if in use.
 
 ```php
-// app/Controllers/Controller.php
+// /app/Controllers/Http/Controller.php
 <?php
 use \Luminova\Base\BaseController;
 
@@ -296,7 +297,7 @@ class Controller extends BaseController
 {
 	protected onCreate(): void 
 	{
-		$this->app->setFolder("panel");
+		$this->app->setFolder('panel');
 	}
 }
 ```
@@ -304,7 +305,7 @@ class Controller extends BaseController
 Alternatively, you can set the custom view folder within a specific route context in a global scope, withing `bind` method for group global scope or before calling `view` method.
 
 ```php
-// routes/panel.php
+// /routes/panel.php
 <?php
 use \Luminova\Routing\Router;
 use \App\Application;
@@ -317,8 +318,8 @@ $router->bind('/admin', static function(Router $router, Application $app) {
     $app->setFolder('panel');
 
     $router->get('/', function() use ($app) {
-        //Or optionally before a specific view
-        $app->setFolder("panel")->view("foo")->render();
+        // Or optionally before a specific view
+        $app->setFolder('panel')->view('foo')->render();
     });
 });
 ```
@@ -384,7 +385,7 @@ $router->group("users", function(Router $router, Application $app){
 **Using Attribute**
 
 ```php
-// app/Controllers/UserCommandController.php
+// /app/Controllers/Cli/UserCommandController.php
 <?php
 use \Luminova\Attributes\Route;
 
@@ -434,7 +435,7 @@ $router->group("users", function(Router $router){
 **Using Attribute**
 
 ```php
-// app/Controllers/UserCommandController.php
+// /app/Controllers/Cli/UserCommandController.php
 <?php
 use \Luminova\Attributes\Route;
 
@@ -493,7 +494,7 @@ Define a command route with multiple dynamic segments.
 ```php
 <?php
 use \Luminova\Routing\Router;
-$router->group("blogs", function((Router $router){
+$router->group('blogs', function((Router $router){
     $router->command('/blog/id/(:int)/title/(:string)', function(string $title, int $id): int {
         echo "Blog: {$id}, Title: {$title}";
         
@@ -511,7 +512,7 @@ $router->group("blogs", function((Router $router){
 This `UserController` class is an example of HTTP controller class that extends `BaseController` from the Luminova's component. It defines methods to handle specific URI request and actions.
 
 ```php
-// app/Controllers/UserController.php
+// /app/Controllers/Http/UserController.php
 <?php
 namespace App\Controllers;
 
@@ -563,7 +564,7 @@ class UserController extends BaseController
 This `CommandController` class is an example of a `CLI` controller that extends `BaseCommand` from the Luminova's `Terminal` component. It defines methods to handle specific command and actions based on command arguments.
 
 ```php
-// app/Controllers/BlogCommandController.php
+// /app/Controllers/Cli/BlogCommandController.php
 <?php 
 namespace App\Controllers;
 
@@ -599,3 +600,7 @@ class BlogCommandController extends BaseCommand
     }
 }
 ```
+
+---
+
+Learn how to utilize the [Dynamic Segment Placeholders in Routing](/routing/route-placeholders.md).

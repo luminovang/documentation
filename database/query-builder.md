@@ -18,24 +18,49 @@ For more detailed examples and usage instructions, refer to the [query Builder d
 
 ***
 
+## Class Definition
+
 * Class namespace: `\Luminova\Database\Builder`
-* Parent class namespace: [\Luminova\Database\Connection](/database/connection.md)
+* This class implements: [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface),
 
 ***
 
 ## Methods
 
-### db
+> **Note:** This class constructor is private preventing instantiation from outside.
+> To initialize the class you can either use the singleton methods `Builder::getInstance()` or `Builder::table()`.
+
+**Example:**
+
+Create instance of Builder to access class methods without initializing table.
+
+```php
+<?php
+$builder = Builder::getInstance();
+```
+
+Create instance of Builder to access with a table name.
+
+```php
+<?php
+$table = Builder::table('table-name', 'optional-table-name-alias');
+```
+
+### database
 
 Get database connection driver instance (e.g, `MySqlDriver` or `PdoDriver`).
 
 ```php
-public db(): ?Luminova\Instance\DatabaseInterface
+public database(): Luminova\Instance\DatabaseInterface
 ```
 
 **Return Value:**
 
 `\Luminova\Interface\DatabaseInterface|null` - Return database driver instance.
+
+**Throws:**
+
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) -  Throws if database connection failed.
 
 **Returning the Original Database Connection Object**
 
@@ -43,7 +68,7 @@ This method retrieves the underlying database connection instance, which can be 
 
 ```php
 <?php 
-$conn = $builder->db()->raw();
+$conn = $builder->database()->raw();
 ```
 
 > This is useful when you need to access the raw connection for operations not covered by the interface.
@@ -55,12 +80,12 @@ $conn = $builder->db()->raw();
 To get a shared singleton instance of builder class.
 
 ```php
-public static getInstance(): static
+public static getInstance(): \Luminova\Database\Builder
 ```
 
 **Return Value:**
 
-`static` - Return new static instance of builder class.
+`\Luminova\Database\Builder` - Return new static instance of builder class.
 
 **Throws:**
 
@@ -70,10 +95,10 @@ public static getInstance(): static
 
 ### table
 
-Specifies the database table to build the query for. This method is essential in the `Builder` class and is typically called first to define the table you want to work with.
+ Create instance of builder class and specifies the database table to build the query for. This method is essential in the `Builder` class and is typically called first to define the table you want to work with.
 
 ```php
-public table(string $table, ?string $alias = null): self
+public static table(string $table, ?string $alias = null): \Luminova\Database\Builder
 ```
 
 **Parameters:**
@@ -85,7 +110,7 @@ public table(string $table, ?string $alias = null): self
 
 **Return Value:**
 
-`self` - Returns the instance of builder class.
+`\Luminova\Database\Builder` - Returns the instance of builder class.
 
 **Throws:**
 
@@ -739,19 +764,19 @@ public inset(string $search, string $operator, array<int,mixed>|string $list, bo
 **Using the `custom` Operator:**
 
 ```php
-$builder->table('fruits')->inset('banana', '= 2', ['apple','banana','orange']);
+Builder::table('fruits')->inset('banana', '= 2', ['apple','banana','orange']);
 ```
 
 **Using the `exists` Operator with a column:**
 
 ```php
-$builder->table('employees')->inset('PHP', 'exists', 'column_language_skills');
+Builder::table('employees')->inset('PHP', 'exists', 'column_language_skills');
 ```
 
 **Using the `exists` Operator with a search column:**
 
 ```php
-$builder->table('employees')->inset('department', 'exists', 'HR,Finance,Marketing', true);
+Builder::table('employees')->inset('department', 'exists', 'HR,Finance,Marketing', true);
 ```
 
 ***
@@ -1207,7 +1232,7 @@ For more information about the methods available in the statement object, see th
 
 ```php
 <?php
-$tbl = $builder->table('users');
+$tbl = Builder::table('users');
 $tbl->where('programming_language', '=', 'PHP');
 $stmt = $tbl->stmt();
 
@@ -1389,12 +1414,15 @@ public temp(bool $transaction = true): bool
 
 ```php
 <?php
-if ($builder->table('users')->temp()) {
-   $data = $builder->table('temp_users')->select();
+if (Builder::table('users')->temp()) {
+   $data = Builder::table('temp_users')->select();
 }
 ```
 
-> **Note:** Temporary tables are automatically deleted when the current session ends. You won't find these tables in `phpMyAdmin` or any other database manager as they are session-specific. To query a temporary table, use the `temp_` prefix before the main table name.
+> **Note:** 
+> Temporary tables are automatically deleted when the current session ends. 
+> You won't find these tables in `phpMyAdmin` or any other database manager as they are session-specific. 
+> To query a temporary table, use the `temp_` prefix before the main table name.
 
 ***
 
@@ -1482,6 +1510,10 @@ public manager(): \Luminova\Database\Manager
 **Return Value:**
 
 `\Luminova\Database\Manager` - An instance of the database manager class.
+
+**Throws:**
+
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - Throws if database connection failed.
 
 **See Also:**
 

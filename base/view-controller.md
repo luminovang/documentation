@@ -14,6 +14,8 @@ The `BaseViewController` is the fundamental component of Luminova's MVC componen
 
 It establishes a solid foundation for building interactive and optimized web applications, well-suited for client-side rendering. While its primary focus is not limited to frontend operations, it also suitable for backend applications, ensuring consistency between frontend and backend functionalities.
 
+> **Deprecated Notice**  `BaseViewController` is **deprecated** as of version **3.4.0**. It has been replaced by `Luminova\Base\BaseController`. The `BaseViewController` no longer serves its intended purpose and is scheduled for removal in a future release. Developers are encouraged to update their code to use the `BaseController` for continued support and functionality.
+
 ***
 
 * Class namespace: `\Luminova\Base\BaseViewController`
@@ -28,15 +30,17 @@ To use `BaseViewController` class, you will need to extend it whenever you want 
 Below is an example of how a basic view controller class may look like, in this example we use `__construct`, optionally you can use `onCreate` method instead.
 
 ```php
+// app/Controllers/Http/FrontendController.php
 <?php 
-namespace App\Controllers;
-use \luminova\Base\BaseViewController;
+namespace App\Controllers\Http;
 
-class BackendController extends BaseViewController 
+use \Luminova\Base\BaseViewController;
+
+class FrontendController extends BaseViewController 
 {
-	public function __construct()
+	protected function onCreate(): void
     {
-        parent::__construct();
+        // Initialization implementation
 	}
 	
 	public function user(): int 
@@ -76,48 +80,6 @@ protected ?\App\Application $app = null;
 ***
 
 ## Methods
-
-### request
-
-Initializes the HTTP request class instance.
-
-```php
-protected final request(): \Luminova\Http\Request
-```
-
-**Return Value:**
-
-`Request` - Return request class instance.
-
-***
-
-### validate
-
-Initializes the input validation class instance.
-
-```php
-protected final validate(): \Luminova\Security\Validation
-```
-
-**Return Value:**
-
-`Validation` - Return input validation class instance.
-
-***
-
-### app
-
-Initializes the application class instance.
-
-```php
-protected final app(): \App\Application
-```
-
-**Return Value:**
-
-`Application` - Return application class instance.
-
-***
 
 ### view
 

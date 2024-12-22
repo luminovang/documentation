@@ -20,7 +20,7 @@ When a visitor accesses a page on your website, the framework caches the page co
 
 The cached content is organized in subdirectories based on your `app.version`. This is especially useful for versioned URLs, such as those on a documentation website. When you release a new version of your application, users can still access the content from older versions without encountering `404` errors.
 
-The caching process also uses environment variables like `default.cache.control` and `page.cache.expiry` to manage content expiration and cache control settings. Additionally, `page.cache.app.versions` allows the application to serve cached content from older versions.
+The caching process also uses environment variables like `default.cache.control` and `page.cache.expiry` to manage content expiration and cache control settings. Additionally, `page.cache.app.versions` allows the application to serve cached content from older versions and `page.cache.latest.content` allows you to define URI patterns to always cache content based on latest application version code.
 
 ***
 
@@ -33,6 +33,18 @@ page.cache.app.versions [1.0.0, 1.1.0]
 ```
 
 This allows the framework to search for and serve content from the specified older versions when needed.
+
+***
+
+### Cache Latest Version Only
+
+You can define a list of URI patterns that should only look for cached content in the application latest version caches. To do this, specify the URI patterns in the `page.cache.latest.content` environment variable.
+
+```bash
+page.cache.latest.content = ['/', 'blog', 'blog/*/foo', 'foo/*']
+```
+
+This instructs the framework to search for cached content matching these URL patterns only in the cache folder of the current application version.
 
 ***
 

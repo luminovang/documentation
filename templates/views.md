@@ -66,7 +66,11 @@ public codeblock(bool $minify, bool $button = false): self
 
 ### setFolder
 
-The `setFolder` method allows you to define a base directory for view file resolution, making it easier to organize your application's view files. By using this method, you can control where the framework searches for view files associated with a specific controller, method, or the entire application.
+The `setFolder` method allows you to set a sub-folder for view file resolution, making it easier to organize your application's view files. By using this method, you can control where the framework searches for view files associated with a specific controller, method, or the entire application in one of the following locations:
+
+- `/resources/Views/`
+- `/app/Modules/Views/`
+- `/app/Modules/<Module>/Views/`
 
 ```php
 public setFolder(string $path): self
@@ -76,7 +80,7 @@ public setFolder(string $path): self
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$path`   | string | The directory path relative to `resources/views/` where the view files will be searched. |
+| `$path`   | string | The directory path relative to `resources/Views/` where the view files will be searched. |
 
 **Return Value:**
 
@@ -90,12 +94,12 @@ public setFolder(string $path): self
 
 **Example Usage:**
 
-In this example, the `setFolder` method is used to direct the framework to look for view files in a custom directory (`resources/views/example/`) for all views within a specific controller.
+In this example, the `setFolder` method is used to direct the framework to look for view files in a custom directory (`resources/Views/example/`) for all views within a specific controller.
 
 ```php
-// /app/Controllers/ExampleController.php
+// /app/Controllers/Http/ExampleController.php
 <?php 
-namespace App\Controllers;
+namespace App\Controllers\Http;
 
 use \Luminova\Base\BaseController;
 
@@ -124,13 +128,39 @@ class ExampleController extends BaseController
 
 **Explanation:**
 
-- **Controller Global Usage:** Here, `setFolder('example')` in `onCreate` ensures that all view lookups in `ExampleController` will be within `resources/views/example/`.
+- **Controller Global Usage:** Here, `setFolder('example')` in `onCreate` ensures that all view lookups in `ExampleController` will be within `resources/Views/example/`.
 - **Method-Specific Usage:** If you need a different view directory for a specific method, you can call `setFolder` before rendering that method's view.
 
 > **Important Notes:** 
 > 
-> **Directory Structure:** Ensure that the specified sub-folder exists within `resources/views/` for `setFolder` to function correctly.
+> **Directory Structure:** Ensure that the specified sub-folder exists within `resources/Views/` for `setFolder` to function correctly.
 > **Organized Views:** This method helps maintain a clear and organized directory structure in your application, particularly as the number of views grows.
+
+***
+
+### setModule
+
+The `setModule` method allows you to set `HMVC` module directory name that contains the controller class. This is important for identifying each HMVC module while rendering views.
+
+```php
+public setModule(string $module): self
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$module`   | string | The name of the module folder (e.g., `Blog`).<br/>Use a blank string for global conterller without a specific module name prefix. |
+
+**Return Value:**
+
+`self` - Returns the current instance of the `View` class or `CoreApplication`, depending on where it is called.
+
+**Throws**
+
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - Throws if an invalid module name is specified.
+
+> **Note:** This method is HMVC specify feature and should only be called once in the controller's `onCreate` or `__construct` method, before rendering any views.
 
 ***
 
@@ -186,9 +216,9 @@ class Application extends CoreApplication
 Now in your controller class, when excluded views are rendered it won't be cached.
 
 ```php
-// /app/Controllers/ApiController.php
+// /app/Controllers/Http/ApiController.php
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Http;
 
 use \Luminova\Base\BaseController;
 class ApiController extends BaseController
@@ -289,9 +319,9 @@ The `cacheable` method can be called in the controller's or application's `onCre
 But in this example we will use `Controller` method to disable caching for all `API` routes.
 
 ```php
-// /app/Controllers/ApiController.php
+// /app/Controllers/Http/ApiController.php
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Http;
 
 use \Luminova\Base\BaseController;
 class ApiController extends BaseController
@@ -333,8 +363,7 @@ public export(string|object $class, ?string $alias = null, bool $initialize =tru
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If the class does not exist or failed.
-- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - If there is an error during registration.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If the class does not exist, failed or an error during registration.
 
 **Examples**
 
@@ -427,9 +456,9 @@ In this example we check if cache exist and not expired before processing heavy 
 <p class="text-danger">*Note:* Passing different expiration other than the expiration used during cache will not take effect in checking the expiration.</p>
 
 ```php
-// /app/Controllers/ExampleController.php
+// /app/Controllers/Http/ExampleController.php
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Http;
 
 use \Luminova\Base\BaseController;
 
@@ -480,6 +509,46 @@ public expired(string|null $viewType = 'html'): bool
 > Before calling this method, you must first call `cache` method instantiate it for use.
 > 
 > For the expiration check, we use the expiration set in `env` while saving cache, also don't worry about the cache key as it handled internally to save your precious time.
+
+***
+
+### onExpired
+
+The `expired` method checks whether a cached item has expired, allowing you to decide whether to renew the view or reuse the cached version.
+
+```php
+public onExpired(string $viewType, Closure $renew, mixed ...$arguments): int
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$viewType` | **string** | The type of view content to check (e.g, `html` or `json`). |
+| `$renew` | **Closure** | A callback function that will be executed if the cached content has expired.<br/>This function should return in (`0` or `1`). |
+| `$arguments` | **mixed** | Optional arguments to pass to the callback function, none dependency injection supported.. |
+
+**Return Value:**
+
+`int` - Return the status code of the cache renewal callback if the cache has expired, otherwise the status code from reusing the existing cache.
+
+**Example**
+
+```php
+public function books(): int 
+{
+	return $this->app->onExpired('html', function() {
+		$books = [
+			['id' => 100, 'name' => 'Basic Programming'],
+			['id' => 1001, 'name' => 'Advanced Programming']
+		];
+
+		return $this->view('books', [
+				'books' => $books
+		]);
+	});
+}
+```
 
 ***
 
@@ -655,7 +724,7 @@ public view(string $viewName, string $viewType = 'html'): self
 In your controller class.
 
 ```php
-// /app/Controllers/FooController.php
+// /app/Controllers/Http/FooController.php
 <?php
 namespace App\Controllers;
 
@@ -732,7 +801,7 @@ public respond(array<string,mixed> $options = [], int $status = 200): string
 In your controller class.
 
 ```php
-// /app/Controllers/FooController.php
+// /app/Controllers/Http/FooController.php
 <?php
 namespace App\Controllers;
 
@@ -743,7 +812,8 @@ class FooController extends BaseController
 {
     public function foo(): int
     {
-        $content = $this->respond(['foo' => 'bar']);
+        $content = $this->app->view('name', 'html')
+            ->respond(['foo' => 'bar']);
         Mailer::to('peter@luminova.ng')->send($content);
         return STATUS_SUCCESS;
     }
@@ -752,6 +822,58 @@ class FooController extends BaseController
 
 > The `respond` method allows for greater flexibility in handling view content by returning it as a string. 
 > This is particularly useful for scenarios such as downloading, sending emails or processing the view content further before presenting it. 
+
+***
+
+### promise
+
+Return promise that resolved to rendered contents of a view.
+
+```php
+public promise(array<string,mixed> $options = [], int $status = 200): Luminova\Interface\PromiseInterface
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$options` | **array<string,mixed>** |  Additional parameters to pass in the template file. |
+| `$status` | **int** | The HTTP status code (default: `200` OK). |
+
+**Return Value:**
+
+`Luminova\Interface\PromiseInterface` - Return promise that resolved compiled view contents or rejection.
+
+**Example**
+
+Display your template view or send as an email after promise resolves
+
+```php
+// /app/Controllers/Http/FooController.php
+<?php
+namespace App\Controllers;
+
+use \Luminova\Base\BaseController;
+use \App\Services\Mailer;
+
+class FooController extends BaseController
+{
+    public function foo(): int
+    {
+        $this->app->view('name', 'html')
+        ->promise(['foo' => 'bar'])
+        ->then(function(string $content) {
+            Mailer::to('peter@luminova.ng')->send($content);
+        })->catch(function(Exception $e) {
+            logger('debug', $e->getMessage());
+        });
+        
+        return STATUS_SUCCESS;
+    }
+}
+```
+
+> **Note:** When using promise method, it doesn't directly renders the content, instead it resolves the complied content and return promise object.
 
 ***
 

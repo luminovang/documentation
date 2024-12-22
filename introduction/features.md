@@ -30,8 +30,9 @@ You can configure the features in your environment variable file `/.env`, by sim
 
 ```php 
 <?php 
-namespace App\Controllers;
+namespace App\Controllers\Http;
 
+use App\Controllers\Errors\ViewErrors;
 use Luminova\Base\BaseController;
 use Luminova\Attributes\Route;
 use Luminova\Attributes\Error;
@@ -207,7 +208,7 @@ And the corresponding controller class will look like below example.
 
 ```php
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Http;
 
 use \Luminova\Base\BaseController;
 use \Luminova\Security\Crypter;

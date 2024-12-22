@@ -16,9 +16,7 @@ It also supports third-party PHP mailer libraries like `PHPMailer` and `SwiftMai
 
 ***
 
-* Class namespace: `\Luminova\Email\Mailer`
-
-## Methods
+## Guides 
 
 By default, the `Mailer` class uses a simple email class `NovaMailer` to send emails. If you wish to switch to a more advanced mailer, you can use `PHPMailer` or `SwiftMailer`, which are already implemented in the Luminova framework.
 
@@ -29,6 +27,7 @@ Initializing with `PHPMailer`:
 ```php
 <?php
 use \Luminova\Email\Clients\PHPMailer;
+
 $mailer = new Mailer(PHPMailer::class);
 ```
 
@@ -40,12 +39,50 @@ use \Luminova\Email\Clients\SwiftMailer;
 $mailer = new Mailer(SwiftMailer::class);
 ```
 
-*Note:*
+> **Note:**
+> To use either `PHPMailer` or `SwiftMailer`, you will need to install the package first using Composer:
 
-To use either `PHPMailer` or `SwiftMailer`, you will need to install the package first using Composer:
+For PHPMailer: 
+```bash 
+composer require phpmailer/phpmailer
+```
 
-- For PHPMailer: `composer require phpmailer/phpmailer`
-- For SwiftMailer: `composer require "swiftmailer/swiftmailer:^6.0"`
+For SwiftMailer: 
+```bash 
+composer require "swiftmailer/swiftmailer:^6.0"
+```
+
+***
+
+## Class Definition
+
+* Class namespace: `\Luminova\Email\Mailer`
+* This class implements:  [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface)
+
+***
+
+## Methods
+
+Learn how to create reusable email template using [Base Email Template Class](/base/mailer.md).
+
+### getInstance
+
+Initialize and retrieve the singleton instance of the Mailer class.
+This method ensures that only one instance of the Mailer class is created and provides global access to that instance. If no instance exists, it will  instantiate the Mailer with the provided interface.
+
+```php
+public static getInstance(MailerInterface|string|null $interface = null): static
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$interface` | **\Luminova\Interface\MailerInterface\|string\|null** | The mailer client interface to be used for instantiation. |
+
+**Return Value:**
+
+`Luminova\Email\Mailer` - Returns the shared singleton instance of the Mailer class.
 
 ***
 
@@ -108,12 +145,12 @@ public address(string $address, string $name = ''): self
 
 ***
 
-### replyTo
+### reply
 
 Add a reply-to address.
 
 ```php
-public replyTo(string $address, string $name = ''): self
+public reply(string $address, string $name = ''): self
 ```
 
 **Parameters:**
@@ -311,7 +348,7 @@ Creating mailer instance to send email.
 
 ```php
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Http;
 
 use \Luminova\Base\BaseController;
 use \Luminova\Email\Mailer;
@@ -324,8 +361,8 @@ class MailerController extends BaseController
             ->address('peter@example.com')
             //->cc('cc@example.com')
             //->bcc('bcc@example.com')
-            //->replyTo('admin@example.com')
-            //->addFile()
+            //->reply('admin@example.com')
+            //->addFile(...)
             ->subject('Email Hello!')
             ->body('<p>HTML email message body</p>')
             ->text('Alt text email body!')
@@ -338,11 +375,11 @@ class MailerController extends BaseController
 
 ***
 
-Creating a mailer [template controller class](/base/mailer.md).
+Creating a [Mailer Controller Class](/base/mailer.md).
 
 ```php
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Http;
 
 use \Luminova\Base\BaseController;
 use \App\Utils\OrderTemplate;
@@ -350,7 +387,7 @@ use \Luminova\Email\Mailer;
 
 class MailerController extends BaseController
 {
-    public function sendEmail(OrderTemplate $email): int
+    public function sendEmail(): int
     {
         (new Mailer())
             ->from('system@example.com')

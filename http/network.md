@@ -1,4 +1,4 @@
-# Network Class for Managing HTTP Outgoing Requests
+# Network Class for Managing HTTP Request Clients
 
 ***
 
@@ -10,56 +10,18 @@ Network class an ideal choice for developers looking to implement reliable and e
 
 ## Introduction
 
-The `Network` class is a utility designed to simplify HTTP requests to external resources, such as APIs, web services, and websites. It simplifies the process of sending requests and efficiently handling responses, allowing you to read entire content or use the [File Input Stream](/files/stream.md) to read large contents in parts.
+The `Network` class is a utility designed to simplify HTTP request client operations, it allows you to specify the request client to use ensuring compatibility when the need to change request client arise.
 
-## Key Features
-
-- **Independence**: The `Network` class operates independently, using `cURL` for making network requests, which allows for basic functionality without additional dependencies.
-- **Complex Requests**: For more advanced use cases, the class integrates the [Guzzle HTTP Client](https://docs.guzzlephp.org/en/stable/overview.html) library, enabling developers to utilize advanced features and a wide range of customization options.
-
-Whether performing simple `GET` and `POST` requests or engaging in more complex interactions, the `Network` class offers robust capabilities to meet your needs.
-
-***
-
-* Class namespace: `\Luminova\Http\Network`
-* This class implements:
-[\Luminova\Interface\NetworkInterface](/interface/classes.md#networkinterface)
+- **Simplified Request Client**: The `Curl` client operates independently, using `cURL` for making network requests, which allows for basic functionality without additional dependencies. For more details refer to the documentation [Curl Request Clients Implementation](/http/request-client.md).
+- **Complex Requests**: For more advanced use cases, the class integrates the [Guzzle HTTP Client](https://docs.guzzlephp.org/en/stable/overview.html) library, enabling developers to utilize advanced features and a wide range of customization options. For more details about Luminova Guzzle client extension, refer to the documentation [Request Clients Implementation](/http/request-client.md).
 
 ***
 
 ## Usage Examples
 
-**cURL Client Options:** Find the detailed [description below](/http/network#lmv-docs-configuration-options).
-
-```php
-[
-    'verify'            => false,
-    'max'               => 5,
-    'connect_timeout'   => 0,
-    'allow_redirects'   => true,
-    'stream'            => false, 
-    'sink'              => 'php://temp', // with read and write mode
-    'file_time'         => false,
-    'version'           => CURL_HTTP_VERSION_NONE,
-    'decode_content'    => '',
-    'referer'           => false,
-    'output_headers'    => false,
-    'headers'           => [ ... ],
-    'on_headers'        => function (Luminova\Http\Message\Response $response, array $header) { ... },
-
-    // The bellow options cannot be used together
-    'query'             => [ ... ],
-    'body'              => [ ... ],
-    'form_params'       => [ ... ],
-    'multipart'         => [ ... ],
-];
-```
-
-### Class Initialization
-
 You can initialize the Network class with either the **cURL** or **Guzzle** client. The client initialization options are immutable and cannot be overridden after initialization.
 
-### Using cURL Client
+### Initialization cURL Client
 
 ```php
 <?php
@@ -70,7 +32,9 @@ $client = new Curl([
 ]);
 ```
 
-### Using Guzzle Client
+---
+
+### Initialization Guzzle Client
 
 **Installation**
 
@@ -81,9 +45,11 @@ Install it via Composer:
 composer require guzzlehttp/guzzle
 ```
 
-#### Guzzle Client Options
+---
 
-When using `Guzzle` client all guzzle HTTP methods will be made available throw the Network class, for more detailed about Guzzle client and available options, refer to the [Guzzle documentation](https://docs.guzzlephp.org/en/stable/request-options.html).
+### Guzzle Client Options
+
+When using `Guzzle` client all guzzle HTTP methods will be made available in the Network class, for more detailed about Guzzle client and available options, refer to the [Guzzle documentation](https://docs.guzzlephp.org/en/stable/request-options.html).
 
 ```php
 <?php
@@ -192,37 +158,60 @@ $response = $network->get('large-file', [
 
 ***
 
+## Class Definition
+
+* Class namespace: `\Luminova\Http\Network`
+* This class implements: [\Luminova\Interface\NetworkInterface](/interface/classes.md#networkinterface), [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface)
+
+***
+
+### Constants
+
+Constants in the network request class.
+
+| **Constant**     | **Type**  | **Value**  | **Description**                                   |
+|-------------------|-----------|------------|---------------------------------------------------|
+| `SKIP_HEADER`     | `int`     | `5319`     | Custom header flag-value to skip headers in the request.       |
+| `GET`             | `string`  | `GET`      | Represents the HTTP GET method.                  |
+| `POST`            | `string`  | `POST`     | Represents the HTTP POST method.                 |
+| `PUT`             | `string`  | `PUT`      | Represents the HTTP PUT method.                  |
+| `PATCH`           | `string`  | `PATCH`    | Represents the HTTP PATCH method.                |
+| `DELETE`          | `string`  | `DELETE`   | Represents the HTTP DELETE method.               |
+| `OPTIONS`         | `string`  | `OPTIONS`  | Represents the HTTP OPTIONS method.              |
+
+***
+
 ## Methods
 
 ### constructor
 
-Initializes the Network class with an optional client `NetworkClientInterface` object.
+Initializes the Network class with an optional client `ClientInterface` object.
 If client is `NULL`, it uses `cURL` client for making HTTP requests.
 
 ```php
-public __construct(\Luminova\Interface\NetworkClientInterface|null $client = null): mixed
+public __construct(?Psr\Http\Client\ClientInterface $client = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$client` | **\Luminova\Interface\NetworkClientInterface<\T>&#124;null** | The HTTP client to used in making requests. |
+| `$client` | **ClientInterface<\T>&#124;null** | The HTTP client to used in making requests (default: `Curl`). |
 
 ***
 
 ### getClient
 
 Retrieves the current HTTP client instance.
-If using `cURL`, it will return cURL which implements `NetworkClientInterface` interface otherwise it will return PSR `ClientInterface`.
+If using `cURL`, it will return cURL which implements `ClientInterface` interface otherwise it will return PSR `ClientInterface`.
 
 ```php
-public getClient(): NetworkClientInterface<\T>|ClientInterface<\T>
+public getClient(): \Psr\Http\Client\ClientInterface
 ```
 
 **Return Value:**
 
-`\Luminova\Interface\NetworkClientInterface<\T>|\Psr\Http\Client\ClientInterface<\T>` - Return the instance of the HTTP client used for requests.
+`\Psr\Http\Client\ClientInterface<\T>` - Return the instance of the HTTP client used for requests.
 
 ***
 
@@ -231,20 +220,19 @@ public getClient(): NetworkClientInterface<\T>|ClientInterface<\T>
 Sends an HTTP request with the specified method, URL, data, and headers.
 
 ```php
-public send(string $method, string $url, array $options = []): ResponseInterface|Response
+public function send(\Psr\Http\Message\RequestInterface $request, array<string,mixed> $options = []): ResponseInterface
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$method` | **string** | The HTTP method to use (e.g., GET, POST, PUT, DELETE). |
-| `$url` | **string** | The target URL or URI for the request. |
+| `$request` | **RequestInterface;** | The request object that contains all necessary details for the request. |
 | `$options` | **array** | Additional configuration options to use for the request (default: `[]`). |
 
 **Return Value:**
 
-`\Psr\Http\Message\ResponseInterface|\Luminova\Http\Message\Response` - Return the response returned by the server.
+`\Psr\Http\Message\ResponseInterface` - Return the response returned by the server.
 
 **Throws:**
 
@@ -260,19 +248,19 @@ public send(string $method, string $url, array $options = []): ResponseInterface
 Executes a GET request to the specified URL with optional data and headers.
 
 ```php
-public get(string $url, array $options = []): ResponseInterface|Response
+public get(string $uri = '', array<string,mixed> $options = []): ResponseInterface
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$url` | **string** | The target URL or URI for the request. |
+| `$uri` | **string** | The target URL or URI for the request (default: ''). |
 | `$options` | **array** | Additional configuration options to use for the request (default: `[]`). |
 
 **Return Value:**
 
-`\Psr\Http\Message\ResponseInterface|\Luminova\Http\Message\Response` - Return the server's response to the GET request.
+`\Psr\Http\Message\ResponseInterface` - Return the server's response to the GET request.
 
 **Throws:**
 
@@ -285,29 +273,40 @@ public get(string $url, array $options = []): ResponseInterface|Response
 
 ### fetch
 
-Fetches data from the specified URL using a GET request.
+Sends an HTTP request and returns a promise that resolves with the response.
 
 ```php
-public fetch(string $url, array $options = []): ResponseInterface|Response
+public fetch(
+    Psr\Http\Message\UriInterface|string $uri = '', 
+    string $method = self::GET, 
+    array<string,mixed> $options = []
+): PromiseInterface
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$url` | **string** | The target URL or URI for the request. |
+| `$uri` | **UriInterface\|string** | The target URL or URI for the HTTP request. |
+| `$method` | **string** |  The HTTP method to use (e.g., `GET`, `POST`, `PUT`, `DELETE`). |
 | `$options` | **array** | Additional configuration options to use for the request (default: `[]`). |
 
 **Return Value:**
 
-`\Psr\Http\Message\ResponseInterface|\Luminova\Http\Message\Response` - Return the server's response containing the fetched data.
+`Luminova\Interface\PromiseInterface` - Return a promise that resolves with the HTTP response.
 
-**Throws:**
+**Example:**
 
-- `\Luminova\Exceptions\Http\RequestException` - Throws if an error occurs while making the request.
-- `\Luminova\Exceptions\Http\ConnectException` - Throws if a connection to the server cannot be established.
-- `\Luminova\Exceptions\Http\ClientException` - Throws if the client encounters an error (`4xx` HTTP status codes).
-- `\Luminova\Exceptions\Http\ServerException` - Throws if the server encounters an error (`5xx` HTTP status codes).
+```php
+(new Network())
+    ->fetch('https://example.com', 'GET', ['headers' => ['Accept' => 'application/json']])
+    ->then(function (Psr\Http\Message\ResponseInterface $response) {
+        echo $response->getBody()->getContents();
+    })
+    ->catch(function (Throwable $exception) {
+        echo 'Error: ' . $exception->getMessage();
+    });
+```
 
 ***
 
@@ -316,19 +315,19 @@ public fetch(string $url, array $options = []): ResponseInterface|Response
 Executes a POST request to the specified URL with the provided data and headers.
 
 ```php
-public post(string $url, array $options = []): ResponseInterface|Response
+public post(string $uri = '', array<string,mixed> $options = []): ResponseInterface
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$url` | **string** | The target URL or URI for the request. |
+| `$uri` | **string** | The target URL or URI for the request (default: ''). |
 | `$options` | **array** | Additional configuration options to use for the request (default: `[]`). |
 
 **Return Value:**
 
-`\Psr\Http\Message\ResponseInterface|\Luminova\Http\Message\Response` - Return the server's response to the POST request.
+`\Psr\Http\Message\ResponseInterface` - Return the server's response to the POST request.
 
 **Throws:**
 
@@ -344,20 +343,24 @@ public post(string $url, array $options = []): ResponseInterface|Response
 Performs an HTTP request with the specified method, URL, data, and headers.
 
 ```php
-public request(string $method, string $url, array $options = []): ResponseInterface|Response
+public request(
+    string $method, 
+    \Psr\Http\Message\UriInterface|string $uri = '', 
+    array<string,mixed> $options = []
+): ResponseInterface
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$method` | **string** | The HTTP method to use (e.g., GET, POST, PUT, DELETE). |
-| `$url` | **string** | The target URL or URI for the request. |
+| `$method` | **string** | The HTTP method to use (e.g., `Network::GET`, `Network::POST`,` Network::PUT`, `Network::DELETE`). |
+| `$uri` | **UriInterface\|string** |  The request URI object or string (default: ''). |
 | `$options` | **array** | Additional configuration options to use for the request (default: `[]`). |
 
 **Return Value:**
 
-`\Psr\Http\Message\ResponseInterface|\Luminova\Http\Message\Response` - Return the response returned by the server.
+`\Psr\Http\Message\ResponseInterface` - Return the response returned by the server.
 
 **Throws:**
 
@@ -368,150 +371,50 @@ public request(string $method, string $url, array $options = []): ResponseInterf
 
 ***
 
-### Configuration Options
+### sendAsync
 
-The following options are available for the **Luminova cURL client**, most of the option name are same in `Guzzle` client as well, to see full guzzle option read the documentation by following the link in this documentation.
-
-** `verify` (string|bool)**
-
-- **Description**: Determines whether to verify the peer's SSL certificate.
-- **Default**: `false`
-- **When to Use**: Set this to `true` to ensure secure connections, `false` if you're working with self-signed certificates or `string` to specify the certificate path `/path/to/cert.pem`.
-
-** `max` (int)**
-
-- **Description**: Specifies the maximum number of redirects to follow.
-- **Default**: `5`
-- **When to Use**: Adjust this value if you anticipate needing to follow more redirects. For example, set a higher value for APIs that might redirect multiple times.
-
-** `output_headers` (bool)**
-
-- **Description**: Specify weather to output header with the content body same as setting `CURLOPT_HEADER`.
-- **Default**: `false`
-- **When to Use**: Use this when you want to output or write both the header and body.
-
-** `connect_timeout` (int)**
-
-- **Description**: Sets the maximum time in seconds to wait for a connection to be established.
-- **Default**: `0` (no timeout)
-- **When to Use**: Use this to prevent long hangs when attempting to connect to a server. Set a reasonable timeout value (e.g., 10 seconds) to handle connection issues gracefully.
-
-** `allow_redirects` (bool)**
-
-- **Description**: Indicates whether to automatically follow HTTP redirects.
-- **Default**: `true`
-- **When to Use**: Keep this as `true` for most scenarios, especially when working with URLs that may redirect. Set to `false` if you want to handle redirects manually.
-
-** `stream` (bool)**
-
-- **Description**: Specifies whether to return the response as a stream instead of a string.
-- **Default**: `false`
-- **When to Use**: Set this to `true` if you expect large responses and want to process them as they arrive, rather than loading the entire response into memory at once.
-
-** `sink` (path-string|resource)**
-
-- **Description**: The path or resource to write the response body to.
-- **Default**: `php://temp` (temporary memory storage)
-- **When to Use**: Specify a file path if you want to save the response directly to a file, particularly useful for downloading large files.
-
-** `file_time` (bool)**
-
-- **Description**: Determines whether to retrieve the file modification time.
-- **Default**: `false`
-- **When to Use**: Set this to `true` if you need to check the last modified time of the file being downloaded.
-
-**`version` (string)**
-
-- **Description**: Specifies the HTTP version to use for the request.
-- **Default**: `CURL_HTTP_VERSION_NONE`
-- **When to Use**: Use this option if you need to enforce a specific HTTP version (e.g., `CURL_HTTP_VERSION_2_0`) for compatibility with server requirements.
-
-**`decode_content` (string)**
-
-- **Description**: Controls how to decode the response body.
-- **Default**: Blank string (no specific decoding)
-- **When to Use**: Specify encoding types (e.g., `gzip`, `deflate`) if you expect the server to return compressed content.
-
-**`referer` (bool)**
-
-- **Description**: Indicates whether to send the Referer header with the request.
-- **Default**: `false`
-- **When to Use**: Set this to `true` if you need to pass along the referring URL for analytics or tracking purposes.
-
-**`query` (array)**
-
-- **Description**: Query parameters for GET requests.
-- **When to Use**: Use this to append parameters to the URL for GET requests, which can be useful for filtering or searching resources.
+Sends an HTTP request asynchronously using a request object.
 
 ```php
-'query' => [                    
-    'Foo' => 'Bar'
-],
+public sendAsync(
+    \Psr\Http\Message\RequestInterface $request, 
+    array<string,mixed> $options = []
+): PromiseInterface
 ```
 
-** `body` (array)**
+**Parameters:**
 
-- **Description**: The request body for POST, PUT, and PATCH requests.
-- **When to Use**: Use this when you need to send data in the body of a request, such as JSON payloads.
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$request` | **RequestInterface<\T>** | The request object that contains all necessary details for the request. |
+| `$options` | **array<string,mixed>** | Request options to apply to the given request and to the transfer (default: `[]`). |
+
+**Return Value:**
+
+- `Luminova\Interface\PromiseInterface` - Return Luminova promise that resolves or reject to the request response.
+
+***
+
+### requestAsync
+
+Sends an HTTP request asynchronously using a UriInterface object or string.
 
 ```php
-'body' => [            
-    'foo' => 'bar'
-],
+public requestAsync(
+    string $method, 
+    \Psr\Http\Message\UriInterface|string $uri = '',
+    array<string,mixed> $options = []
+): PromiseInterface
 ```
 
-** `form_params` (array)**
+**Parameters:**
 
-- **Description**: Parameters for form submissions in POST, PUT, and PATCH requests.
-- **When to Use**: Use this for sending `application/x-www-form-urlencoded` data, typical for form submissions.
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$method` | **string** | The HTTP method to use (e.g, `Network::GET`, `Network::POST`, etc..). |
+| `$uri` | **UriInterface\|string** | The request URI object or string (default: ''). |
+| `$options` | **array<string,mixed>** | Request options to apply to the given request and to the transfer (default: `[]`). |
 
-```php
-'form_params' => [              
-    'foo' => 'bar'
-],
-```
+**Return Value:**
 
-** `multipart` (array)**
-
-- **Description**: Contains multipart form data for uploading files and data.
-- **When to Use**: Use this option when you need to upload files or large data as `multipart/form-data`.
-
-```php
-'multipart' => [             
-    [
-        'name'     => 'foo',
-        'contents' => 'some data..',
-    ],
-    [
-        'name'     => 'bar',
-        'contents' => '/path/to/file/image.png' // If using path it must be readable
-    ],
-    [
-        'name'     => 'baz',
-        'contents' => new \CurlFile('/path/to/file/image.png'),
-        'filename' => 'avatar.png'
-    ]
-],
-```
-
-** `headers` (array)**
-
-- **Description**: Sets custom headers for the request.
-- **When to Use**: Use this to add or override headers, such as authentication tokens or content types.
-
-```php
-'headers' => [                  
-    'Foo' => 'Bar'
-],
-```
-
-** `on_headers` (callable)**
-
-- **Description**: A callback function that is called when headers are received.
-- **When to Use**: Use this to perform custom logic based on response headers, such as checking content length or handling specific status codes.
-
-```php
-'on_headers' => function (Luminova\Http\Message\Response $response, array $header) { 
-    // Custom logic when header is received
-},
-```
+- `Luminova\Interface\PromiseInterface` - Return Luminova promise that resolves or reject to the request response.

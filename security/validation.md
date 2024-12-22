@@ -135,11 +135,10 @@ These examples demonstrate how to set up and use validation rules, handle valida
 
 ***
 
-## Validation Class 
+## Class Definition
 
 * Class namespace: `\Luminova\Security\Validation`
-* This class implements:
-[\Luminova\Interface\ValidatorInterface](/interface/classes.md#validatorinterface)
+* This class implements: [\Luminova\Interface\ValidatorInterface](/interface/classes.md#validatorinterface), [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface)
 
 ***
 

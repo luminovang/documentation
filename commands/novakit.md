@@ -10,11 +10,11 @@ Need to manage environment variables or create a sitemap? NovaKit has got you co
 
 ## Introduction
 
-The Luminova framework includes **NovaKit**, a Command Line Utility Tool designed to simplify application development. This tool allows for the extension and implementation of custom command-line logic tailored to your application's needs through the [Base Command Class](/base/command.md) and `Base Console` classes. By extending `Base Command`, you can create command-line tools that operate similarly to HTTP `Controller` methods, supporting command routing using [Route Attributes](/routing/route-attribute.md).
+The Luminova framework includes **NovaKit**, a Command Line Utility Tool designed to simplify application development. This tool allows for the extension and implementation of custom command-line logic based on your application's needs, through the [Base Command Controller Class](/base/command.md) and `Luminova\Base\BaseConsole` class. By extending `Luminova\Base\BaseCommand`, you can create command-line tools that operate similarly to HTTP controllers and request methods, supporting command routing using [PHP Route Attributes](/routing/route-attribute.md) as well as [Method Based Routing](/routing/url-routing.md).
 
 ### What Is NovaKit?
 
-NovaKit is a powerful tool provided by the Luminova framework to simplify command-line operations. It facilitates the development of console-level tools that can be executed directly as `novakit` commands. NovaKit offers various functionalities, including:
+NovaKit handle the command execution and output formatting offering various functionalities, including:
 
 - Generating boilerplate code.
 - Creating scaffolds and templates.
@@ -59,6 +59,27 @@ php novakit log --help
 
 ***
 
+### Default Command Flags
+
+Use these flags with commands to modify output formatting.
+
+- **`--no-header`**: Omits the header from the output.
+  ```bash
+  php novakit <command> --no-header
+  ```
+
+- **`--no-color`**: Disables colored output.
+  ```bash
+  php novakit <command> --no-color
+  ```
+
+- **`--no-ansi`**: Disables ANSI formatting for terminals that don't support it.
+  ```bash
+  php novakit <command> --no-ansi
+  ```
+
+***
+
 ### Basic NovaKit Generators Commands
 
 The generator commands allow you to easily generate a skeleton for a controller class, utils class, or a view file.
@@ -88,7 +109,7 @@ php novakit create:model "myModel"
 #### Controllers
 
 To create a new controller class for your application use the below example command.
-The class will be saved in `/app/Controllers/`
+The class will be saved in `/app/Controllers/Http/` or `/app/Modules/<module>/Controllers/Http/` for HMVC application.
 
 ```bash
 php novakit create:controller 'PayStackController'  --type 'view'
@@ -103,13 +124,13 @@ php novakit create:controller 'PayStackController'  --type 'view'
 #### View File
 
 To create a utility class for your application use the below example command.
-The class will be saved in `/resources/views/`
+The class will be saved in `/resources/Views/` or `/app/Modules/<module>/Views/` for HMVC application.
 
 ```bash
 php novakit create:view "blog" 
 ```
 
-> To create a view file in a subdirectory in `/resources/views/` folder, use flag `--dir "mySubDir"` 
+> To create a view file in a subdirectory in `/resources/Views/` folder, use flag `--dir "mySubDir"` 
 
 ***
 
@@ -240,101 +261,3 @@ php index.php <group-name> --help
 ```
 
 The `group-name` should be immediately after `php index.php`, followed by the `command-name` and any parameters. Arguments can be passed in any order after the command group name.
-
-***
-
-### Routing Command Controllers
-
-#### Example: Blog Command with Code-Based Routing
-
-To define your commands using code-based routing, you can configure your routes in the routing file as follows:
-
-```php
-// /routes/cli.php
-
-<?php 
-$router->group('blog', static function(Router $router) {
-    // Command with argument
-    $router->command('list', 'BlogCommand::blogs');
-
-    // Command with method argument
-    $router->command('list/limit/(:int)', 'BlogCommand::blogs');
-});
-```
-
-***
-
-#### Example: Blog Command with Attribute-Based Routing
-
-For attribute-based routing, you can directly annotate the `blogs` method in your command class:
-
-```php
-// app/Controllers/BlogCommand.php
-
-<?php
-namespace App\Controllers;
-
-use Luminova\Base\BaseCommand;
-
-class BlogCommand extends BaseCommand
-{
-    // Command with argument
-    #[Route('list', group: 'blog')]
-    public function blogs(): int {
-        $limit = $this->getAnyOption('limit', 'l', 10);
-        echo $limit;
-        return STATUS_SUCCESS;
-    }
-
-    // Command with method argument
-    #[Route('list/limit/(:int)', group: 'blog')]
-    public function blogs(int $limit = 10): int {
-        echo $limit;
-        return STATUS_SUCCESS;
-    }
-}
-```
-
-> **Note:** Both implementations achieve the same result.
-
-***
-
-### Executing Commands with Arguments
-
-You can specify arguments for your commands in various ways. For example, to list blogs with a limit of 3:
-
-```bash
-php index.php blog list --limit=3
-```
-
-***
-
-### Displaying Command Help
-
-To print help for the `blog` command, use the following command:
-
-```bash
-php index.php blog --help
-```
-
-***
-
-### Catching Exceptions
-
-In the Luminova framework, exceptions in CLI operations are managed effectively. To enable exception handling, follow these guidelines:
-
-#### Enable Exception Handling
-
-1. **Environment Configuration**: 
-   You can enable exception handling globally by setting the following option in your environment file:
-
-   ```plaintext
-   throw.cli.exceptions = true
-   ```
-
-2. **Temporary Enablement**: 
-   If you want to enable exception handling temporarily for the current script execution, you can use the following global function. Call it before your script runs or within the controller's `__construct`, `onCreate`, or any executing controller method:
-
-   ```php
-   setenv('throw.cli.exceptions', 'true');
-   ```

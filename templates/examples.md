@@ -10,7 +10,17 @@ This documentation covers the basic implementation of template handling within t
 
 ## Introduction
 
-Controllers are classes that handle requests made to your application, whether they originate from HTTP requests or CLI commands. Upon initialization, a controller method processes the request, receiving all necessary parameters and dependencies. After processing the information, the controller renders the response or handles it accordingly. All controller classes should be placed in the `/app/Controllers/` directory.
+Controllers are responsible for handling requests to your application, whether from HTTP or CLI. Upon initialization, a controller method processes the request, receiving necessary parameters and dependencies. After processing, the controller returns a response or performs the appropriate action.
+
+For **MVC applications**, controller classes should be placed in the following directories:
+- `/app/Controllers/Http/` - for HTTP request controllers
+- `/app/Controllers/Cli/` - for CLI command controllers
+
+For [HMVC applications](/introduction/hmvc-design.md), controller classes should be organized as follows:
+- `/app/Modules/Controllers/Http/` - For application entry HTTP request controller.
+- `/app/Modules/Controllers/Cli/` - For application entry CLI command controller if any.
+- `/app/Modules/<Module>/Controllers/Http/` - For application module prefix HTTP request controller.
+- `/app/Modules/<Module>/Controllers/Cli/`  - For application module prefix CLI command controller if any.
 
 ***
 
@@ -25,9 +35,9 @@ Luminova provides two base controller classes for handling HTTP requests, both o
 Extending [Luminova\Base\BaseController](/base/controller.md) automatically initializes the HTTP request class `\Luminova\Http\Request` and the input validation class `Luminova\Security\Validation`.
 
 ```php
-// /app/Controllers/MyController.php
+// /app/Controllers/Http/MyController.php
 <?php 
-namespace App\Controllers;
+namespace App\Controllers\Http;
 
 use Luminova\Base\BaseController;
 
@@ -44,9 +54,9 @@ class MyController extends BaseController
 Extending [Luminova\Base\BaseViewController](/base/view-controller.md) does not automatically initialize any additional classes, allowing for manual initialization when necessary. This is particularly useful for web pages that do not require immediate user input validation.
 
 ```php
-// /app/Controllers/MyController.php
+// /app/Controllers/Http/MyController.php
 <?php 
-namespace App\Controllers;
+namespace App\Controllers\Http;
 
 use Luminova\Base\BaseViewController;
 
@@ -63,9 +73,9 @@ class MyController extends BaseViewController
 Extending [Luminova\Base\BaseCommand](/base/command.md) allows the controller to handle command line operations in a manner similar to HTTP controllers. For more details on command line implementation, [see examples](/commands/examples.md).
 
 ```php
-// /app/Controllers/MyCommand.php
+// /app/Controllers/Cli/MyCommand.php
 <?php 
-namespace App\Controllers;
+namespace App\Controllers\Cli;
 
 use Luminova\Base\BaseCommand;
 
@@ -89,9 +99,9 @@ The primary difference lies in how they receive and process content. Additionall
 The `Response` class allows you to handle any type of response rendering without additional processing, making it particularly useful for APIs that need to return JSON responses, downloadable content, and more.
 
 ```php
-// /app/Controllers/BookController.php
+// /app/Controllers/Http/BookController.php
 <?php 
-namespace App\Controllers;
+namespace App\Controllers\Http;
 
 use Luminova\Base\BaseController;
 use Luminova\Attributes\Route;
@@ -120,7 +130,7 @@ In above example, when a POST request is sent to `https://example.com/api/books`
 
 ### Application View Example
 
-The **`View`** object is designed to load and render templates stored in the `/resources/views` directory. Supported template file extensions include:
+The **`View`** object is designed to load and render templates stored in the `/resources/Views` directory. Supported template file extensions include:
 - **`.tpl`**: For the Smarty template engine
 - **`.twg`**: For the Twig template engine
 - **`.php`**: For standard PHP templates
@@ -130,7 +140,7 @@ When you pass the template file name without the extension, the `View` object au
 #### Template File Example
 
 ```php
-// /resources/views/books.php
+// /resources/Views/books.php
 <!DOCTYPE html>
 <html lang="en"> 
 <head>
@@ -461,13 +471,13 @@ Imagine you have a website with the following URL patterns:
 - `https://example.com/admin/*` (Admin interface)
 - `https://example.com/*` (Main website)
 
-Placing all templates directly under the `resources/views/` directory could become unmanageable as your project grows. To maintain orderliness, you can organize your views into separate directories based on URL prefixes.
+Placing all templates directly under the `resources/Views/` directory could become unmanageable as your project grows. To maintain orderliness, you can organize your views into separate directories based on URL prefixes.
 
 #### Example
 
 You can create dedicated controller classes for each URL prefix, such as `ApiController` for API requests, `AdminController` for the admin interface, and `WebController` for the main website.
 
-Within each controller's `onCreate` or `__construct` method, you can specify the base directory where the corresponding template files are located under the `/resources/views/` root directory.
+Within each controller's `onCreate` or `__construct` method, you can specify the base directory where the corresponding template files are located under the `/resources/Views/` root directory.
 
 Here's how you can set it up:
 
@@ -498,7 +508,7 @@ class ApiController extends BaseController
 {
 	protected function onCreate(): void 
 	{
-	 	// Organize API views in /resources/views/apis/
+	 	// Organize API views in /resources/Views/apis/
 		$this->setFolder('apis');
 	}
 }
@@ -515,7 +525,7 @@ class AdminController extends BaseController
 {
 	protected function onCreate(): void 
 	{
-		// Organize admin views in /resources/views/admins/
+		// Organize admin views in /resources/Views/admins/
 		$this->setFolder('admins'); 
 	}
 }

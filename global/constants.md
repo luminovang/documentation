@@ -1,4 +1,4 @@
-# Global Constants
+# Global Core Constants
 
 ***
 

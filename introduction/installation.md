@@ -38,12 +38,23 @@ $ composer test
 
 ***
 
-### Manual Download 
+### Manual Download
 
-Download the framework project and extract it as zip in your project directory.
+To manually download and install the Luminova framework, follow these steps:
 
-**Latest Version**
-You can manually download the latest version of Luminova framework from official website, by simply [Download Framework](/download/) and extract to your local host directory and lunch in browser to start using Luminova.
+**Download the Latest or Current Version:**
+
+1. Click on the [Download Luminova Framework](/download/) link to get the latest version or the version currently displayed.
+2. Extract the ZIP file to your project directory.
+3. Start your Luminova PHP development server by running the novakit command, or use a local server like `XAMPP`, `WAMP`, or similar.
+4. Open the project folder in your browser (e.g., `http://localhost/project/public` or `http://192.168.0.1:8080`) to start using Luminova.
+
+**Download Other Versions:**
+
+To access previous or switch versions of the Luminova framework:
+
+1. Select the desired version from the version selector at the top right of the page.
+2. Return to this installation page and click the download link to get the chosen version.
 
 ***
 
@@ -122,25 +133,41 @@ The above configuration assumes the project folder is located as follows:
 
 ```bash
 /var/www/example.com/
-            └── public_html/                 (Framework Document Root)
-                ├── app/                     (Application configurations, utils, models and other files)
-				|    └── Controllers/        (Controllers for handling application logic)
-                ├── public/                  (Document Root)
-                │       ├── index.php        (Front Controller)
-                │       └── assets/          (Static Assets)
-                ├── libraries/
-                │       └── libs/            (Custom libraries)
-                ├── system/                  (Luminova Framework Classes)
-                │       └── plugins/         (Third-party libraries or plugins)
-                ├── resources/
-                │       └── views/           (Resource View Templates Files)
-                └── writeable/               (Writable Directory)
-                        ├── log/             (Error Logs)
-                        ├── storages/        (Private Storage Directory)
-                        └── caches/          (Cache Directory)
+    └── public_html/                        (Framework Document Root)
+        ├── app/                            (Application configurations, utilities, models, and other files)
+        │    ├── Config/                    (Application configuration classes)
+        │    ├── Controllers/               (MVC controllers for handling application logic)
+        │    │    ├── Http/                 (Controllers for handling HTTP requests)
+        │    │    └── Cli/                  (Controllers for handling CLI commands)
+        │    └── Modules/                   (HMVC modules)
+        │         ├── Controllers/          (Global controllers for HMVC modules)
+        │         │    ├── Http/            (Controllers for handling HTTP requests)
+        │         │    └── Cli/             (Controllers for handling CLI commands)
+        │         ├── Models/               (Models for HMVC modules)
+        │         ├── Views/                (Views for HMVC modules)
+        │         └── <module>/             (Custom HMVC module with a lowercase name)
+        │              ├── Controllers/     (Controllers specific to the module)
+        │              │    ├── Http/       (Controllers for handling HTTP requests)
+        │              │    └── Cli/        (Controllers for handling CLI commands)
+        │              ├── Models/          (Module-specific models for handling data)
+        │              └── Views/           (Module-specific views)
+        ├── bin/                            (Executable binary files)
+        ├── public/                         (Document root for serving static content)
+        │    ├── index.php                  (Front controller for handling incoming requests)
+        │    └── assets/                    (Public static assets such as CSS, JS, images)
+        ├── libraries/                      (Custom libraries)
+        │    └── libs/                      (Custom library files)
+        ├── system/                         (Luminova framework core classes)
+        │    └── plugins/                   (Third-party libraries or plugins)
+        ├── resources/                      (Resource view templates)
+        │    └── Views/                     (View templates files for rendering)
+        └── writeable/                      (Writable directory for runtime data)
+             ├── log/                       (Error log files)
+             ├── storages/                  (Private storage directory)
+             └── caches/                    (Cache directory)
 ```
 
-> *IMPORTANT*
+> **IMPORTANT**
 > Make sure you set the required permissions for `public` directory to be accessible in browsers.
 
 ***

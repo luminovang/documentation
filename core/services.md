@@ -14,10 +14,11 @@ Core Services in the Luminova Framework provide a foundational layer for impleme
 
 ***
 
+## Class Definition
+
 * Class namespace: `\Luminova\Base\CoreServices`
-* This class implements:
-[\Luminova\Interface\ServicesInterface](/interface/classes.md#servicesinterface)
 * This class is an **Abstract class**
+* This class implements: [\Luminova\Interface\ServicesInterface](/interface/classes.md#servicesinterface), [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface)
 
 ***
 ## Methods

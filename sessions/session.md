@@ -16,7 +16,10 @@ This is primarily designed for server-side session storage for enhanced security
 
 ***
 
+## Class Definition
+
 * Class namespace: `\Luminova\Sessions\Session`
+* This class implements:  [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface)
 
 ***
 

@@ -25,10 +25,6 @@ The `Terminal` class is inherited by the `BaseCommand` class, making its methods
 
 ***
 
-* Class namespace: `\Luminova\Command\Terminal`
-
-***
-
 ## Basic Usage Examples
 
 ### Using the Terminal Class in Command Controllers
@@ -40,13 +36,17 @@ For example, avoid the following within the command controller class:
 ```php
 <?php
 $terminal = new Terminal();
+// or
+Terminal::methodName();
 ```
 
 Instead, use:
 
 ```php
 <?php
-$this->methodName(); // or self::methodName();
+$this->methodName(); 
+// or 
+self::methodName();
 ```
 
 ***
@@ -69,12 +69,13 @@ $this->table(
 **Output:**
 
 ```bash
-+-------+-------------------+
-| Name  | Email             |
-+-------+-------------------+
-| Peter | peter@example.com |
-| Hana  | hana@example.com  |
-+-------+-------------------+
+┌───────┬───────────────────┐
+│ Name  │ Email             │
+├───────┼───────────────────┤
+│ Peter │ peter@example.com │
+├───────┼───────────────────┤
+│ Hana  │ hana@example.com  │
+└───────┴───────────────────┘
 ```
 
 ***
@@ -142,7 +143,7 @@ $email = $this->prompt(
 ```
 ***
 
-### User Input Field 
+### User Input Methods 
 
 Request user to enter an input.
 
@@ -158,7 +159,7 @@ $password = $this->password('Enter your password? ');
 echo $password;
 ```
 
-Using prompt to request the user to enter their an input:
+Using prompt to request the user to enter their email address:
 
 ```php
 <?php
@@ -254,7 +255,7 @@ Show 100 lines of progress with callbacks and a beep upon completion:
 $this->watcher(100, function() {
     $this->writeln("Am done here");
 }, function(float|int $step) {
-    // Avoid adding a new line here to prevent progress bars from misaligning except is intended
+    // Avoid adding a new line here to prevent progress bars from miss-aligning except is intended
     $this->write(" Current {$step}");
 });
 ```
@@ -293,6 +294,33 @@ $this->spinner(['-', '\\', '|', '/'], 5, 100000, function() {
 
 ***
 
+***
+## Class Definition
+
+* Class namespace: `\Luminova\Command\Terminal`
+
+***
+
+## Constants
+
+These constants represent the standard input, output, and error streams, often used in terminal or command-line applications to manage and control where data flows.
+
+| Constant | Type | Value | Description |
+|:---------|:-----|:------|:------------|
+|`STD_OUT`|int|0|Standard output stream, typically used for displaying normal messages or output in a terminal.|
+|`STD_ERR`|int|1|Standard error stream, used for displaying error messages and diagnostic information.|
+|`STD_IN`|int|2|Standard input stream, used for receiving input from the user or another source in a terminal.| 
+
+***
+
+## Properties
+
+Input validations object.
+
+```php
+protected static \Luminova\Security\Validation|null $validation
+```
+
 ## Methods
 
 ### constructor
@@ -310,7 +338,7 @@ public __construct(): mixed
 Displays a countdown timer in the console, with a custom message pattern, or prompts the user to press any key to continue.
 
 ```php
-final public static waiting(int $seconds, string $pattern = 'Waiting...(%d seconds)'): void
+public static waiting(int $seconds, string $pattern = 'Waiting...(%d seconds)'): void
 ```
 
 **Parameters:**
@@ -333,7 +361,7 @@ final public static waiting(int $seconds, string $pattern = 'Waiting...(%d secon
 Freeze and pause execution for a specified number of seconds, optionally clear the screen and the user input during the freeze.
 
 ```php
-final public static freeze(int $seconds = 10, bool $clear = true): void
+public static freeze(int $seconds = 10, bool $clear = true): void
 ```
 
 **Parameters:**
@@ -350,7 +378,12 @@ final public static freeze(int $seconds = 10, bool $clear = true): void
 Displays a rotating spinner animation in the CLI.
 
 ```php
-final public static spinner(array $spinners = [...], int $spins = 10, int $sleep = 100000, \Closure|bool|null $onComplete = null): void
+public static spinner(
+    array $spinners = [...], 
+    int $spins = 10, 
+    int $sleep = 100000, 
+    \Closure|bool|null $onComplete = null
+): void
 ```
 
 **Parameters:**
@@ -369,7 +402,7 @@ final public static spinner(array $spinners = [...], int $spins = 10, int $sleep
 Displays a progress bar in the console for a given number of steps.
 
 ```php
-final public static progress(int|false $step = 1, int $steps = 10, bool $beep = true): float|int
+public static progress(int|false $step = 1, int $steps = 10, bool $beep = true): float|int
 ```
 
 **Parameters:**
@@ -393,7 +426,12 @@ final public static progress(int|false $step = 1, int $steps = 10, bool $beep = 
 Displays a progress bar on the console and executes optional callbacks at each step and upon completion.
 
 ```php
-final public static watcher(int $limit, \Closure|null $onFinish = null, \Closure|null $onProgress = null, bool $beep = true): void
+public static watcher(
+    int $limit, 
+    ?\Closure $onFinish = null, 
+    ?\Closure $onProgress = null, 
+    bool $beep = true
+): void
 ```
 
 **Parameters:**
@@ -410,9 +448,9 @@ final public static watcher(int $limit, \Closure|null $onFinish = null, \Closure
 Receiving the current progress percentage using `$onProgress` Closure.
 
 ```php
-function(float|int $step): void {
-    // Your implementation here
-}
+Terminal::watcher(5, function(float|int $step): void {
+    echo "Progress: $step%";
+});
 ```
 
 > This method is designed to be called without a loop, as it handles the iteration internally.
@@ -425,7 +463,7 @@ function(float|int $step): void {
 Beep or make a bell sound for a certain number of time.
 
 ```php
-final public static beeps(int $total = 1): void
+public static beeps(int $total = 1): void
 ```
 
 **Parameters:**
@@ -442,7 +480,12 @@ Prompt user to type something, optionally pass an array of options for user to e
 Additionally, you can make a colored options by using the array key for color name (e.g,`['green' => 'YES', 'red' => 'NO']`).
 
 ```php
-final public static prompt(string $message, array $options = [], string|false|null $validations = null, bool $silent = false): string
+public static prompt(
+    string $message, 
+    array $options = [], 
+    string|false|null $validations = null, 
+    bool $silent = false
+): string
 ```
 
 **Parameters:**
@@ -470,7 +513,7 @@ Request user with multiple option selection.
 This method will use the array index key as the option identifier to select, even if the array is an associative array users will still see indexed key instead.
 
 ```php
-final public static chooser(string $text, array $options, bool $required = false): array<string|int,mixed>
+public static chooser(string $text, array $options, bool $required = false): array<string|int,mixed>
 ```
 
 **Parameters:**
@@ -493,23 +536,43 @@ final public static chooser(string $text, array $options, bool $required = false
 
 ### password
 
-Prompts the user to enter a password, with options for retry attempts and a timeout.
+Prompts the user to enter a password with hidden input. Supports retry attempts and optional timeout.
+
+- On Windows, it uses a VBS script or PowerShell to hide the input.
+- On Linux/Unix, it uses a bash command to hide the input.
 
 ```php
-final public static password(string $message = 'Enter Password', int $retry = 3, int $timeout = 0): string
+public static password(string $message = 'Enter Password', int $retry = 3, int $timeout = 0): string
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$message` | **string** | The message to display when prompting for the password. |
-| `$retry` | **int** | The number of retry attempts if the user provides an empty password (default: 3). |
-| `$timeout` | **int** | The number of seconds to wait for user input before displaying an error message (default: 0). |
+| `$message` | **string** | Optional message to display when prompting for the password (default: 'Enter Password'). |
+| `$retry` | **int** | The number of allowed retry attempts, set to `0` for unlimited retries (default: 3). |
+| `$timeout` | **int** |  Optional time window for password input in seconds, set to 0 for no timeout (default: 0). |
 
 **Return Value:**
 
-`string` - Return the client inputted password.
+`string` - Return the entered password or an empty string if the maximum retry attempts are exceeded.
+
+***
+
+### link
+
+Highlights URL to indicate it clickable in terminal.
+
+```php
+public static link(string $url, ?string $title = null): void 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$url` | **string** | The url to be highlighted. |
+| `$title` | **string\null** | Optional title to be displayed (default: null). |
 
 ***
 
@@ -520,7 +583,7 @@ Terminates the script execution with an optional message and status code.
 This method provides a consistent way to end script execution, optionally printing a message before termination. The script exits with the provided status code, which defaults to a success code. If a non-success status code is provided, the script will still terminate, but the status code can be used to indicate an error or abnormal termination to the system.
 
 ```php
-final public static terminate(?string $message = null, int $statusCode = STATUS_SUCCESS): never
+public static terminate(?string $message = null, int $statusCode = STATUS_SUCCESS): never
 ```
 
 **Parameters:**
@@ -537,7 +600,7 @@ final public static terminate(?string $message = null, int $statusCode = STATUS_
 Execute a callback function after a specified timeout when no input or output is received.
 
 ```php
-final public static timeout(\Closure $callback, int $timeout, mixed $stream = STDIN): bool
+public static timeout(\Closure $callback, int $timeout, mixed $stream = STDIN): bool
 ```
 
 **Parameters:**
@@ -559,7 +622,7 @@ final public static timeout(\Closure $callback, int $timeout, mixed $stream = ST
 Execute a system command.
 
 ```php
-final public execute(string $command): array|false
+public execute(string $command): array|false
 ```
 
 **Parameters:**
@@ -622,7 +685,7 @@ public static _shell(string $command): string|bool|null
 Toggles the terminal visibility of user input.
 
 ```php
-final public static visibility(bool $visibility = true): bool
+public static visibility(bool $visibility = true): bool
 ```
 
 **Parameters:**
@@ -637,46 +700,393 @@ final public static visibility(bool $visibility = true): bool
 
 ***
 
-### wrap
+### input
 
-Wrap a text with padding left and width to a maximum number.
+Get user input from the shell, after requesting for user to type or select an option.
 
 ```php
-final public static wrap(string|null $text = null, int $max, int $leftPadding): string
+public static input(?string $prompt = null, bool $use_fopen = false): string
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$text` | **string&#124;null** | The text to wrap. |
-| `$max` | **int** | The maximum width to use for wrapping. |
-| `$leftPadding` | **int** | Additional left padding to apply. |
+| `$prompt` | **string&#124;null** | Optional message to prompt the user after they have typed. |
+| `$use_fopen` | **bool** | Weather to use `fopen`, this opens `STDIN` stream in read-only binary mode (default: false).<br />This creates a new file resource. |
 
 **Return Value:**
 
-`string` - Return wrapped text with padding left and width.
+`string` - Return user input string.
 
 ***
 
-### card
+### validate
 
-Generate a card like with text centered within the card.
+Command user input validation on prompts.
 
 ```php
-final public static card(string $text, int|null $padding = null): string
+public static validate(string $value, array $rules): bool
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$text` | **string** | The text display in card. |
-| `$padding` | **int&#124;null** | Optional maximum padding to use. |
+| `$value` | **string** | The user input value. |
+| `$rules` | **array** | The validation rules, array key name `input` value `rules` (e.g. `['input' => 'required\|email']`). |
 
 **Return Value:**
 
-`string` - Return beautiful card with text.
+`bool` - Return true if validation succeeded, false if validation failed.
+
+***
+
+### escape
+
+Escapes a command argument to ensure safe execution in the shell.
+
+```php
+public static escape(?string $argument = null): string
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$argument` | **string&#124;null** | The command argument to escape. |
+
+**Return Value:**
+
+`string` - Return the escaped command string.
+
+**Example:**
+
+```php
+<?php
+$argument = 'example argument with "special" characters & symbols';
+$escaped = Terminal::escape($argument);
+
+Terminal::_exec("echo $escaped", $output);
+
+print_r($output);
+```
+
+***
+
+### replace
+
+Replace placeholders in a command with environment variable values.
+
+Placeholders follow the format `${:VAR_NAME}`, where `VAR_NAME` corresponds to a key in the `$env` array.
+Optionally escapes each replacement for safe shell execution.
+
+```php
+public static replace(string $command, <string,mixed> $env, bool $escape = false): string
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$command` | **string** | The command string with placeholders to replace. |
+| `$env` | **array<string,mixed>** | Associative array of environment variables for replacements. |
+| `$escape` | **bool** | Whether to escape each replacement after substitution (default: false). |
+
+**Return Value:**
+
+`string` - Throws if a placeholder variable is not found in `$env` or is set to `false`.
+
+**Throws:**
+
+- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - Throws if an error occurs.
+
+**Example:**
+
+Example of the environment variables:
+```php
+<?php
+$command = 'echo "${:USER} is running a ${:TASK}"';
+$env = [
+    'USER' => 'Alice',
+    'TASK' => 'test command'
+];
+```
+
+Replace placeholders:
+
+```php
+<?php
+$command = Terminal::replace($command, $env);
+echo $command; 
+// Output: echo "Alice is running a test command"
+```
+
+Execute the command:
+
+```php
+<?php
+Terminal::_exec($escaped, $output);
+print_r($output);
+```
+
+***
+
+### error
+
+Display an error message box with a default red background and white text.
+
+```php
+public static error(
+    string $text, 
+    string|null $foreground = 'white',
+    string|null $background ='red'
+): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$text` | **string** | The text to output. |
+| `$foreground` | **string&#124;null** | Foreground color name. |
+| `$background` | **string&#124;null** | Optional background color name. |
+
+> **Note:** The message is formatted as a block and written to `STDOUT`.
+
+***
+
+### success
+
+Display a success message with a default green background and white text.
+
+```php
+public static success(
+    string $text, 
+    string|null $foreground = 'white', 
+    string|null $background = 'green'
+): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$text` | **string** | The text to output. |
+| `$foreground` | **string&#124;null** | An optional foreground color name (default: `white`). |
+| `$background` | **string&#124;null** | An optional background color name (default: `green`). |
+
+***
+
+### writeln
+
+Print text followed by a newline to the specified stream, defaulting to `Terminal::STD_OUT`.
+
+```php
+public static writeln(
+    string $text = '', 
+    ?string $foreground = null, 
+    ?string $background = null, 
+    int $stream = self::STD_OUT
+): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$text` | **string** | The text to write in a new line (default: blank). |
+| `$foreground` | **string&#124;null** | An optional foreground color name (default: `null`). |
+| `$background` | **string&#124;null** | An optional background color name (default: `null`). |
+| `$stream` | **int** | The stream resource to write to (e.g, `Terminal::STD_OUT`, `Terminal::STD_IN`, `Terminal::STD_ERR`). |
+
+***
+
+### write
+
+Print text without appending a newline to the specified stream, defaulting to `Terminal::STD_OUT`.
+
+```php
+public static write(
+    string $text = '', 
+    ?string $foreground = null, 
+    ?string $background = null, 
+    int $stream = self::STD_OUT
+): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$text` | **string** | The text to write (default: blank). |
+| `$foreground` | **string&#124;null** | An optional foreground color name (default: `null`). |
+| `$background` | **string&#124;null** | An optional background color name (default: `null`). |
+| `$stream` | **int** | The stream resource to write to (e.g, `Terminal::STD_OUT`, `Terminal::STD_IN`, `Terminal::STD_ERR`). |
+
+***
+
+### print
+
+Print text directly using `echo` without any stream handling.
+
+```php
+public static print(string $text, ?string $foreground = null, ?string $background = null): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$text` | **string** | The text to print. |
+| `$foreground` | **string&#124;null** | An optional foreground color name (default: `null`). |
+| `$background` | **string&#124;null** | An optional background color name (default: `null`). |
+
+***
+
+### fwrite
+
+Write text to the specified stream resource, without applying any colors defaulting to `STDOUT`.
+
+```php
+public static fwrite(string $text, resource|int $handler = self::STD_OUT): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$text` | **string** | The text to output or write. |
+| `$handler` | **resource&#124;int** | The stream resource handler to write to (e.g. `STDOUT`, `STDERR`, `STDIN`). |
+
+> **Note:** If the environment is non-command-based, the text will be output using `echo` instead of `fwrite`.
+
+***
+
+### clear
+
+Clears the entire console screen for both Windows and Unix-based systems.
+
+This method refreshes the entire terminal view, removing all previously displayed content.
+
+```php
+public static clear(): void
+```
+
+***
+
+### flush
+
+Clears the last printed line or lines of text in the terminal output.
+
+This method is useful for updating the terminal with new content without
+clearing the entire screen, allowing for a more controlled output.
+
+```php
+public static flush(?string $lastOutput = null): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$lastOutput` | **string\|null** | An optional last output printed to the terminal (default: null). |
+
+> If `$lastOutput` is provided,  the it calculates how many lines it occupied and clears them. 
+> If not provided, it clears the current line only.
+
+***
+
+### newLine
+
+Print new lines based on specified count.
+
+```php
+public static newLine(int $count = 1): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$count` | **int** | The number of new lines to print. |
+
+***
+
+### oops
+
+Oops! command, show an error message for unknown executed command.
+
+```php
+public static oops(string $command, string|null $color = 'red'): int
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$command` | **string** | The command that was executed. |
+| `$color` | **string&#124;null** | Text color for the command (default: `red`). |
+
+**Return Value:**
+
+`int` - Return status code `STATUS_ERROR`.
+
+***
+
+### table
+
+Generate and print a formatted table with headers and rows to the console.
+
+This method constructs a visually appealing table using the specified headers and data rows. 
+It supports customization of text colors for both the header and the table content, as well as options for displaying borders after each table row.
+     
+```php
+public static table(
+	string[] $headers, 
+	array<int,array<string,string>> $rows, 
+	?string $foreground = null,
+	?string $headerColor = null, 
+	?string $borderColor = null,
+	bool $border = true
+): string
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$headers` | **array<int,string>** | The headers for the table columns, where each header is defined by its index. |
+| `$rows` | **array<int,array<string,string>>** | The rows of table data to display in the tables body, where each row is an associative array with keys representing the column headers and values containing the corresponding content. |
+| `$foreground` | **string&#124;null** | An optional text color for the table's body content (default: null). |
+| `$headerColor` | **string&#124;null** | An optional text color for the table header columns (default: null). |
+| `$borderColor` | **string&#124;null** | An optional color for the table borders (default: null). |
+| `$border` | **bool** | Indicate whether to display borders between each table raw (default: true). |
+
+**Return Value:**
+
+`string` - Return the formatted table as a string, ready to be output to the console.
+
+***
+
+### isStreamSupports
+
+Checks whether the current stream resource supports or refers to a valid terminal type device.
+
+```php
+public static isStreamSupports(string $function, resource|string|int $resource = self::STD_OUT): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$function` | **string** | Function name to check. |
+| `$resource` | **resource&#124;string&#124;int** | Resource to handle (e.g. `Terminal::STD_*`, `STDIN`, `STDOUT`). |
+
+**Return Value:**
+
+`bool` - Return true if stream resource is supported, otherwise false.
 
 ***
 
@@ -720,371 +1130,12 @@ final public static getHeight(int $default = 24): int
 
 ***
 
-### input
-
-Get user input from the shell, after requesting for user to type or select an option.
-
-```php
-final public static input(?string $prompt = null, bool $useFopen = false): string
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$prompt` | **string&#124;null** | Optional message to prompt the user after they have typed. |
-| `$useFopen` | **bool** | Weather to use `fopen`, this opens `STDIN` stream in read-only binary mode (default: false).<br />This creates a new file resource. |
-
-**Return Value:**
-
-`string` - Return user input string.
-
-***
-
-### validate
-
-Command user input validation on prompts.
-
-```php
-final public static validate(string $value, array $rules): bool
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$value` | **string** | The user input value. |
-| `$rules` | **array** | The validation rules, array key name `input` value `rules` (e.g. `['input' => 'required\|email']`). |
-
-**Return Value:**
-
-`bool` - Return true if validation succeeded, false if validation failed.
-
-***
-
-### escape
-
-Escape command arguments for safe execution.
-
-```php
-final public static escape(string|array $argument): string
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$argument` | **string&#124;array** | The command argument to escape. |
-
-**Return Value:**
-
-`string` - Return the escaped command string.
-
-***
-
-### replace
-
-Replace command placeholders with environment variables.
-
-```php
-final public static replace(string $command, array $env, bool $escape = false): string
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$command` | **string** | The command to replace. |
-| `$env` | **array** | The environment variables to replace. |
-| `$escape` | **bool** | Weather escape command after replacements (default: false) |
-
-**Return Value:**
-
-`string` - Return replaced command string to be executed.
-
-**Throws:**
-
-- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - Throws if an error occurs.
-
-***
-
-### error
-
-Display card error message using red background and white text as default.
-
-```php
-final public static error(
-    string $text, 
-    string|null $foreground = 'white',
-    string|null $background ='red'
-): void
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$text` | **string** | The text to output. |
-| `$foreground` | **string&#124;null** | Foreground color name. |
-| `$background` | **string&#124;null** | Optional background color name. |
-
-***
-
-### success
-
-Display card success message, using green background and white text as default.
-
-```php
-final public static success(
-    string $text, 
-    string|null $foreground = 'white', 
-    string|null $background = 'green'
-): void
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$text` | **string** | The text to output. |
-| `$foreground` | **string&#124;null** | An optional foreground color name (default: `white`). |
-| `$background` | **string&#124;null** | An optional background color name (default: `green`). |
-
-***
-
-### writeln
-
-Print text to in a newline using stream `STDOUT`.
-
-```php
-final public static writeln(string $text = '', ?string $foreground = null, ?string $background = null): void
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$text` | **string** | The text to write in a new line. |
-| `$foreground` | **string&#124;null** | An optional foreground color name (default: `null`). |
-| `$background` | **string&#124;null** | An optional background color name (default: `null`). |
-
-***
-
-### write
-
-Print text to without a newline applied using stream `STDOUT`.
-
-```php
-final public static write(string $text = '', ?string $foreground = null, ?string $background = null): void
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$text` | **string** | The text to write. |
-| `$foreground` | **string&#124;null** | An optional foreground color name (default: `null`). |
-| `$background` | **string&#124;null** | An optional background color name (default: `null`). |
-
-***
-
-### print
-
-Print a message to using using `echo`.
-
-```php
-final public static print(string $text, ?string $foreground = null, ?string $background = null): void
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$text` | **string** | The text to print. |
-| `$foreground` | **string&#124;null** | An optional foreground color name (default: `null`). |
-| `$background` | **string&#124;null** | An optional background color name (default: `null`). |
-
-***
-
-### fwrite
-
-Write text to stream resource with any handler as needed,
-If called in non-command context, it will output text using `echo`.
-
-```php
-final public static fwrite(string $text, resource $handle = STDOUT): void
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$text` | **string** | The text to output or write. |
-| `$handle` | **resource** | The resource handler to use (e.g. `STDOUT`, `STDIN`, `STDERR` etc...). |
-
-***
-
-### clear
-
-Clears all the output in console screen.
-
-```php
-final public static clear(): void
-```
-
-***
-
-### flush
-
-Clears console output to update new text.
-
-```php
-final public static flush(): void
-```
-
-***
-
-### color
-
-Apply color and text formatting to the given text if color is supported.
-
-```php
-final public static color(
-    string $text, 
-    string|null $foreground, 
-    ?string $background = null, 
-    ?int $format = null
-): string
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$text` | **string** | The text to apply color to. |
-| `$foreground` | **string&#124;null** | The foreground color name (e.g, `red`, `blue` etc..). |
-| `$background` | **string&#124;null** | Optional background color name (e.g, `red`, `blue` etc..). |
-| `$format` | **int&#124;null** | Optionally apply text formatting style (e.g., `Text::ANSI_*`). |
-
-**Return Value:**
-
-`string` - Return colored text if color is supported, otherwise return default text.
-
-**See Documentation Reference**
-
-- For more details about color formatting [read documentation here](/commands/color-util.md).
-- For more details about text formatting [read documentation here](/commands/text-util.md).
-
-***
-
-### newLine
-
-Print new lines based on specified count.
-
-```php
-final public static newLine(int $count = 1): void
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$count` | **int** | The number of new lines to print. |
-
-***
-
-### oops
-
-Oops! command, show an error message for unknown executed command.
-
-```php
-public static oops(string $command, string|null $color = 'red'): int
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$command` | **string** | The command that was executed. |
-| `$color` | **string&#124;null** | Text color for the command (default: `red`). |
-
-**Return Value:**
-
-`int` - Return status code `STATUS_ERROR`.
-
-***
-
-### table
-
-Generate and print a formatted table header and rows to the console.
-
-```php
-public static table(
-    string[] $headers, 
-    array<string,string> $rows, 
-    ?string $headerColor = null, 
-    int $headerPadding = 1
-): void
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$headers` | **array<int,string>** | The headers for the table columns. |
-| `$rows` | **array<string,string>** | The rows of data to display in the table. |
-| `$headerColor` | **string&#124;null** | The table heading columns text color (default: null). |
-| `$headerPadding` | **int** | Optional table heading columns padding (default: 1). |
-
-***
-
-### streamSupports
-
-Checks whether the current stream resource supports or refers to a valid terminal type device.
-
-```php
-final public static streamSupports(string $function, resource|string $resource): bool
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$function` | **string** | Function name to check. |
-| `$resource` | **resource&#124;string** | Resource to handle (e.g. `STDIN`, `STDOUT`). |
-
-**Return Value:**
-
-`bool` - Return true if stream resource is supported, otherwise false.
-
-***
-
-### toString
-
-Convert executed command array arguments to their original string form.
-
-```php
-public static toString(array $arguments): ?string
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$arguments` | **array** | The command arguments from server variable `args`. |
-
-**Return Value:**
-
-`string|null` - Returns the parsed command arguments as a string, or null if the array is empty.
-
-***
-
 ### getArgument
 
 Get command argument by index number.
 
 ```php
-final public static getArgument(int $index): mixed
+public static getArgument(int $index): mixed
 ```
 
 **Parameters:**
@@ -1104,7 +1155,7 @@ final public static getArgument(int $index): mixed
 Get command arguments.
 
 ```php
-final public static getArguments(): array
+public static getArguments(): array
 ```
 
 **Return Value:**
@@ -1118,7 +1169,7 @@ final public static getArguments(): array
 Get command name.
 
 ```php
-final public static getCommand(): ?string
+public static getCommand(): ?string
 ```
 
 **Return Value:**
@@ -1132,7 +1183,7 @@ final public static getCommand(): ?string
 Get command caller command string.
 
 ```php
-final public static getCaller(): ?string
+public static getCaller(): ?string
 ```
 
 **Return Value:**
@@ -1147,7 +1198,7 @@ Get options value from command arguments.
 If option key is passed with an empty value true will be return otherwise the default value.
 
 ```php
-final public static getOption(string $key, mixed $default = false): mixed
+public static getOption(string $key, mixed $default = false): mixed
 ```
 
 **Parameters:**
@@ -1169,7 +1220,7 @@ Get options value from command arguments with an alias key to lookup if main key
 If option key is passed with an empty value true will be return otherwise the default value.
 
 ```php
-final public static getAnyOption(string $key, string $alias, mixed $default = false): mixed
+public static getAnyOption(string $key, string $alias, mixed $default = false): mixed
 ```
 
 **Parameters:**
@@ -1204,7 +1255,7 @@ echo $which;
 Returns the command controller class method name.
 
 ```php
-final public static getMethod(): ?string
+public static getMethod(): ?string
 ```
 
 **Return Value:**
@@ -1218,7 +1269,7 @@ final public static getMethod(): ?string
 Returns the array of executed command option key values.
 
 ```php
-final public static getOptions(): array
+public static getOptions(): array
 ```
 
 **Return Value:**
@@ -1232,7 +1283,7 @@ final public static getOptions(): array
 Gets a single value from executed command information by the array option key name, if it doesn't exists return null.
 
 ```php
-final public static getQuery(string $name): mixed
+public static getQuery(string $name): mixed
 ```
 
 **Parameters:**
@@ -1253,7 +1304,7 @@ Returns the entire command associative that was executed.
 This is a complied array of executed command details which has been processed for final use.
 
 ```php
-final public static getQueries(): array
+public static getQueries(): array
 ```
 
 **Return Value:**
@@ -1262,25 +1313,99 @@ final public static getQueries(): array
 
 ***
 
-### isColorSupported
+### getStd
 
-Check if the command line supports color formatting for specific `STD`.
+Resolves the provided stream constant (`Terminal::STD_OUT`, `Terminal::STD_ERR`, or `Terminal::STD_IN`) and returns the corresponding PHP predefined stream (`STDOUT`, `STDERR`, or `STDIN`).
+
+If the input does not match any of these constants, it returns the original input.
 
 ```php
-final public static isColorSupported(resource|string $resource = STDOUT): bool
+final public static getStd(resource|int $std): resource|string
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$resource` | **resource&#124;string** | The resource handler to check on (e.g, `STDIN`, `STDOUT`). |
+| `$std` | **resource&#124;int** | The stream identifier, which can be one of the predefined<br />constants `Terminal::STD_*` or another value. |
 
 **Return Value:**
 
-`bool` - Return true if the resource supports color formatting.
+`resource|string` - Return the corresponding PHP stream resource (`STDOUT`, `STDERR`, `STDIN`)
+or the original input if it doesn't match any standard streams.
 
-> **Note:** On windows you must specify the stream resource (e.g, `STDIN`, `STDOUT` or `STDERR`).
+***
+
+### setColorOutputEnabled
+
+Force enables color output for all standard streams (STDOUT, STDERR, STDIN) without checking whether the terminal or console supports colors.
+
+```php
+public static setColorOutputEnabled(): void
+```
+
+> This method bypasses any checks and ensures that color formatting will be applied to the output, regardless of compatibility.
+
+***
+
+### setAnsiSupportEnabled
+
+Force enables ANSI escape codes (for formatting like text color, cursor movement, etc.) for all standard streams (STDOUT, STDERR, STDIN), without checking whether the terminal or console supports ANSI codes.
+
+```php
+public static setAnsiSupportEnabled(): void
+```
+
+> This method will ensure that ANSI sequences will be processed, regardless
+of the actual terminal capabilities.
+
+***
+
+### isColorSupported
+
+Checks if the terminal supports ANSI escape codes for color output.
+
+This method determines whether the current terminal can display colored text,
+based on the platform and the resource (e.g., STDOUT, STDERR, or STDIN).
+
+```php
+public static isColorSupported(int $std = self::STD_OUT): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$std` | **int** | The std resource to check for color support (e.g, `Terminal::STD_OUT`, `Terminal::STD_ERR` or `Terminal::STD_IN`). |
+
+**Return Value:**
+
+`bool` - Returns true if color output is supported, false otherwise.
+
+> **Note:** On windows you must specify the stream resource (e.g, `Terminal::STD_*`).
+
+***
+
+### isAnsiSupported
+
+Checks if the terminal supports ANSI escape codes, including color and text formatting.
+
+This method detects whether the terminal supports ANSI features such as colors, bold, underline,
+and cursor movement, which are used for enhanced CLI output.
+
+```php
+public static isAnsiSupported(int $std = self::STD_OUT): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$std` | **int** | The std resource to check for ANSI support (e.g, `Terminal::STD_OUT`, `Terminal::STD_ERR` or `Terminal::STD_IN`). |
+
+**Return Value:**
+
+`bool` - Returns true if ANSI escape codes are supported, false otherwise.
 
 ***
 
@@ -1289,7 +1414,7 @@ final public static isColorSupported(resource|string $resource = STDOUT): bool
 Checks whether the current terminal is mac terminal.
 
 ```php
-final public static isMacTerminal(): bool
+public static isMacTerminal(): bool
 ```
 
 **Return Value:**
@@ -1300,17 +1425,17 @@ final public static isMacTerminal(): bool
 
 ### isWindowsTerminal
 
-Determine whether the current terminal is windows os terminal by passing the stream `STD` resource to check on.
+Determine whether the current terminal is windows os terminal by passing the stream `Terminal::STD_*` resource to check on.
 
 ```php
-final public static isWindowsTerminal(resource|string $resource): bool
+public static isWindowsTerminal(resource|string|int $resource = self::STD_IN): bool
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$resource` | **resource&#124;string** | The resource type to check (e.g. `STDIN`, `STDOUT`). |
+| `$resource` | **resource&#124;int&#124;string** | The resource type to check (e.g. `STDIN`, `STDOUT`, `Terminal::STD_*`). |
 
 **Return Value:**
 
@@ -1323,7 +1448,7 @@ final public static isWindowsTerminal(resource|string $resource): bool
 Determines if the current terminal is a supported Linux terminal.
 
 ```php
-final public static isLinuxTerminal(): bool
+public static isLinuxTerminal(): bool
 ```
 
 **Return Value:**
@@ -1332,26 +1457,12 @@ final public static isLinuxTerminal(): bool
 
 ***
 
-### isAnsiSupported
-
-Checks if the current terminal supports ANSI escape sequences.
-
-```php
-final public static isAnsiSupported(): bool
-```
-
-**Return Value:**
-
-`bool` - Return true if ANSI is supported, false otherwise.
-
-***
-
 ### isPtySupported
 
 Determines if PTY (Pseudo-Terminal) is supported on the current system.
 
 ```php
-final public static isPtySupported(): bool
+public static isPtySupported(): bool
 ```
 
 **Return Value:**
@@ -1365,7 +1476,7 @@ final public static isPtySupported(): bool
 Checks if the current system supports TTY (Teletypewriter).
 
 ```php
-final public static isTtySupported(): bool
+public static isTtySupported(): bool
 ```
 
 **Return Value:**
@@ -1374,23 +1485,17 @@ final public static isTtySupported(): bool
 
 ***
 
-### hasCommand
+### isColorDisabled
 
-Checks whether framework has the requested command.
+Checks whether the no color is available in environment, including command flag `--no-color`.
 
 ```php
-final public static hasCommand(string $command): bool
+public static isColorDisabled(): bool
 ```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$command` | **string** | Command name to check. |
 
 **Return Value:**
 
-`bool` - Return true if command exist, false otherwise.
+`bool` - Return true if color is disabled, false otherwise.
 
 ***
 
@@ -1414,10 +1519,72 @@ final public static isHelp(string|array $command): bool
 
 ***
 
+### isAnsiDisabled
+
+Determines if ANSI escape codes are disabled explicitly, including command flag `--no-ansi`.
+
+This method checks environment variables and other indicators to determine
+if ANSI escape codes (for colors, text formatting, etc.) should be disabled.
+
+```php
+public static isAnsiDisabled(): bool
+```
+
+**Return Value:**
+
+`bool` Returns true if ANSI escape codes are disabled, false otherwise.
+
+***
+
+### toString
+
+Convert executed command array arguments to their original string form.
+
+```php
+public static toString(array $arguments): ?string
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$arguments` | **array** | The command arguments from server variable `args`. |
+
+**Return Value:**
+
+`string|null` - Returns the parsed command arguments as a string, or null if the array is empty.
+
+***
+
+### hasCommand
+
+Checks whether framework has the requested command.
+
+```php
+final public static hasCommand(string $command): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$command` | **string** | Command name to check. |
+
+**Return Value:**
+
+`bool` - Return true if command exist, false otherwise.
+
+***
+
 ### header
 
 Print NovaKit Command line header information.
+This method also honors command flag `--no-header`.
 
 ```php
-final public static header(): void
+final public static header(): bool
 ```
+
+**Return Value:**
+
+`bool` - Return true if header was printed, false otherwise.

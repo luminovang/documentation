@@ -82,7 +82,7 @@ public static normalize(string $text, string $target = '_self', string $blocked 
 
 ### random
 
-Generate a randomize string of integers, characters, alphabets, or password.
+Generate a random string or value.
 
 ```php
 public static random(int $length = 10, string $type = 'int', bool $uppercase = false): string
@@ -92,13 +92,41 @@ public static random(int $length = 10, string $type = 'int', bool $uppercase = f
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$length` | **int** | The length of the random value. |
-| `$type` | **string** | The type of random value (e.g., character, alphabet, int, password). |
-| `$uppercase` | **bool** | Whether to make the value uppercase if it's a string (default: false). |
+| `$length` | **int** | The length of the random value to generate. |
+| `$type` | **string** | The type of random value to generate (e.g., character, alphabet, int, password, bytes, hex). |
+| `$uppercase` | **bool** | Whether to convert non-numeric values to uppercase (default: false). |
 
 **Return Value:**
 
-`string` - Return the generated random value.
+`string` - Return the generated randomized value.
+
+**Supported Types:**
+
+- `character` - Includes special characters like `%#*^,?+$`;"{}][|\/:=)(@!.-`.
+- `alphabet` - Contains only alphabetical characters (both uppercase and lowercase).
+- `password` - Combines letters, numbers, and an expanded set of special characters (`%#^_-@!$&*+=|~?<>[]{}()`).
+- `bytes` - Returns a raw binary string of the specified length.
+- `hex` - Returns a hexadecimal representation of random bytes.
+- `int|integer` - Contains only numeric characters (0-9).
+
+**Examples:**
+
+Generates a secure password of 16 characters.
+
+```php 
+Func::random(16, 'password');
+```
+
+Generates an 8-character string in uppercase letters.
+```php 
+Func::random(8, 'alphabet', true);
+```
+
+Generates a 32-character hexadecimal string.
+
+```php 
+Func::random(32, 'hex');
+```
 
 ***
 
@@ -214,10 +242,10 @@ public static isUuid(string $uuid, int $version = 4): bool
 
 ### isEmail
 
-Checks if string is a valid email address
+Checks if string is a valid email address, with optional support for internationalized domains.
 
 ```php
-public static isEmail(string $email): bool
+public static isEmail(string $email, bool $allow_idn = false): bool
 ```
 
 **Parameters:**
@@ -225,19 +253,20 @@ public static isEmail(string $email): bool
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$email` | **string** | The email address to validate. |
+| `$allow_idn` | **bool** | Set to true to allow internationalized domains (default: false). |
 
 **Return Value:**
 
-`bool` - Return true if email is valid, otherwise false.
+`bool` - Returns true if valid email address, false otherwise.
 
 ***
 
 ### isPhone
 
-Checks if string is a valid phone number.
+Validates if the input is a valid phone number.
 
 ```php
-public static isPhone(string|int $phone, int $min = 10): bool
+public static isPhone(string|int $phone, int $min = 10, int $max = 15): bool
 ```
 
 **Parameters:**
@@ -246,10 +275,73 @@ public static isPhone(string|int $phone, int $min = 10): bool
 |-----------|------|-------------|
 | `$phone` | **string&#124;int** | The phone address to validate |
 | `$min` | **int** | The minimum allowed length allowed (default: 10). |
+| `$max` | **int** | The maximum allowed length (default: 15). |
 
 **Return Value:**
 
-`bool` - Return true if phone number is valid, otherwise false.
+`bool` - Returns true if valid phone number, false otherwise.
+
+***
+
+### isUrl
+
+Checks if the string is a valid URL, with optional support for internationalized domains.
+
+```php
+public static isUrl(string $url, bool $allow_idn = false, bool $http_only = false): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$url` | **string** | The URL to validate. |
+| `$allow_idn` | **bool** | Set to true to allow internationalized domains (default: false). |
+| `$http_only` | **bool** | Weather to support urls with `http` and `https` scheme (default: false). |
+
+**Return Value:**
+
+`bool` - Returns true if valid URL, false otherwise.
+
+***
+
+### isBase64Encoded
+
+Determines if a given string is likely to be Base64-encoded.
+
+```php
+public static isBase64Encoded(string $data): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$data` | **string** | The string to check for Base64 encoding. |
+
+**Return Value:**
+
+`bool` - Returns true if the string is likely to be Base64-encoded, false otherwise.
+
+***
+
+### isBinary
+
+Determines if the content string is likely a binary based on the presence of non-printable characters.
+
+```php
+public static isBinary(string $data): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$data` | **string** | The string to check for binary. |
+
+**Return Value:**
+
+`bool` - Return true if it's a binary, false otherwise.
 
 ***
 
@@ -298,23 +390,64 @@ public static strength(string $password, int $complexity = 4, int $min = 6, int 
 
 ### strictType
 
-Sanitize user input to protect against cross-site scripting attacks by removing unwanted characters from string and retain only expected types.
+Strictly sanitizes user input to protect against invalid characters and ensure it conforms to the expected type.
+
+This method validates and sanitizes a given string based on predefined patterns for various data types.
+If the string contains HTML tags, those tags and their content will be removed or replaced according to the provided replacement. If `NULL` is provided for `$replacement` and the string does not match the expected type, an exception will be thrown.
 
 ```php
-public static strictType(string $string, string $type = 'name', string $replacement = ''): string
+public static strictType(string $value, string $type = 'name', string|null $replacement = ''): ?string
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$string` | **string** | The input string to be sanitized. |
-| `$type` | **string** | The expected data type (e.g., 'int', 'email'). |
-| `$replacement` | **string** | The symbol to replace disallowed characters with (optional). |
+| `$value` | **string** | The input string value to be sanitized. |
+| `$type` | **string** | The expected data type (e.g., 'int', 'email', 'username'). |
+| `$replacement` | **string\|null** | The symbol to replace disallowed characters or null to throw and exception (default: ''). |
 
 **Return Value:**
 
-`string` - Return the sanitized string.
+`string|null` - Return the sanitized string or null if input doesn't match nor support replacing like `email` `url` `username` or `password`.
+
+**Throws:**
+
+- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - If the input contains invalid characters, or HTML tags, and no replacement is provided.
+
+**Available Types:**
+
+- `int`       : Only numeric characters (0-9) are allowed.
+- `numeric`     : Numeric characters, including negative numbers and decimals.
+- `key`       : Alphanumeric characters, underscores, and hyphens.
+- `password`  : Alphanumeric characters, and special characters (@, *, !, _, -).
+- `username`  : Alphanumeric characters, hyphen, underscore, and dot.
+- `email`     : Alphanumeric characters and characters allowed in email addresses.
+- `url`       : Valid URL characters (alphanumeric, ?, #, &, +, =, . , : , /, -).
+- `money`     : Numeric characters, including decimal and negative values.
+- `double`    : Floating point numbers (numeric and decimal points).
+- `alphabet`  : Only alphabetic characters (a-z, A-Z).
+- `phone`     : Numeric characters, plus sign, and hyphen (e.g., phone numbers).
+- `name`      : Unicode characters, spaces, and common name symbols (e.g., apostrophe).
+- `timezone`  : Alphanumeric characters, hyphen, slash, and colon (e.g., timezone names).
+- `time`      : Alphanumeric characters and colon (e.g., time format).
+- `date`      : Alphanumeric characters, hyphen, slash, comma, and space (e.g., date format).
+- `uuid`      : A valid UUID format (e.g., 8-4-4-4-12 hexadecimal characters).
+- `default`   : Removes HTML tags.
+
+**Example:**
+
+```php
+use \Luminova\Functions\Func;
+
+$input = '1235hJndhb@<script>alert("hello");</script>';
+echo Func::strictType($input, 'int'); // Returns 1235
+```
+
+> **Note:** 
+> HTML tags (including their content) are completely removed for the 'any' type.
+> This method ensures secure handling of input to prevent invalid characters or unsafe content.
+> Additionally this method can easily be used from it global helper function `strict(...)`.
 
 ***
 
@@ -436,7 +569,7 @@ public static maskEmail(string $email, string $masker = '*'): string
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$email` | **string** | The email address to mask. |
-| `$masker` | **string** | The mask character (default: &quot;*&quot;). |
+| `$masker` | **string** | The mask character (default: `*`). |
 
 **Return Value:**
 
@@ -457,8 +590,8 @@ public static mask(string $string, string $masker = '*', string $position = 'cen
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$string` | **string** | The string to mask. |
-| `$masker` | **string** | The mask character (default: &quot;*&quot;). |
-| `$position` | **string** | The position of the string to mask (&quot;center&quot;, &quot;left&quot;, or &quot;right&quot;). |
+| `$masker` | **string** | The mask character (default: `*`). |
+| `$position` | **string** | The position of the string to mask (`center`, `left`, or `right`). |
 
 **Return Value:**
 

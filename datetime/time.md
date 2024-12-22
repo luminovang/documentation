@@ -1,4 +1,4 @@
-# Immutable Date &amp; Time Module
+# Immutable Date and Time Module
 
 ***
 
@@ -16,8 +16,11 @@ Time class serves as a valuable addition to the Luminova's PHP developer's toolk
 
 ***
 
+## Class Definition
+
 * Class namespace: `\Luminova\Time\Time`
-* Parent class: [DateTimeImmutable](/DateTimeImmutable.md)
+* Parent class: [\DateTimeImmutable](https://www.php.net/manual/en/class.datetimeimmutable.php)
+* Class implements: [\Stringable](https://www.php.net/manual/en/class.stringable.php)
 
 ***
 
@@ -28,7 +31,7 @@ Time class serves as a valuable addition to the Luminova's PHP developer's toolk
 Time constructor.
 
 ```php
-public __construct(string|null $datetime = null, \DateTimeZone|string|null $timezone = null): mixed
+public __construct(?string $datetime = null, ?\DateTimeZone|string $timezone = null): mixed
 ```
 
 **Parameters:**
@@ -344,14 +347,14 @@ public getQuarter(): string
 Return string datetime of this format 'yyyy-mm-dd H:i:s'.
 
 ```php
-public static datetime(null|\DateTimeZone|string $timezone = 'UTC'): string
+public static datetime(\DateTimeZone|string|null $timezone = 'UTC'): string
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$timezone` | **null&#124;\DateTimeZone&#124;string** | Optional timezone string. |
+| `$timezone` | **\DateTimeZone&#124;string&#124;null** | Optional timezone string. |
 
 **Return Value:**
 
@@ -415,12 +418,32 @@ public getTimezoneName(): string
 
 ***
 
+### getMaxAge
+
+Calculates the maximum age in seconds until a given timestamp.
+
+```php
+public getMaxAge(int $timestamp): int
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$timestamp` | **int** | The target timestamp to calculate the maximum age against.. |
+
+**Return Value:**
+
+`int` - Return the number of seconds from the current timestamp to the given timestamp.
+
+***
+
 ### getInstanceUtc
 
 Returns Datetime instance of UTC timezone.
 
 ```php
-public getInstanceUtc(\DateTimeInterface|\Luminova\Time\Time|string $datetime, ?string $timezone = null): \DateTime
+public getInstanceUtc(\DateTimeInterface|string $datetime, ?string $timezone = null): \DateTime
 ```
 
 **Parameters:**
@@ -445,7 +468,7 @@ public getInstanceUtc(\DateTimeInterface|\Luminova\Time\Time|string $datetime, ?
 Returns a formatted datetime to your preferred format.
 
 ```php
-public toFormat(null|string $format = null): false|string
+public toFormat(?string $format = null): false|string
 ```
 
 **Parameters:**
@@ -546,7 +569,12 @@ public static fromTimestamp(int $timestamp, \DateTimeZone|string|null $timezone 
 Returns a new instance based on the year, month and day. If any of those three are left empty, will default to the current value.
 
 ```php
-public static fromDate(int|null $year = null, int|null $month = null, int|null $day = null, \DateTimeZone|string|null $timezone = null): self
+public static fromDate(
+    ?int $year = null, 
+    ?int $month = null, 
+    ?int $day = null, 
+    \DateTimeZone|string|null $timezone = null
+): self
 ```
 
 **Parameters:**
@@ -573,7 +601,12 @@ public static fromDate(int|null $year = null, int|null $month = null, int|null $
 Returns a new instance with the date set to today, and the time set to the values passed in.
 
 ```php
-public static fromTime(int|null $hour = null, int|null $minutes = null, int|null $seconds = null, \DateTimeZone|string|null $timezone = null): self
+public static fromTime(
+    ?int $hour = null, 
+    ?int $minutes = null, 
+    ?int $seconds = null, 
+    \DateTimeZone|string|null $timezone = null
+): self
 ```
 
 **Parameters:**
@@ -607,7 +640,7 @@ public static fromRelative(string $datetime, \DateTimeZone|string|null $timezone
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$datetime` | **string** | Rerative time string (2 days ago, -3 years etc..). |
+| `$datetime` | **string** | Relative time string (2 days ago, -3 years etc..). |
 | `$timezone` | **\DateTimeZone&#124;string&#124;null** | Optional timezone to associate with current DateTime instance. |
 
 **Return Value:**
@@ -625,7 +658,15 @@ public static fromRelative(string $datetime, \DateTimeZone|string|null $timezone
 Returns a new instance with the date time values individually set.
 
 ```php
-public static createFrom(int|null $year = null, int|null $month = null, int|null $day = null, int|null $hour = null, int|null $minutes = null, int|null $seconds = null, \DateTimeZone|string|null $timezone = null): self
+public static createFrom(
+    ?int $year = null, 
+    ?int $month = null, 
+    ?int $day = null, 
+    ?int $hour = null, 
+    ?int $minutes = null, 
+    ?int $seconds = null, 
+    ?\DateTimeZone|string|null $timezone = null
+): self
 ```
 
 **Parameters:**
@@ -705,7 +746,7 @@ public static fromFormat(string $format, string $datetime, \DateTimeZone|string|
 Returns an array representation of the given calendar month.
 
 ```php
-public static calendar(?string $month = null, ?string $year = null, \DateTimeZone|string|null $timezone = null): array&lt;int,mixed&gt;
+public static calendar(?string $month = null, ?string $year = null, \DateTimeZone|string|null $timezone = null): array<int,mixed>
 ```
 
 The array values are timestamps which allow you to easily format.
@@ -720,7 +761,7 @@ The array values are timestamps which allow you to easily format.
 
 **Return Value:**
 
-`array&lt;int,mixed&gt;` - $calendar Calendar values.
+`array<int,mixed>` - $calendar Calendar values.
 
 ***
 
@@ -729,7 +770,7 @@ The array values are timestamps which allow you to easily format.
 Get an array of dates for each day in a specific month.
 
 ```php
-public static days(string|int|null $month = null, string|int|null $year = null, string $format = 'd-M-Y'): array&lt;int,string&gt;
+public static days(string|int|null $month = null, string|int|null $year = null, string $format = 'd-M-Y'): array<int,string>
 ```
 
 **Parameters:**
@@ -742,7 +783,7 @@ public static days(string|int|null $month = null, string|int|null $year = null, 
 
 **Return Value:**
 
-`array&lt;int,string&gt;` - An array of dates within the specified month.
+`array<int,string>` - An array of dates within the specified month.
 
 ***
 
@@ -751,7 +792,7 @@ public static days(string|int|null $month = null, string|int|null $year = null, 
 Get an array of months for each month in a specific year.
 
 ```php
-public static months(string $format = 'M'): array&lt;int,string&gt;
+public static months(string $format = 'M'): array<int,string>
 ```
 
 **Parameters:**
@@ -762,7 +803,7 @@ public static months(string $format = 'M'): array&lt;int,string&gt;
 
 **Return Value:**
 
-`array&lt;int,string&gt;` - An array of month within the specified year.
+`array<int,string>` - An array of month within the specified year.
 
 ***
 
@@ -771,19 +812,19 @@ public static months(string $format = 'M'): array&lt;int,string&gt;
 Generate a list of years between a start and end year.
 
 ```php
-public static years(int|string|null $start = null, int|string|null $end = null): array&lt;int,int&gt;
+public static years(string|int|null $start = null, string|int|null $end = null): array<int,int>
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$start` | **int&#124;string&#124;null** | Starting year. Defaults to the current year if not provided. |
-| `$end` | **int&#124;string&#124;null** | Ending year. Defaults to the current year minus 3 years if not provided. |
+| `$start` | **string&#124;int&#124;null** | Starting year. Defaults to the current year if not provided. |
+| `$end` | **string&#124;int&#124;null** | Ending year. Defaults to the current year minus 3 years if not provided. |
 
 **Return Value:**
 
-`array&lt;int,int&gt;` - List of years.
+`array<int,int>` - Return the list of years.
 
 ***
 
@@ -792,7 +833,7 @@ public static years(int|string|null $start = null, int|string|null $end = null):
 Get a list of time hours in 12-hour format with customizable intervals.
 
 ```php
-public static hours(int $interval = 30): array&lt;int,string&gt;
+public static hours(int $interval = 30): array<int,string>
 ```
 
 **Parameters:**
@@ -803,7 +844,7 @@ public static hours(int $interval = 30): array&lt;int,string&gt;
 
 **Return Value:**
 
-`array&lt;int,string&gt;` - An array of time hours.
+`array<int,string>` - Return an array of time hours.
 
 ***
 
@@ -812,20 +853,24 @@ public static hours(int $interval = 30): array&lt;int,string&gt;
 Convert datetime to relative a human-readable representation of the time elapsed since the given datetime.
 
 ```php
-public static ago(string|int|\Luminova\Time\Time|\DateTimeImmutable $datetime, bool $full = false, \DateTimeZone|string|null $timezone = null): string
+public static ago(
+    \DateTimeImmutable|string|int $datetime, 
+    bool $full = false, 
+    \DateTimeZone|string|null $timezone = null
+): string
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$datetime` | **string&#124;int&#124;\Luminova\Time\Time&#124;\DateTimeImmutable** | The datetime string, Unix timestamp, or time string. |
+| `$datetime` | **\DateTimeImmutable&#124;string&#124;int** | The datetime string, Unix timestamp, or time string. |
 | `$full` | **bool** | Return full relative time (e.g. 1 hour, 3 minutes, 5 seconds ago) default is false. |
 | `$timezone` | **\DateTimeZone&#124;string&#124;null** | Optional timezone to associate with current DateTime instance. |
 
 **Return Value:**
 
-`string` - A string representing the time elapsed since the given datetime, in human-readable format.
+`string` - Return a string representing the time elapsed since the given datetime, in human-readable format.
 
 > If a string is provided, it must be a valid datetime string or time string.
 
@@ -861,20 +906,23 @@ public static agoToDatetime(string $ago, \DateTimeZone|string|null $timezone = n
 Check if a certain amount of minutes has passed since the given timestamp.
 
 ```php
-public static passed(string|int|\Luminova\Time\Time|\DateTimeImmutable $datetime, int $minutes, null|\DateTimeZone|string $timezone = 'UTC'): bool
+public static passed(
+    \DateTimeImmutable|string|int $datetime, int $minutes, 
+    \DateTimeZone|null|string $timezone = 'UTC'
+): bool
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$datetime` | **string&#124;int&#124;\Luminova\Time\Time&#124;\DateTimeImmutable** | Either a Unix timestamp, DateTimeImmutable or a string representing a date/time. |
+| `$datetime` | **\DateTimeImmutable&#124;string&#124;int** | Either a Unix timestamp, DateTimeImmutable or a string representing a date/time. |
 | `$minutes` | **int** | The number of minutes to check against. |
-| `$timezone` | **\DateTimeZone&#124;string&#124;null** | Optional timezone. |
+| `$timezone` | **\DateTimeZone&#124;string&#124;null** | Optional timezone to use. |
 
 **Return Value:**
 
-`bool` - True if the specified minutes have passed, false otherwise.
+`bool` - Return true if the specified minutes have passed, false otherwise.
 
 **Throws:**
 
@@ -898,7 +946,7 @@ public static suffix(string|int $day): string
 
 **Return Value:**
 
-`string` - The day with its appropriate suffix.
+`string` - Return the day with its appropriate suffix.
 
 ***
 
@@ -918,7 +966,7 @@ public static isRelative(string $datetime): bool
 
 **Return Value:**
 
-`bool` - True if the string contains relative time keywords otherwise, false.
+`bool` - Return true if the string contains relative time keywords otherwise, false.
 
 ***
 
@@ -938,7 +986,7 @@ public static isAgo(string $datetime): bool
 
 **Return Value:**
 
-`bool` - True if the string contains relative time keywords otherwise, false.
+`bool` - Return true if the string contains relative time keywords otherwise, false.
 
 ***
 
@@ -958,4 +1006,4 @@ public static isAbsolute(string $datetime): bool
 
 **Return Value:**
 
-`bool` - True if the string contains absolute time time otherwise, false.
+`bool` - Return true if the string contains absolute time time otherwise, false.

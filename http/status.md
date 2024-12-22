@@ -18,6 +18,8 @@ Additionally, you can use magic getter methods like `HttpCode::status200()` to d
 
 ***
 
+## Class Definition
+
 * Class namespace: `\Luminova\Http\HttpCode`
 * This class is marked as **final** and can't be subclassed
 

@@ -19,6 +19,8 @@ To lean more on how to render template views refer to the documentation.
 
 ***
 
+## Class Definition
+
 * Class namespace: `\Luminova\Core\CoreApplication`
 * This class is an **Abstract class**
 * Inherited class: `\Luminova\Template\View`
@@ -30,15 +32,19 @@ To lean more on how to render template views refer to the documentation.
 This is an example a basic application class may look like using the `__construct` method.  
 
 ```php 
+// /app/Application.php
 <?php
 namespace App;
 
 use \Luminova\Core\CoreApplication;
+
 class Application extends CoreApplication  
 {
 	public function __construct()
 	{
 		parent::__construct();
+        $this->router->addNamespace('\\App\\Modules\\Blogs\\Controllers\\');
+        // ...
 	}
 }
 ```
@@ -46,15 +52,18 @@ class Application extends CoreApplication
 Alternatively, this is an of application class may using the `onCreate` method.  
 
 ```php 
+// /app/Application.php
 <?php
 namespace App;
 
 use \Luminova\Core\CoreApplication;
+
 class Application extends CoreApplication  
 {
 	protected function onCreate(): void
 	{
-		//...
+        $this->router->addNamespace('\\App\\Modules\\Blogs\\Controllers\\');
+		// ...
 	}
 }
 ```
@@ -73,15 +82,40 @@ public ?Router $router = null;
 ***
 
 ## Methods
+
 The methods and properties of the base application are a combination of those inherited from the `View`, your `Application`, and the `CoreApplication` class. These classes ensure that properties and methods are accessible wherever the application object is invoked, based on their visibility. You can access them accordingly.
+
+### setInstance
+
+Set the singleton instance to a new application instance.
+
+```php
+public static setInstance(\Luminova\Core\CoreApplication $app): static
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$app` | **CoreApplication** | The application instance to set. |
+
+**Return Value:**
+
+`static` - Return the new shared application instance.
+
+***
 
 ###  getInstance
 
 The singleton `getInstance` method allows you to return a shared `static` instance  of your application class.
 
 ```php
-public static final getInstance(): static
+public static getInstance(): static
 ```
+
+**Return Value:**
+
+`static` - Return a shared application instance.
 
 ***
 
@@ -99,14 +133,15 @@ public final getView(): string
 
 ***
 
-## Application Events
+## Lifecycle Hooks & Events
+
 To handle command events in your application controller class based on actions, below are the list of events to listen to.
 
 ***
 
 ### __on
 
-The `__on` method in your application class allows you trigger an application event methods.
+The `__on` method in your application class allows you trigger an application event or hook methods.
 
 ```php
 public __on(string $event, mixed ...$arguments): void 
@@ -123,35 +158,73 @@ public __on(string $event, mixed ...$arguments): void
 
 ### onCreate
 
-The `onCreate` method in your application class serves as an alternative to the `__construct()` method. It is invoked after all necessary initializations have been performed, ensuring that your application is fully initialized before any operations are carried out on template views.
+The `onCreate` lifecycle method in your application class provides an alternative to the constructor (`__construct()`). It is triggered **once** during the application's lifecycle, immediately after all necessary initializations are completed. This ensures the application is fully prepared before any template views or additional operations are executed.
 
 ```php
-protected onCreate(): void
+protected function onCreate(): void
 ```
 
-> This method provides a convenient hook for executing additional setup logic or configurations specific to your application after the standard initialization process.
+#### Usage
+
+This method is designed to execute custom setup logic or configurations specific to your application after standard initialization. Unlike the constructor, `onCreate` will **not** be called again if a new application instance is created using `new Application()`.
+
+> **Note:** Use `onCreate` for tasks that depend on a fully initialized application, such as registering additional routes, loading configuration files, or setting up services.
+
+***
+
+### onDestroy
+
+The `onDestroy` lifecycle method is triggered **once** during the application's lifecycle, specifically when the application object is destroyed. It is designed to be overridden in subclasses to handle custom cleanup tasks, such as releasing resources or closing connections.
+
+```php
+protected function onDestroy(): void
+```
+
+#### Usage
+You can optionally call `gc_collect_cycles()` in your implementation to force the collection of any existing garbage cycles, ensuring that memory is efficiently reclaimed.
+
+> **Note:** Use `onDestroy` to clean up tasks that should only occur when the application is about to shut down, such as saving state or flushing logs.
+
+***
+
+### onStart
+
+Lifecycle onStart hook: Triggered when the application starts handling a request.
+
+```php
+protected function onStart(array $info): void {}
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$info` | **array<string,mixed>** | Request state information. |
 
 ***
 
 ### onFinish
 
-Application on finish even, which triggers once application router has finished handling request.
-This trigger weather error occurs or not.
+Lifecycle onFinish hook: Triggered after a request is handled, regardless of success or failure.
 
 ```php
-protected onFinish(): void
+protected function onFinish(array $info): void {}
 ```
 
-***
+**Parameters:**
 
-### onFinish
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$info` | **array<string,mixed>** | Request controller information. |
 
-Application on finish even, which triggers once application router has finished handling request.
-This trigger weather error occurs or not.
+**Class Info keys:**
 
-```php
-protected onFinish(): void
-```
+- `filename`  **(string|null)** Optional controller class file name.
+- `namespace` **(string|null)** Optional controller class namespace.
+- `method`    **(string|null)** Optional controller class method name.
+- `attrFiles` **(int)** Number of controller files scanned for matched attributes.
+- `cache`     **(bool)** Weather cached version rendered or new content.
+- `staticCache` **(bool)** Weather is a static cached version (e.g, page.html) or regular cache (e.g, `page`).
 
 ***
 

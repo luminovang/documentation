@@ -14,7 +14,10 @@ The `Response` object in Luminova is designed to capture and manage HTTP respons
 
 ***
 
+## Class Definition
+
 * Class namespace: `\Luminova\Http\Message\Response`
+* This class implements:  [\Stringable](https://www.php.net/manual/en/class.stringable.php)
 
 ***
 
@@ -27,12 +30,13 @@ Initializes a new network request response object.
 ```php
 public __construct(
     private int $statusCode = 200, 
-    private array $headers = [], 
+    private array<string,array<int,mixed>> $headers = [], 
     private string $contents = '', 
-    private array $info = [], 
+    private array<string,mixed> $info = [], 
     private string $reasonPhrase = 'OK', 
     private string $protocolVersion = '1.1', 
-    private \Luminova\Storages\Stream|null $stream = null
+    private ?Luminova\Storages\Stream $stream = null,
+    public ?Luminova\Interface\CookieJarInterface $cookie = null
 ): mixed
 ```
 
@@ -41,12 +45,29 @@ public __construct(
 | Parameter         | Type                              | Description                                           |
 |-------------------|-----------------------------------|-------------------------------------------------------|
 | `$statusCode`     | **int**                           | The HTTP status code of the response (default: `200`). |
-| `$headers`        | **array**                        | An array of response headers.                        |
+| `$headers`        | **array<string,array<int,mixed>>**                        | An array of response headers.                        |
 | `$contents`       | **string**                       | The extracted content from the response.             |
-| `$info`           | **array**                        | Additional response information from cURL (optional).|
+| `$info`           | **array<string,mixed>**                        | Additional response information from cURL (optional).|
 | `$reasonPhrase`   | **string**                       | Reason phrase associated with the status code (default: `OK`). |
 | `$protocolVersion` | **string**                       | The HTTP protocol version (default: '1.1').         |
-| `$stream`         | **\Luminova\Storages\Stream\|null** | Optional stream object as response.                               |
+| `$stream`         | **Luminova\Storages\Stream\|null** | Optional stream object as response.                               |
+| `$cookie`         | **Luminova\Interface\CookieJarInterface\|null** | Optionally HTTP cookie jar object.                               |
+
+---
+
+### toString
+
+Convert the HTTP response to a formatted string.
+
+This method generates the complete HTTP response string, including the status line, headers, and body content. It checks for the 'Content-Length' header and adds it if not present.
+
+```php
+public toString(): string
+```
+
+**Return Value:** 
+
+`string` - Return the complete HTTP response as a string.
 
 ---
 
@@ -137,6 +158,21 @@ public getHeader(string $name): array<int,mixed>
 **Return Value:** 
 
 `array` - An array of header values.
+
+---
+
+### getHeadersString
+
+Convert an associative array of headers into a formatted string.
+This method converts the response headers to a string representation suitable for HTTP responses, where each header is formatted as `key: value\r\n` and separated by `CRLF` Carriage Return (ASCII 13, `\r` ) Line Feed (ASCII 10, `\n`).
+
+```php
+public getHeadersString(): string
+```
+
+**Return Value:** 
+
+`string` - Return a formatted string containing all headers, followed by an additional CRLF to signal the end of the headers section.
 
 ---
 
@@ -242,7 +278,7 @@ public withHeader(string $name, string|string[] $value): \Luminova\Http\Message\
 | Parameter | Type                           | Description                        |
 |-----------|--------------------------------|------------------------------------|
 | `$name`   | **string**                    | Case-insensitive header field name. |
-| `$value`  | **string|string[]**           | Header value(s).                  |
+| `$value`  | **string\|string[]**           | Header value(s).                  |
 
 **Return Value:** 
 

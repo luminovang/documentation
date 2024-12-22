@@ -36,6 +36,9 @@ This constants represent platform specific notifications configuration.
 #### Example Usage
 
 ```php
+<?php
+use \Luminova\Notifications\Models\Message;
+
 $message = new Message();
 $message->setPlatform(Message::ANDROID)
   ->setRaw(false)
@@ -43,10 +46,14 @@ $message->setPlatform(Message::ANDROID)
   ->setTopic('your_topic')
   ->setTokens(['token1', 'token2'])
   ->add('foo', 'value', 'android')
+  ->add('bar', [
+	'baz' => 1,
+	'bra' => 'foo'
+  ])
   ->addNested('foo.bar.baz', 'baz value')
   ->addData('key', 'value1')
   ->addAndroid('key', 'value')
-  ->addApns('key' => 'value')
+  ->addApns('key', 'value')
   ->addWebpush(['key' => 'value'])
   ->setFcmOptions(['key' => 'value'])
   ->setNotification([
@@ -56,12 +63,54 @@ $message->setPlatform(Message::ANDROID)
   ]);
 ```
 
+***
+
+### APNs Payload Example 
+
+```php
+<?php 
+use Luminova\Notifications\Firebase\Notification;
+use Luminova\Notifications\Models\Message;
+use Luminova\Exceptions\AppException;
+
+$message = (new Message())->setPlatform(Message::APN)
+	->setTopic('FORUM_CHAT')
+	->addNested('apns.payload.aps', [
+		'badge' => 1,
+		'mutable-content' => 1,
+		'content-available' => 1,
+		'sound' => 'default'
+	])
+	->add('data', [
+		'type' => 'chat',
+		'senderId' => 'some-user-id',
+		'imageLink' => 'https://example.com/assets/images/picture.jpg'
+	])
+	->setImageUrl('https://example.com/image.png')
+	->setNotification([
+		'title' => 'Hello Forum!',
+		'body' => 'Am new here, below is my picture.'
+	]);
+	
+try{
+	$notification = (new Notification())->channel($message);
+	
+	if(!$notification->isDone() && is_array($notification->getReport())){
+		print_r($notification->getReport());
+	}
+
+	echo 'Notification sent';
+}catch(AppException $e){
+	logger('exception', $e->getMessage());
+}
+```
+
 ### constructor
 
 Initialize new message model, you can optionally pass an array to build your notification payload from.
 
 ```php
-public __construct(array|null $setter = null): mixed
+public __construct(?array $setter = null): mixed
 ```
 
 **Parameters:**

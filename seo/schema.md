@@ -18,9 +18,11 @@ The schema supports a default configuration, which displays across web pages, bu
 
 ***
 
+## Class Definition
+
 * Class namespace: `\Luminova\Seo\Schema`
+* This class implements:  [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface)
 * This class is marked as **final** and can't be subclassed
-* This class is a **Final class**
 
 ## Methods
 

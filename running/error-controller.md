@@ -10,13 +10,11 @@ Customize or add new error handlers for different routing contexts. By default, 
 
 ## Introduction
 
-The `ViewErrors` class allows you define and manage error-handling methods to customize how view errors are displayed. Error-handling methods for `404` error type that may occur during the execution of your application routing or view rendering.
-This provide a way to display meaningful error messages to users.
+The `ViewErrors` class allows you define and manage error-handling methods to customize how view errors are displayed. Error-handling methods for `404` error type that may occur during the execution of your application routing or view rendering. This provide a way to display meaningful error messages to users.
 
 ***
 
-**NOTE**
-
+**NOTE:**
 - Error handler methods can be either static or non-static.
 - Methods must be declared as `public`, not `protected` or `private`.
 - Dependency injection is enabled by default for error handlers, allowing you to pass any class you need as a parameter in the method signature.
@@ -72,7 +70,7 @@ To register your error handler, it must be callable or pass an array where the f
 // public/index.php
 <?php
 use \Luminova\Routing\Prefix;
-use App\Controllers\Errors\ViewErrors;
+use App\Controllers\Http\Errors\ViewErrors;
 
 $app->router->context( 
 	new Prefix('foo', [ViewErrors::class, 'onFooError']),

@@ -35,10 +35,10 @@ $router->group('blogs', function (Router $router) {
 The `BlogCommand` controller class handles the various blog operations:
 
 ```php
-// /app/Controllers/BlogCommand.php
+// /app/Controllers/Cli/BlogCommand.php
 
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Cli;
 
 use \Luminova\Base\BaseCommand;
 use \Luminova\Command\Utils\Text;

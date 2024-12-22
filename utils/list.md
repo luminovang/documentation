@@ -200,8 +200,10 @@ While PHP’s built-in `implode` and `explode` functions are useful for basic st
     ```
 
 ***
+## Class Definition
 
 * Class namespace: `\Luminova\Arrays\Lists`
+* This class implements: [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface)
 
 ## Methods
 

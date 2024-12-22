@@ -65,7 +65,7 @@ This simple controller examples shows how you can validate user entries using va
 
 ```php
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Http;
 
 use \Luminova\Base\BaseController;
 

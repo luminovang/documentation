@@ -22,20 +22,20 @@ First, let's talk about URL prefixes. In Luminova, a URL prefix is the initial p
 
 ***
 
-### Definition Example
+### Usage Example
 
 ```php
-// app/controllers/HTTPController.php
-
-namespace App\Controllers;
+// app/controllers/Http/RequestController.php
+<?php
+namespace App\Controllers\Http;
 
 use Luminova\Base\BaseController;
 use Luminova\Attributes\Route;
 use Luminova\Attributes\Error;
 use App\Controllers\Errors\ViewErrors;
 
-#[Error('web', '/.*', [ViewErrors::class, 'onWebError'])]
-class HTTPController extends BaseController
+#[Error('web', '/(:root)', [ViewErrors::class, 'onWebError'])]
+class RequestController extends BaseController
 {
     // Your controller methods
 }
@@ -58,7 +58,7 @@ Don't be confused by the context URI prefix `web`. Using `web` as the prefix nam
 **Examples:**
 
 ```php
-#[Error('web', '/.*', [ViewErrors::class, 'onWebError'])]
+#[Error('web', '/(:root)', [ViewErrors::class, 'onWebError'])]
 ```
 
 - `https://example.com/account/page`: Handled by the `web` error method `onWebError`.
@@ -66,10 +66,17 @@ Don't be confused by the context URI prefix `web`. Using `web` as the prefix nam
 - `https://example.com/panel/page`: Handled by the `web` error method `onWebError` if no `panel` context is defined.
 
 ```php
-#[Error('panel', '/.*', [ViewErrors::class, 'onPanelError'])]
+#[Error('panel', '/(:root)', [ViewErrors::class, 'onPanelError'])]
 ```
 
 - `https://example.com/panel/page`: Handled by the `panel` error method `onPanelError` because it is explicitly defined.
+
+***
+
+## Class Definition
+
+* Class namespace: `\Luminova\Attributes\Error`
+* This class is marked as **final** and can't be subclassed
 
 ***
 
@@ -78,7 +85,7 @@ Don't be confused by the context URI prefix `web`. Using `web` as the prefix nam
 The constructor for the route error global handling attribute allows you to set up a route context with a specific URI pattern and error handler.
 
 ```php
-public __construct(string $context = 'web', string $pattern = '/.*', \Closure|array|null $onError = null): mixed
+public __construct(string $context = 'web', string $pattern = '/', \Closure|array|null $onError = null): mixed
 ```
 
 **Parameters:**
@@ -86,7 +93,7 @@ public __construct(string $context = 'web', string $pattern = '/.*', \Closure|ar
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$context` | **string** | The route error context name for URI prefixing. |
-| `$pattern` | **string** | The URI route pattern to match for the current error handling (e.g., `/`, `/.*`, `/blog/([0-9-.]+)`). |
+| `$pattern` | **string** | The URI route pattern to match for the current error handling (e.g., `/`, `/.*`, `/blog/([0-9-.]+)` or `(:placeholder)`). |
 | `$onError` | **\Closure\|array\|null** | The error handler, which can be a Closure or an array specifying a class and method. |
 
 ***
@@ -100,16 +107,16 @@ You can use the `Error` attribute to specify error handling for different parts 
 This example will call the `onWebError` method whenever a `404` error occurs if no other error context is defined to handle the prefix error.
 
 ```php
-// app/controllers/WebController.php
-
-namespace App\Controllers;
+// app/controllers/Http/WebController.php
+<?php
+namespace App\Controllers\Http;
 
 use Luminova\Base\BaseViewController;
 use Luminova\Attributes\Route;
 use Luminova\Attributes\Error;
 use App\Controllers\Errors\ViewErrors;
 
-#[Error('web', '/.*', [ViewErrors::class, 'onWebError'])]
+#[Error('web', '/(:root)', [ViewErrors::class, 'onWebError'])]
 class WebController extends BaseViewController
 {
     #[Route('/', methods: ['GET'])]
@@ -125,9 +132,9 @@ class WebController extends BaseViewController
 You can define different error handlers for different prefixes by defining multiple contexts.
 
 ```php
-// app/controllers/WebController.php
-
-namespace App\Controllers;
+// /app/controllers/Http/WebController.php
+<?php
+namespace App\Controllers\Http;
 
 use Luminova\Base\BaseViewController;
 use Luminova\Attributes\Route;
@@ -135,7 +142,7 @@ use Luminova\Attributes\Error;
 use App\Controllers\Errors\WebErrors;
 
 #[Error('admin', '/(?!dashboard/).*', [WebErrors::class, 'main'])]
-#[Error('admin', '/dashboard/.*', [WebErrors::class, 'dashboard'])]
+#[Error('admin', '/dashboard/(:root)', [WebErrors::class, 'dashboard'])]
 class WebController extends BaseViewController
 {
     #[Route('/admin', methods: ['GET'])]
@@ -152,8 +159,8 @@ class WebController extends BaseViewController
 }
 ```
 
-> **In the above setup:**
-> 
-> The first `Error` attribute `'/ (?!dashboard/).*'` matches all routes except those starting with `/dashboard/`.
->
-> The second `Error` attribute `'/dashboard/.*'` matches routes starting with `/dashboard/`.
+**In the above setup:**
+
+- The first `Error` attribute `'/ (?!dashboard/).*'` matches all routes **except** those that begin with `/dashboard/`. This utilizes a negative lookahead assertion `(?!dashboard/)` to exclude any URL that starts with `/dashboard/`.
+
+- The second `Error` attribute `'/dashboard/(:root)'` matches any routes that start with `/dashboard`, including both `/dashboard` and `/dashboard/`. The `(:root)` placeholder allows for the capture of any additional segments after `/dashboard`, including the possibility of matching nothing (an empty string).

@@ -25,16 +25,16 @@ Get protected properties of cookie object.
 
 ```php
 <?php 
-echo $cookie->name . PHP_EOL;
-echo $cookie->value . PHP_EOL;
-echo $cookie->prefix . PHP_EOL;
-echo $cookie->expires . PHP_EOL;
-echo $cookie->path . PHP_EOL;
-echo $cookie->domain . PHP_EOL;
-echo $cookie->secure . PHP_EOL;
-echo $cookie->httpOnly . PHP_EOL;
-echo $cookie->sameSite . PHP_EOL;
-echo $cookie->raw . PHP_EOL;
+echo $cookie->name;
+echo $cookie->value;
+echo $cookie->prefix;
+echo $cookie->expires;
+echo $cookie->path;
+echo $cookie->domain;
+echo $cookie->secure;
+echo $cookie->httpOnly;
+echo $cookie->sameSite;
+echo $cookie->raw;
 print_r($cookie->options);
 print_r($cookie->default);
 ```

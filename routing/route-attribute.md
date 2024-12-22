@@ -18,9 +18,15 @@ Running the command `php novakit context --export-attr` will export all attribut
 
 ***
 
-## Error Attribute
+### Prefix Attribute
 
-Luminova provides an optional class-level `Error` attribute, allowing you to define a global error handler for `HTTP` routes. [Read the documentation here](/routing/error-attribute.md).
+In Luminova, the `Prefix` attribute is an optional class-level feature that enables you to define a global `URI` or `URI Patterns` for a controller. This allows the controller to handle only requests matching the specified prefix. Additionally, it supports an optional error handler for invalid URIs. This attribute optimized routing by reducing redundancy in route definitions. [Learn more in the documentation](/routing/prefix-attribute.md).
+
+***
+
+### Error Attribute
+
+The `Error` attribute is an optional class-level feature in Luminova that allows you to define a global error handler for all route methods within a controller. This ensures consistent error handling across the class and improves code maintainability by centralizing error management. [Explore more in the documentation](/routing/error-attribute.md).
 
 ***
 ## Getting Started
@@ -100,6 +106,13 @@ Boot::http()->router->context()->run();
 
 ***
 
+## Class Definition
+
+* Class namespace: `\Luminova\Attributes\Route`
+* This class is marked as **final** and can't be subclassed
+
+***
+
 ### Route Construct
 
 Route attribute constructor for both `HTTP` and `CLI`.
@@ -113,10 +126,10 @@ public __construct(string $pattern = '/', array $methods = ['GET'], bool $error 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$pattern` | **string** | The route pattern for HTTP (e.g. `/`, `/blog/([0-9-.]+)`)<br />or CLI command pattern (e.g. `blogs`, `blogs/limit/(:int)`). |
-| `$methods` | **array** | The HTTP methods this route should responds to. (default: ['GET']). |
+| `$methods` | **array** | The HTTP methods this route should responds to. (default: `['GET']`).<br/>Optionally use `['ANY']` for any HTTP methods. |
 | `$error` | **bool** | Indicates if this is an error handler route for HTTP methods. |
-| `$group` | **string&#124;null** | The command group name for CLI route (default: NULL). |
-| `$middleware` | **string&#124;null** | Middleware type (default: NULL).<br />-   HTTP middleware route - `before` or `after`.<br />-   CLI middleware rote `global` for global middleware or `before` for command group middleware. |
+| `$group` | **string&#124;null** | The command group name for CLI route (default: `NULL`). |
+| `$middleware` | **string&#124;null** | Middleware type (default: `NULL`).<br />-   HTTP middleware route - `before` or `after`.<br />-   CLI middleware rote `global` for global middleware or `before` for command group middleware. |
 
 ***
 
@@ -126,17 +139,17 @@ The `HTTP` routes can respond to basic HTTP methods such as `GET`, `POST`, `PUT`
 
 ### Setting Up HTTP
 
-In this example, we assume you have a controller class named `HTTPController`.
+In this example, we assume you have a controller class named `RequestController`.
 
 ```php
-// app/controllers/HTTPController.php
+// /app/controllers/Http/RequestController.php
 
-namespace App\Controllers;
+namespace App\Controllers\Http;
 
 use Luminova\Base\BaseController;
 use Luminova\Attributes\Route;
 
-class HTTPController extends BaseController
+class RequestController extends BaseController
 {
     // Your controller methods
 }
@@ -160,7 +173,7 @@ public function index(): int
 
 ```php
 <?php 
-$route->get('/', 'HTTPController::index');
+$route->get('/', 'RequestController::index');
 ```
 
 #### HTTP Route with Middleware
@@ -179,7 +192,7 @@ public function middleware(): int
 
 ```php
 <?php 
-$route->middleware('GET', '/', 'HTTPController::middleware');
+$route->middleware('GET', '/', 'RequestController::middleware');
 ```
 ***
 ## CLI Examples
@@ -191,14 +204,14 @@ CLI behaves differently from HTTP; methods like `POST`, `GET`, and other HTTP me
 In this example, we assume you have a controller class named `CLIController`.
 
 ```php
-// app/Controllers/CLIController.php
+// app/Controllers/Cli/CommandController.php
 
-namespace App\Controllers;
+namespace App\Controllers\Cli;
 
 use Luminova\Base\BaseCommand;
 use Luminova\Attributes\Route;
 
-class CLIController extends BaseCommand
+class CommandController extends BaseCommand
 {
     // Your CLI controller methods
 }
@@ -223,7 +236,7 @@ public function fooMethod(): int
 ```php
 <?php 
 $route->group('bar', static function(Router $router){
-    $router->command('foo', 'CLIController::fooMethod');
+    $router->command('foo', 'CommandController::fooMethod');
 });
 ```
 
@@ -246,7 +259,7 @@ public function middleware(): int
 ```php
 <?php 
 $route->group('bar', static function(Router $router){
-    $router->before('bar', 'CLIController::middleware');
+    $router->before('bar', 'CommandController::middleware');
     // Commands
 });
 ```
@@ -268,7 +281,7 @@ public function middleware(): int
 
 ```php
 <?php 
-$router->before('global', 'CLIController::middleware');
+$router->before('global', 'CommandController::middleware');
 $route->group('group-name', static function(Router $router){
     // Commands
 });

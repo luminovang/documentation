@@ -47,7 +47,8 @@ To generate a temporary URL for an image that expires after a specified duration
 <?php
 use \Luminova\Storages\FileDelivery;
 
-$temporalUrl = FileDelivery::storage('images')->url('private-image.png', 3600);
+$temporalUrl = FileDelivery::storage('images')
+    ->url('private-image.png', 3600);
 
 // Output the complete URL for file preview
 echo 'https://example.com/static/file/' . $temporalUrl; 
@@ -79,6 +80,8 @@ class CdnController extends BaseViewController
 ```
 
 ***
+
+## Class Definition
 
 * Class namespace: `\Luminova\Storages\FileDelivery`
 * This class is marked as **final** and can't be subclassed
@@ -122,7 +125,7 @@ public static storage(string $basepath, bool $etag = true): static
 **Return Value:**
 `static` - Return Instance of the FileDelivery class.
 
-> *Note*
+> **Note**
 > Your files must be stored in the storage directory located in `/writeable/storages/`.
 > Additionally, you don't need to specify the `/writeable/storages/` in your `$basepath` parameter.
 
@@ -130,10 +133,16 @@ public static storage(string $basepath, bool $etag = true): static
 
 ### output
 
-Outputs any file content in the browser, with appropriate headers.
+Read and outputs any file content in the browser, with appropriate headers.
 
 ```php
-public output(string $basename, int $expiry, array&lt;string,mixed&gt; $headers = []): bool
+public output(
+    string $basename, 
+    int $expiry = 0, 
+    array $headers = [],
+    int $length = (1 << 21),
+    int $delay = 0
+): bool
 ```
 
 **Parameters:**
@@ -143,8 +152,11 @@ public output(string $basename, int $expiry, array&lt;string,mixed&gt; $headers 
 | `$basename` | **string** | The file name (e.g: image.png). |
 | `$expiry` | **int** | Expiry time in seconds for cache control (default: 0), indicating no cache. |
 | `$headers` | **array<string,mixed>** | An associative array for additional headers to set. |
+| `$length` | **int** | Optional size of each chunk to be read (default: 2MB). |
+| `$delay` | **int** | Optional delay in microseconds between chunk length (default: 0). |
 
 **Return Value:**
+
 `bool` - Returns true if file output is successfully, false otherwise.
 
 > By default `304`, `404` and `500` headers will be set based file status and cache control.
@@ -153,7 +165,7 @@ public output(string $basename, int $expiry, array&lt;string,mixed&gt; $headers 
 
 ### outputImage
 
-Displays image content in the browser with appropriate headers. Using the external package `NanoImage`, you can customize the image's `width`, `height`, `quality`, and resizing `ratio`.
+Modify and output image with appropriate headers. Using the external package `\Peterujah\NanoBlock\NanoImage`, you can customize the image's `width`, `height`, `quality`, and resizing `ratio`.
 
 ```php
 public outputImage(string $basename, int $expiry = 0, array $options = [], array $headers = []): bool
@@ -170,10 +182,10 @@ public outputImage(string $basename, int $expiry = 0, array $options = [], array
 
 **Filter Options**
 
-- `width` *(int)*  -   New output width.
-- `height` *(int)* -  New output height.
-- `ratio` *(bool)* -  Use aspect ratio while resizing image.
-- `quality` *(int)* - Image quality.
+- `width` **(int)**  -  Set new output width (default: 200).
+- `height` **(int)** -  Set new output height (default: 200).
+- `ratio` **(bool)** -  Specify weather to aspect ratio while resizing image (default: true).
+- `quality` **(int)** - Set the output image quality (default: 100, 9 for PNG).
 
 **Return Value:**
 
@@ -181,16 +193,24 @@ public outputImage(string $basename, int $expiry = 0, array $options = [], array
 
 **Throws:**
 
-[\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - Throws if NanoImage image is not installed.
-[\Luminova\Exceptions\StorageException](/running/exceptions.md#storageexception) - Throws if error occurred during image processing.
+[\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - Throws if NanoImage image is not installed or if error occurred during image processing.
 
-> To use this method you need to install `NanoImage` first by running command `composer require peterujah/nano-image`
+> **Note:** This method relay on external image library to modify the width and height.
+> To use this method you need to install Peter Ujah's `NanoImage` following the below instructions. 
+
+**Composer Command:**
+
+If you don't already have it, run this command 
+
+```bash
+composer require peterujah/nano-image
+```
 
 ***
 
 ### temporal
 
-To processes and output a temporal file `URL` based on `URL` hash to determine the expiration.
+Temporally output file based on the URL hash key if valid and not expired.
 
 ```php
 public temporal(string $url_hash, array $headers = []): bool
@@ -200,14 +220,18 @@ public temporal(string $url_hash, array $headers = []): bool
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$url_hash` | **string** | The encrypted URL hash. |
+| `$url_hash` | **string** | The file encrypted URL hash. |
 | `$headers` | **array** | Additional headers to set. |
 
 **Return Value:**
-`bool` - True if file output is successful, false otherwise.
 
-> *Note:*
-> This method uses `Encryption` and `Decryption` class to encrypt and decrypt `URL` hash.
+`bool` - Return true if file output is successful, false otherwise.
+
+> **Note:** This method uses `Encryption` and `Decryption` class to encrypt and decrypt `URL` hash.
+
+**Throws:**
+
+[\Luminova\Exceptions\EncryptionException](/running/exceptions.md#encryptionexception) - Throws if decryption failed or an error is encountered.
 
 ***
 
@@ -227,4 +251,9 @@ public url(string $basename, int $expiry = 3600): string|false
 | `$expiry` | **int** | The expiration time in seconds (default: `1 hour`). |
 
 **Return Value:**
+
 `string|false` - Return based64 encrypted `HASH`, otherwise false.
+
+**Throws:**
+
+[\Luminova\Exceptions\EncryptionException](/running/exceptions.md#encryptionexception) - Throws if encryption failed or an error occurred.

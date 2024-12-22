@@ -10,9 +10,9 @@ Process Handler simplifies executing command processes. It supports multiple exe
 
 ## Introduction
 
-The **Process Handler** class is designed to handle small command process execution in PHP, with built-in support for various types of execution methods. It allows users to run commands via different executors, such as `popen`, `proc_open`, `shell_exec`, `exec`, and also supports running PHP closures or working with stream resources.
+The **Process Handler** class provides a flexible interface for executing commands or custom code in PHP, with built-in support for various execution methods. It allows commands to be run through executors like `popen`, `proc_open`, `shell_exec`, and `exec`, as well as directly executing PHP closures and handle responses such generators, or stream resources, array, string and many more.
 
-The `Process` class offers flexibility and ease of use, making it possible to interact with system commands or custom code in a streamlined manner. It is capable of waiting for the process to complete with optional timeouts, checking whether a process is finished, and retrieving responses once the process is complete.
+In addition, the process class leverages PHP 8.1 **Fiber** (if available) to enable asynchronous execution, allowing non-blocking interaction with commands or user-defined code. This enables the class to wait for processes to complete while offering optional timeouts for checking the status of the process. Once the process completes, the response can be retrieved efficiently.
 
 ***
 
@@ -31,13 +31,13 @@ The `Process` class offers flexibility and ease of use, making it possible to in
 
 ### Example Usages:
 
-1. **Running a Command with popen**: 
-   The `Process` class allows for running shell commands using `popen`, providing control over the command output and process flow.
+1. **Executing with proc_open**: 
+   For advanced command execution scenarios, it supports running commands using `proc_open`, allowing more fine-grained control over input/output streams.
 
    ```php
-   $process = Process::withCommand('ls -la', Process::EXECUTOR_POPEN);
+   $process = Process::withCommand('sleep 10 && echo "Sleep is completed"', Process::EXECUTOR_PROC_OPEN);
    $process->run();
-   $process->wait(5); // Wait for up to 5 seconds
+   $process->wait(15); // Wait for up to 15 seconds
 
    if ($process->isComplete()) {
       // Get and output the response
@@ -48,7 +48,7 @@ The `Process` class offers flexibility and ease of use, making it possible to in
    ```
 
 2. **Executing a Callable Function**: 
-   It supports running a PHP closure or callable, making it versatile for various tasks beyond shell commands.
+   It also supports running a PHP closure or callable, making it versatile for various tasks beyond shell commands.
 
    ```php
    $process = Process::withCallback(function() {
@@ -61,7 +61,7 @@ The `Process` class offers flexibility and ease of use, making it possible to in
    This feature enables executing system commands using `shell_exec` and capturing their output.
 
    ```php
-   $process = Process::withCommand('echo "This is a test"', Process::EXECUTOR_SHELL);
+   $process = Process::withCommand('ls -la', Process::EXECUTOR_SHELL);
    $process->run();
    ```
 
@@ -83,11 +83,11 @@ The `Process` class offers flexibility and ease of use, making it possible to in
    }
    ```
 
-5. **Executing with proc_open**: 
-   For advanced command execution scenarios, it supports running commands using `proc_open`, allowing more fine-grained control over input/output streams.
+5. **Running a Command with popen**: 
+   The `Process` class allows for running shell commands using `popen`, providing control over the command output and process flow.
 
    ```php
-   $process = Process::withCommand('php -v', Process::EXECUTOR_PROC_OPEN);
+   $process = Process::withCommand('ls -la', Process::EXECUTOR_POPEN);
    ```
 
 6. **Waiting for Generator Completion**: 

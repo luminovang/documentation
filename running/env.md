@@ -125,7 +125,7 @@ php novakit env:remove --key=MY_FOO
   - **Description**: Specifies the number of seconds to wait before retrying a connection during maintenance mode. Default is 3600 seconds (1 hour).
 
 - **`app.api.prefix`** **(string)**: 
-  - **Description**: Defines the URI prefix for your `API` endpoints. The default prefix is `api`. If you choose a different prefix, ensure that `Foundation::isApiContext(`) continues to function correctly with your new prefix
+  - **Description**: Defines the URI prefix for your `API` endpoints. The default prefix is `api`. If you choose a different prefix, ensure that `Foundation::isApiContext()` continues to function correctly with your new prefix
 
 ***
 
@@ -136,7 +136,7 @@ php novakit env:remove --key=MY_FOO
 
 ***
 
-### Cache & Optimization
+### Caching
 
 - **`default.cache.control`** **(string)**:
   - **Description**: Configures cache control directives for HTTP headers. Example values include `no-store`, `max-age=0`, or `no-store, max-age=0, no-cache`. This controls how browsers and intermediary caches handle the cached content.
@@ -149,6 +149,16 @@ php novakit env:remove --key=MY_FOO
 
 - **`page.caching.statics`** **(string)**:  
   - **Description**: Specifies the types of content that should be served as static cached pages. The types are separated by the pipe symbol (`|`). For example, `html|json` means that static caching will be applied to pages with `.html` and `.json` extensions. Ensure there are no spaces around the pipe symbol. 
+
+- **`page.caching.immutable`** **(bool)**:  
+  - **Description**: Determines whether caching for the page is immutable. Set to `true` to indicate that cached content will not change and can be safely reused; set to `false` to allow for dynamic content updates.
+
+- **`page.cache.app.versions`** **(array)**:  
+  - **Description**: An array of previous application versions (e.g., `page.cache.app.versions = [1.0.2, 3.2.6]`) that the caching system considers when retrieving cached static content. This variable specifies which versions are allowed to reuse its cached pages if available, ensuring compatibility with legacy versions.
+
+***
+
+### Optimization
 
 - **`page.minification`** **(bool)**:
   - **Description**: Enables or disables minification of page content, including inline CSS, and JavaScript, to reduce file size and improve loading times.
@@ -196,6 +206,22 @@ php novakit env:remove --key=MY_FOO
 
 - **`throw.cli.exceptions`** **(bool)**:
   - **Description**: Allows you to catch and handle exceptions thrown in CLI (Command Line Interface) commands outside of command controller classes. When set to `true`, raw exceptions are thrown in CLI environments.
+
+***
+
+### Logger
+
+- **`logger.create.backup`** **(bool)**: 
+  - **Description**: Indicates whether a backup of the log file should be created when the `logger.max.size` limit is reached. Set to `true` to automatically create a backup and clear the current log file; set to `false` to clear the log file without creating a backup.
+
+- **`logger.max.size`** **(int)**: 
+  - **Description**: Specifies the maximum size (in bytes) for each log level (e.g., 10485760 for 10 MB). When this limit is reached, a backup of the log file is created if `logger.create.backup` is set to true; otherwise, the logs are cleared.
+
+- **`logger.remote.logs`** **(string|null)**: 
+  - **Description**: Defines the endpoint URL for sending POST requests for error logs to a remote server in production environments. Set this variable to the desired URL to enable automatic logging of errors remotely. If left unset or set to `null`, the error network logging feature will not be activated.
+
+- **`logger.mail.logs`** **(string|null)**: 
+  - **Description**: Specifies the email address to which error logs should be sent. When set, the logger will send an email with error details whenever an error occurs. If left unset or set to `null`, the email logging feature will be disabled.
 
 ***
 
@@ -363,3 +389,6 @@ Luminova offers several optional features that are disabled by default. These fe
 
 - **`feature.route.dependency.injection`** **(bool)**: 
   - **Description**: Allows dependency injection type hinting for controller methods that are routable, enabling more flexible and testable code.
+
+- **`feature.app.hmvc`** **(bool)**: 
+  - **Description**: Controls the use of the Hierarchical Model-View-Controller (HMVC) architecture within the application. Set to `enable` to activate HMVC features, allowing for better organization and modularization of code through nested controllers. Setting this variable to `disable` will turn off HMVC support, reverting to a standard MVC architecture.

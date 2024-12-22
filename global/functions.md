@@ -1,4 +1,4 @@
-# Global Utility Helper Functions
+# Global Procedural Helper Functions
 
 ***
 
@@ -30,30 +30,37 @@ Helper functions abstract away the complexity of certain operations, making the 
 
 ### app
 
-Get application container class shared instance or new instance if not shared. 
+Get application container class shared instance or a new instance if not shared.
 
 ```php
-function app(): \App\Application
+function app(bool $shared = true, mixed ...$arguments): \App\Application
 ```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$shared` | **bool** | Return a shared instance (default: true). |
+| `...$arguments` | **mixed** | Optional arguments to pass to the application constructor. |
 
 **Return Value:**
 
-`\App\Application` - Return application shared instance.
+`\Luminova\Core\CoreApplication<\App\Application>` - Returns the shared instance if $shared is true, or a new instance if $shared is false.
 
 **See Also**
 
 [Core Application](/core/application.md) - See the documentation for base application methods and usages.
 
-> Avoid re-initializing application class if possible, always use the `app` function or grab the shared instance of your application by `Application::getInstance()`
+> **Note:** Avoid re-initializing application class if possible, always use the `app` function or grab the shared instance of your application by `Application::getInstance()`
 
 ***
 
 ### request
 
-Get the `HTTP` request object.
+Retrieve a shared or new instance of HTTP request object.
 
 ```php
-function request(bool $shared = true): ?\Luminova\Http\Request
+function request(bool $shared = true): HttpRequestInterface
 ```
 
 **Parameters:**
@@ -64,7 +71,7 @@ function request(bool $shared = true): ?\Luminova\Http\Request
 
 **Return Value:**
 
-`class-object<Request>||null` - Return request object or null.
+`\Luminova\Interface\HttpRequestInterface` - Returns an incoming HTTP request object.
 
 **See Also**
 
@@ -262,7 +269,7 @@ function layout(string $file): \Luminova\Template\Layout
 
 [Template Layout](/templates/layout.md) - See the documentation for default `PHP` template layout methods and usages.
 
- > All layouts must be stored in `resources/views/layout/` directory.
+ > All layouts must be stored in `resources/Views/layout/` directory.
  > Examples: `layout('foo')` or `layout('foo/bar/baz')`
 
 ***
@@ -273,7 +280,7 @@ Initiate a view response object and render any response content.
 It allows you to render content of any format in view or download content within the view controller.
 
 ```php
-function response(int $status = 200, ?array $headers = null, bool $encode = true, bool $shared = true): \Luminova\Template\ViewResponse
+function response(int $status = 200, ?array $headers = null, bool $shared = true): ViewResponseInterface
 ```
 
 **Parameters:**
@@ -282,16 +289,15 @@ function response(int $status = 200, ?array $headers = null, bool $encode = true
 |-----------|------|-------------|
 | `$status` | **int** | HTTP status code (default: 200 OK) |
 | `$headers` | **array<string,mixed>\|null** | Additional response headers (default: null). |
-| `$encode` | **bool** | Enable content encoding like gzip, deflate (default: true). |
 | `$shared` | **bool** | Weather to return shared instance (default: true). |
 
 **Return Value:**
 
-`ViewResponse` - Return vew response object. 
+`\Luminova\Interface\ViewResponseInterface` - Return vew response object. 
 
 **See Also**
 
-[View Response](/templates/response.md) - Also checkout the documentation for view response methods and usages.
+[View the Response Class documentation](/templates/response.md) for detailed information on methods and usage examples.
 
 ***
 
@@ -555,39 +561,41 @@ function  import(string $library): bool
 
 ### logger
 
-To log a message with a given log level.
-This function uses your `prefered` psr logger class if define otherwise it will use default `NovaLogger`.
+Logs a message to a specified destination using the configured preferred PSR logger class if define in `App\Config\Preference`, otherwise it will use default `Luminova\Logger\NovaLogger`.
+
+The destination can be a log level, email address, or URL endpoint. This function delegates the logging action to the dispatch method, which handles the asynchronous or synchronous execution as needed.
 
 ```php
-function logger(string $level, string $message, array $context = []): void
+function logger(string $to, string $message, array $context = []): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$level` | **string** | The log level. |
+| `$to` | **string** | The destination for the log (e.g, log level, email address, or URL). |
 | `$message` | **string** | The log message. |
 | `$context` | **array** | Additional context data (optional). |
 
 **Log levels** 
 
-- `emergency` - Log an emergency errors.
-- `alert` - Log an alert message .
-- `critical` - Log a critical errors.
-- `error` - Log an error message.
-- `warning` - Log a warning message. 
-- `notice` - Log a notice.
-- `info` - Log an info message.
-- `debug` - Log debugging information.
-- `exception` - Log an exceptions.
-- `php_errors` - Log PHP errors.
+- `emergency` - Log urgent errors requiring immediate attention.
+- `alert` - Log important alert messages.
+- `critical` - Log critical issues that may disrupt application functionality.
+- `error` - Log minor errors.
+- `warning` - Log warning messages.
+- `notice` - Log messages that require attention but are not urgent.
+- `info` - Log general information.
+- `debug` - Log messages for debugging purposes.
+- `exception` - Log exception messages.
+- `php_errors` - Log PHP-related errors.
+- `metrics` - Log performance metrics for `APIs`.
 
 **Throws:**
 
-- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception)
+- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - Throws if an error occurs while logging or an invalid destination is provided.
 
-> All loges are located in `/writeable/log/`, each log level has it own file name (e.x., `warning.log`).
+> All non-network and email logs are located in `/writeable/log/`, each log level has it own file name (e.g, `warning.log`).
 >
 > To set your own logging handler class, it can be done in `App\Config\Preference`, your logger must implement `PSR` logger interface.
 
@@ -700,10 +708,12 @@ Context names and a brief explanation of each:
 
 ### strict
 
-Sanitize user input by removing disallowed characters, retaining only those permitted. Unlike the `escape` function, which encodes characters for safe output, the `strict` function replaces unwanted characters in the input string with `$replacer` and returns the sanitized value. This method is particularly useful when you need to enforce strict input validation, ensuring that only expected characters are present.
+Sanitize user input by removing disallowed characters, retaining only those permitted. Unlike the `escape` function, which encodes characters for safe output, the `strict` function replaces unwanted characters in the input string with `$replacer` and returns the sanitized value if the replacer parameter is passed null and exception will be throw if input is not an expected format. 
+
+This method is particularly useful when you need to enforce strict input validation, ensuring that only expected characters are present.
 
 ```php
-function strict(string $input, string $type = 'default', string $replacer = ''): string
+function strict(string $input, string $type = 'default', string|null $replacer = ''): string
 ```
 
 **Parameters:**
@@ -711,13 +721,21 @@ function strict(string $input, string $type = 'default', string $replacer = ''):
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$input` | **string** | The input string to be sanitized. |
-| `$type` | **string** | The expected input filter type. |
-| `$replacer` | **string** | The symbol to replace disallowed characters with (default: `blank string`). |
+| `$type` | **string** | The expected data type (e.g., 'int', 'email', 'username'). |
+| `$replacer` | **string\|null** | The symbol to replace disallowed characters or null to throw and exception (default: `blank`). |
 
-**Filters Types**
+**Return Value:**
+
+`string` -  Return the sanitized string.
+
+**Throws:**
+
+- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - Throws if the input does not match the expected type and no replacement is provided.
+
+**Available Filter Types**
 
 - **int**: Accepts only integer values.
-- **digit**: Accepts only digit values including decimals and negatives.
+- **numeric**: Accepts only digit values including decimals and negatives.
 - **key**: Accepts only alphanumeric characters, underscores, and dashes.
 - **password**: Accepts alphanumeric characters, underscores, dashes, and special characters: @, !, *, and _.
 - **username**: Accepts alphanumeric characters, underscores, dashes, and periods.
@@ -733,10 +751,6 @@ function strict(string $input, string $type = 'default', string $replacer = ''):
 - **date**: Accepts valid date strings containing alphanumeric characters, dashes, colons, slashes, commas, and spaces.
 - **uuid**: Accepts valid UUID strings in the format: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX.
 - **default**: Removes any HTML tags from the input string.
-
-**Return Value:**
-
-`string` -  Return sanitized string.
 
 ***
 
@@ -758,7 +772,7 @@ function lang(string $lookup, string|null $default = null, string|null $locale =
 | `$placeholders` | **array** | Matching placeholders for translation. |
 
 **Return Value:**
-`string` - The translated text.
+`string` - Return the translated text.
 
 **Throws:**
 
@@ -955,6 +969,30 @@ function make_dir(string  $path, int|null  $permissions = null, bool  $recursive
 **See Also**
 
 [File Manager](/files/manager.md) - Also checkout the documentation for file manager methods and usages.
+
+***
+
+### get_temp_file
+
+Retrieves the path for temporary files or generates a unique temporary file name.
+
+This function can return either the path to a temporary directory or a unique temporary filename with an optional specified extension. If `local` is set to true, it will create the directory in the local writable path. If `extension`  is provided, the returned filename will have that extension.
+
+```php
+function get_temp_file(?string $prefix = null, ?string $extension = null, bool $local = false): string|false
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$prefix` | **string&#124;null** | Optional prefix for the temporary filename or a new sub-directory. |
+| `$extension` | **string&#124;null** | Optional file extension for the temporary filename. |
+| `$local` | **bool** | Indicates whether to use a local writable path (default: false). |
+
+**Return Value:**
+
+`string|false` - Returns the path of the temporary directory, a unique temporary filename with the specified extension, or false on failure.
 
 ***
 
@@ -1251,13 +1289,97 @@ function to_object(array|string $input): object|false
 
 ***
 
-### array_merge_recursive_distinct
+### array_extend_default
 
-Recursively merges two arrays, ensuring unique values in nested arrays.
-The first array will be updated with values from the second array.
+This function is designed to merge two arrays, where the first array (`$default`) represents default values, and the second array (`$new`) contains updated or new values. The function recursively merges arrays for keys that exist in both arrays but leaves the default values untouched if no corresponding value is found in `$new`.
 
 ```php
-public static array_merge_recursive_distinct(array &$array1, array &$array2): array
+function array_extend_default(array $default, array $new): array
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$default` | **array** | The default options array. |
+| `$new` | **array** | The new options array to merge. |
+
+**Return Value:**
+
+`array` - Return the merged options array with defaults preserved.
+
+**Usage Examples:**
+
+```php
+$default = ['a' => 1, 'b' => 2, 'c' => 3];
+$new = ['b' => 20, 'd' => 4];
+
+$result = array_extend_default($default, $new);
+print_r($result);
+```
+
+**Output:**
+
+```bash
+Array
+(
+    [a] => 1
+    [b] => 2
+    [c] => 3
+    [d] => 4
+)
+```
+
+***
+
+### array_merge_recursive_replace
+
+This function is designed to merge multiple arrays recursively, but with a replacement strategy. If two arrays have the same key, the values in the second array will overwrite those in the first array. For numeric keys, it appends the values only if they don't already exist in the array.
+
+```php
+public array_merge_recursive_replace(array ...$array): array
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `...$array` | **array** | The array arguments to merge. |
+
+**Return Value:**
+
+`array` - Return the merged result array.
+
+**Usage Examples:**
+
+```php
+$array1 = ['a' => 1, 'b' => 2, 'c' => 3];
+$array2 = ['b' => 20, 'd' => 4];
+
+$result = array_merge_recursive_replace($array1, $array2);
+print_r($result);
+```
+
+**Output:**
+
+```bash
+Array
+(
+    [a] => 1
+    [b] => 20
+    [c] => 3
+    [d] => 4
+)
+```
+
+***
+
+### array_merge_recursive_distinct
+
+This function is designed to merge two arrays (`$array1` and `$array2`) in a way that is distinct from PHP's native array_merge_recursive. It avoids combining values under the same key as an array and instead replaces existing values if needed.
+
+```php
+public array_merge_recursive_distinct(array &$array1, array &$array2): array
 ```
 
 **Parameters:**
@@ -1270,6 +1392,108 @@ public static array_merge_recursive_distinct(array &$array1, array &$array2): ar
 **Return Value:**
 
 `array` - Return the merged array with unique values.
+
+**Usage Examples:**
+
+```php
+$array1 = ['a' => 1, 'b' => 2];
+$array2 = ['b' => 20, 'c' => 3];
+
+$result = array_merge_recursive_distinct($array1, $array2);
+print_r($result);
+```
+
+**Output:**
+
+```bash
+Array
+(
+    [a] => 1
+    [b] => 20
+    [c] => 3
+)
+```
+
+***
+
+### array_merge_result
+
+Merges a response into the provided results variable while optionally preserving the structure of nested arrays.
+
+This function checks the type of the `results` variable and appropriately merges or appends 
+the `response` based on its type. It supports various scenarios:
+
+- If `results` is null, it assigns `response` to it.
+- If `results` is an array and `preserve_nested` is true, it adds the `response` as a nested element if `response` is an array, or appends `response` directly otherwise.
+- If `results` is an array and `preserve_nested` is false, it merges `results` and `response` directly when `response` is an array.
+- If `results` is not an array (like a string or scalar), it converts `results` into an array  and merges or appends the `response` based on the `preserve_nested` flag.
+
+```php
+public array_merge_result(mixed &$results, mixed $response, bool $preserve_nested = true): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `&$results` | **mixed** | The results variable to which the response will be merged or appended to, passed by reference. |
+| `$response` | **mixed** | The response variable to merge with results. It can be an array, string, or other types. |
+| `$preserve_nested` | **bool** | Optional. Determines whether to preserve the nested structure of arrays when merging (default: true). |
+
+**Usage Examples:**
+
+```php
+<?php
+$results = null;
+
+// Case 1: Merging a new string response.
+$response1 = 'Task 1 completed';
+array_merge_result($results, $response1);
+var_export($results);
+
+// Case 2: Merging an array response while preserving the nested structure.
+$response2 = ['Task 2 completed'];
+array_merge_result($results, $response2);
+var_export($results);
+
+// Case 3: Merging another array response without preserving nested structure.
+$response3 = ['Task 3 completed', 'Task 4 completed', (object)[1,2,3]];
+array_merge_result($results, $response3, false);
+var_export($results);
+```
+
+**Output:**
+
+```php
+// Case 1: Output
+'Task 1 completed'
+
+// Case 2: Output
+array (
+  0 => 'Task 1 completed',
+  1 => 
+  array (
+    0 => 'Task 2 completed',
+  ),
+)
+
+// Case 3: Output
+array (
+  0 => 'Task 1 completed',
+  1 => 
+  array (
+    0 => 'Task 2 completed',
+  ),
+  2 => 'Task 3 completed',
+  3 => 'Task 4 completed',
+  4 => 
+  (object) array(
+     '0' => 1,
+     '1' => 2,
+     '2' => 3,
+  ),
+)
+```
 
 ***
 
@@ -1439,6 +1663,64 @@ function  nl2html(string|null  $text): string
 
 ***
 
+### uppercase_words
+
+Uppercase the first character of each word in a string, it also handles underscores (`_`) and hyphens (`-`), converting them to spaces before applying capitalization.
+
+```php
+function uppercase_words(string $string): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$string` | **string** | The input string to convert. |
+
+**Return Value:**
+
+`bool` - Return the string with the first character of each word capitalized.
+
+**Usage Example:**
+
+```php
+echo uppercase_words('foo-bar_baz');
+// Output: // Foo-Bar_Baz
+```
+
+**More Patterns:**
+
+```php
+$strings = [
+    'foo-bar_baz'
+    'hello-world_this_is_a_test'
+    'example'
+    '_leading_and_trailing_'
+    '-leading-plus-trailing-'
+    'multiple---dashes_and__underscores'
+    'foo-bar baz_baz'
+];
+
+$results = array_map('uppercase_words', $strings);
+
+// Print the results
+echo implode("\n", $results);
+```
+
+**Output:**
+
+```md
+Foo-Bar_Baz
+Hello-World_This_Is_A_Test
+Example
+_Leading_And_Trailing_
+-Leading-Plus-Trailing-
+Multiple-Dashes_And_Underscores
+Foo-Bar Baz_Baz
+```
+
+***
+
 ### has_uppercase
 
 Checks if a given string contains an uppercase letter.
@@ -1451,7 +1733,7 @@ function has_uppercase(string $string): bool
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$string` | **string** | The string to check uppercase.. |
+| `$string` | **string** | The string to check uppercase. |
 
 **Return Value:**
 
@@ -1561,7 +1843,7 @@ function is_platform(string $os): bool
 Determines if the provided IP address corresponds to a Tor exit node.
 
 ```php
-function is_tor(string|null $ip = null): bool
+function is_tor(?string $ip = null): bool
 ```
 
 **Parameters:**

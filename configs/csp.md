@@ -64,7 +64,7 @@ To extend or modify this CSP configuration can be done by adding or removing dir
    To send the CSP as an HTTP header, use:
 
    ```php
-   $csp->getCspHeader();
+   $csp->sendCspHeader();
    ```
 
    This sends the following HTTP header:

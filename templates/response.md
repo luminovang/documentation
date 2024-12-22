@@ -102,15 +102,124 @@ Initialize response class constructor with HTTP status code and optional headers
 
 ```php
 <?php 
-function __construct(int $status = 200, array<string,mixed> $headers = [])
+function __construct(
+	private int $status = 200, 
+	private array $headers = [],
+	private bool $encode = false,
+	private bool $minifyCodeblocks = false,
+	private bool $codeblockButton = false
+)
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$status` | **int** | HTTP status code (default: 200 OK). |
-| `$headers` | **array<string,mixed>** | The header key-pair (default: []). |
+| `$status` | **int** | HTTP status code (default: `200 OK`). |
+| `$headers` | **array<string,mixed>** | HTTP headers as key-value pairs. |
+| `$encode` | **bool** | Whether to enable content encoding like `gzip`. |
+| `$minifyCodeblocks` | **bool** | Indicates if code blocks should be minified. |
+| `$codeblockButton` | **bool** |  Indicates if code blocks should include a copy button. |
+		
+***
+
+### getStatusCode
+
+Get the current HTTP status code.
+
+```php
+public getStatusCode(): int
+```
+
+**Return Value:**
+
+`int` - Return the current HTTP status code.
+
+***
+
+### getHeaders
+
+Retrieve all HTTP headers.
+
+```php
+public getHeaders(): array<string,mixed>
+```
+
+**Return Value:**
+
+`array<string,mixed>` - Return list of all HTTP headers.
+
+***
+
+### getHeader
+
+Retrieve a specific HTTP header.
+
+```php
+public getHeader(string $name): mixed
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$name` | **string** | The name of the header. |
+
+**Return Value:**
+
+`mixed` - Return the header value, or null if it doesn't exist.
+
+***
+
+### getProtocolVersion
+
+Retrieves the HTTP protocol version (e.g, `1.0`, `1.1`).
+
+```php
+public getProtocolVersion(): float
+```
+
+**Return Value:**
+
+`float` - Return the HTTP protocol version.
+
+***
+
+### clearHeaders
+
+Clear all previous HTTP headers.
+
+```php
+public clearHeaders(): void
+```
+
+***
+
+### clearRedirects
+
+Clear previous set HTTP header redirects.
+
+```php
+public clearRedirects(): bool
+```
+
+**Return Value:**
+
+`bool` - Return true if any redirect was cleared, false otherwise.
+
+***
+
+### hasRedirects
+
+Determine if the response headers has any redirects.
+
+```php
+public hasRedirects(): bool
+```
+
+**Return Value:**
+
+`bool` - Return true if headers contain any redirect, otherwise false.
 
 ***
 
@@ -126,7 +235,7 @@ public setStatus(int $status = 200): self
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$status` | **int** | HTTP status code (default: 200 OK) |
+| `$status` | **int** | HTTP status code (default: 200 OK). |
 
 **Return Value:**
 
@@ -234,6 +343,17 @@ public headers(array<string,mixed> $headers): self
 **Return Value:**
 
 `Response` - Return response class instance.
+
+***
+
+### send
+
+Send HTTP response headers to the client.
+This method sends the HTTP status code (if set) and all accumulated headers to the client.
+
+```php
+public send(): void 
+```
 
 ***
 
@@ -393,15 +513,17 @@ public stream(string $path, string $basename, array $headers = [], bool $eTag = 
 
 ### redirect
 
-Redirect to a another `URL` location.
+Redirect the client to a different URL location with the appropriate status code (`302`, `303`, or `307`) .
+This method handles HTTP redirection by sending an appropriate `Location` or `Refresh` header and optionally specifying a status code.  It auto-detects `IIS` environments and uses the `refresh` method for compatibility. 
 
 ```php
-public redirect(string $url = '/', int $response_code): void
+public redirect(string $uri, ?string $method = null, ?int $code = null): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$url` | **string** | URL location to redirect. |
-| `$response_code` | **int** | Response status code. |
+| `$uri` | **string** | The target URI for the redirection. |
+| `$method` | **string\|null** | Optional. The redirection method (`refresh` or `null` for standard). |
+| `$code` | **int\|null** | Optional HTTP status code (e.g., `302`, `303`, `307`).<br/>If set to null, it will try detecting status code based on request method and protocol version. |

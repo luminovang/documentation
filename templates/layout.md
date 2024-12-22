@@ -21,12 +21,12 @@ Template Layout offers a straightforward and flexible methods for manipulating t
 ***
 
 ## Samples
-In this example we are going to create two files `scaffolding.php` and `card.php` in `/resources/views/layouts/` directory.
+In this example we are going to create two files `scaffolding.php` and `card.php` in `/resources/Views/layouts/` directory.
 The `scaffolding` will serve as our main layout while the `card` will serve as a sub layout which our `scaffolding` will extend it contents.
 
 #### Scaffolding
 
-The file `/resources/views/layouts/scaffolding.php` demonstrates how to divide your layout into sections, allowing the framework to extend whichever section you want.
+The file `/resources/Views/layouts/scaffolding.php` demonstrates how to divide your layout into sections, allowing the framework to extend whichever section you want.
 
 ```php
 <!DOCTYPE html>
@@ -65,7 +65,7 @@ The file `/resources/views/layouts/scaffolding.php` demonstrates how to divide y
 
 #### Card
 
-The file `/resources/views/layouts/card.php` contains another layout which our scaffolding will extend its contents.
+The file `/resources/Views/layouts/card.php` contains another layout which our scaffolding will extend its contents.
 
 ```php
 <table>

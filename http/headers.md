@@ -13,8 +13,10 @@ The header class specifically focuses on managing request headers. It provides m
 The `Header` class in Luminova is designed to manage HTTP request headers in a structured and efficient manner, similar to the way the `Server` class handles server-related data. It provides methods to interact with, retrieve, and manipulate request headers, simplifying the process of managing HTTP requests.
 
 ***
+## Class Definition
 
 * Class namespace: `\Luminova\Http\Header`
+* This class implements:  [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface), [\Countable](https://www.php.net/manual/en/class.countable.php)
 
 ***
 
@@ -66,29 +68,6 @@ $count = $header->count();
 ```
 
 ***
-
-## Properties
-
-### httpMethods
-
-List of all allowed HTTP request methods, which must be in uppercase.
-
-```php
-public static string[] $httpMethods = [];
-```
-
-***
-
-### variables
-
-Array containing header variables.
-
-```php
-protected array<string,mixed> $variables = [];
-```
-
-***
-
 ## Methods
 
 ### constructor
@@ -103,7 +82,7 @@ public __construct(?array $variables = null): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$variables` | **array<string,mixed>|null** | Optional key-value pairs of header variables. |
+| `$variables` | **array<string,mixed>\|null** | Optional key-value pairs of header variables. |
 
 ***
 
@@ -192,6 +171,45 @@ public count(): int
 **Return Value:**
 
 `int` - Return the number of header variables.
+
+***
+
+### send
+
+Sends HTTP headers to the client.
+
+```php
+static function send(array $headers, bool $ifNotSent = true, bool $charset = false): void
+```
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$headers` | **array<string,mixed>** | An associative array of headers to send. |
+| `$ifNotSent` | **bool** | Weather to send headers if headers is not already sent (default: true). |
+| `$charset` | **bool** | Weather to append default charset from env to `Content-Type` if it doesn't contain it (default: false). |
+
+***
+
+### sendStatus
+
+Sends HTTP response status code if it is valid.
+
+This method checks if the provided status code is within the valid HTTP status code range 
+before sending it using the `http_response_code` function. It also sets the `REDIRECT_STATUS` superglobal.
+
+```php
+static function sendStatus(int $code): bool 
+```
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$code` | **int** | he HTTP response status code to send.. |
+
+**Return Value:**
+
+`bool` - Return true if status code is valid and set, false otherwise.
 
 ***
 

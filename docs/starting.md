@@ -1,157 +1,102 @@
-# v3.2.6 Full Changelog 
+# v3.3.0 Full Changelog
 
 ***
 
 ## Overview
 
-Provides a detailed record of all changes in Luminova's v3.2.6, updates, and improvements made to the Luminova Framework over time.
+Provides a detailed record of all changes in Luminova's latest version, updates, and improvements made to the Luminova Framework over time.
 
 ***
 
 ## Introduction
 
-## General
+## General Overview
 
-Luminova **3.2.6** includes significant updates that enhance performance and error handling mechanisms, as well as improved debugging capabilities with debug tracing for all error occurrences.
+Luminova **3.4^** introduces major updates and performance improvements. Key features of this release include:
 
-This update also features enhanced official documentation, with clearer titles and detailed examples of usage to better illustrate features and implementations. Additionally, we've optimized method and parameter descriptions for improved visibility in IDEs.
+- **New Utility Classes & Features**: Enhanced functionality with the introduction of classes features for:
+  - HMVC Architecture Support
+  - Event Handling
+  - XHtml Document Building
+  - Input Field Building
+  - Process Execution
+  - Cookie File Jar
+  - JWT Authentication
+  - Fiber Async & Await Class
+  - HTTP Server Implementations (Support for WebSocket)
+  - CLI Image Art Module 
+  - CLI Layout Builder Module
+  - Email & Network Logger Helper
+  - Lazy Object Initialization (PHP 8.4 and backwards compatibility)
+  - Application Performance Profiling
+  - HTTP Proxied Request
+  - Local Network Application Debugging (With NovaKit Development Only)
+  
+---
 
-***
 ## New Features
 
-- **[Luminova\Storages\Stream](/files/stream.md)**: A stream handler for efficiently reading and writing large data volumes, integrated with the latest `cURL` network client response updates.
-- **[Luminova\Config\Enums\ErrorCodes](/running/error-codes.md)**: A comprehensive list of exceptions and error codes used throughout the framework for various error handling scenarios.
-- **[NovaKit Command](/commands/novakit.md)**: Introduction of the `novakit log` command for managing error logs.
-- **[View Content Caching](/cache/view-caching.md)**: utilizes `app.version` to store and retrieve page caching.
-- **`array_extend_default:`** A global helper function, it allows you to extend an array retaining the default values, it only apply new element that doesn't exist in default.
+#### Since 3.4.0
 
-***
-## Optimizations & Updates
+- **[HTTP Cookie File Jar](/cookies/cookie-file-jar.md):**  
+  Introduced the `Luminova\Cookies\CookieFileJar` class, for managing HTTP request cookies in a file-based jar.
 
-- **[Luminova\Debugger\Profiling](/running/debugging.md)**: Enhanced performance profiling now includes total database query execution time, command line performance profiling, and API performance logging.
-- **[Luminova\Datable\Builder](/database/query-builder.md)**: Optimized performance, introduced new cache management methods, and replaced expired cache content instead of deleting it. Fixed issues with the `in` method and added new arguments for the `insert` method.
-- **[\Luminova\Exceptions\AppException](/running/exceptions.md#appexception)**: Improved error handling with support for string error codes and a new `getName` method.
-- **[Luminova\Seo\Sitemap](/seo/sitemap.md)**: Optimized to support URL prefix definitions to limit scanning.
-- **[Luminova\Seo\Schema](/seo/schema.md)**: Enhanced scheme builder and configuration optimizations.
-- **[Luminova\Http\Network](/http/network.md)**: Improved network operations and implemented necessary interfaces for the `Guzzle` client.
-- **[Luminova\Http\Client\Curl](/http/network#lmv-docs-configuration-options)**: Optimized for various configurations, including multipart uploads, header callbacks, and large stream handling.
-- **[Luminova\Http\Message\Response](/http/response.md)**: Enhanced response handling with new methods, such as `getBody`, to return a stream object.
-- **`Command Executor`**: Improved command executor now suggests commands when an unknown `novakit` command is run.
-- **[Luminova\Command\Terminal](/commands/terminal.md)**: Optimized methods, resolved issues with `watcher` and `progress`, and introduced `spinner` and `terminate` methods, along with enhancements to other methods.
+- **[HTTP Proxy Network Request](/http/network#lmv-docs-configuration-options):**  
+  Added support for HTTP proxy requests when using the `Luminova\Http\Client\Curl` client class, enhancing network request capabilities.
 
-***
-## Changes & Renames
+- **[HTTP Incoming Request Response](/http/request#lmv-docs-getcookie):**  
+  Added the `getCookie` method with read-only support for managing cookies sent via the `Cookie` header in incoming HTTP requests.
 
-- **`Luminova\Base\BaseApplication`** renamed to **[Luminova\Core\CoreApplication](/core/application.md)** to indicate it can only be extended once for `App\Application`.
-- **`Luminova\Base\BaseDatabase`** renamed to **[Luminova\Core\CoreDatabase](/core/database-backups.md)** for single inheritance in `App\Config\Database`.
-- **`Luminova\Base\BaseCron`** renamed to **[Luminova\Core\CoreCronTasks](/core/cron-tasks.md)** for single inheritance in `App\Config\Cron`.
-- **`Luminova\Base\BaseFunction`** renamed to **[Luminova\Core\CoreFunction](/core/functions.md)** for single inheritance in `App\Utils\Functions`.
-- **`Luminova\Base\BaseServices`** renamed to **[Luminova\Core\CoreServices](/core/services.md)** for single inheritance in `App\Config\Services`.
-- **`Luminova\Command\TextUtil`** renamed to **[Luminova\Command\Utils\Text](/commands/text-util.md)** for better code organization.
-- **`Luminova\Command\Colors`** renamed to **[Luminova\Command\Utils\Color](/commands/color-util.md)** for better code organization.
-- **`Luminova\Interface\HttpClientInterface`** renamed to **[\Luminova\Interface\NetworkClientInterface](/interface/classes.md#networkclientinterface)**.
+---
 
-***
-## Deprecated or Removed
+## Depreciated
 
-- The method **`Luminova\Http\Request->isCommand()`** is now deprecated. Use the global function **`is_command()`** instead.
+#### Since 3.4.0
 
-***
+- **Base View Controller Class:** The class name `Luminova\Base\BaseViewController` is **deprecated** as of version **3.4.0**. Use `Luminova\Base\BaseController` instead. The `BaseViewController` no longer serves its intended purpose and is scheduled for removal in a future release. Developers are encouraged to update their code to use the `BaseController` for continued support and functionality.
 
-## To-Dos
+---
 
-### 1. Update Class Inheritance
+## To-Do List
 
-In your application configuration, change all classes that extend from `\Luminova\Base\*` to extend from `\Luminova\Core\*`.
+### **Since 3.4.0**
 
-#### Application
+#### 1. Controller Classes Update  
 
+Controller classes that currently extend `BaseViewController` must be updated to extend `BaseController` instead, as part of the transition introduced in version **3.4.0**.  
+
+#### Affected Files and Paths:
+- `/app/Controllers/Http/*.php` - MVC Controllers.
+- `/app/Controllers/Errors/*.php` - MVC Error Handling Controllers.
+- `/app/Modules/Controllers/Http/*.php` - HMVC Root Controllers.
+- `/app/Modules/Controllers/Errors/*.php` - HMVC Root Error Handling Controllers.
+- `/app/Modules/<Module>/Controllers/Http/*.php` - HMVC Specific Module Controllers.
+- `/app/Modules/<Module>/Controllers/Errors/*.php` - HMVC Specific Module Error Handling Controllers.
+
+#### Before Update:
 ```php
-// /app/Application.php
 <?php
-namespace App;
+namespace App\Your\Controller\NameSpace;
 
-use Luminova\Core\CoreApplication;
+use \Luminova\Base\BaseViewController;
 
-class Application extends CoreApplication
+class MyController extends BaseViewController 
 {
-    //...
+  // Controller logic
 }
 ```
 
-#### Services
-
+#### After Update:
 ```php
-// /app/Config/Services.php
 <?php
-namespace App\Config;
+namespace App\Your\Controller\NameSpace;
 
-use Luminova\Core\CoreServices;
+use \Luminova\Base\BaseController;
 
-class Services extends CoreServices
+class MyController extends BaseController 
 {
-    //...
+    // Controller logic
 }
-```
+```  
 
-#### Database
-
-```php
-// /app/Config/Database.php
-<?php
-namespace App\Config;
-
-use Luminova\Core\CoreDatabase;
-
-class Database extends CoreDatabase
-{
-    //...
-}
-```
-
-#### Functions
-
-```php
-// /app/Utils/Functions.php
-<?php
-namespace App\Utils;
-
-use Luminova\Core\CoreFunction;
-
-class Functions extends CoreFunction
-{
-    //...
-}
-```
-
-#### Cron Tasks
-
-```php
-// /app/Config/Cron.php
-<?php
-namespace App\Config;
-
-use \Luminova\Core\CoreCronTasks;
-
-final class Cron extends CoreCronTasks
-{
-    //...
-}
-```
-
-### 2. Add `scanUrlPrefix` to Sitemap Configuration
-
-In your application sitemap configuration, add a new variable named `$scanUrlPrefix`.
-
-```php
-// /app/Config/Sitemap.php
-<?php
-namespace App\Config;
-
-use Luminova\Base\BaseConfig;
-
-final class Sitemap extends BaseConfig
-{
-    public string $scanUrlPrefix = '';
-}
-```
+> **Note:** This change ensures compatibility with future releases and provides access to the enhanced functionality and optimized architecture of `BaseController`.

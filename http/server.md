@@ -14,7 +14,10 @@ The `Server` class acts as a structured wrapper around PHP's `$_SERVER` superglo
 
 ---
 
+## Class Definition
+
 * Class namespace: `\Luminova\Http\Server`
+* This class implements:  [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface), [\Countable](https://www.php.net/manual/en/class.countable.php)
 
 ---
 

@@ -1,4 +1,4 @@
-# Public Controller Entry Point
+# Bootstrapping Public Index Controller
 
 ***
 
@@ -10,22 +10,22 @@ Documentation for Luminova Entry Controller index.php
 
 ## Introduction
 
-The `index.php` file serves as the front controller for a Luminova application. It initializes the framework, sets up routing contexts, and handles incoming requests. This documentation provides an overview of the file's purpose and various ways it can be configured.
+This documentation outlines the purpose of the `index.php` file and its key responsibilities in the Luminova framework.
+
+In the Luminova framework, the `index.php` file serves as the main entry point for handling incoming HTTP and CLI requests. It is responsible for autoloading and initializing framework modules, setting up routing prefixes, and directing requests to the appropriate controllers. The `index.php` file is located in the `public` directory of your Luminova project, and its location and name cannot be changed or moved to another directory.
 
 ***
 
-### Overview
+### Responsibilities
 
-The `index.php` file is responsible for:
-
-1. Bootstrapping the Luminova framework.
-2. Ensuring the script runs in the correct directory.
-3. Defining routing contexts.
-4. Running the application.
+1. **Bootstrapping the Framework**: Initializes core components and loads necessary modules.
+2. **Ensuring Correct Directory Context**: Verifies that the application runs from the correct directory.
+3. **Defining Routing Prefixes**: Sets up routing prefixes to manage request paths effectively.
+4. **Running the Application**: Executes the application by dispatching requests to the proper controllers.
 
 ***
 
-## Implementations
+## Customizations
 
 Below are several examples of how `index.php` might be configured.
 
@@ -39,9 +39,9 @@ If other custom context prefixes are defined, they will be matched first, and th
 <?php
 declare(strict_types=1);
 
-use \Luminova\Boot;
-use \Luminova\Routing\Prefix;
-use \App\Controllers\Errors\ViewErrors;
+use Luminova\Boot;
+use Luminova\Routing\Prefix;
+use App\Controllers\Errors\ViewErrors;
 
 // Boot framework classes 
 require_once __DIR__ . '/../system/Boot.php';
@@ -116,7 +116,11 @@ Boot::http()->router->context()->run();
 
 ***
 
-### Parameters
+### Routing Context Method
+
+The `context` method is a helper for managing routing by allowing you to define URI prefixes when attribute-based routing is disabled. By creating a corresponding file `/routes/<prefix-name>.php` to handle all routes related to a specific URI prefix, you can improve code organization and optimize routing performance. This ensures that only the relevant routes are loaded to handle the current request, rather than loading all routes at once.
+
+#### Context Method Parameters
 
 The `context` method accepts multiple arguments, which can be instances of `Context`, arrays, or `null` when using PHP attributes.
 
@@ -134,10 +138,9 @@ The `context` method accepts multiple arguments, which can be instances of `Cont
 
 - [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - Thrown if no context arguments are passed and route attributes are not enabled.
 
-### Notes
-
-- Ensure the context name is unique based on your `URLs` to discover and load only the required files.
-- Mixing context arguments with arrays and `Context` instances may produce unintended errors.
+> **Notes:**
+> - Ensure the context name should be unique based on your `URLs` to discover and load only the required files.
+> - Mixing context arguments with arrays and `Context` instances may produce unintended errors.
 
 ***
 ### See Also

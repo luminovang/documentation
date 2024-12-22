@@ -13,7 +13,10 @@ Database manager class allows you to create a backup of your database and tables
 The `Manager` class allows you to create backups of your database, database table or export specific table columns as `CSV` or `JSON` files. All backups and exports are stored in `/writeable/backups/` directory.
 
 ***
+## Class Definition
+
 * Class namespace: `\Luminova\Database\Manager`
+* This class implements:  [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface)
 
 ***
 

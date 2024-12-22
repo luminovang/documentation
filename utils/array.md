@@ -13,9 +13,10 @@ Luminova’s Array Helper class provides useful methods for initializing and man
 The `ArrayUtil` class provides a set of methods to facilitate common operations and manipulations on PHP arrays. It includes methods for checking array types, merging arrays, filtering elements, and more.
 
 ***
+## Class Definition
 
 * Class namespace: `\Luminova\Arrays\ArrayUtil`
-* This class implements: `Countable`, `Stringable`
+* This class implements: [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface), [\Countable](https://www.php.net/manual/en/class.countable.php),  [\Stringable](https://www.php.net/manual/en/class.stringable.php)
 
 ***
 

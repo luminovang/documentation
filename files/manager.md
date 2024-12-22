@@ -409,11 +409,20 @@ public static size(string $path): int
 
 ### read
 
-The `read` method is a combination of `readBinary` and `readText`, with an additional check for type-specific handling.
-It was optimized for efficiency in reading a large file in chunks or smaller files using `fpassthru`
+Reads a file in chunks with type-specific handling and customizable delay, for optimized performance.
+
+This method reads large files efficiently by determining the file type based on its MIME type and applying the appropriate reading strategy (text or binary).
+
+For text-based files, it reads while preserving line endings. For binary files, it reads in raw chunks.
 
 ```php
-public static read($handler, int $filesize, string $mime, int $length = (1 << 21)): bool
+public static read(
+	$handler, 
+	int $filesize, 
+	string $mime, 
+	int $length = (1 << 21),
+	int $delay = 100000
+): bool
 ```
 
 **Parameters:**
@@ -422,8 +431,9 @@ public static read($handler, int $filesize, string $mime, int $length = (1 << 21
 |-----------|------|-------------|
 | `$handler` | **resource** | The file handler. |
 | `$filesize` | **int** | The size of the file. |
-| `$mime` | **string** | The MIME type of the file. |
-| `$length` | **int** | The length of each chunk (default: 2MB). |
+| `$mime` | **string** | The MIME type of the file.. |
+| `$length` | **int** | The size of each chunk to be read (default: 2MB). |
+| `$delay` | **int** | The delay in microseconds between chunk reads (default: 100000). |
 
 **Return Value:**
 
@@ -434,9 +444,10 @@ public static read($handler, int $filesize, string $mime, int $length = (1 << 21
 <?php 
 $filename = 'large-file.pdf';
 if ($handler = fopen($filename, 'rb')) {
-	$filesize = filesize($filename);
+	$fileSize = filesize($filename);
 	$mime = get_mime($filename);
-	FileManager::read($handler, $filesize, $mime);
+
+	FileManager::read($handler, $fileSize, $mime);
 }
 
 ```
@@ -445,10 +456,10 @@ if ($handler = fopen($filename, 'rb')) {
 
 ### readBinary
 
-Reads binary files in chunks, this method is suitable for reading `PDF`, `AUDIO`, `IMAGES` and other types of files that preserving lines ending isn't necessary.
+Reads binary files in chunks with a customizable delay. This method is suitable for reading `PDF`, `AUDIO`, `IMAGES` and other types of files that preserving lines ending isn't necessary.
 
 ```php
-public static readBinary($handler, int $length = (1 << 21)): bool
+public static readBinary($handler, int $length = (1 << 21), int $delay = 100000): bool
 ```
 
 **Parameters:**
@@ -456,7 +467,8 @@ public static readBinary($handler, int $length = (1 << 21)): bool
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$handler` | **resource** | The file handler. |
-| `$length` | **int** | The length of each chunk (default: 2MB). |
+| `$length` | **int** | The length of each chunk (default: 2MB in bytes). |
+| `$delay` | **int** | The delay in microseconds between each chunk read (default: 100000, 0.1 second). |
 
 **Return Value:**
 
@@ -466,10 +478,10 @@ public static readBinary($handler, int $length = (1 << 21)): bool
 
 ### readText
 
-Reads a text-based files in chunks while preserving line endings, suitable for handling `TEXT`, `MD`, `LOG` and more.
+Reads text-based files in chunks with a customizable delay while preserving line endings. This method is suitable for handling `TEXT`, `MD`, `LOG` and other text-based files.
 
 ```php
-public static readText($handler, int $filesize, int $length = (1 << 21)): bool
+public static readText($handler, int $filesize, int $length = (1 << 21), int $delay = 100000): bool
 ```
 
 **Parameters:**
@@ -478,7 +490,8 @@ public static readText($handler, int $filesize, int $length = (1 << 21)): bool
 |-----------|------|-------------|
 | `$handler` | **resource** | The file handler. |
 | `$filesize` | **int** | The size of the file. |
-| `$length` | **int** | The length of each chunk (default: 2MB). |
+| `$length` | **int** | The length of each chunk (default: 2MB in bytes). |
+| `$delay` | **int** | The delay in microseconds between each chunk read (default: 100000, 0.1 second). |
 
 **Return Value:**
 
@@ -507,26 +520,83 @@ public static isResource(mixed $resource, ?string $type = null): bool
 
 ***
 
-### download
+### isAccessible
 
-Download a file to the user's browser.
+Validate if the provided file path is safe, exists, and is readable.
+This method checks if the file path is valid, whether it is accessible, and ensures it's readable unless it's a `UNC` path.
 
 ```php
-public static download(string $file, string|null $name = null, array $headers = [], bool $delete = false): bool
+public static isAccessible(string $path): bool
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$file` | **string** | The full file path or content to to download. |
-| `$name` | **string&#124;null** | The filename as it will be shown in the download. |
-| `$headers` | **array** | Optional passed headers for download. |
+| `$path` | **string** | The file path to validate (relative or absolute). |
+
+**Return Value:**
+
+`bool` - Returns true if the file is accessible and readable.
+
+***
+
+### isPathPermitted
+
+Verify if the file path follows the allowed format and is not a URL or PHP Archive (Phar).
+This method ensures that the file path does not use a URL scheme or a `phar` path, restricting access to local files only.
+
+```php
+public static isPathPermitted(string $path): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$path` | **string** | The file path to check (relative or absolute). |
+
+**Return Value:**
+
+`bool` - Returns true if the path is a valid local file path.
+
+***
+
+### download
+
+Download a file to the user's browser with optional delay between chunks.
+
+```php
+public static download(
+	string|resource $content, 
+	?string $filename = null, 
+	array $headers = [], 
+	bool $delete = false,
+	int $chunk_size = 8192,
+	int $delay = 100000
+): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$content` | **string\|resource** | The full file path, resource, or string to download. |
+| `$filename` | **string&#124;null** | The filename as it will be shown in the download (e.g, `image.png`). |
+| `$headers` | **array<string,mixed>** | Optional array headers for download.. |
 | `$delete` | **bool** | Whether to delete the file after download (default: false). |
+| `$chunk_size` | **int** | The size of each chunk in bytes for large content (default: 8192, 8KB). |
+| `$delay` | **int** | The delay between each chunk in microseconds (default: 100000, 0.1 second). |
 
 **Return Value:**
 
 `bool` - Return true on success, false on failure.
+
+**Supported Download Content `$content`**
+
+- **File path** - Download content from path specified.
+- **Resource** - Download content from resource specified.
+- **String** - Download content from string specified.
 
 ***
 

@@ -53,7 +53,7 @@ try {
 
 * Class namespace: `\Luminova\Ai\Models\OpenAI`
 * This class implements:
-[\Luminova\Interface\AiInterface](/interface/classes.md#aiinterface)
+[\Luminova\Interface\AiInterface](/interface/classes.md#aiinterface), [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface)
 
 ***
 
