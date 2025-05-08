@@ -1,4 +1,4 @@
-# XML and XHTML Markup Builder
+# XML and XHTML Markups Builder
 
 ***
 

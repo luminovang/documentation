@@ -1,4 +1,4 @@
-# Encryption and Decryption Configurations
+# Configurations for Application Encryption and Decryption
 
 ***
 

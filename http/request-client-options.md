@@ -1,4 +1,4 @@
-# HTTP Request Client Options
+# HTTP Request Curl Client Configurations for Outgoing Network Requests
 
 ***
 

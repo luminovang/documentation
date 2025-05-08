@@ -1,4 +1,4 @@
-# Examples of Data Encryption and Decryption
+# Encryption and Decryption Examples
 
 ***
 

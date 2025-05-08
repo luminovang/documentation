@@ -1,4 +1,4 @@
-# View Caching and Static Content Serving
+# Caching and Serving Static View Content
 
 ***
 

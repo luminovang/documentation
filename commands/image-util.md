@@ -1,4 +1,4 @@
-# Command Image ASCII Art Generator
+# Image to ASCII Art Generator for Command-Line
 
 ***
 

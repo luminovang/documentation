@@ -1,4 +1,4 @@
-# Caching Usage Examples
+# Cache Implementation Examples
 
 ***
 

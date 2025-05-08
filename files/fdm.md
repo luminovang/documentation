@@ -1,4 +1,4 @@
-# Secure File Access and Browser Delivery with FileDelivery Module
+# Private File Delivery and Output Streaming
 
 ***
 
@@ -23,11 +23,10 @@ This class functions as a `CDN` helper, designed to create an efficient content 
 This display image in browser, here is a simple example.
 
 ```php
-<?php
-use \Luminova\Storages\FileDelivery;
-use \Luminova\Base\BaseViewController;
+use Luminova\Storages\FileDelivery;
+use Luminova\Base\Baseontroller;
 
-class CdnController extends BaseViewController
+class CdnController extends Baseontroller
 {
     //...
 
@@ -44,8 +43,7 @@ class CdnController extends BaseViewController
 To generate a temporary URL for an image that expires after a specified duration, use the following example.
 
 ```php
-<?php
-use \Luminova\Storages\FileDelivery;
+use Luminova\Storages\FileDelivery;
 
 $temporalUrl = FileDelivery::storage('images')
     ->url('private-image.png', 3600);
@@ -62,9 +60,10 @@ echo 'https://example.com/static/file/' . $temporalUrl;
 To preview the temporal image generated above see below example.
 
 ```php
-use \Luminova\Storages\FileDelivery;
-use \Luminova\Base\BaseViewController;
-class CdnController extends BaseViewController
+use Luminova\Storages\FileDelivery;
+use Luminova\Base\Baseontroller;
+
+class CdnController extends Baseontroller
 {
     //...
 
@@ -95,7 +94,7 @@ class CdnController extends BaseViewController
  Initialize the constructor to have full access to the path where your file is located without any limitation like using `storage` method.
 
 ```php
-public __construct(string $filepath, bool $etag): mixed
+public __construct(string $filepath, bool $eTag = true, bool $weakEtag = false): mixed
 ```
 
 **Parameters:**
@@ -103,7 +102,8 @@ public __construct(string $filepath, bool $etag): mixed
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$filepath` | **string** | Path to the private storage (e.g: `/writeable/storages/images/`). |
-| `$etag` | **bool** | Whether to generate ETag headers. |
+| `$eTag` | **bool** | Whether to generate ETag header and apply validation as needed (default: true). |
+| `$weakEtag` | **bool** | Whether to use a weak ETag header or string (default: false). |
 
 ***
 
@@ -112,17 +112,19 @@ public __construct(string $filepath, bool $etag): mixed
 To initialize the `FileDelivery` with a base path, `ETag` option and return static instance.
 
 ```php
-public static storage(string $basepath, bool $etag = true): static
+public static storage(string $basepath, bool $eTag = true, bool $weakEtag = false): static
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$basepath` | **string** | Base path for file storage, (e.g: /images/). |
-| `$etag` | **bool** | Whether to generate ETag headers. |
+| `$basepath` | **string** | Base path for file storage, (e.g: `/images/`). |
+| `$eTag` | **bool** |  Whether to generate ETag header and apply validation as needed (default: true). |
+| `$weakEtag` | **bool** | Whether to use a weak ETag header or string (default: false). |
 
 **Return Value:**
+
 `static` - Return Instance of the FileDelivery class.
 
 > **Note**

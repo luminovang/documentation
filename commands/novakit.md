@@ -1,60 +1,107 @@
-# Nova-Kit Command Patterns and Integrations
+# Novakit Commands and Integration Patterns
 
 ***
 
 ## Overview
 
-Need to manage environment variables or create a sitemap? NovaKit has got you covered. Perform database operations, execute scripts, or start a development server seamlessly—all from the command line.
+Novakit is Luminova's command-line tool for managing application development, such as database, generating sitemaps, or executing custom-defined console-based commands using the Novakit CLI handler.
 
 ***
 
 ## Introduction
 
-The Luminova framework includes **NovaKit**, a Command Line Utility Tool designed to simplify application development. This tool allows for the extension and implementation of custom command-line logic based on your application's needs, through the [Base Command Controller Class](/base/command.md) and `Luminova\Base\BaseConsole` class. By extending `Luminova\Base\BaseCommand`, you can create command-line tools that operate similarly to HTTP controllers and request methods, supporting command routing using [PHP Route Attributes](/routing/route-attribute.md) as well as [Method Based Routing](/routing/url-routing.md).
+**NovaKit** is the built-in **Command Line Interface (CLI)** tool for the **Luminova** framework. It simplifies development tasks by allowing you to execute and manage various operations directly from the terminal.
 
-### What Is NovaKit?
+The NovaKit CLI is powered by a `novakit` file located at the **project root**. This is a special PHP script with a [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) line (`#!/usr/bin/env php`) that makes it executable like a native terminal command.
 
-NovaKit handle the command execution and output formatting offering various functionalities, including:
+---
 
-- Generating boilerplate code.
-- Creating scaffolds and templates.
-- Managing environment variables.
-- Handling database operations like migration, versioning and seeding.
-- Managing application logs.
-- Executing cron tasks on production environment.
-- Running a PHP development server.
-- And more.
+### What Does NovaKit Do?
 
-***
+NovaKit acts like a **router for CLI commands**. It prepares the command input and passes it to the correct controller, just like Luminova’s HTTP routing system does for web requests.
 
-### Listing Available NovaKit Commands
+With NovaKit, you can:
 
-To display the list of available NovaKit commands, open your command line tool, navigate to your project directory where the `novakit` file is located, and run:
+- Generate boilerplate code, controllers, and scaffolds.
+- Manage environment variables and config files.
+- Run database tasks like:
+  - Migrations
+  - Versioning
+  - Seeding
+- Schedule and execute cron jobs.
+- View or clear application logs.
+- Start a local PHP development server.
+- Run Composer commands more easily.
+- And more — fully customizable to your application needs.
+
+---
+
+### NovaKit Console Commands
+
+To build your own CLI commands using NovaKit console:
+
+1. Extend the `Luminova\Base\BaseConsole` class.
+2. Define your logic in `run(...)` method.
+3. Register your commands in CLI novakit command file (`/bin/.novakit-console.php`).
+
+Once created, you can run the command via:
+
+```bash
+php novakit your-command
+```
+
+Unlike `BaseCommand` (used via `index.php`), `BaseConsole` commands:
+- Run **faster** because they skip routing and attribute parsing.
+- Are better suited for **utility based ** CLI tools.
+
+For details on creating custom commands, see: [Base Console Controller Class](/base/console.md)
+
+---
+
+## NovaKit Command Reference
+
+### List Available Commands
+
+To view all available NovaKit commands:
 
 ```bash
 php novakit list
 ```
 
-### Novakit Help Command
+---
 
-To show general help information related to `novakit` commands.
+### View Help Information
 
-Print `novakit` help information.
+NovaKit provides flexible help options for understanding available commands:
+
+**General Help:**
 
 ```bash
 php novakit --help
 ```
 
-Print help all `novakit` commands help information.
+**Detailed Help for All Commands:**
 
 ```bash
 php novakit --help --all
 ```
 
-To print help information related to a specific `novakit` command.
+**Help for a Specific Command:**
+
+Replace `log` with any available command:
 
 ```bash
 php novakit log --help
+```
+
+---
+
+### Show System Information
+
+To display system details relevant to your terminal environment:
+
+```bash
+php novakit --system-info
 ```
 
 ***
@@ -63,201 +110,400 @@ php novakit log --help
 
 Use these flags with commands to modify output formatting.
 
-- **`--no-header`**: Omits the header from the output.
-  ```bash
-  php novakit <command> --no-header
-  ```
+**No Header:**
 
-- **`--no-color`**: Disables colored output.
-  ```bash
-  php novakit <command> --no-color
-  ```
-
-- **`--no-ansi`**: Disables ANSI formatting for terminals that don't support it.
-  ```bash
-  php novakit <command> --no-ansi
-  ```
-
-***
-
-### Basic NovaKit Generators Commands
-
-The generator commands allow you to easily generate a skeleton for a controller class, utils class, or a view file.
-
-#### Utils Class
-
-To create a utility class for your application use the below example command.
-The class will be saved in `/app/Utils/`
+Omits the header from the output.
 
 ```bash
-php novakit create:class "myClass" --extend "baseClassName" --implement "myClassInterface"
+php novakit <command> --no-header
+```
+
+- **No Color:**
+
+Disables colored output.
+
+```bash
+php novakit <command> --no-color
+```
+
+**No ANSI:** 
+
+Disables ANSI formatting for terminals that don't support it.
+
+```bash
+php novakit <command> --no-ansi
+```
+
+---
+
+## Basic NovaKit Generator Commands
+
+NovaKit includes helpful commands to quickly generate boilerplate files for common components in your application—like utility classes, models, controllers, and views.
+
+---
+
+### Create a Utility Class
+
+Generate a class in the `/app/Utils/` directory:
+
+```bash
+php novakit create:class "MyClass" \
+    --extend "Foo\Bar\BarClassName" \
+    --implement "Foo\Interface\FooClassInterface"
+```
+
+- `--extend`: (optional) Base class to extend.  
+- `--implement`: (optional) Interface to implement.
+
+---
+
+### Creating a Model Class
+
+You can generate a database model class for both MVC and HMVC applications.
+
+**Default Locations:**
+
+* **MVC Application**: Stored in `/app/Models/`
+* **HMVC Application**: Stored in `/app/Modules/Models/`
+  Use the `--module <ModuleName>` flag to specify a custom module name.
+
+```bash
+php novakit create:model "MyModel" \
+    --implement "Optional\Interface\FooClassInterface"
+```
+
+**Example for a Custom HMVC Module:**
+
+```bash
+php novakit create:model "MyModel" --module "Info"
+```
+
+---
+
+### Create a Controller Class
+
+Generate a controller in `/app/Controllers/Http/`, or in `/app/Modules/<module>/Controllers/Http/` for HMVC apps:
+
+**For MVC or root HMVC**
+```bash
+php novakit create:controller "PayStackController" --type "view"
+```
+
+**For Custom HMVC Module**
+
+```bash
+php novakit create:controller "PayStackController" --type "view" --module="Blog"
+```
+
+**Types:**
+
+- `view`: Extends `Luminova\Base\BaseController`  
+- `command`: Extends `Luminova\Base\BaseCommand`  
+- `console`: Extends `Luminova\Base\BaseConsole`
+
+> **Note:** When using the HMVC design pattern, specify `--module=<moduleName>` to install the controller in the appropriate module directory.  
+>
+> If the module is not provided, the controller will be installed in the root module controller directory.  
+> The module name is case-sensitive and must match the directory name exactly.
+
+---
+
+### Create a View File
+
+Generate a view file in `/resources/Views/`, or in a module path like `/app/Modules/<module>/Views/`:
+
+```bash
+php novakit create:view "blog"
+```
+
+To create the view inside a subdirectory:
+
+```bash
+php novakit create:view "blog" --dir "articles"
 ```
 
 ***
 
-#### Model Class
+#### Route URI Prefix Context
 
-To create a database model class for your application use the below example command.
-The class will be saved in `/app/Models/`
-
-```bash
-php novakit create:model "myModel" 
-```
-
-***
-
-#### Controllers
-
-To create a new controller class for your application use the below example command.
-The class will be saved in `/app/Controllers/Http/` or `/app/Modules/<module>/Controllers/Http/` for HMVC application.
+To install a new route URI prefix context use the below example command.
 
 ```bash
-php novakit create:controller 'PayStackController'  --type 'view'
-```
-
-> You can pass the type of `API` to extend `\Luminova\Base\BaseController` or `view` to extend `\Luminova\Base\BaseViewController`.
-> 
-> For command controller class extend and implement will ignore, use flag `--type "command"`
-
-***
-
-#### View File
-
-To create a utility class for your application use the below example command.
-The class will be saved in `/resources/Views/` or `/app/Modules/<module>/Views/` for HMVC application.
-
-```bash
-php novakit create:view "blog" 
-```
-
-> To create a view file in a subdirectory in `/resources/Views/` folder, use flag `--dir "mySubDir"` 
-
-***
-
-#### Routing Context
-
-To install a new routing context use the below example command.
-
-```bash
-php novakit context "test"'
+php novakit context "test"
 ```
 
 > The above command will create a file in `/routes/` directory and update your `/public/index.php` with a new context.
 > 
 > To disable adding an error handler in `index.php` use flag `--no-error`
-> > *Note:* If the error handler is not disabled, you need to manually create the method name in your View errors class in `/app/Controllers/Errors/ViewErrors.php`.
+> > **Note:** If the error handler is not disabled, you need to manually create the method name in your View errors class in `/app/Errors/Controllers/ErrorController.php`.
 
-***
+---
 
-#### Sitemap
+## Basic NovaKit Utility Commands
 
-To generate your website sitemap use the below command.
+NovaKit includes several utility commands to help you manage your project, environment, and deployment.
+
+---
+
+### Generate Sitemap
+
+Creates a `/public/sitemap.xml` for your website:
 
 ```bash
 php novakit generate:sitemap
 ```
 
-> To configure the sitemap domain and ignore list, it can be done here `/app/Config/Sitemap.php`.
+- Configure sitemap domain and ignored routes in:  
+  `/app/Config/Sitemap.php`
 
-***
+---
 
-#### Application Cryptic Key
+### Generate Application Key
 
-To generate your application encryption and decryption key use the below command.
+Creates a secure encryption/decryption key for your app:
 
 ```bash
 php novakit generate:key
 ```
 
-> If you wish to generate without saving the key to env file, use flag `--no-save`.
-
-***
-
-#### Add/Update Environment Variables
-
-To add new or update value to your env file use the below command.
+To generate the key without saving it to your `.env` file:  
 
 ```bash
-php novakit env:add --key='my_new_key' --value='my key value'
+php novakit generate:key --no-save
 ```
 
-> If you wish to generate without saving the key to env file, use flag `--no-save`.
+---
 
-***
+### Add or Update Environment Variable
 
-#### Remove Environment Variable
-
-To remove key from your env file use the below command.
+Adds or updates a key-value pair in your `.env` file:
 
 ```bash
-php novakit env:remove --key='my_old_key'
+php novakit env:add --key="MY_NEW_KEY" --value="Some value"
 ```
 
-#### Build Exportable Project Files
+To for runtime and skip saving to `.env`:
 
-To package your application for publishing, use the below command to archive the project files required for production. 
+```bash
+php novakit env:add --key="KEY" --value="Value" --no-save
+```
 
-```bash 
+---
+
+### Remove Environment Variable
+
+Deletes a key from your `.env` file:
+
+```bash
+php novakit env:remove --key="MY_OLD_KEY"
+```
+
+---
+
+### Build Project for Deployment
+
+Packages your application for production:
+
+```bash
 php novakit build:project --type zip
 ```
 
-***
+> Supported types: `zip`, `tar`, or `none` (default).
 
-### Managing Application Log Files
+---
 
-To manage your application log files, you will need to specify the log level you want to view or manage.
-In this example we will be using `debug`.
+### Managing Log Files
 
-** Display the 5 Most Recent Entries**
+NovaKit allows you to view and manage application log files by specifying the log level you want to interact with (e.g., `debug`, `error`, `info`).
 
-To view the 5 most recent entries in the debug log:
+---
+
+#### View Recent Log Entries
+
+Display the 5 most recent entries in the `debug` log:
 
 ```bash
 php novakit log --level=debug
 ```
 
-** Display Log Entries Using offset and limit** 
+---
 
-To display debug log entries starting from line `5` and showing only the next `20` entries:
+#### View Log Entries with Offset and Limit
+
+Display log entries from line `5` to `20` in the `debug` log:
 
 ```bash
 php novakit log --level=debug --start=5 --end=20
 ```
 
-** Clear the Entire Log File** 
+---
 
-To clear all entries from the debug log file:
+#### Clear a Log File
+
+Clear all entries in the `debug` log:
 
 ```bash
 php novakit log --level=debug --clear
 ```
 
+---
+
+> **Note:** Replace `debug` with the appropriate log level for your application. Supported levels typically include `info`, `error`, `warning`, `debug`, etc., depending on your configuration.
+
+---
+
+## Novakit Class
+
+The `Novakit` helper class provides a set of static methods for registering custom console commands, checking if a command exists, and performing various other console-related tasks. These methods can be called statically from anywhere in your application when needed.
+
 ***
 
-## Building Command Line Tools
+## Class Definition
 
-Creating command-line tools in Luminova is straightforward, thanks to its intuitive routing system, which resembles HTTP routing. This familiarity makes it easy to apply known logic to your CLI commands.
+* Class namespace: `\Luminova\Command\Novakit`
 
-#### Command Controllers
+***
 
-To create a new command controller in Luminova:
+## Methods
 
-1. **Create Your Command Controller**: Place your command controller classes in the `/app/Controllers/` directory, alongside your HTTP controller classes. Ensure these classes extend `Luminova\Base\BaseCommand`.
-2. **Define Your Method**: Use either PHP Attributes or code-based routing with the Router class methods for command implementations.
-3. **Optional Help Display**: Implement a command help display with styling and formatting as desired, or use the default display implementation.
+### constructor
 
-**Command Execution Pattern**:
+Initialize the Novakit console terminal instance.
 
-To execute a custom controller command, open your command line tool, navigate to your application's public directory with `cd path/to/your-project/public`, and run the command following this pattern:
-
-```bash
-php index.php <group-name> <command-name> <arguments>
+```php
+public __construct()
 ```
 
-Print help information related to a command controller group.
+***
 
-```bash
-php index.php <group-name> --help
+### run
+
+Entry point for executing Novakit CLI commands.
+
+```php
+public run(array<string,mixed> $commands): void
 ```
 
-The `group-name` should be immediately after `php index.php`, followed by the `command-name` and any parameters. Arguments can be passed in any order after the command group name.
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$commands` | **array<string,mixed>** | The raw command-line arguments, typically from `$_SERVER['argv']` or `$argv`. |
+
+**Example:**
+
+```php
+(new Console())->run($_SERVER['argv']);
+```
+
+***
+
+### find
+
+Find the fully qualified controller class for a given command.
+
+This method attempts to resolve the command to a known controller class. It first checks predefined system commands, then searches registered console commands based on the provided mode (`system` or `global`).
+
+```php
+public static find(string $command, string $mode = 'global'): ?class-string<\Luminova\Base\BaseConsole>
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$command` | **string** | The command string (e.g., `create:controller`, `db:migrate`, `my-command`). |
+| `$mode` | **string** | The lookup mode: `system` for internal commands, or `global` for custom/console commands. |
+
+**Return Value:**
+
+`class-string<BaseConsole>|null` - Returns the fully qualified class name if found, or `null` if not.
+
+***
+
+### command
+
+Registers a new console command with an optional metadata definition.
+
+This method maps a command name to its controller class and optionally stores command metadata such as group, description, usage examples, options, and more.
+
+```php
+public static command(string $name, class-string<Luminova\Base\BaseConsole> $class, array $properties = []): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$name` | **string** | The command name (e.g., 'foo'). |
+| `$class` | **class-string<BaseConsole>** | The fully qualified class name that handles the command. |
+| `$properties` | **array** | (optional) Additional metadata for the command based on protected properties. |
+
+**Return Value:**
+
+`bool` - Returns true if the command was successfully registered, false if it already exists.
+
+***
+
+### get
+
+Get a specific property from a registered command's metadata.
+
+```php
+public static get(string $command, string $name): mixed
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$command` | **string** | The command name. |
+| `$name` | **string** | The property name to retrieve (e.g., `group`, `description`). |
+
+**Return Value:**
+
+`mixed` - Returns the value of the specified property if it exists, or `null` otherwise.
+
+***
+
+### getCommand
+
+Retrieve full metadata for a command based on its protected controller properties.
+
+The returned array may include the following keys:
+`name`, `group`, `description`, `usages`, `options`, `examples`, etc.
+
+```php
+public static getCommand(string $command, string $mode = 'global'): array<string,mixed>
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$command` | **string** | The command name (e.g, `my-command`, `env`) etc... |
+| `$mode` | **string** | The command mode to check within (supported: `system` or `global`). |
+
+**Return Value:**
+
+`array<string,mixed>` - Returns an associative array of command metadata.
+
+***
+
+### has
+
+Check if a command exists globally (i.e., `user-defined` or `console` command).
+
+```php
+public static has(string $command): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$command` | **string** | The name of the command to check. |
+
+**Return Value:**
+
+`bool` - Returns true if the command exists globally, otherwise, false.

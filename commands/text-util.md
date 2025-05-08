@@ -1,4 +1,4 @@
-# Command Outputs Formatting Using the Text Utils
+# Text Utils for Formatting Command Outputs
 
 ***
 

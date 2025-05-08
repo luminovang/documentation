@@ -1,4 +1,4 @@
-# Core Custom Service Layer Autoloading Class
+# Base Custom Service Module Registry
 
 ***
 

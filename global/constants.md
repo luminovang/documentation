@@ -1,34 +1,43 @@
-# Global Core Constants
+# Globally Defined Constants
 
 ***
 
 ## Overview
 
-Global constant variables, utilizing global constant variables, to improve code clarity and maintainability.
+Constants defines fixed values for application path, database return &amp; result modes, and other application flags. Constants are immutable values set once and remain unchanged at runtime.
 
 ***
 
 ## Introduction
 
-Global constant variables play a pivotal role in software development by providing a mechanism for defining values that remain consistent throughout the entire application. Unlike regular variables, which can be modified during runtime, constant variables maintain their assigned values throughout the execution of the program, ensuring consistency and predictability.
+Global constants are immutable values that remain the same throughout the entire application lifecycle. Unlike regular variables, constants cannot be changed at runtime, providing reliability and consistency in the application’s behavior.
 
-Constants serve as descriptive placeholders for values that are used repeatedly within the application, such as configuration settings, error codes, or predefined values. By assigning meaningful names to constants, developers can convey the purpose and significance of these values, making the code more readable and understandable.
+They are commonly used to define reusable values such as configuration settings, environment flags, directory paths, and other predefined values. Giving meaningful names to constants improves code readability, maintainability, and clarity by clearly conveying the purpose of each value.
 
-#### Scope
+---
 
-Global constant variables are accessible from any part of the application, making them suitable for storing values that are used across multiple modules.
+### Scope
+
+Constants are accessible from anywhere in the application, making them ideal for values shared across multiple modules. In Luminova, constants are typically defined in `/bootstrap/constants.php` and are loaded before any other module, ensuring they are available globally from the start of execution.
+
+---
 
 ### Status Codes
 
-- `STATUS_OK` **(int)**: - Success status code.
-- `STATUS_ERROR` **(int)**: - Error status code.
+- `STATUS_SUCCESS` **(int)**: - Status code indicating the operation was successful.  
+  > **Recommended when:** You want to continue the normal application flow after a successful process.
+
+- `STATUS_ERROR` **(int)**: - Status code indicating the operation failed.  
+  > **Recommended when:** A critical error occurs that requires stopping the current process or returning an error response.
+
+- `STATUS_SILENCE` **(int)**: - Status code indicating the operation may have failed but was handled gracefully without interrupting the application.  
+  > **Recommended when:** You want to suppress the error visibly, respond with a custom error details or continue without showing a failure message.
 
 ***
 
 ### Application
 
 - `APP_NAME` **(string)**: - Application development state.
-- `PROJECT_ID` **(string)** - Application project identifier, this is based on directory luminova is installed.
 - `APP_VERSION` **(string)**: - Home directory path.
 - `APP_FILE_VERSION` **(string)**: - Home directory path.
 - `APP_FILE_VERSION` **(string)**: - Home directory path.
@@ -55,25 +64,19 @@ Global constant variables are accessible from any part of the application, makin
 
 ### File Paths
 
-- `FRONT_CONTROLLER` **(string)**: - Front controller path.
-- `APP_ROOT` **(string)**: - Application document root path.
-- `DOCUMENT_ROOT` **(string)**: - Document root path.
-
-> The application root (`APP_ROOT`) and document root (`DOCUMENT_ROOT`) are similar, but their values depend on the context.
-> 
-> In a development environment, `APP_ROOT` typically points to something like `/Applications/XAMPP/xamppfiles/htdocs/my-project/`, whereas `DOCUMENT_ROOT` usually points to `/`.
-> 
-> > To ensure consistency across development and production environments by utilizing `APP_ROOT` to represent the application root directory.
+- `APP_ROOT` **(string)**: - Application project root directory (`private`).
+- `DOCUMENT_ROOT` **(string)**: - Application front controller document root directory (`public`).
+- `CONTROLLER_SCRIPT_PATH` **(string)** - Project controller script name directory (e.g, `your-project-dir/public`).
 
 ***
 
 ### URLs
 
-- `APP_HOSTNAME` **(string)**: - Application hostname.
-- `APP_URL` **(string)**: - Application request url (e.g.: http://example.com).
-- `APP_WWW_HOSTNAME` **(string)**: - Application hostname with `www`.
-- `APP_WWW_URL` **(string)**: - Application request `www` url (e.g.: http://www.example.com).
-- `URL_SCHEME` **(string)**: - Url protocol scheme string `http` or `https`.
+- `APP_HOSTNAME` **(string)**: - Application hostname (e.g, `example.com`).
+- `APP_HOSTNAME_ALIAS` **(string)**: - Application hostname alias (e.g, `www.example.com`) www version.
+- `APP_URL` **(string)**: - Application URL (e.g, `http://example.com`).
+- `APP_URL_ALIAS` **(string)**: - Application URL alias (e.g, `http://www.example.com`) www version.
+- `URL_SCHEME` **(string)**: - URL protocol scheme string `http` or `https`.
 
 ***
 
@@ -92,11 +95,12 @@ Global constant variables are accessible from any part of the application, makin
 
 ### Database Results Modes
 
-- `RETURN_NEXT` **(int)**: - Fetch next or single record.
-- `RETURN_2D_NUM` **(int)**: - Fetch all as 2D array integers.
-- `RETURN_ID` **(int)**: - Fetch last inserted ID.
-- `RETURN_INT` **(int)**: - Fetch count of records.
-- `RETURN_COUNT` **(int)**: - Fetch number of affected rows.
-- `RETURN_COLUMN` **(int)**: - Fetch all result columns.
-- `RETURN_ALL` **(int)**: - Fetch all results.
-- `RETURN_STMT` **(int)**: - Return prepared statement.
+- `RETURN_NEXT` **(int)**: - Return next or single record.
+- `RETURN_2D_NUM` **(int)**: - Return all result as 2D array integers.
+- `RETURN_ID` **(int)**: - Return last inserted ID.
+- `RETURN_INT` **(int)**: - Return count of records.
+- `RETURN_COUNT` **(int)**: - Return number of affected rows.
+- `RETURN_COLUMN` **(int)**: - Return all result columns.
+- `RETURN_ALL` **(int)**: - Return all result.
+- `RETURN_STMT` **(int)**: -  Return prepared statement object.
+- `RETURN_RESULT` **(int)**: - Return `MYSQLI` result object.

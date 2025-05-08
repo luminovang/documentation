@@ -1,4 +1,4 @@
-# Core Class for Cron Job Task Management
+# Base Cron Tasks Registry
 
 ***
 
@@ -51,14 +51,14 @@ final class Cron extends CoreCronTasks
 {
     /**
      * Schedule the task for execution.
-    */
+     */
     protected function schedule(): void 
     {
-        $this->service('\App\Controllers\DailyCommand::fooMethod')
+        $this->service('\App\Controllers\Cli\DailyCommand::fooMethod')
             ->days()
             ->log(root('/writeable/log/') . 'cron.log');
 
-        $this->service('\App\Controllers\CerateCacheCommand::clear')
+        $this->service('\App\Controllers\Cli\CerateCacheCommand::clear')
             ->minutes(5)
             ->onComplete(function(array $task){
 
@@ -82,7 +82,7 @@ Initialize constructor, additionally you can set a custom location to store cron
 If not set, the default location will be used which is `writeable/cron/schedules.json`.
 
 ```php
-public __construct(string|null $path = null, ?string $filename = null): mixed
+public __construct(?string $path = null, ?string $filename = null): mixed
 ```
 
 **Parameters:**
@@ -90,7 +90,7 @@ public __construct(string|null $path = null, ?string $filename = null): mixed
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$path` | **string&#124;null** | Path to store cron job configuration files. |
-| `$filename` | **?string** | The filename to store lock file. |
+| `$filename` | **string&#124;null** | The filename to store lock file. |
 
 ***
 
@@ -109,7 +109,7 @@ protected schedule(): void
 
 To define a specific service for execution in a cron job, use this method to specify the namespace of your command controller and the method to be called for the job execution.
 
-**Note**: The parameter must be the full class namespace of your command class, followed by the method name (e.g., `\Path\To\CommandClass::methodName`).
+**Note**: The parameter must be the full class namespace of your command class, followed by the method name (e.g., `\App\Controller\Cli\CommandClass::methodName`, `\App\Modules\<Module>\Controller\Cli\CommandClass::methodName`).
 
 ```php
 protected service(class-string $controller): self
@@ -125,9 +125,7 @@ protected service(class-string $controller): self
 
 `self` - Return cron class instance.
 
-> *Note:*
->
-> Your controller class must implement the `Luminova\Base\BaseCommand`, using other class will cause an error.
+> **Note:** Your controller class must implement the `Luminova\Base\BaseCommand`, using other class will cause an error.
 
 ***
 
@@ -478,5 +476,5 @@ protected cronTime(string $expression): self
 
 **What Next?**
 
-- [Cron Scheduling ](/cronjob/schedule.md) - See the documentation for cron scheduling.
-- [Cron Execution](/cronjob/execution.md) - Or see the documentation for cron execution
+- [Cron Tasks Configuration](/configs/cron-tasks.md) - See the documentation for cron scheduling and configurations.
+- [Running and Executing Cron Jobs  with Nova-Kit](/cronjob/execution.md) - Or see the documentation for cron execution.

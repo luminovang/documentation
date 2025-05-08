@@ -1,4 +1,4 @@
-# Database Connection Management
+# Working with Database Connection Objects
 
 ***
 
@@ -24,12 +24,13 @@ To allow connections through the CLI, specify your `MYSQL` socket path in the `E
 * This class implements: [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface), [\Countable](https://www.php.net/manual/en/class.countable.php)
 
 ***
+
 ## Properties
 
 Database connection driver instance.
 
 ```php
-protected \Luminova\Interface\DriversInterface|null $db
+protected ?\Luminova\Interface\DatabaseInterface $db = null;
 ```
 
 ***
@@ -38,39 +39,25 @@ protected \Luminova\Interface\DriversInterface|null $db
 
 ### constructor
 
-Initializes the Connection class constructor based on configuration in the `ENV` file.
+Initializes a database connection based on provided parameters or default to `.env` configuration.
+
+- Configures `maxConnections` and `pool` properties from the provided arguments or environment variables.
+- If `$pool` or `$max` are provided, they override the corresponding environment variable values.
 
 ```php
-$conn = new Connection();
+public __construct(?bool $pool = null, ?int $maxConnections = null)
 ```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$pool` | **bool&#124;null** | Optional. Weather to enables or disables connection pooling.<br/> Defaults to the value of `database.connection.pool` from the environment. |
+| `$maxConnections` | **int&#124;null** | Optional. Specifies the maximum number of database connections.<br/>Defaults to the value of `database.max.connections` from the environment. |
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - Throws if all retry attempts fail, the maximum connection limit is reached, an invalid database driver is provided, an error occurs during connection, or an invalid driver interface is detected.
-- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - If an invalid connection configuration or driver is passed.
-
-***
-
-### database
-
-Retrieves the database driver connection instance.
-
-```php
-public database(): \Luminova\Interface\DriversInterface|null
-```
-
-**Return Value:**
-
-`DriversInterface|null` - Return the driver connection instance, or null if not connected.
-
-**Usage:**
-
-To get the raw database connection instance of `PDO` or `mysqli`.
-
-```php
-<?php 
-$conn->database()->raw()
-```
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) -  If connection retries fail, the max connection limit is exceeded, an invalid driver or driver interface is detected, or a connection error occurs.
 
 ***
 
@@ -79,16 +66,42 @@ $conn->database()->raw()
 Retrieves the shared singleton instance of the Connection class.
 
 ```php
-public static getInstance(): self
+public static getInstance(?bool $pool = null, ?int $maxConnections = null): self
 ```
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$pool` | **bool&#124;null** | Optional. Weather to enables or disables connection pooling. |
+| `$maxConnections` | **int&#124;null** | Optional. Specifies the maximum number of database connections. |
 
 **Return Value:**
 
-`self` - Connection class instance.
+`self` - Return the singleton instance of the Connection class.
 
 **Throws:**
-- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - Throws if all retry attempts fail, the maximum connection limit is reached, an invalid database driver is provided, an error occurs during connection, or an invalid driver interface is detected.
-- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - If an invalid connection configuration or driver is passed.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - If all retry attempts fail, the maximum connection limit is reached, an invalid database driver is provided, an error occurs during connection, or an invalid driver interface is detected.
+
+***
+
+### getPool
+
+Retrieves a free connection from the pool. Optionally fetches the first available valid connection.
+
+If `$any_free` is set to `true`, the method returns the first free connection that is connected and valid, removing it from the pool. Otherwise, it fetches the first connection in the pool and returns it if valid, or `null` if no valid connection exists.
+
+```php
+public getPool(bool $any_free = false): ?\Luminova\Interface\DatabaseInterface
+```
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$any_free` | **bool** | If `true`, returns the first valid connection from the pool (default: `false`). |
+
+**Return Value:**
+
+`DatabaseInterface` - Return the first valid connection from the pool or `null` if none are available.
 
 ***
 
@@ -99,7 +112,7 @@ Retrieves a new database driver instance based on the provided configuration.
 If no configuration is provided, the default configuration will be used.
 
 ```php
-public static newInstance(\Luminova\Base\CoreDatabase|null $config = null): \Luminova\Interface\DriversInterface|null
+public static newInstance(?\Luminova\Base\CoreDatabase $config = null): ?\Luminova\Interface\DatabaseInterface
 ```
 
 **Parameters:**
@@ -110,33 +123,54 @@ public static newInstance(\Luminova\Base\CoreDatabase|null $config = null): \Lum
 
 **Return Value:**
 
-`DriversInterface|null` - Database driver instance.
+`DatabaseInterface|null` - Return the database driver instance, or null if connection fails.
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - Throws if all retry attempts fail, the maximum connection limit is reached, an invalid database driver is provided, an error occurs during connection, or an invalid driver interface is detected.
-- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - If an invalid database driver is provided.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - If all retry attempts fail, the maximum connection limit is reached, an invalid database driver is provided, an error occurs during connection, or an invalid driver interface is detected.
+
+***
+
+### database
+
+Retrieves the database driver connection instance.
+
+```php
+public database(): ?\Luminova\Interface\DatabaseInterface
+```
+
+**Return Value:**
+
+`DatabaseInterface|null` - Return the driver connection instance, or null if not connected.
+
+**Usage:**
+
+To get the raw database connection instance of `PDO` or `mysqli`.
+
+```php
+<?php 
+$db = $conn->database()->raw()
+```
 
 ***
 
 ### connect
 
-Connects to the database, either returning a connection instance or reusing a previous connection from the pool if available.
+Connects to the database, either returning a connection instance or reusing a previous connection from the pool if available. This method also optionally retries failed connections based on the retry attempt value set in the `.env` configuration (`database.connection.retry`) or backup database connections defined withing the `App\Config\Database` class.
 
 ```php
-public connect(): \Luminova\Interface\DriversInterface|null
+public connect(): ?\Luminova\Interface\DatabaseInterface
 ```
 
 **Return Value:**
 
-`DriversInterface|nul` - Database driver instance (either MySqliDriver or PdoDriver).
+`DatabaseInterface|null` -Return the database driver instance (either `MySqliDriver` or `PdoDriver`), or null if connection fails.
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - Throws if all retry attempts fail, the maximum connection limit is reached, an invalid database driver is provided, an error occurs during connection, or an invalid driver interface is detected.
-- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - If an invalid connection configuration or driver is passed.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - If all retry attempts fail, the maximum connection limit is reached, an invalid database driver is provided, an error occurs during connection, or an invalid driver interface is detected.
 
-> Optionally retries failed connections based on the retry attempt value set in the .env file (`database.connection.retry`).
+***
 
 ### disconnect
 
@@ -147,7 +181,7 @@ public disconnect(): bool
 ```
 **Return Value:**
 
-`bool` - Always return true.
+`bool` - Return true if disconnected, false otherwise.
 
 > **Note:** To close all connections including pools use `purge` method instead.
 
@@ -155,28 +189,28 @@ public disconnect(): bool
 
 ### retry
 
-Retries the database connection with optional backup server fallback.
+Attempts to reconnect to the database with optional fallback to backup servers.
+
+If `$retry` is set to `null`, the method will attempt to connect using backup databases (if available). 
+Otherwise, it will attempt to reconnect based on the specified retry count.
 
 ```php
-public retry(int|null $retry = 1): \Luminova\Interface\DriversInterface|null
+public retry(int|null $retry = 1): ?\Luminova\Interface\DatabaseInterface
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$retry` | **int&#124;null** | Number of retry attempts (default: 1). |
+| `$retry` | **int&#124;null** | The number of retry attempts (default: 1). Pass `null` to attempt fallback to backup servers. |
 
 **Return Value:**
 
-`DriversInterface|null` - Return connection instance or null if all retry attempts fail.
+`DatabaseInterface|null` - Returns a database connection if successful, or `null` if all attempts fail.
 
 **Throws:**
 
-- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - Throws if all retry attempts fail, the maximum connection limit is reached, an invalid database driver is provided, an error occurs during connection, or an invalid driver interface is detected.
-- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - If an invalid connection configuration or driver is passed.
-
-> If the retry parameter is set to null, retries the connection with backup servers if available.
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - If all retry attempts fail, the maximum connection limit is reached, an invalid database driver is provided, or an error occurs during connection.
 
 ***
 
@@ -185,14 +219,19 @@ public retry(int|null $retry = 1): \Luminova\Interface\DriversInterface|null
 Releases a connection back to the connection pool.
 
 ```php
-public release(\Luminova\Interface\DriversInterface|null $connection): void
+public release(DatabaseInterface $connection, string $id): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$connection` | **\Luminova\Interface\DriversInterface&#124;null** | The connection to release. |
+| `$connection` | **\Luminova\Interface\DatabaseInterface** | The connection to release to pools. |
+| `$id` | **string** | An identifier for the current connection pool. |
+
+**Throws:**
+
+- [\Luminova\Exceptions\DatabaseException](/running/exceptions.md#databaseexception) - Throws if max connections are reached.
 
 > If the connection pool is not full, adds the provided connection to the pool else closes the provided connection.
 
@@ -214,6 +253,20 @@ public purge(bool $close_current = false): bool
 
 **Return Value:**
 
-`bool` - Always true when connection are closed.
+`bool` - Return true when connections are closed, otherwise false.
 
-> If the conn parameter is true, the database connection will be closed; otherwise, only the pool connections will be closed.
+> **Note:** If the conn parameter is true, the database connection will be closed; otherwise, only the pool connections will be closed.
+
+***
+
+### count
+
+Count the number of connections in pools.
+
+```php
+public count(): int
+```
+
+**Return Value:**
+
+`int` - Return the number of connection pools.

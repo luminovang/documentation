@@ -1,4 +1,4 @@
-# Bootstrapping PHP Executable Bash Script in CLI
+# Bootstrapping PHP Executable Bash Script for CLI
 
 ***
 

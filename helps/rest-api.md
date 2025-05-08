@@ -1,4 +1,4 @@
-# How to Implement a RESTful API with CRUD Operations
+#  HTTP RESTful API with CRUD Operations
 
 ***
 
@@ -35,20 +35,18 @@ With attribute-based routing, routes are defined directly on controller methods 
 
 ```php
 // /app/Controllers/Http/RestController.php
-<?php
+
 namespace App\Controllers\Http;
 
 use Luminova\Base\BaseController;
 use Luminova\Attributes\Prefix;
 use Luminova\Attributes\Route;
+use App\Errors\Controllers\ErrorController;
 use App\Models\Posts;
 use App\Models\User;
 use App\Utils\Auth;
-use App\Controllers\Errors\ViewErrors;
-use \JsonException;
-use \stdClass;
 
-#[Prefix(pattern: '/api/v1/(:root)', onError: [ViewErrors::class, 'onRestError'])]
+#[Prefix(pattern: '/api/v1/(:root)', onError: [ErrorController::class, 'onRestError'])]
 class RestController extends BaseController
 {
     #[Route('/api/v1/posts/(:root)', middleware: 'before', methods: ['ANY'])]
@@ -83,8 +81,8 @@ Routes are defined in the `/routes/api.php` file using method chaining, and link
 
 ```php
 // /routes/api.php
-<?php
-use \Luminova\Routing\Router;
+
+use Luminova\Routing\Router;
 
 // Api endpoints index
 $router->any('/', 'RestController::index');
@@ -111,18 +109,16 @@ $router->bind('/v1/posts', function(Router $router) {
 In your index.php `context` method, add routes prefixes to handle API endpoint request as below:
 
 ```php
-// public/index.php
-<?php
-// Leave other unchanged
+// /public/index.php
 
 Boot::http()->router->context(
     [
         'prefix' => Prefix::API,
-        'error' => [ViewErrors::class, 'onRestError'] 
+        'error' => [ErrorController::class, 'onRestError'] 
     ],
     [
         'prefix' => Prefix::WEB,
-        'error' => [ViewErrors::class, 'onWebError'] 
+        'error' => [ErrorController::class, 'onWebError'] 
     ],
     [
         'prefix' => Prefix::CLI
@@ -139,8 +135,8 @@ Boot::http()->router->context(
 The model represents the `Posts` entity and interacts with the database.
 
 ```php
-// app/Models/Posts.php
-<?php
+// /app/Models/Posts.php
+
 namespace App\Models;
 
 use Luminova\Base\BaseModel;
@@ -158,8 +154,8 @@ class Posts extends BaseModel
 The model represents the `Users` entity and interacts with the database.
 
 ```php
-// app/Models/Users.php
-<?php
+// /app/Models/Users.php
+
 namespace App\Models;
 
 use Luminova\Base\BaseModel;
@@ -181,8 +177,8 @@ class Users extends BaseModel
 Define your database migration table blueprint.
 
 ```php
-// app/Database/Migrations/PostsMigration.php
-<?php
+// /app/Database/Migrations/PostsMigration.php
+
 namespace App\Database\Migrations;
 
 use Luminova\Database\Migration;
@@ -224,8 +220,8 @@ class PostsMigration extends Migration
 Add seed data to populate your `posts` table.
 
 ```php
-// app/Database/Seeder/PostsSeeder.php
-<?php
+// /app/Database/Seeder/PostsSeeder.php
+
 namespace App\Database\Seeders;
 
 use Luminova\Database\Seeder;
@@ -292,6 +288,7 @@ Each method in the `RestController` class corresponds to a specific CRUD operati
 ---
 
 ### auth
+
 **Middleware Authentication**  
 
 Handles API authentication and usage quota validation for requests made to the `/api/v1/posts` endpoint.  
@@ -310,6 +307,7 @@ public function auth(): int {}
 ---
 
 ### index
+
 **Handle Invalid API Endpoints**  
 
 Processes requests to the API root or invalid endpoints.  
@@ -325,6 +323,7 @@ public function index(): int {}
 ---
 
 ### list
+
 **Retrieve All Posts**  
 
 Retrieves a paginated list of posts. Use query parameters for pagination, e.g., `GET /api/v1/posts?limit=10&offset=2`.
@@ -344,6 +343,7 @@ public function list(): int {}
 ---
 
 ### read
+
 **Retrieve a Single Post**  
 
 Fetches a specific post by ID from the URL, e.g., `GET /api/v1/posts/2`.
@@ -362,6 +362,7 @@ public function read(int $post_id): int {}
 ---
 
 ### create
+
 **Create a New Post**  
 
 Creates a new post using the data provided in the request body.
@@ -383,6 +384,7 @@ public function create(): int {}
 ---
 
 ### update
+
 **Update an Existing Post**  
 
 Updates an existing post by ID, using data from the request body.
@@ -402,6 +404,7 @@ public function update(int $post_id): int {}
 ---
 
 ### delete
+
 **Delete a Post**  
 
 Deletes a specific post by its ID.

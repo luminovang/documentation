@@ -1,4 +1,4 @@
-# Defining and Scheduling Cron Job Services
+# Cron Services and Scheduling Tasks for Execution
 
 ***
 
@@ -12,15 +12,47 @@ Luminova's cron scheduling provides a robust and flexible way to define and mana
 
 Luminova Cron Scheduling provides a robust framework for defining and managing cron jobs in your application. 
 It includes various methods to specify execution intervals (e.g., seconds, minutes, days), logging, and handling completion or failure events.
+
+---
+
+### Defining a Cron Service
+
+To schedule specific services for execution in a cron job, use the `schedule` method provided in the [App\Config\Cron](/configs/cron-tasks.md) class. This method allows you to define the command controller class and the corresponding method to execute using the `service` method of the [Core Cron Tasks Manager](/core/cron-tasks.md).
+
+### Example
+
 This guide will introduce you to the key methods and how to use them to create a comprehensive cron job setup.
 
-### Defining a Service
+```php
+// /app/Config/Cron.php
+namespace App\Config;
 
-To define a specific service to execute in cron, use the `service` method to specify your command controller namespace and the method to call for job execution.
+use Luminova\Core\CoreCronTasks;
+
+final class Cron extends CoreCronTasks
+{
+    /**
+     * Define and schedule tasks for cron execution.
+     */
+    protected function schedule(): void
+    {
+        // Define the path to store cron logs
+        $logPath = root('/writeable/log/');
+
+        // Schedule the first service
+        $this->service('\App\Controllers\ServiceOneCommand::fooMethod')
+            ->seconds(5)
+            ->output($logPath . 'cron-one.log');
+
+        // Schedule another service
+        $this->service('\App\Controllers\ServiceTwoCommand::barMethod')
+            ->seconds(5)
+            ->output($logPath . 'cron-two.log');
+    }
+}
+```
 
 ***
-
-## Examples
 
 In this example, the `dailyBackup` method from the `DailyCommand` class is scheduled to run every day with log level set to 'info'.
 
@@ -115,7 +147,7 @@ $this->service('\App\Controllers\Cli\DailyCommand::dailyBackup')
 
 ### Full Example
 
-Here is a full example that demonstrates all available methods,
+Here is a full example that demonstrates all available methods, to learn more about the method see [Core Cron Tasks Documentation](/core/cron-tasks.md).
 
 ```php
 <?php
@@ -130,10 +162,10 @@ $this->service('\App\Controllers\Cli\DailyCommand::dailyBackup')
     ->cronTime('* * * * *')
     ->pingOnComplete('https://example.com/ping/daily/success')
     ->pingOnFailure('https://example.com/ping/daily/failure')
-    ->onComplete(static function(array $task){
+    ->onComplete(function(array $task): void {
         // Code to execute upon successful completion of the task
     })
-    ->onFailure(static function(array $task){
+    ->onFailure(function(array $task): void {
         // Code to execute upon failure of the task
     })
     ->output('path/to/log/daily/output/file.log')
@@ -141,6 +173,4 @@ $this->service('\App\Controllers\Cli\DailyCommand::dailyBackup')
     ->description('This is my daily command description');
 ```
 
-> *Note:*
-> 
-> This is an example of all methods configuration, you cannot use it with all the time method together in one `sechedul`.
+> **Note:** This is an example of all configuration methods, you cannot use all the execution time methods together in one `service` scheduling.

@@ -1,4 +1,4 @@
-# Base Class for HTTP Routing View Controllers
+# Abstract Base Controller for HTTP Routing View Controllers
 
 ***
 

@@ -1,4 +1,4 @@
-# Mailer Preference and Configurations
+# Configurations for Mailer Preference
 
 ***
 

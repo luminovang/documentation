@@ -1,68 +1,122 @@
-# Command Execution and Formatting with the Terminal Module
+# Command Execution and Formatting Helper with Terminal Class
 
 ***
 
 ## Overview
 
-NovaKit Terminal class seamlessly facilitates user prompts and manages input with built-in validation like a web form capabilities, it enhances the CLI experience for efficient workflow &amp; productivity
+A CLI helper class for building interactive command-line tools in NovaKit, with support for input prompts, table output, command execution, and styled messages.
 
 ***
 
 ## Introduction
 
-The Luminova `Terminal` class is a command utility helper designed to facilitate command operations for `NovaKit`, `BaseCommand`, and `BaseConsole`. While it can be initialized and used independently, most of its methods are defined statically for easy access. However, not all methods can be executed correctly without proper constructor initialization.
+The `Terminal` class is a command-line utility helper designed for CLI operations in **Novakit**, including both routable `BaseCommand` controllers and console-based `BaseConsole` controllers in the Luminova framework.
 
-This class offers a powerful set of methods that enhance command-line interactions for developers utilizing the Luminova framework. Key features include:
+Its methods are defined statically for convenience, but **some require proper initialization**, either by calling the `init()` method or instantiating the class with `new Terminal()` to function correctly.
 
-- **Table Generation**: Create and display formatted tables.
-- **User Input Prompts**: Easily prompt users for input, including secure password entries.
-- **Write Operations**: Read from and write in command line tool using various methods.
-- **Command Argument Extraction**: Efficiently extract command-line arguments.
-- **Command Execution**: Execute commands directly within the terminal.
-- **Output Formatting and Styling**: Format and style command text output for improved readability.
+---
 
-The `Terminal` class is inherited by the `BaseCommand` class, making its methods available for use within your controller classes, either statically or through the `this` keyword.
+### Key Features
+
+The `Terminal` class enhances command-line development by offering a wide range of features:
+
+* **Table Generation** – Easily display structured data as formatted tables.
+* **User Input Prompts** – Prompt for user input, including hidden fields for password entries.
+* **Read/Write Operations** – Handle CLI I/O through various print and read utilities.
+* **Argument Extraction** – Simplify parsing of command-line arguments and flags.
+* **Command Execution** – Run shell commands directly from your CLI tool.
+* **Formatted Output** – Style terminal output with colors and formatting for better readability.
+
+---
+
+> The `Terminal` class is extended by both `BaseCommand` and `BaseConsole`, making its methods directly available in controller classes. Static usage is also supported, but initialization is required in standalone contexts.
+
+***
+
+### Terminal Class Initialization
+
+When using the `Terminal` class **outside** of command controllers (such as `Luminova\Base\BaseCommand` or `Luminova\Base\BaseConsole`), you must first **initialize** the class manually.
+
+**Initialization Example:**
+
+```php
+use Luminova\Command\Terminal;
+
+// Initialize via static method
+Terminal::init();
+
+// Or by creating a new instance
+new Terminal();
+```
+
+---
+
+### Usage Within Command Controllers
+
+When working **inside** a command controller, the `Terminal` class is already initialized. You should use one of the following references:
+
+* `$this`
+* `self`
+* `parent`
+* `$this->term` (preferred inside console commands)
+
+**Avoid manually initializing Terminal in command controllers:**
+
+```php
+// Not recommended inside command controllers:
+$terminal = new Terminal();      
+
+// static call
+Terminal::methodName(); 
+```
+
+---
+
+### Routable Command Controllers
+
+In a **routable command controller** (a class extending `Luminova\Base\BaseCommand`), the `Terminal` methods can be accessed directly using `$this`, `self`, or `parent` keywords, as the base class exposes terminal functionality directly.
+
+**Example:**
+
+```php
+// Recommended
+$this->print('Foo'); 
+
+// Static context
+self::print('Foo');
+
+// From inherited context
+parent::print('Foo');
+```
+
+---
+
+### Console Controllers
+
+In a **console controller** (a class extending `Luminova\Base\BaseConsole`), use the `$this->term` property to access the `Terminal` instance.
+
+**Example:**
+
+```php
+// Access via term instance
+$this->term->print('Foo');
+```
 
 ***
 
-## Basic Usage Examples
-
-### Using the Terminal Class in Command Controllers
-
-When calling methods from the `Terminal` class within your command controller, use `$this` or `self`. This approach assumes that the `Terminal` instance is initialized within the command controller.
-
-For example, avoid the following within the command controller class:
-
-```php
-<?php
-$terminal = new Terminal();
-// or
-Terminal::methodName();
-```
-
-Instead, use:
-
-```php
-<?php
-$this->methodName(); 
-// or 
-self::methodName();
-```
-
-***
+## Basic Usages
 
 ### Table Display
 
 Display a simple table with names and emails:
 
 ```php
-<?php
-$this->table(
-     ['Name', 'Email'], 
-     [
-          ['Name' => 'Peter', 'Email' => 'peter@example.com'],
-          ['Name' => 'Hana', 'Email' => 'hana@example.com']
-     ]
+Terminal::table(
+    ['Name', 'Email'], 
+    [
+        ['Name' => 'Peter', 'Email' => 'peter@example.com'],
+        ['Name' => 'Hana', 'Email' => 'hana@example.com']
+    ]
 );
 ```
 
@@ -85,8 +139,7 @@ $this->table(
 Ask the user to choose an option or default to the first element:
 
 ```php
-<?php
-$array = $this->chooser(
+$array = Terminal::chooser(
     'Choose your programming languages?', 
     ['PHP', 'JAVA', 'SWIFT', 'JS', 'SQL', 'CSS', 'HTML']
 );
@@ -95,8 +148,7 @@ $array = $this->chooser(
 Require the user to choose at least one option is required:
 
 ```php
-<?php
-$array = $this->chooser(
+$array = Terminal::chooser(
     'Choose your programming languages?', 
     ['PHP', 'JAVA', 'SWIFT', 'JS', 'SQL', 'CSS', 'HTML'], 
     true
@@ -110,8 +162,7 @@ $array = $this->chooser(
 Prompt the user with color-coded options and is required:
 
 ```php
-<?php
-$color = $this->prompt(
+$color = Terminal::prompt(
     'Are you sure you want to continue?', 
     [
         'green' => 'YES', 
@@ -123,8 +174,7 @@ $color = $this->prompt(
 Prompt the user to select their gender, without colored text nor validation required:
 
 ```php
-<?php
-$gender = $this->prompt(
+$gender = Terminal::prompt(
     'What is your gender?', 
     ['male', 'female'], 
     false
@@ -134,8 +184,7 @@ $gender = $this->prompt(
 Prompt the user to select an option with custom validation rules:
 
 ```php
-<?php
-$email = $this->prompt(
+$email = Terminal::prompt(
     'Are you sure you want to continue?', 
     ['YES', 'NO'], 
     'required|in_array(YES,NO)'
@@ -148,22 +197,23 @@ $email = $this->prompt(
 Request user to enter an input.
 
 ```php
-$name = $this->input('What is your name? ');
+$name = Terminal::input('What is your name? ');
 echo $name;
 ```
 
 Request user to enter password without displaying while typing:
 
 ```php
-$password = $this->password('Enter your password? ');
+$password = Terminal::password('Enter your password? ');
+
 echo $password;
 ```
 
 Using prompt to request the user to enter their email address:
 
 ```php
-<?php
-$email = $this->prompt('What is your email?');
+$email = Terminal::prompt('What is your email?');
+
 echo $email;
 ```
 
@@ -174,22 +224,19 @@ echo $email;
 Display a waiting message until the user presses any key:
 
 ```php
-<?php
-$this->waiting();
+Terminal::waiting();
 ```
 
 Show a waiting message for 20 seconds with a countdown:
 
 ```php
-<?php
-$this->waiting(20);
+Terminal::waiting(20);
 ```
 
 Show a custom downloading message for 20 seconds:
 
 ```php
-<?php
-$this->waiting(20, 'Downloading... (%d seconds)');
+Terminal::waiting(20, 'Downloading... (%d seconds)');
 ```
 
 ***
@@ -199,27 +246,24 @@ $this->waiting(20, 'Downloading... (%d seconds)');
 Freeze the console screen for 20 seconds:
 
 ```php
-<?php
-$this->freeze(20); 
+Terminal::freeze(20); 
 ```
 
 Freeze the console and clear all output and user input for 20 seconds:
 
 ```php
-<?php
-$this->freeze(20, true);
+Terminal::freeze(20, true);
 ```
 
 ***
 
 ### Progress Bar Examples
 
-Show a progress bar with step updates:
+Draw a progress bar with with manual step updates:
 
 ```php
-<?php
 for ($i = 0; $i <= 100; $i++) {
-    $step = $this->progress($i, 100);
+    $step = Terminal::progress($i, 100);
     usleep(100000);
     
     if ($step >= 100) {
@@ -229,12 +273,11 @@ for ($i = 0; $i <= 100; $i++) {
 }
 ```
 
-Display a progress bar up to 50% without completing:
+Stope a progress bar halfway, up to 50% without completing:
 
 ```php
-<?php
 for ($i = 0; $i <= 100; $i++) {
-    $step = $this->progress($i, 100);
+    $step = Terminal::progress($i, 100);
     usleep(100000);
     
     if ($step >= 50) {
@@ -251,22 +294,21 @@ for ($i = 0; $i <= 100; $i++) {
 Show 100 lines of progress with callbacks and a beep upon completion:
 
 ```php
-<?php
-$this->watcher(100, function() {
-    $this->writeln("Am done here");
+Terminal::watcher(100, function() {
+    Terminal::writeln("Am done here");
 }, function(float|int $step) {
     // Avoid adding a new line here to prevent progress bars from miss-aligning except is intended
-    $this->write(" Current {$step}");
+    Terminal::write(" Current {$step}");
 });
 ```
 **Example Output:**
 
 <div class="command-body">
 	<div class="command-container">
-					<span class="command-line"><span class="command-text">index.php foo --watch</span></span>
-					<span class="command-status">[##########]</span> 100% Current 99
-					<span class="d-block">Current 100</span>
-					<span class="d-block">Am done here</span>
+        <span class="command-line"><span class="command-text">index.php foo --watch</span></span>
+        <span class="command-status">[##########]</span> 100% Current 99
+        <span class="d-block">Current 100</span>
+        <span class="d-block">Am done here</span>
 	 </div>
  </div>
  
@@ -274,27 +316,25 @@ $this->watcher(100, function() {
 
 ### Animation Example
 
-Show a spinning animation with 5 spins, a 100ms sleep between frames, and a custom completion message:
+Draw a spinning animation with an array list of any charters. Animate 5 spins, a 100ms sleep between frames, and a custom completion message:
 
 ```php
-<?php
-$this->spinner(['-', '\\', '|', '/'], 5, 100000, function() {
-    $this->write("Finished spinning!\n");
+Terminal::spinner(['-', '\\', '|', '/'], 5, 100000, function() {
+    Terminal::write("Finished spinning!\n");
 });
 ```
 
 **Example Output:**
 
 <div class="command-body">
-	<div class="command-container">
-					<span class="command-line"><span class="command-text">index.php foo --spin</span></span>
-					<span class="command-status">Animating:</span> <span class="spinner"></span>
-	 </div>
- </div>
+    <div class="command-container">
+        <span class="command-line"><span class="command-text">index.php foo --spin</span></span>
+        <span class="command-status">Animating:</span> <span class="spinner"></span>
+    </div>
+</div>
 
 ***
 
-***
 ## Class Definition
 
 * Class namespace: `\Luminova\Command\Terminal`
@@ -318,18 +358,107 @@ These constants represent the standard input, output, and error streams, often u
 Input validations object.
 
 ```php
-protected static \Luminova\Security\Validation|null $validation
+protected static ?\Luminova\Security\Validation $validation = null;
 ```
 
 ## Methods
 
 ### constructor
 
-Initialize command line instance before running any commands.
+Optionally initialize the Terminal instance using the constructor before executing any CLI commands.
 
 ```php
-public __construct(): mixed
+public __construct()
 ```
+
+**Example:**
+
+```php
+use Luminova\Command\Terminal;
+
+// Initialize by instantiating the class
+$term = new Terminal();
+$term->print("Hello from constructor!");
+```
+
+---
+
+### init
+
+Static method to initialize the Terminal instance. Use this if you're not instantiating the class manually.
+
+```php
+public static init(): void
+```
+
+**Example:**
+
+```php
+use Luminova\Command\Terminal;
+
+// Initialize statically
+Terminal::init();
+Terminal::print("Hello from static init!");
+```
+
+***
+
+### perse
+
+Parses and processes command-line arguments and options, making them accessible in console controllers.
+
+This method is used to extract and register command arguments, options, and flags passed to the CLI. Once parsed, you can retrieve values using helper methods like `getOption`, `getArgument`, and `getAnyOption`. It serves as an internal setter to store and expose parsed command data within extended controller classes.
+
+```php
+public static final perse(array $commands): void
+```
+
+#### Parameters
+
+| Parameter   | Type                   | Description                                                         |
+| ----------- | ---------------------- | ------------------------------------------------------------------- |
+| `$commands` | `array<string, mixed>` | Command arguments, options, and flags extracted from CLI execution. |
+
+**Usage Example:**
+
+When executing a CLI command like:
+
+```bash
+php novakit my-command foo=Hello
+```
+
+The following controller example shows how to handle it:
+
+```php
+// /app/Console/MyCommand.php
+
+use Luminova\Base\BaseConsole;
+
+class MyCommand extends BaseConsole 
+{
+    public function run(?array $options = []): int
+    {
+        // Parse the received command-line options
+        $this->term->perse($options);
+        
+        // Access the command name
+        $command = $this->term->getCommand();
+
+        // Access argument by position
+        $arg1 = $this->term->getArgument(1);
+
+        // Access named option
+        $foo = $this->term->getOption('foo');
+
+        // Access named option or alias
+        $fooAlias = $this->term->getAnyOption('foo', 'f');
+
+        return STATUS_SUCCESS;
+    }
+}
+```
+
+> **Note:** `perse()` is only required in `BaseConsole` command controllers. In routable `BaseCommand` controllers, the Luminova routing system handles parsing automatically.
 
 ***
 
@@ -510,10 +639,16 @@ public static prompt(
 ### chooser
 
 Request user with multiple option selection.
+
 This method will use the array index key as the option identifier to select, even if the array is an associative array users will still see indexed key instead.
 
 ```php
-public static chooser(string $text, array $options, bool $required = false): array<string|int,mixed>
+public static chooser(
+    string $text, 
+    array $options, 
+    bool $required = false,  
+    bool $multiChoice = true
+): array<string|int,mixed>
 ```
 
 **Parameters:**
@@ -523,6 +658,7 @@ public static chooser(string $text, array $options, bool $required = false): arr
 | `$text` | **string** | The chooser description message to prompt. |
 | `$options` | **array** | The list of options to prompt (e.g, `['male' => 'Male', 'female' => 'Female']` or `['male', 'female']`). |
 | `$required` | **bool** | Require user to choose any option else the first array will be return as default. |
+| `$multiChoice` | **bool** | Weather multiple options are allowed (default: true). |
 
 **Return Value:**
 
@@ -556,6 +692,67 @@ public static password(string $message = 'Enter Password', int $retry = 3, int $
 **Return Value:**
 
 `string` - Return the entered password or an empty string if the maximum retry attempts are exceeded.
+
+***
+
+### keyEvent
+
+Captures a key press event and returns the corresponding key name.
+
+Supports arrow keys, tab, enter, escape, and Ctrl+C.
+
+```php
+public static keyEvent(?callable $callback = null): mixed
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$callback` | **callable\|null** | Optional callback function that receives the raw key and its name. |
+
+**Return Value:**
+
+`array<key:ansi,name:string>|mixed` - Returns an array with the **raw ANSI key sequence** and its **mapped name**, or the result of the callback function.
+
+**Example Usage:**
+
+```php
+$result = Terminal::keyEvent();
+print_r($result);
+```
+
+**Possible Output (if pressing the "Enter" key):**
+
+```php
+Array
+(
+    [key] => 
+    [name] => enter
+)
+```
+
+**Using a Callback Function**
+
+```php
+Terminal::keyEvent(function (string $key, string $name) {
+    Terminal::writeln("Key Pressed: $name (Raw: " . bin2hex($key) . ")");
+});
+```
+**User presses the "Arrow Up" key:**  
+```
+Key Pressed: up (Raw: 1b5b41)
+```
+
+**Handling Specific Keys**
+```php
+$event = Terminal::keyEvent();
+
+if ($event['name'] === 'ctrl+c') {
+    Terminal::writeln("Interrupt detected! Exiting...");
+    exit;
+}
+```
 
 ***
 
@@ -700,24 +897,108 @@ public static visibility(bool $visibility = true): bool
 
 ***
 
-### input
+### cursorVisibility
 
-Get user input from the shell, after requesting for user to type or select an option.
+Controls the cursor visibility in the terminal.
 
 ```php
-public static input(?string $prompt = null, bool $use_fopen = false): string
+public static cursorVisibility(bool $showCursor):  void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$prompt` | **string&#124;null** | Optional message to prompt the user after they have typed. |
-| `$use_fopen` | **bool** | Weather to use `fopen`, this opens `STDIN` stream in read-only binary mode (default: false).<br />This creates a new file resource. |
+| `$showCursor` | **bool** | Set to true to show the cursor, false to hide it. |
+
+***
+
+### input
+
+Read a single line of user input from the terminal or piped input.
+
+This method is suitable for user prompts or single-line piped input. For multi-line input, use `readInput()` instead.
+
+```php
+public static input(?string $prompt = null, string $default = '', bool $newStream = false): string
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$prompt` | **string&#124;null** | Optional message to display before reading input. |
+| `$default` | **string** | Optional default value to return if no input is provided (default: empty-string). |
+| `$newStream` | **bool** |  Whether to open a new `STDIN` stream in read-only binary mode as a separate handle (default: false). |
 
 **Return Value:**
 
-`string` - Return user input string.
+`string` - Return the input string or the default value if input is empty or reading fails.
+
+***
+
+### readInput
+
+Read input from STDIN, supporting single or multi-line input.
+
+This method is suitable for reading from piped data or long content. For simple user prompts or single-line input, use  `input()` directly instead.
+
+```php
+public static readInput(string $default = '', bool $eof = true, bool $newStream = false): string
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$default` | **string** |  Default value to return if reading fails or input is empty (default: empty-string). |
+| `$eof` | **bool** | If true, reads the entire input until EOF. If false, reads a single line. |
+| `$newStream` | **bool** | Whether to `open` a new STDIN stream in read-only binary mode as a separate handle (default: false). |
+
+**Return Value:**
+
+`string` - Return the input string or the default value if input is empty or reading fails.
+
+**Example:**
+
+Read From Pipe Input:
+
+```bash
+echo "Log Message From Pipe" | php index.php logger
+php index.php list-something | php index.php logger
+ ```
+
+***
+
+### tablist
+
+Displays a selectable list in the terminal and allows navigation using arrow keys or tab.
+
+```php
+public static tablist(
+    array $options, 
+    int $default = 0,
+	?string $placeholder = null,
+    bool $clearOnSelect = true,
+    string $foreground = 'green', 
+    ?string $background = null
+): string
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$options` | **array<int,string\|int>** | The list of options to choose from. |
+| `$default` | **int** | The default selected index (default: 0). |
+| `$placeholder` | **string\|null** | Optional placeholder text to display. |
+| `$clearOnSelect` | **bool** | Whether to clear the screen after selection (default: true). |
+| `$foreground` | **string** | The foreground color for the highlighted selection (default: `green`). |
+| `$background` | **string\|null** | The optional background color for the highlighted selection (default: `null`). |
+
+**Return Value:**
+
+`string` - Return the selected option value as a string.
 
 ***
 
@@ -763,7 +1044,6 @@ public static escape(?string $argument = null): string
 **Example:**
 
 ```php
-<?php
 $argument = 'example argument with "special" characters & symbols';
 $escaped = Terminal::escape($argument);
 
@@ -805,7 +1085,6 @@ public static replace(string $command, <string,mixed> $env, bool $escape = false
 
 Example of the environment variables:
 ```php
-<?php
 $command = 'echo "${:USER} is running a ${:TASK}"';
 $env = [
     'USER' => 'Alice',
@@ -816,7 +1095,6 @@ $env = [
 Replace placeholders:
 
 ```php
-<?php
 $command = Terminal::replace($command, $env);
 echo $command; 
 // Output: echo "Alice is running a test command"
@@ -825,7 +1103,6 @@ echo $command;
 Execute the command:
 
 ```php
-<?php
 Terminal::_exec($escaped, $output);
 print_r($output);
 ```
@@ -965,13 +1242,25 @@ public static fwrite(string $text, resource|int $handler = self::STD_OUT): void
 
 ### clear
 
-Clears the entire console screen for both Windows and Unix-based systems.
+Clears the console screen with optional clearing modes.
 
-This method refreshes the entire terminal view, removing all previously displayed content.
+This method refreshes the entire terminal window, removing all previously displayed command outputs.
+
+**Modes**
+
+- `default` - (default): Clears the entire screen.
+- `partial` - Clears from the cursor position downward.
+- `full` - Clears the entire screen and scrollback buffer.
 
 ```php
-public static clear(): void
+public static clear(string $mode = 'default'): void
 ```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$mode` | **string** | The clearing mode: `default`, `partial`, or `full`. |
 
 ***
 
@@ -1241,8 +1530,7 @@ Assume you have a command, such as `php index.php my-command --which=a`.
 If you want to also accept an alias of `--which` as `-w`, then `getAnyOption` is what you need.
 
 ```php
-<?php
-$which = $this->getAnyOption('which', 'w');
+$which = Terminal::getAnyOption('which', 'w');
 echo $which;
 ```
 

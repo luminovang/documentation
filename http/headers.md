@@ -1,4 +1,4 @@
-# Management of Incoming HTTP Request Headers
+# Managing Incoming HTTP Request Headers
 
 ***
 

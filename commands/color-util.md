@@ -1,4 +1,4 @@
-# Command Text Outputs Styling Using the Color Utils
+# Styling Command Outputs Using Color Utils
 
 ***
 

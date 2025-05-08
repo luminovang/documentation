@@ -1,4 +1,4 @@
-# Content Security Policy (CSP) Configuration
+# Configuration for Content Security Policy (CSP)
 
 ***
 

@@ -1,4 +1,4 @@
-# How to Implement a Command Line Interface (CLI) API client with CRUD Operations
+# Command Line API Client for CRUD Operations
 
 ***
 
@@ -38,16 +38,18 @@ Attribute-based routing allows routes to be defined directly on controller metho
 
 ```php
 // /app/Controllers/Cli/PostsCommand.php
-<?php
+
 namespace App\Controllers\Cli;
 
 use Luminova\Base\BaseCommand;
 use Luminova\Command\Utils\Color;
 use Luminova\Command\Utils\Text;
 use Luminova\Attributes\Route;
+use Luminova\Attributes\Group;
 use App\Models\Posts;
 use JsonException;
 
+#[Group(name: 'posts')]
 class PostsCommand extends BaseCommand
 {
     /**
@@ -110,7 +112,7 @@ If you prefer method-based routing, simply remove the attributes before any meth
 
 ```php
 // /routes/cli.php
-<?php
+
 $router->group('posts', function (Router $router) {
     $router->before('posts', 'PostsCommand::auth');
     
@@ -135,8 +137,8 @@ $router->group('posts', function (Router $router) {
 The model represents the `Posts` entity and interacts with the database for CRUD operations.
 
 ```php
-// app/Models/Posts.php
-<?php
+// /app/Models/Posts.php
+
 namespace App\Models;
 
 use Luminova\Base\BaseModel;
@@ -158,8 +160,8 @@ class Posts extends BaseModel
 Define your migration class to structure the database table.
 
 ```php
-// app/Database/Migrations/PostsMigration.php
-<?php
+// /app/Database/Migrations/PostsMigration.php
+
 namespace App\Database\Migrations;
 
 use Luminova\Database\Migration;
@@ -203,8 +205,8 @@ class PostsMigration extends Migration
 Add seed data to populate your `posts` table.
 
 ```php
-// app/Database/Seeder/PostsSeeder.php
-<?php
+// /app/Database/Seeder/PostsSeeder.php
+
 namespace App\Database\Seeders;
 
 use Luminova\Database\Seeder;
@@ -224,7 +226,7 @@ class PostsSeeder extends Seeder
                 'post_title' => 'Getting Started with PHP Luminova',
                 'post_body' => 'Learn the basics of setting up and running your first project with PHP Luminova framework.',
             ],
-            // Additional seed data
+            /* Additional seed data */
         ]);        
     }
 }
@@ -540,7 +542,6 @@ To execute commands remotely from your PHP script, you can install the `SSH2` PH
 ```php
 // /bin/script.php
 
-<?php 
 use Luminova\Command\Remote;
 
 $remote = new Remote(

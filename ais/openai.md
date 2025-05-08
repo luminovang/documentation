@@ -1,4 +1,4 @@
-# Integration of OpenAI Models
+# OpenAI Models Integration
 
 ***
 

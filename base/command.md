@@ -1,4 +1,4 @@
-# Base Class for Command-Line Routing Controllers
+# Abstract Base Class for Routable CLI Controllers
 
 ***
 
@@ -10,17 +10,39 @@ Base command, Luminova's Framework for command-line operations - controller base
 
 ## Introduction
 
-Base Command is Luminova's comprehensive framework designed for managing command-line operations. As a controller base class, it offers a structured approach to building and executing command-line commands, providing a solid foundation for developing robust and extensible command-line tool (CLIs).
+The `BaseCommand` class in Luminova’s framework is for building routable command-line tools (CLIs). It provides a structured way to define, organize, and execute custom CLI commands with flexibility.
+
+Similar to HTTP controllers, `BaseCommand` uses routing system for command handling and supports routing via method names or PHP attributes. You can group related commands using the class-level `#[Group]` attribute, and define individual commands with the shared `#[Route]` attribute, though its configuration differs slightly from its HTTP counterpart.
+
+Unlike [Luminova\Base\BaseConsole](/base/console.md), which handles basic commands interactions using `novakit`, `BaseCommand` supports full routing and is intended for use in front controllers like:
+
+```bash
+php /public/index.php <command>
+```
+
+> This makes it ideal for integrating CLI features directly into your application, using a familiar structure similar to HTTP controllers, without a new learning curve or the need to learn a separate command framework.
 
 ***
 
 ### Features
 
-- Define custom commands with specific functionalities, each associated with a unique name and description.
-- Handle command execution, including parsing command-line arguments, validating inputs, and invoking the appropriate command handler.
-- Organize commands into logical modules or groups for improved code reusability and maintainability.
-- Customize and extend functionality by creating custom command handlers, adding new command-line options, or integrating with third-party libraries.
-- Access controller class functionality just as you would in a web browser, providing seamless integration between command-line and browser-based operations.
+- **Command Metadata**  
+  Create commands with clear usages, options, and descriptions to display help (`--help`).
+
+- **Handle Execution and Input**  
+  Automatically parse command-line arguments, validate inputs, and run the correct method.
+
+- **Group Commands Logically**  
+  Organize related commands into groups or modules to keep your code clean and maintainable.
+
+- **Limit Access by User**  
+  Restrict which system users are allowed to run commands defined in the controller.
+
+- **Extend and Customize**  
+  Add custom handlers, define new options, or integrate with third-party tools as needed.
+
+- **Reuse Controller Logic**  
+  Use your controller class in the same way as you would for web requests, enabling smooth integration between CLI and browser-based functionality.
 
 ***
 
@@ -28,12 +50,13 @@ Base Command is Luminova's comprehensive framework designed for managing command
 
 * Class namespace: `\Luminova\Base\BaseCommand`
 * Parent class: [\Luminova\Command\Terminal](/commands/terminal.md)
+* This class implements: [\Luminova\Interface\RoutableInterface](/interface/classes.md#routableinterface)
 
 ***
 
 ## Properties
 
-#### group
+### group
 
 The group name for the current command controller class. This group is used for router capture authentication to ensure that commands within the same group are executed accordingly (e.g., `php index.php <command-group-name> <command> <arguments>`).
 
@@ -43,7 +66,7 @@ protected string $group = '';
 
 ***
 
-#### name
+### name
 
 The execution command name for the current controller class. This name is used internally to build information about your command, which can be utilized in displaying command help.
 
@@ -53,7 +76,7 @@ protected string $name = '';
 
 ***
 
-#### usage
+### usage
 
 A description of your command usages. This can be either a `string` or an `array` of usage examples.
 
@@ -63,7 +86,7 @@ protected string|array $usage = [];
 
 ***
 
-#### options
+### options
 
 A more expressive way to describe your command options and their descriptive messages. The array key represents the command option, while the value is a description of the option (e.g., `['-f, --foo' => 'Foo description']`).
 
@@ -73,7 +96,7 @@ protected array<string,mixed> $options = [];
 
 ***
 
-#### examples
+### examples
 
 Examples of how to use the command. This allows you to provide full examples demonstrating command usage.
 
@@ -83,7 +106,7 @@ protected array<string,mixed> $examples = [];
 
 ***
 
-#### description
+### description
 
 A detailed description of your command to help users understand its purpose and functionality.
 
@@ -93,7 +116,67 @@ protected string $description = '';
 
 ***
 
-### Methods
+### users
+
+Defines a list of allowed system users who can execute the command. If the array is empty, all users are allowed by default.
+
+```php
+protected array<int, string> $users = [];
+```
+
+**Example:**
+
+Only the following users are permitted to run this command:
+
+```php
+protected array<int, string> $users = ['www-data', 'ubuntu', 'admin'];
+```
+
+> **Note:** This is useful for restricting sensitive commands to specific system-level users.
+
+---
+
+### authentication
+
+The `authentication` property allows you to configure login protection for CLI commands using either passwords or public/private key authentication.
+
+**Supported Array Keys / Database Column Names:**
+
+- **`auth`** `(string)` – Type of authentication, such as `password` or `key`.
+- **`content`** `(string)` – The hashed password (for password login), public key content, or path to a public key file. Leave empty for public access without a password.
+- **`updated_at`** `(datetime)` – Records the last time authentication was used or updated.
+
+```php
+protected ?array<string, mixed> $authentication = null;
+```
+
+---
+
+**Examples**
+
+You can load authentication data from a database or a PHP file:
+
+**From Database:**
+```php
+[
+   'storage' => 'database',
+   'tableName' => 'foo_cli_users'
+]
+```
+
+**From Filesystem (e.g., `auths.php`):**
+```php
+[
+   'storage' => 'filesystem',
+   'storagePath' => 'writeables/auth/cli_users.php'
+]
+```
+
+> **Note:** When using the filesystem, your PHP file must return an array of users.
+
+***
+
+## Methods
 
 The base command extends the [Luminova Terminal class](/commands/terminal.md), making all the methods available and ready to use in command controller class. 
 
@@ -184,7 +267,7 @@ echo $this->getString();
 Retrieves an option value of executed command based on the specified key or alias. This method is an alias of the parent `getAnyOption` method.
 
 ```php
-protected option(string $key, string $alias, mixed $default = false): mixed 
+protected option(string $key, ?string $alias = null, mixed $default = false): mixed 
 ```
 
 **Parameters:**
@@ -192,7 +275,7 @@ protected option(string $key, string $alias, mixed $default = false): mixed
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$key` | **string** | The primary key for the option. |
-| `$alias` | **string** | The alias for the option. |
+| `$alias` | **string\|null** | An optional alias for the option. |
 | `$default` | **mixed** | The default value to return if the option is not found. |
 
 **Return Value**
@@ -207,6 +290,7 @@ Given a command with option `--verbose` or `-v`.
 
 ```php
 $verbose = $this->option('verbose', 'v', false); 
+
 // Returns true if either option is set.
 ```
 
@@ -216,6 +300,7 @@ Given a command with option `--address=192.160.0.1` or `-a=192.160.0.1`.
 
 ```php
 $address = $this->option('address', 'a', null); 
+
 // Returns 192.160.0.1 if either option is set.
 ```
 
@@ -364,13 +449,13 @@ To define your commands using code-based routing, you can configure your routes 
 
 ```php
 // /routes/cli.php
-<?php 
-$router->group('blog', static function(Router $router) {
-    // Command with argument
-    $router->command('list', 'BlogCommand::blogs');
 
-    // Command with method argument
-    $router->command('list/limit/(:int)', 'BlogCommand::blogs');
+$router->group('blog', static function(Router $router) {
+   // Command with argument
+   $router->command('list', 'BlogCommand::blogs');
+
+   // Command with method argument
+   $router->command('list/limit/(:int)', 'BlogCommand::blogs');
 });
 ```
 
@@ -382,7 +467,7 @@ For attribute-based routing, you can directly annotate the `blogs` method in you
 
 ```php
 // /app/Controllers/Cli/BlogCommand.php
-<?php
+
 namespace App\Controllers\Cli;
 
 use Luminova\Base\BaseCommand;
@@ -395,22 +480,22 @@ class BlogCommand extends BaseCommand
 		return STATUS_ERROR;
 	}
 
-    // Command with argument
-    #[Route('list', group: 'blog')]
-    public function blogs(): int 
-	{
-        $limit = $this->getAnyOption('limit', 'l', 10);
-        echo $limit;
-        return STATUS_SUCCESS;
-    }
+   // Command with argument
+   #[Route('list', group: 'blog')]
+   public function blogs(): int 
+   {
+      $limit = $this->getAnyOption('limit', 'l', 10);
+      echo $limit;
+      return STATUS_SUCCESS;
+   }
 
-    // Command with method argument
-    #[Route('list/limit/(:int)', group: 'blog')]
-    public function blogs(int $limit = 10): int 
-	{
-        echo $limit;
-        return STATUS_SUCCESS;
-    }
+   // Command with method argument
+   #[Route('list/limit/(:int)', group: 'blog')]
+   public function blogs(int $limit = 10): int 
+   {
+      echo $limit;
+      return STATUS_SUCCESS;
+   }
 }
 ```
 

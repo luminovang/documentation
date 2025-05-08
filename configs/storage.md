@@ -1,4 +1,4 @@
-# Local and Cloud Storage Configurations
+# Configurations for Default Local or Cloud Storage Location 
 
 ***
 

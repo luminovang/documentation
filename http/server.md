@@ -1,4 +1,4 @@
-# Management of Request Server Variables
+# Handling and Managing Server Variables
 
 ***
 

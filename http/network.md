@@ -1,4 +1,4 @@
-# Network Class for Managing HTTP Request Clients
+# Sending Outgoing HTTP Network Requests
 
 ***
 

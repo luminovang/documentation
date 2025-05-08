@@ -1,4 +1,4 @@
-# Database Backup Connection Configuration
+# Configuration for Database Fallback Connections
 
 ***
 

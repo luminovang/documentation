@@ -1,26 +1,24 @@
-# Basic Mathematical Operations Helper with the Math Class
+# Basic Mathematical Operations Helpers
 
 ***
 
 ## Overview
 
-This class has basic mathematical calculation methods to convert currency, units, averages, ratings, discounts or interest rates.
+Provides basic methods for currency conversion, unit conversion, averages, ratings, discounts, distance and interest calculations.
 
 ***
 
 ## Introduction
 
-The `Maths` module offers a suite of essential mathematical functions to support your development needs. It includes fundamental methods for tasks such as currency and unit conversions, calculating discounts, interest, and more. These tools are designed to simplify common mathematical operations, with plans to expand functionality for advanced use cases in the future.
+The `Maths` class provides a set of static methods for essential mathematical operations. It includes utilities for currency and unit conversions, discount and interest calculations, and other common tasks. Designed to simplify development.
 
-* Class namespace: `\Luminova\Functions\Maths`
-* This class is marked as **final** and can't be subclassed
+---
 
-## Methods
+### Usages 
 
 The methods can be accessed through global function  helper, `Factory` instance or call statically.
 
 ```php
-<?php
 func('math')->money(5000);
 // 5000.00
 ```
@@ -28,7 +26,6 @@ func('math')->money(5000);
 Or directly call math method.
 
 ```php
-<?php
 func()->math()->money(5000);
 // 5000.00
 ```
@@ -36,7 +33,6 @@ func()->math()->money(5000);
 Or using factory instance to initialize function and call math method.
 
 ```php
-<?php
 use Luminova\Application\Factory;
 
 Factory::functions()->math()->money(5000);
@@ -46,11 +42,21 @@ Factory::functions()->math()->money(5000);
 Or continently call it statically.
 
 ```php
-<?php
-use \Luminova\Functions\Maths;
+use Luminova\Functions\Maths;
 
 Maths::money(5000);
 ```
+
+---
+
+## Class Definition
+
+* Class namespace: `\Luminova\Functions\Maths`
+* This class is marked as **final** and can't be subclassed
+
+---
+
+## Methods
 
 ***
 
@@ -59,7 +65,7 @@ Maths::money(5000);
 Converts bytes to the appropriate unit.
 
 ```php
-public static toUnit(int $bytes, bool $add_name = false): string
+public static toUnit(int $bytes, bool $addName = false): string
 ```
 
 **Parameters:**
@@ -67,7 +73,7 @@ public static toUnit(int $bytes, bool $add_name = false): string
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$bytes` | **int** | The number of bytes to convert. |
-| `$add_name` | **bool** | Whether to include the unit name in the result (default: false). |
+| `$addName` | **bool** | Whether to include the unit name in the result (default: false). |
 
 **Return Value:**
 
@@ -100,7 +106,7 @@ public static toBytes(string $units): int
 Converts a given time in milliseconds to a human-readable format with appropriate time units (e.g., milliseconds, seconds, minutes, etc.).
 
 ```php
-public static toTimeUnit(float|int $milliseconds, bool $add_name = false, bool $full_name = false): string
+public static toTimeUnit(float|int $milliseconds, bool $addName = false, bool $fullName = false): string
 ```
 
 **Parameters:**
@@ -108,8 +114,8 @@ public static toTimeUnit(float|int $milliseconds, bool $add_name = false, bool $
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$milliseconds` | **float\|int** | The time duration in milliseconds to be converted. |
-| `$add_name` | **bool** | Whether to include the unit name in the output (default: false). |
-| `$full_name` | **bool** | Whether to use the full name of the unit (e.g., 'seconds' instead of 's'). |
+| `$addName` | **bool** | Whether to include the unit name in the output (default: false). |
+| `$fullName` | **bool** | Whether to use the full name of the unit (e.g., 'seconds' instead of 's'). |
 
 **Return Value:**
 
@@ -161,8 +167,7 @@ public static rating(int $reviews, float $rating, bool $round = false): float
 
 The average of the below rating is: `8.50`.
 
-```
-<?php 
+```php
 echo Math::rating(5, 42.5, true)
 ```
 
@@ -245,17 +250,23 @@ public static crypto(int|float|string $amount, string $network = 'BTC'): string|
 Calculate the distance between two points on the Earth's surface.
 
 ```php
-public static distance(float|string $origin_lat, float|string $origin_lng, float|string $dest_lat, float|string $dest_lng, string $unit = 'km'): float|false
+public static distance(
+  float|string $originLat, 
+  float|string $originLng, 
+  float|string $destLat, 
+  float|string $destLng, 
+  string $unit = 'km'
+): float|false
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$origin_lat` | **float&#124;string** | The latitude of the origin point. |
-| `$origin_lng` | **float&#124;string** | The longitude of the origin point. |
-| `$dest_lat` | **float&#124;string** | The latitude of the destination point. |
-| `$dest_lng` | **float&#124;string** | The longitude of the destination point. |
+| `$originLat` | **float&#124;string** | The latitude of the origin point. |
+| `$originLng` | **float&#124;string** | The longitude of the origin point. |
+| `$destLat` | **float&#124;string** | The latitude of the destination point. |
+| `$destLng` | **float&#124;string** | The longitude of the destination point. |
 | `$unit` | **string** | The unit of distance to be returned (default is 'km'). |
 
 **Return Value:**

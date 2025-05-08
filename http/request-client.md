@@ -1,4 +1,4 @@
-# HTTP Request Clients
+# HTTP Request Clients for Outgoing Network Requests
 
 ***
 

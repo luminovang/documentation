@@ -1,4 +1,4 @@
-# Core Utility Functions Class
+# Static Utility Functions
 
 ***
 

@@ -1,4 +1,4 @@
-# PSR Cache Pool Implementation
+# PSR-Compliant Cache Pool Implementation
 
 ***
 

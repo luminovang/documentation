@@ -1,4 +1,4 @@
-# Core Database Backup Connection Class
+# Base Database Fallbacks Connection
 
 ***
 

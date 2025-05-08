@@ -1,4 +1,4 @@
-# Incoming Browser Request Configurations
+# Configurations for Incoming Request Client Behaviour
 
 ***
 

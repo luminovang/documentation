@@ -1,4 +1,4 @@
-# IP Address and Proxy Setting Configurations
+# Configurations for IP Address and Proxy Settings
 
 ***
 

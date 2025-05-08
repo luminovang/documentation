@@ -1,4 +1,4 @@
-# Default Search Engine Schema Object Configurations
+# Configurations for Default SEO Schema Object
 
 ***
 

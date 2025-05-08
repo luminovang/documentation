@@ -1,4 +1,4 @@
-# File Access and Permission Configurations
+# Configurations for File Access and Permission
 
 ***
 

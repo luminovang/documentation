@@ -1,4 +1,4 @@
-# Bootstrapping Public Index Controller
+# Bootstrapping Public Front Controller Entry Point
 
 ***
 
@@ -41,7 +41,7 @@ declare(strict_types=1);
 
 use Luminova\Boot;
 use Luminova\Routing\Prefix;
-use App\Controllers\Errors\ViewErrors;
+use App\Controllers\Errors\ErrorController;
 
 // Boot framework classes 
 require_once __DIR__ . '/../system/Boot.php';
@@ -49,20 +49,20 @@ require_once __DIR__ . '/../system/Boot.php';
 /**
  * Ensure that we are in front controller while running script in cli mode
 */
-if (getcwd() . DIRECTORY_SEPARATOR !== FRONT_CONTROLLER) {
-    chdir(FRONT_CONTROLLER);
+if (getcwd() . DIRECTORY_SEPARATOR !== DOCUMENT_ROOT) {
+    chdir(DOCUMENT_ROOT);
 }
 
 Boot::http()->router->context(
-    new Prefix(Prefix::WEB, [ViewErrors::class, 'onWebError']),
-    new Prefix(Prefix::API, [ViewErrors::class, 'onApiError']),
+    new Prefix(Prefix::WEB, [ErrorController::class, 'onWebError']),
+    new Prefix(Prefix::API, [ErrorController::class, 'onApiError']),
     new Prefix(Prefix::CLI)
 )->run();
 ```
 
 In this example, the router is configured with three contexts:
-- `WEB`: Handles web requests and uses the `ViewErrors::onWebError` method for error handling.
-- `API`: Handles API requests and uses the `ViewErrors::onApiError` method for error handling.
+- `WEB`: Handles web requests and uses the `ErrorController::onWebError` method for error handling.
+- `API`: Handles API requests and uses the `ErrorController::onApiError` method for error handling.
 - `CLI`: Handles CLI requests without a specific error handler.
 
 ***
@@ -73,7 +73,7 @@ This example demonstrates using anonymous functions (callbacks) for error handli
 
 ```php
 Boot::http()->router->context(
-    new Prefix(Prefix::WEB, fn(Application $app): int => ViewErrors::onWebError($app)),
+    new Prefix(Prefix::WEB, fn(Application $app): int => ErrorController::onWebError($app)),
     new Prefix(Prefix::API, function(){
         echo "Error";
     }),
@@ -91,11 +91,11 @@ In this example, contexts are defined using arrays. Each array specifies a `pref
 Boot::http()->router->context(
     [
         'prefix' => 'web',
-        'error' => [ViewErrors::class, 'onWebError']
+        'error' => [ErrorController::class, 'onWebError']
     ],
     [
         'prefix' => 'api',
-        'error' => [ViewErrors::class, 'onApiError']
+        'error' => [ErrorController::class, 'onApiError']
     ],
     [
         'prefix' => 'cli',

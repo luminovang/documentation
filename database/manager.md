@@ -1,4 +1,4 @@
-# Database Backup and Export manager
+# Backup and Export Module for Databases
 
 ***
 

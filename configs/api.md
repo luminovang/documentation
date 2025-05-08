@@ -1,4 +1,4 @@
-# API Incoming Request Configurations
+# Configurations for Incoming API Requests
 
 ***
 

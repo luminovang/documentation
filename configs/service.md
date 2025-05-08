@@ -1,4 +1,4 @@
-# Services Layer Autoloading Configurations
+# Configurations for Services Modules Autoloading
 
 ***
 

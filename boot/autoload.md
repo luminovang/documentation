@@ -1,4 +1,4 @@
-# Autoloading Dependency and Composer
+# Autoloading Modules and Composer Dependency
 
 ***
 
@@ -22,7 +22,6 @@ Instead of manually loading the Composer autoloader (`/system/plugins/autoload.p
 To initialize the HTTP environment and get an instance of the application class:
 
 ```php
-<?php
 use Luminova\Boot;
 
 require_once __DIR__ . '/system/Boot.php';
@@ -32,7 +31,6 @@ $app = Boot::http();
 To initialize the HTTP environment without needing the application class instance:
 
 ```php
-<?php
 use Luminova\Boot;
 
 require_once __DIR__ . '/system/Boot.php';
@@ -44,7 +42,6 @@ Boot::init();
 For command-line interface (CLI) initialization:
 
 ```php
-<?php
 use Luminova\Boot;
 
 require_once __DIR__ . '/system/Boot.php';

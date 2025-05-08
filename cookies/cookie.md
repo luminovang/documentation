@@ -1,4 +1,4 @@
-# Client Side Cookie Management
+# Cookie Management in Client-Side
 
 ***
 

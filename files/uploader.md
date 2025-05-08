@@ -1,4 +1,4 @@
-# File Upload Integration with Uploader Module
+# Handling File Uploads with the Uploader Class
 
 ***
 
@@ -21,7 +21,6 @@ The File Uploader class is included with the Luminova's Framework. It serves as 
 Upload file to server, you can optionally pass the `upload_path` in second parameter or set in file configuration using `setConfig` method.
 
 ```php
-<?php 
 use Luminova\Storages\Uploader;
 
 $file = $request->getFile('file');

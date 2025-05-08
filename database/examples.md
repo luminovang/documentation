@@ -1,4 +1,4 @@
-# Examples of Database Management Usage
+# Database Management and Usage Examples
 
 ***
 
@@ -22,8 +22,7 @@ Once you have setup the database configuration in your `.env` file.
 To get started with database connection see available methods : [Database Connection](/database/connection.md) and [Database Drivers](/database/drivers.md).
 
 ```php
-<?php
-use \Luminova\Database\Connection;
+use Luminova\Database\Connection;
 $db = Connection::getInstance()->database();
 
 $db->prepare("UPDATE users SET name = :name");
@@ -39,13 +38,13 @@ $response = $db->rowCount();
 To get started with database query builder see available methods : [Database Query Builder ](/database/query-builder.md).
 
 ```php
-<?php
 use \Luminova\Database\Builder;
 
-$builder = Builder::getInstance();
+// Initialize table 
+$tbl = Builder::table('users');
 
-$tbl = $builder->table('users');
-$response = $tbl->select(['*']);
+// Execute result
+$result = $tbl->select(['*']);
 ```
 
 ***
@@ -55,11 +54,13 @@ $response = $tbl->select(['*']);
 To return a prepared statement, you don't need to call any `CRUD` method.
 
 ```php
-<?php
 use \Luminova\Database\Builder;
 
-$builder = Builder::getInstance();
-$tbl = $builder->table('users');
+$tbl = Builder::table('users')
+    ->where('country', '=', 'NG')
+    ->limit(50)
+    ->order('join_date', 'DESC');
+
 $statement = $tbl->stmt(['*']);
 
 var_export($statement->getNext());
@@ -76,13 +77,11 @@ Utilizing database result caching in Luminova framework is straightforward and p
 > This method is applicable whether you're utilizing predefined methods or constructing custom queries using the `query()` and `execute()` methods within the Query Builder class.
 
 ```php
-<?php
 use \Luminova\Database\Builder;
 
-$builder = Builder::getInstance();
+$tbl = Builder::table('users')
+    ->cache('my_cache_key', 'optional_storage_users', 3600);
 
-$tbl = $builder->table('users');
-$tbl->cache('my_cache_key', 'optional_storage_users', 3600);
 $response = $tbl->select(['*']);
 ```
 
@@ -91,8 +90,7 @@ $response = $tbl->select(['*']);
 Building your custom SQL query to execute.
 
 ```php
-<?php
-	$query = $builder->query("
+	$query = Builder::query("
 		SELECT * 
 		FROM users
 		WHERE document_parent_id = :parent
@@ -110,7 +108,6 @@ To directly access raw database connection object.
 
 **From Connection Instance**
 ```php 
-<?php 
 use \Luminova\Database\Connection;
 
 $conn = Connection::getInstance()->database()->raw();
@@ -119,7 +116,6 @@ $conn = Connection::getInstance()->database()->raw();
 **From Query Builder Instance**
 
 ```php 
-<?php 
 use \Luminova\Database\Builder;
 
 $conn = Builder::getInstance()->db()->raw();
@@ -136,11 +132,10 @@ Manager is available in query builder class if you wish to use it outside query 
 Export database table as `csv` or `json` format.
 
 ```php 
-<?php
-$manager = $builder->manager();
+$manager = Builder::getInstance()->manager();
 $manager->setTable('users');
 
-if($manager->export('csv',  'my-user-table',  $columns = ['email', 'phone'])){
+if($manager->export('csv', 'my-user-table', ['email', 'phone'])){
 	echo 'Exported';
 }
 ```
@@ -150,8 +145,7 @@ if($manager->export('csv',  'my-user-table',  $columns = ['email', 'phone'])){
 Backup your entire database.
 
 ```php 
-<?php
-$manager = $builder->manager();
+$manager = Builder::getInstance()->manager();
 $manager->setTable('users');
 
 if($manager->backup('my-database-backup')){
@@ -166,7 +160,6 @@ if($manager->backup('my-database-backup')){
 You can extend the `Connection` class or initialize the class to grab the connection instance `$conn = new Connection();`
 
 ```php 
-<?php
 use \Luminova\Database\Connection;
 
 class MyConn extends Connection 
@@ -178,6 +171,7 @@ class MyConn extends Connection
         $this->db->prepare($query);
         $this->db->bind(":name", 'Peter');
         $this->db->execute();
+
         return $this->db->getNext()     
     }
 
@@ -187,6 +181,7 @@ class MyConn extends Connection
         
         $this->db->prepare($query);
         $this->db->execute();
+
         return $this->db->getCount()     
     }
 }

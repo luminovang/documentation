@@ -1,29 +1,26 @@
-# Client IP Address Lookup with the IP Class
+# Client IP Address and Proxy Helper
 
 ***
 
 ## Overview
 
-Retrieve the client's IP address, validate whether it is a proxy or Tor exit node, or obtain detailed information using third-party API providers such as IPHub or IPApi.
+Manage and retrieve the client’s IP address, detect proxies or Tor exit nodes, and fetch detailed info via IPHub or IPApi.
 
 ***
 
 ## Introduction
 
-The `IP` address class provides functionality to retrieve and handle client IP addresses from various sources, including headers and environment variables. This class is particularly useful for web applications to accurately determine the client's IP address, considering proxies and load balancers.
-
-For IP address information, it uses third-party `APIs` either `https://ipapi.co` or `https://iphub.info` to gather detailed data about the user's IP address. After retrieving the information, the class stores it locally, which reduces the need for repeated network requests to the API. This caching mechanism enhances performance by speeding up subsequent lookups and minimizing API calls.
+The `IP` class helps retrieve and manage client IP addresses from request variables and headers, accounting for proxies and load balancers. It supports detailed IP lookups using third-party APIs (`ipapi.co` or `iphub.info`) and caches results locally to reduce network requests and improve performance.
 
 ***
 
-### Helper Functions
+### Usages
 
 **1. Get User IP Address**
 
 Use the global helper function to retrieve the user's IP address:
 
 ```php
-<?php
 echo ip_address();
 ```
 
@@ -32,8 +29,9 @@ echo ip_address();
 To fetch detailed information about the user's IP address, use the helper function with a `true` parameter:
 
 ```php
-<?php
 $info = ip_address(true);
+
+// IP Info
 var_export($info);
 ```
 
@@ -42,14 +40,9 @@ var_export($info);
 To obtain an instance of the IP address class, use the global helper function in one of the following ways:
 
 ```php
-<?php
 $instance = func('ip');
-```
 
-or
-
-```php
-<?php
+// Or 
 $instance = func()->ip();
 ```
 
@@ -57,7 +50,11 @@ $instance = func()->ip();
 
 ***
 
+## Class Definition
+
 * Class namespace: `\Luminova\Functions\IP`
+
+---
 
 ## Methods
 
@@ -175,9 +172,35 @@ public static isValid(?string $ip = null, int $version = 0): bool
 
 ***
 
+### equals
+
+Compare two IP addresses to determine if they are equal.
+
+This method checks the equality of two IP addresses (IPv4 or IPv6) by converting them to their numeric binary representations. If either IP address is invalid, the method returns `false`. Otherwise, it compares the numeric forms to check for equality.
+
+```php
+public static equals(string $ip1, ?string $ip2 = null): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$ip1` | **string** | The first IP address to compare. |
+| `$ip2` | **string&#124;null** | The second IP address to compare (default: null). |
+
+**Return Value:**
+
+`bool` - Returns `true` if both IP addresses are valid and equal; `false` otherwise.
+
+> **Note:** If the second IP address (`$ip2`) is not provided, it defaults to the current client IP
+     * obtained via the `self::get()` method.
+
+***
+
 ### toNumeric
 
-Convert an IP address to its numeric representation (`IPv4` or `IPv6`).
+Convert an IP address to its numeric long integer representation (`IPv4` or `IPv6`).
 
 ```php
 public static toNumeric(?string $ip = null): string|false
@@ -187,27 +210,27 @@ public static toNumeric(?string $ip = null): string|false
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$ip` | **string&#124;null** | The IP address to convert. |
+| `$ip` | **string&#124;null** | The IP address to convert (default: null).<br> If null use the current client Ip. |
 
 **Return Value:**
 
-`string|false` - Return numeric representation of an IP address, otherwise false.
+`string|false` - Return long integer representation of the IP address, otherwise false.
 
 ***
 
 ### toAddress
 
-Convert a numeric IP address to its original IP address representation (`IPv4` or `IPv6`).
+Convert a numeric or hexadecimal IP address representation to its original (`IPv4` or `IPv6`).
 
 ```php
-public static toAddress(int|string $numeric = null): string|false
+public static toAddress(string|int|null $numeric = null): string|false
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$numeric` | **string&#124;int** | The numeric IP address to convert. |
+| `$numeric` | **string&#124;int&#124;null** | The ipv4 numeric or ipv6 hexadecimal representation to convert. |
 
 **Return Value:**
 
@@ -232,6 +255,47 @@ public static toBinary(?string $ip = null): string|false
 **Return Value:**
 
 `string|false` - Return binary representation of an IP address, otherwise false on error.
+
+***
+
+### toIpv4
+
+Convert an `IPv6` address to its IPv4-mapped representation.
+
+```php
+public static toIpv4(?string $ipv6 = null): string|false
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$ipv6` | **string** | The IPv6 address to convert (e.g, `::ffff:192.16.0.1`). |
+
+**Return Value:**
+
+`string|false` - Return the IPv4-mapped address, or false if the input is not a valid IPv6 address.
+
+***
+
+### toIpv6
+
+Convert an `IPv4` address to its IPv6-mapped representation.
+
+```php
+public static toIpv6(?string $ipv4 = null, bool $binary = false): string|false
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$ipv4` | **string** | The IPv4 address to convert. |
+| `$binary` | **bool** | Weather to return the binary representation (default: false). |
+
+**Return Value:**
+
+`string|false` - Return the IPv6-mapped address, or false if the input is not a valid IPv4 address.
 
 ***
 

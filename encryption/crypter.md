@@ -1,4 +1,4 @@
-# Data Encryption and Decryption with the Crypter Module
+# Encryption and Decryption Handling with Crypter
 
 ***
 
@@ -11,6 +11,10 @@ Luminova's Crypter class provides methods for encrypting and decrypting data usi
 ## Introduction
 
 Luminova Crypter class is straightforward means to implement encryption and decryption functionalities in anywhere in your applications. This helper class seamlessly integrates both Sodium and OpenSSL encryption libraries, providing a unified and simplified interface for encrypting and decrypting data without the need for manual initialization of handlers.
+
+***
+
+## Class Definition
 
 * Class namespace: `\Luminova\Security\Crypter`
 * Encryption class interface: [\Luminova\Interface\EncryptionInterface](/interface/classes.md#encryptioninterface)
@@ -176,12 +180,12 @@ $hash = Crypter::password('12345@123');
 
 ***
 
-### verify
+### isPassword
 
 Verify user password against it stored hash value to determine if if they match.
 
 ```php
-public static verify(string $password, string $hash): bool
+public static isPassword(string $password, string $hash): bool
 ```
 
 **Parameters:**
@@ -199,7 +203,8 @@ public static verify(string $password, string $hash): bool
 
 ```php
 <?php
-$ok = Crypter::password('12345@123', $hash);
+$hash = 'X763....';
+$ok = Crypter::isPassword('12345@123', $hash);
 ```
 
 ***

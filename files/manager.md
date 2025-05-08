@@ -1,4 +1,4 @@
-# File System Management Utilities
+# File System Management and Operations
 
 ***
 
@@ -14,6 +14,8 @@ The Luminova `FileSystem` is a core component of the Luminova framework designed
 
 ***
 
+### Class Definition
+
 * Class namespace: `\Luminova\Storages\FileManager`
 
 ***
@@ -23,11 +25,11 @@ The Luminova `FileSystem` is a core component of the Luminova framework designed
 Using helper functions to access class object and properties.
 
 ```php
-<?php
 echo path('system');
 echo factory('files', true)->system;
 ```
-Outputs
+Outputs:
+
 ```bash
 Windows: /system/
 Unix:  \\system\\
@@ -262,7 +264,7 @@ public static toUnixPermission(string $permission): int|null
 Write or append contents to a file.
 
 ```php
-public static write(string $filename, string|resource $content, int $flags, resource $context = null): bool
+public static write(string $filename, string|resource $content, int $flags, ?resource $context = null): bool
 ```
 
 **Parameters:**
@@ -289,7 +291,7 @@ public static write(string $filename, string|resource $content, int $flags, reso
 Write or append contents to a file.
 
 ```php
-public static stream(string $filename, resource $resource, int $flags, resource $context = null): bool
+public static stream(string $filename, resource $resource, int $flags, ?resource $context = null): bool
 ```
 
 **Parameters:**
@@ -343,7 +345,7 @@ public static mkdir(string $path, int $permissions = 0777, bool $recursive = tru
 Copy files and folders from the source directory to the destination directory.
 
 ```php
-public static copy(string $origin, string $dest, int& $copied = 0): bool
+public static copy(string $origin, string $dest, int &$copied = 0): bool
 ```
 
 **Parameters:**
@@ -365,7 +367,7 @@ public static copy(string $origin, string $dest, int& $copied = 0): bool
 Move files and folders from one location to another recursively.
 
 ```php
-public static move(string $origin, string $dest, int& $moved = 0): bool
+public static move(string $origin, string $dest, int &$moved = 0): bool
 ```
 
 **Parameters:**
@@ -417,7 +419,7 @@ For text-based files, it reads while preserving line endings. For binary files, 
 
 ```php
 public static read(
-	$handler, 
+	resource $handler, 
 	int $filesize, 
 	string $mime, 
 	int $length = (1 << 21),
@@ -441,8 +443,8 @@ public static read(
 
 **Example**
 ```php
-<?php 
 $filename = 'large-file.pdf';
+
 if ($handler = fopen($filename, 'rb')) {
 	$fileSize = filesize($filename);
 	$mime = get_mime($filename);

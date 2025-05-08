@@ -1,4 +1,4 @@
-# Backend Session Management Configurations
+# Configurations for Backend Session Management
 
 ***
 
@@ -112,6 +112,17 @@ public bool $strictSessionIp = false;
 ```
 
 If set to true, the user will be logged out if their IP address changes.
+
+***
+
+### encryptCookieData
+
+Enable cookie data encryption when managing session over `Luminova\Session\Managers\Cookie`.
+If set to true, the cookie data will be encrypted using the application encryption key and algorithm.
+
+```php
+public bool $encryptCookieData = false;
+```
 
 ***
 

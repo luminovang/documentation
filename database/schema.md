@@ -1,4 +1,4 @@
-# Database Table Schema Definitions
+# Table Schema Definitions and Design Guidelines
 
 ***
 

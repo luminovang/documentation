@@ -1,4 +1,4 @@
-# Client-Side Cookie Configuration
+# Configuration for Client-Side Cookies and Security
 
 ***
 

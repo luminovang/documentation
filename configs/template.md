@@ -1,4 +1,4 @@
-# Template and View Rendering Configurations
+# Configurations for Application Template Rendering and Handling Mode 
 
 ***
 

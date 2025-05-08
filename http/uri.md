@@ -1,4 +1,4 @@
-# PSR-7 HTTP URI Class with IDN Support
+# URI Class with Internationalized Domain Name (IDN) Support
 
 ***
 

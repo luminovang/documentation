@@ -1,4 +1,4 @@
-# Custom Module Autoloading Configurations
+# Configurations for Custom Modules Autoloading and Name Alias
 
 ***
 

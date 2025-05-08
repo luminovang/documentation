@@ -1,4 +1,4 @@
-# Base Class for Application Configuration Classes
+# Abstract Base Class for Application Configurations
 
 ***
 

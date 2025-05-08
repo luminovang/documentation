@@ -10,23 +10,48 @@ Global helper functions are collections of procedural functions that provide com
 
 ## Introduction
 
-Global helper functions are procedural functions that provide commonly used functionality across different parts of your application. They are typically defined at the global scope, making them easily accessible from anywhere within the codebase.
+Global helper functions are procedural utilities that offer reusable solutions for common tasks across the application. They are defined in the global scope, making it easily accessible from anywhere in the codebase.
 
-#### Code Reusability
+#### Code Reusability  
+They reduce duplication by centralizing frequently used logic into named functions.
 
-By encapsulating commonly used operations into helper functions, developers can avoid repetitive code and promote code reuse.
+#### Productivity  
+Pre-built helpers accelerate development by handling routine operations efficiently.
 
-#### Productivity
+#### Abstraction of Complexity  
+Helpers simplify complex processes, improving code readability and maintainability through clear, descriptive function names.
 
-Helper functions can significantly improve development efficiency by providing pre-built solutions to common problems. Instead of reinventing the wheel each time a similar task needs to be performed.
+---
 
-#### Abstraction of Complexity
+### Custom Function
 
-Helper functions abstract away the complexity of certain operations, making the code-base more readable and maintainable. By encapsulating logics within well-named functions, developers can focus on the high-level functionality of their code without getting bogged down in implementation details.
+By default, custom procedural functions initialization is disabled. To enable it, set the following in your `.env` file:
+
+```ini
+feature.app.dev.functions = enable
+```
+
+Once enabled, define your custom helper functions or constants in `/app/Utils/Global.php`:
+
+```php
+// /app/Utils/Global.php
+
+// Define constant
+defined('MY_FOO') || define('MY_FOO', 'bar');
+
+// Define function
+function myFunction(int $foo): int 
+{
+  return $foo;
+}
+```
+
+> **Tip:** To avoid overriding existing PHP or Luminova functions, wrap your function in a check:  
+> `if (!function_exists('myFunction')) { ... }`
 
 ***
 
-## Functions
+## Core Functions
 
 ### app
 
@@ -84,7 +109,11 @@ function request(bool $shared = true): HttpRequestInterface
 Return session data if key is present, otherwise return the session class instance.
 
 ```php
-function session(?string $key = null, bool $shared = true, ?\Luminova\Interface\SessionManagerInterface $manager = null): mixed
+function session(
+   ?string $key = null, 
+   bool $shared = true, 
+   ?\Luminova\Interface\SessionManagerInterface $manager = null
+): mixed
 ```
 
 **Parameters:**
@@ -93,11 +122,11 @@ function session(?string $key = null, bool $shared = true, ?\Luminova\Interface\
 |-----------|------|-------------|
 | `$key` | **string&#124;null** |Optional key to retrieve the data (default: null). |
 | `$shared` | **bool** | Weather to use shared instance (default: true). |
-| `$manager` | **class-object<\SessionManagerInterface>&#124;null** | The session manager interface to use (default: `SessionManager`). |
+| `$manager` | **SessionManagerInterface<class-object>&#124;null** | The session manager interface to use (default: `SessionManager`). |
 
 **Return Value:**
 
-`\Luminova\Sessions\Session|mixed` - The session data if key is provided, otherwise the session class instance.
+`\Luminova\Sessions\Session|mixed` - Return the session data if key is provided, otherwise the instance of session class.
 
 **See Also**
 
@@ -138,7 +167,7 @@ To initialize a class available in factory and returns a shared instance of the 
 Optionally you can pass `NULL` to context parameter in other to return factory instance instead.
 
 ```php
-function factory(string|null $context = null, bool $shared = true, mixed ...$arguments): ?object
+function factory(?string $context = null, bool $shared = true, mixed ...$arguments): ?object
 ```
 
 **Parameters:**
@@ -159,28 +188,27 @@ function factory(string|null $context = null, bool $shared = true, mixed ...$arg
 
 **Available Factory Context Names**
 
--   'task'  -  Returns instance of `\Luminova\Time\Task`
--   'session'  - Returns instance of `\Luminova\Sessions\Session`
--   'cookie'  - Returns instance of `\Luminova\Cookies\Cookie`
--   'functions'  - Returns instance of `\Luminova\Base\CoreFunction`
--   'modules'  - Returns instance of `\Luminova\Library\Modules`
--   'language'  - Returns instance of `\Luminova\Languages\Translator`
--   'logger'  - Returns instance of ` \Luminova\Logger\Logger`
--   'fileManager'  - Returns instance of `\Luminova\Storages\FileManager`
--   'validate'  - Returns instance of `\Luminova\Security\Validation`
--   'response'  - Returns instance of `\Luminova\Template\Response`
--   'services'  - Returns instance of `\App\Config\Services`
--   'request'  - Returns instance of `\Luminova\Http\Request`
--   'notification'  -  Returns instance of `\Luminova\Notifications\Firebase\Notification`
--   'caller'  -  Returns instance of `\Luminova\Application\Caller`
--   'escaper'  -  Returns instance of `\Luminova\Functions\Escape`
+-  `task`  -  Returns instance of `\Luminova\Time\Task`
+-  `session`  - Returns instance of `\Luminova\Sessions\Session`
+-  `cookie`  - Returns instance of `\Luminova\Cookies\Cookie`
+-  `functions`  - Returns instance of `\Luminova\Base\CoreFunction`
+-  `modules`  - Returns instance of `\Luminova\Library\Modules`
+-  `language`  - Returns instance of `\Luminova\Languages\Translator`
+-  `logger`  - Returns instance of ` \Luminova\Logger\Logger`
+-  `fileManager`  - Returns instance of `\Luminova\Storages\FileManager`
+-  `validate`  - Returns instance of `\Luminova\Security\Validation`
+-  `response`  - Returns instance of `\Luminova\Template\Response`
+-  `services`  - Returns instance of `\App\Config\Services`
+-  `request`  - Returns instance of `\Luminova\Http\Request`
+-  `notification`  -  Returns instance of `\Luminova\Notifications\Firebase\Notification`
+-  `caller`  -  Returns instance of `\Luminova\Application\Caller`
+-  `escaper`  -  Returns instance of `\Luminova\Functions\Escape`
 
 **Example**
 
 This example shows how to initialize session class instance with a new constructor argument using factory.
 
 ```php
-<?php 
 $session = factory('session', false, new SessionManager());
 ```
  
@@ -195,7 +223,12 @@ $session = factory('session', false, new SessionManager());
 Service on the other hand focus more on your business logic, It allows you to returns a shared instance of a class registered in your service `bootstrap` method. To return an instance of service pass null as the service parameter.
 
 ```php
-function service(class-string<\T>|string|null $service = null, bool $shared = true, bool $serialize = false, mixed ...$arguments): ?object
+function service(
+   ?string $service = null, 
+   bool $shared = true, 
+   bool $serialize = false, 
+   mixed ...$arguments
+): ?object
 ```
 
 **Parameters:**
@@ -226,7 +259,7 @@ function service(class-string<\T>|string|null $service = null, bool $shared = tr
 Delete a service or clear all services.
 
 ```php
-function remove_service(class-string<\T>|string|null  $service = null): bool
+function remove_service(?string $service = null): bool
 ```
 
 > If `NULL` is passed all cached and serialized services will be cleared.
@@ -306,7 +339,7 @@ function response(int $status = 200, ?array $headers = null, bool $shared = true
 Return instance a specific context if specified, otherwise get the instance anonymous class which extended `CoreFunction`.
 
 ```php
-function func(string|null $context = null, mixed ...$arguments): mixed
+function func(?string $context = null, mixed ...$arguments): mixed
 ```
 
 **Parameters:**
@@ -366,14 +399,14 @@ function shared(string $key, mixed $value = null, mixed $default = null): mixed
 Get the information about user's browser, based on the user-agent string.
 
 ```php
-function browser(?string $user_agent = null, string $return = 'object', bool $shared = true): mixed
+function browser(?string $userAgent = null, string $return = 'object', bool $shared = true): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$user_agent` | **string&#124;null** | The user agent string to analyze. |
+| `$userAgent` | **string&#124;null** | The user agent string to analyze. |
 | `$return` | **bool** | Set the return type, if `instance` return userAgent class object otherwise return array or json object.<br />-   Return Types: [`array`, `object`, `instance`] |
 | `$shared` | **bool** | Allow shared instance creation (default: true). |
 
@@ -458,6 +491,23 @@ function root(?string $suffix = null): string
 
 Get system or application path, compatible with `unix` or `windows` directory separator style.
 
+**Available Paths:**
+
+- **`app`** - Application root directory.
+- **`system`** - Luminova Framework and third-party plugins root directory.
+- **`plugins`** - Third-party plugins root directory.
+- **`library`** - Custom libraries root directory.
+- **`controllers`** - Application controllers directory.
+- **`writable`** - Application writable directory.
+- **`logs`** - Application logs directory.
+- **`caches`** - Application cache directory.
+- **`public`** - Application public directory (front controller).
+- **`assets`** - Application public assets directory.
+- **`views`** - Application template views directory.
+- **`routes`** - Application method-based routes directory.
+- **`languages`** - Application language pack directory.
+- **`services`** - Application cached services directory.
+
 ```php
 function path(string $file): string
 ```
@@ -466,7 +516,7 @@ function path(string $file): string
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$file` | **string&#124;null** | The path file name to return.<br />Possible values: 'app', 'system', 'plugins', 'library', 'controllers', 'writeable', 'logs', 'caches',<br />'public', 'assets', 'views', 'routes', 'languages', 'services'. |
+| `$file` | **string&#124;null** | The path file name to return. |
 
 **Return Value:**
 
@@ -483,7 +533,7 @@ function path(string $file): string
 Get environment variable value from registered `ENV` variables, its a wrapper that combines both `$_ENV`, `$_SERVER` and `getenv`, with an additional feature to ensure the accuracy of the return type and default value if the key was not found in the environment.
 
 ```php
-function env(string  $key, mixed  $default = null): mixed
+function env(string $key, mixed $default = null): mixed
 ```
 
 **Parameters:**
@@ -759,7 +809,7 @@ function strict(string $input, string $type = 'default', string|null $replacer =
 Translate multiple languages with support for nested arrays.
 
 ```php
-function lang(string $lookup, string|null $default = null, string|null $locale = null, array $placeholders = []): string
+function lang(string $lookup, ?string $default = null, ?string $locale = null, array $placeholders = []): string
 ```
 
 **Parameters:**
@@ -801,12 +851,10 @@ return [
 Assuming your application locale is already set to `EN`.
 
 ```php
-<?php
-echo  lang('Example.error'); // Error your example encountered error
+echo lang('Example.error'); // Error your example encountered error
 ```
 
 ```php
-<?php
 echo  lang('Example.error.users.notFound', null, null, [
 	'username' => "peterujah"
 ]); 
@@ -814,7 +862,6 @@ echo  lang('Example.error.users.notFound', null, null, [
 ```
 
 ```php
-<?php
 echo  lang('Example.error.users.password', null, null, [
 	'12345@199',
 	"12345@123"
@@ -830,7 +877,7 @@ Retrieves the configurations for the specified context.
 This function can only be use to return configuration array stored in `app/Configs/` directory.
 
 ```php
-function configs(string $filename, array|null $default = null): ?array
+function configs(string $filename, ?array $default = null): ?array
 ```
 
 **Parameters:**
@@ -882,10 +929,11 @@ function cache(string $driver, ?string $storage = null, ?string $persistentIdOrS
 ### write_content
 
 Write or append string contents or stream to file.
+
 This function is an alternative for `file_put_contents`, it uses `SplFileObject` to write contents to file. 
 
 ```php
-function write_content(string $filename, string|resource  $content, int  $flag, resource $context = null): bool
+function write_content(string $filename, mixed $content, int $flag, mixed $context = null): bool
 ```
 
 **Parameters:**
@@ -918,7 +966,13 @@ This function is an alternative for `file_get_contents`, it uses `SplFileObject`
 It can handle reading a specific number of bytes from a given offset in the file.
 
 ```php
-function get_content(string $filename, int $length = 0, int $offset = 0,  bool $useInclude = false,  $context = null): string|bool;
+function get_content(
+   string $filename, 
+   int $length = 0, 
+   int $offset = 0, 
+   bool $useInclude = false, 
+   mixed $context = null
+): string|bool;
 ```
 
 **Parameters:**
@@ -946,7 +1000,7 @@ function get_content(string $filename, int $length = 0, int $offset = 0,  bool $
 Attempts to create the directory specified by pathname if it does not exist.
 
 ```php
-function make_dir(string  $path, int|null  $permissions = null, bool  $recursive = true): bool
+function make_dir(string $path, ?int $permissions = null, bool $recursive = true): bool
 ```
 
 **Parameters:**
@@ -1001,16 +1055,20 @@ function get_temp_file(?string $prefix = null, ?string $extension = null, bool $
 Validate user input fields or get a validation instance.
 
 ```php
-function validate(?array $inputs = null, ?array $rules = null, array $messages = []): Luminova\Interface\ValidationInterface
+function validate(
+   ?array $inputs = null, 
+   ?array $rules = null, 
+   array $messages = []
+): Luminova\Interface\ValidationInterface
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$inputs` | **array&#124;null** | Input fields to validate.<br />@example [$_POST, $_GET or $this->request->getBody()] |
-| `$rules` | **array&#124;null** | Validation filter rules to apply on each input field.<br />@example ['email' => 'required&#124;email&#124;max&#124;min&#124;length'] |
-| `$messages` | **array** | Validation error messages to apply on each filter on input field.<br />@example [<br /> 'email' => [<br /> 'required' => 'email is required',<br /> 'email' => 'Invalid [value] while validating [rule] on [field]'<br /> ]<br />] |
+| `$inputs` | **array&#124;null** | Input fields to validate (e.g, `$_POST`, `$_GET` or `$this->request->getBody()`). |
+| `$rules` | **array&#124;null** | Validation filter rules to apply on each input field. |
+| `$messages` | **array** | Validation error messages to apply on each filter on input field. |
 
 **Return Value:**
 
@@ -1023,17 +1081,17 @@ function validate(?array $inputs = null, ?array $rules = null, array $messages =
 **Sample Usages**
 
 Assuming you have a post or get request like below:
+
 ```php 
-<?php 
 	$inputs = [
 		'name' => 'Peter',
 		'email' => 'peter@example.com',
 	];
-	```
+```
 	
-	Configure validation rules as below:
+Configure validation rules as below:
 	
-	```php
+```php
 	$rules = [
 		'name' => 'require|alphanumeric|max(50)',
 		'email' => 'require|email'
@@ -1123,16 +1181,16 @@ function absolute_url(string $path): string
 If on development environment.
 
 ```php
-<?php 
 echo absolute_url('/Applications/XAMPP/htdocs/project-base/public/asset/files/foo.text');
+
 //Output: http://localhost/project-base/public/asset/files/foo.text.
 ```
 
 If on projection environment.
 
 ```php
-<?php 
 echo absolute_url('/example.com/www/public/asset/files/foo.text');
+
 //Output: http://example.com/asset/files/foo.text.
 ```
 
@@ -1143,19 +1201,19 @@ echo absolute_url('/example.com/www/public/asset/files/foo.text');
 Retrieve the user's IP address or obtain IP address information using a third-party API service.
 
 ```php
-function ip_address(bool $ip_info = false, array $options = []): string|object|null
+function ip_address(bool $ipInfo = false, array $options = []): string|object|null
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$ip_info` | **bool** | If true, returns IP address information; otherwise, returns the IP address. |
+| `$ipInfo` | **bool** | If true, returns IP address information; otherwise, returns the IP address. |
 | `$options` | **array** | Additional options to pass with IP information. |
 
 **Return Value:**
 
-`string|object|null` - The IP address if `$ip_info` is false, else return IP address information or null if IP address cannot be determined.
+`string|object|null` - The IP address if `$ipInfo` is false, else return IP address information or null if IP address cannot be determined.
 
 > Utilize a third-party API to fetch IP address information. Your API configuration can be done in `/app/Config/IPConfig.php`.
 
@@ -1185,21 +1243,24 @@ function get_class_name(string|object $from): string
 
 ### get_mime
 
-Detect `MIME` content type of a given file, (e.g text/plain).
+Detect the MIME type of a file or raw data (e.g `text/plain`).
+
+If the input string is a path to an existing file, it uses `finfo_file()`, otherwise it treats the input as raw binary and uses `finfo_buffer()`.
 
 ```php
-function get_mime(string $filename): string|false
+function get_mime(string $input, ?string $magicDatabase = null): string|false
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$filename` | **string** | The full file path. |
+| `$input` | **string** | File path or raw binary string to extract mime from. |
+| `$magicDatabase` | **string\|null** | Optional path to a custom magic database (e.g, `\path\custom.magic`). |
 
 **Return Value:**
 
-`string|false` - Return the content type in MIME format, otherwise false.
+`string|false` -Return the detected MIME type, or false if detection fails.
 
 ***
 
@@ -1208,7 +1269,7 @@ function get_mime(string $filename): string|false
 Return the values from a single column in the input array or an object.
 
 ```php
-function get_column(array|object $from, null|string|int $property, null|string|int $index = null): array 
+function get_column(array|object $from, string|int|null $property, string|int|null $index = null): array 
 ```
 
 **Parameters:**
@@ -1254,7 +1315,7 @@ function filter_paths(string $path): string
 Convert an object to an array.
 
 ```php
-function to_array(mixed  $input): array
+function to_array(mixed $input): array
 ```
 
 **Parameters:**
@@ -1323,10 +1384,10 @@ print_r($result);
 ```bash
 Array
 (
-    [a] => 1
-    [b] => 2
-    [c] => 3
-    [d] => 4
+   [a] => 1
+   [b] => 2
+   [c] => 3
+   [d] => 4
 )
 ```
 
@@ -1365,10 +1426,10 @@ print_r($result);
 ```bash
 Array
 (
-    [a] => 1
-    [b] => 20
-    [c] => 3
-    [d] => 4
+   [a] => 1
+   [b] => 20
+   [c] => 3
+   [d] => 4
 )
 ```
 
@@ -1408,9 +1469,9 @@ print_r($result);
 ```bash
 Array
 (
-    [a] => 1
-    [b] => 20
-    [c] => 3
+   [a] => 1
+   [b] => 20
+   [c] => 3
 )
 ```
 
@@ -1424,12 +1485,12 @@ This function checks the type of the `results` variable and appropriately merges
 the `response` based on its type. It supports various scenarios:
 
 - If `results` is null, it assigns `response` to it.
-- If `results` is an array and `preserve_nested` is true, it adds the `response` as a nested element if `response` is an array, or appends `response` directly otherwise.
-- If `results` is an array and `preserve_nested` is false, it merges `results` and `response` directly when `response` is an array.
-- If `results` is not an array (like a string or scalar), it converts `results` into an array  and merges or appends the `response` based on the `preserve_nested` flag.
+- If `results` is an array and `preserveNested` is true, it adds the `response` as a nested element if `response` is an array, or appends `response` directly otherwise.
+- If `results` is an array and `preserveNested` is false, it merges `results` and `response` directly when `response` is an array.
+- If `results` is not an array (like a string or scalar), it converts `results` into an array  and merges or appends the `response` based on the `preserveNested` flag.
 
 ```php
-public array_merge_result(mixed &$results, mixed $response, bool $preserve_nested = true): void
+public array_merge_result(mixed &$results, mixed $response, bool $preserveNested = true): void
 ```
 
 **Parameters:**
@@ -1438,12 +1499,11 @@ public array_merge_result(mixed &$results, mixed $response, bool $preserve_neste
 |-----------|------|-------------|
 | `&$results` | **mixed** | The results variable to which the response will be merged or appended to, passed by reference. |
 | `$response` | **mixed** | The response variable to merge with results. It can be an array, string, or other types. |
-| `$preserve_nested` | **bool** | Optional. Determines whether to preserve the nested structure of arrays when merging (default: true). |
+| `$preserveNested` | **bool** | Optional. Determines whether to preserve the nested structure of arrays when merging (default: true). |
 
 **Usage Examples:**
 
 ```php
-<?php
 $results = null;
 
 // Case 1: Merging a new string response.
@@ -1470,28 +1530,21 @@ var_export($results);
 
 // Case 2: Output
 array (
-  0 => 'Task 1 completed',
-  1 => 
-  array (
-    0 => 'Task 2 completed',
-  ),
+   0 => 'Task 1 completed',
+   1 => array (0 => 'Task 2 completed'),
 )
 
 // Case 3: Output
 array (
-  0 => 'Task 1 completed',
-  1 => 
-  array (
-    0 => 'Task 2 completed',
-  ),
-  2 => 'Task 3 completed',
-  3 => 'Task 4 completed',
-  4 => 
-  (object) array(
-     '0' => 1,
-     '1' => 2,
-     '2' => 3,
-  ),
+   0 => 'Task 1 completed',
+   1 =>  array (0 => 'Task 2 completed'),
+   2 => 'Task 3 completed',
+   3 => 'Task 4 completed',
+   4 => (object) array(
+      '0' => 1,
+      '1' => 2,
+      '2' => 3,
+   ),
 )
 ```
 
@@ -1559,12 +1612,34 @@ function  camel_case(string  $input): string
 
 ***
 
+### pascal_case
+
+Convert a string to PascalCase format.
+
+Replaces spaces, underscores, and hyphens with word boundaries, capitalizes each word, and removes all delimiters.
+
+```php
+function  pascal_case(string $input): string
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$input` | **string** | The input string to convert. |
+
+**Return Value:**
+
+`string` - Return the PascalCase version of the input string.
+
+***
+
 ### which_php
 
 Find the PHP script executable path.
 
 ```php
-function which_php(): string|null
+function which_php(): ?string
 ```
 
 **Return Value:**
@@ -1578,7 +1653,7 @@ function which_php(): string|null
 Gets request status code from executed command or controller method.
 
 ```php
-function status_code(mixed $result = null, bool $return_int = true): int|bool
+function status_code(mixed $result = null, bool $returnInt = true): int|bool
 ```
 
 **Parameters:**
@@ -1586,7 +1661,7 @@ function status_code(mixed $result = null, bool $return_int = true): int|bool
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$result` | **mixed** | response from callback function or controller |
-| `$return_int` | **bool** | Return type (default: int) |
+| `$returnInt` | **bool** | Return type (default: int) |
 
 **Return Value:**
 
@@ -1626,7 +1701,7 @@ function http_status_header(int $status): bool
 Converts text characters in a string to HTML entities.
 
 ```php
-function  text2html(string|null  $text): string
+function  text2html(string|null $text): string
 ```
 
 **Parameters:**
@@ -1646,7 +1721,7 @@ function  text2html(string|null  $text): string
 Converts newline characters in a string to HTML entities.
 
 ```php
-function  nl2html(string|null  $text): string
+function  nl2html(string|null $text): string
 ```
 
 > This is useful when you want to display text in an HTML textarea while preserving the original line breaks.
@@ -1665,7 +1740,9 @@ function  nl2html(string|null  $text): string
 
 ### uppercase_words
 
-Uppercase the first character of each word in a string, it also handles underscores (`_`) and hyphens (`-`), converting them to spaces before applying capitalization.
+Capitalize the first letter of each word in a string.
+
+Preserves underscores, hyphens, and spaces as delimiters, and capitalizes the letter that follows each one.
 
 ```php
 function uppercase_words(string $string): bool
@@ -1679,7 +1756,7 @@ function uppercase_words(string $string): bool
 
 **Return Value:**
 
-`bool` - Return the string with the first character of each word capitalized.
+`bool` - Return the input string with the first character of each word capitalized.
 
 **Usage Example:**
 
@@ -1692,13 +1769,13 @@ echo uppercase_words('foo-bar_baz');
 
 ```php
 $strings = [
-    'foo-bar_baz'
-    'hello-world_this_is_a_test'
-    'example'
-    '_leading_and_trailing_'
-    '-leading-plus-trailing-'
-    'multiple---dashes_and__underscores'
-    'foo-bar baz_baz'
+   'foo-bar_baz'
+   'hello-world_this_is_a_test'
+   'example'
+   '_leading_and_trailing_'
+   '-leading-plus-trailing-'
+   'multiple---dashes_and__underscores'
+   'foo-bar baz_baz'
 ];
 
 $results = array_map('uppercase_words', $strings);
@@ -1785,7 +1862,6 @@ function list_in_array(string $list, array $array = []): bool
 `bool` - Return true if the list exists in the array, otherwise false.
 
 ```php 
-<?php
 $list = "Foo, Bar, Baz";
 
 list_in_array($list, ['Foo', 'Bra']); // false
@@ -1820,7 +1896,20 @@ function is_list(string $input, bool $trim = false): bool
 
 ### is_platform
 
-Tells which platform your application is running on.
+Tells which operating system platform your application is running on.
+
+**Predefine OS Values:**
+
+- `mac` - For macOS.
+- `windows` - For Windows OS.
+- `linux` - For Linux OS.
+- `freebsd` - For FreeBSD OS.
+- `openbsd` - For OpenBSD OS.
+- `bsd` - For BSD OS.
+- `solaris` - For Solaris OS.
+- `aws` - For AWS OpsWorks.
+- `azure` - For Azure environment.
+- etc...
 
 ```php
 function is_platform(string $os): bool
@@ -1830,7 +1919,7 @@ function is_platform(string $os): bool
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$os` | **string** | The platform name (e.g., 'mac', 'windows', 'linux', 'freebsd', 'openbsd', 'solaris', 'aws', etc.). |
+| `$os` | **string** | The platform name to check. |
 
 **Return Value:**
 
@@ -2021,3 +2110,60 @@ function function_exists_cached(string $function): bool
 **Return Value:**
 
 `bool` - Returns true if the function exists, false otherwise.
+
+***
+
+### set_function
+
+Executes a PHP function dynamically, checking if it's disabled before execution.
+
+This function is useful when you need to call a PHP function dynamically, but you want to ensure that the function is not disabled.
+
+```php
+function set_function(string $function, mixed ...$arguments): mixed 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$function` | **string** | The name of the PHP function to execute. |
+| `$arguments` | **mixed** | Any optional arguments to pass to the PHP function. |
+
+**Return Value:**
+
+`mixed` - Return the result of the executed PHP function, or false if the function is disabled.
+
+***Example:***
+
+Call the 'set_time_limit' function dynamically:
+
+```php
+$limit = set_function('set_time_limit', 300);
+
+if($limit === false){
+   echo "Execution limit is disabled";
+}
+```
+
+***
+
+### set_max_execution_time
+
+Sets the script's maximum execution time if the provided timeout exceeds the current limit.
+
+This function checks the current `max_execution_time` and compares it with the provided timeout. If the timeout is greater than the current limit and the `set_time_limit` function is not disabled, it updates the execution time to the new value.
+
+```php
+function set_max_execution_time(int $timeout): bool 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$timeout` | **int** | The maximum execution time in seconds. |
+
+**Return Value:**
+
+`bool` - Returns true if the execution time is successfully set, false otherwise.

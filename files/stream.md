@@ -1,4 +1,4 @@
-# File Stream Implementation and Management
+# PSR Stream Interface Implementation and Management
 
 ***
 
@@ -13,6 +13,8 @@ The Stream class provides a robust interface for working with stream resources. 
 The `Stream` class provides a robust interface for working with stream resources in a consistent manner. It implements the `\Stringable` interface, allowing the object to be easily converted to a string. While the class supports all methods defined by the PSR `StreamInterface`, it is intentionally not implemented as a PSR interface. This design choice allows for seamless integration in [cURL network client response](http/response#lmv-docs-getbody) without requiring the installation of PSR client libraries, making it ideal for simple network request implementations.
 
 ***
+
+## Class Definition
 
 * Class namespace: `\Luminova\Storages\Stream`
 * This class implements: `\Stringable`

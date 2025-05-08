@@ -1,4 +1,4 @@
-# Immutable Date and Time Module
+# Immutable Date and Time Operations
 
 ***
 

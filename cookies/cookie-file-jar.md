@@ -1,4 +1,4 @@
-# Managing Cookies with Cookie File Jar for HTTP Requests
+# Managing Cookies with a Cookie FileJar for HTTP Requests
 
 ***
 

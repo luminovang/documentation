@@ -1,4 +1,4 @@
-# Base Class for Model Implementation
+# Abstract Base Class for Database Models
 
 ***
 
@@ -16,6 +16,98 @@ It allows you to define basic rules for your models, like fields that are allowe
 
 ***
 
+### Usage Example
+
+The following example demonstrates how to use the Luminova model to interact with a database table.
+
+---
+
+#### Defining the Model
+
+```php
+// File: /app/Models/Customers.php
+
+namespace App\Models;
+
+use Luminova\Base\BaseModel;
+
+/**
+ * The `Customers` model represents the `customers` table in the database.
+ */
+class Customers extends BaseModel
+{
+    /**
+     * The table associated with the model.
+     */
+    protected string $table = 'customers';
+
+    /**
+     * The primary key for the table.
+     */
+    protected string $primaryKey = 'id';
+}
+```
+
+---
+
+#### Example Usage
+
+##### Retrieving a Record
+
+```php
+use App\Models\Customers;
+
+// Initialize the Customers model
+$customers = new Customers();
+
+// Find a person by their ID, retrieving specific columns
+$customer = $customers->find(1, ['name', 'email']);
+
+if ($customer) {
+    echo "Customer Name: " . $customer->name . "\n";
+    echo "Customer Email: " . $customer->email . "\n";
+} else {
+    echo "No customer found with ID 1.\n";
+}
+```
+
+**Explanation**:  
+- The `find` method retrieves a record by its primary key (`id` in this case) and returns the specified columns (`name` and `email`).
+
+---
+
+##### Updating or Inserting Records
+
+```php
+use App\Models\Customers;
+
+// Initialize the Customers model
+$customers = new Customers();
+
+// Check if a record with the given ID exists
+if ($customers->exists(1)) {
+    // Update the record
+    $customers->update(1, [
+        'name' => 'Peter',
+        'email' => 'peter@example.com',
+    ]);
+    echo "Record updated successfully.\n";
+} else {
+    // Insert a new record
+    $customers->insert([
+        [
+            'name' => 'Peter',
+            'email' => 'peter@example.com',
+        ]
+    ]);
+    echo "New record inserted successfully.\n";
+}
+```
+
+***
+
+## Class Definition
+
 * Class namespace: `\Luminova\Base\BaseModel`
 * This class is an **Abstract class**
 * This class implements: [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface)
@@ -29,7 +121,7 @@ It allows you to define basic rules for your models, like fields that are allowe
 Model table name name.
 
 ```php
-protected string $table 
+protected string $table = '';
 ```
 
 ***
@@ -39,7 +131,7 @@ protected string $table
 The default primary key column name for table, this will be used while selecting, updating and more.
 
 ```php
-protected string $primaryKey
+protected string $primaryKey = '';
 ```
 
 ***
@@ -49,7 +141,7 @@ protected string $primaryKey
 Define your database table searchable columns, the fields that search will have to look for queries.
 
 ```php
-protected array<int,string> $searchable
+protected array<int,string> $searchable = []
 ```
 
 ***
@@ -59,7 +151,7 @@ protected array<int,string> $searchable
 Enable or disable database caching for model while calling `select`, `find`, `search`, `total` or `count`.
 
 ```php
-protected bool $cacheable
+protected bool $cacheable = true;
 ```
 
 ***
@@ -69,7 +161,7 @@ protected bool $cacheable
 Database cache expiration time `TTL` in seconds.
 
 ```php
-protected DateTimeInterface|int $expiry
+protected DateTimeInterface|int $expiry = 7 * 24 * 60 * 60;
 ```
 
 ***
@@ -79,7 +171,7 @@ protected DateTimeInterface|int $expiry
 Specify whether the model's table is `updatable`, deletable, and `insertable`.
 
 ```php
-protected bool $readOnly
+protected bool $readOnly = false
 ```
 
 ***
@@ -89,7 +181,7 @@ protected bool $readOnly
 Define fields that can be inserted into.
 
 ```php
-protected array $insertable
+protected array $insertable = []
 ```
 
 ***
@@ -99,7 +191,7 @@ protected array $insertable
 Define fields that can be updated.
 
 ```php
-protected array $updatable
+protected array $updatable = []
 ```
 
 ***
@@ -109,7 +201,7 @@ protected array $updatable
 Define your Input validation rules based on `Validator` class rules.
 
 ```php
-protected array<string,string> $rules
+protected array<string,string> $rules = []
 ```
 
 ***
@@ -119,7 +211,7 @@ protected array<string,string> $rules
 Define your Input validation rules errors messages.
 
 ```php
-protected array<string,array> $messages
+protected array<string,array> $messages = []
 ```
 
 ***
@@ -129,7 +221,7 @@ protected array<string,array> $messages
 Database query builder class instance.
 
 ```php
-protected \Luminova\Database\Builder $builder
+protected ?Luminova\Database\Builder $builder = null;
 ```
 
 ***
@@ -139,7 +231,7 @@ protected \Luminova\Database\Builder $builder
 Input validation class instance.
 
 ```php
-protected static \Luminova\Security\Validation $validation
+protected static ?Luminova\Security\Validation $validation = null;
 ```
 
 ***
@@ -148,18 +240,11 @@ protected static \Luminova\Security\Validation $validation
 
 ### constructor
 
-Constructor for the Model class, if query builder instance is passed null, it will create a new instance.
-To use with your configured builder instance pass it.
+Initialize the constructor for the Model class.
 
 ```php
-public __construct(?\Luminova\Database\Builder $builder = null): mixed
+public __construct(): mixed
 ```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$builder` | **null&#124;\Luminova\Database\Builder** | Query builder class instance.  |
 
 ***
 
@@ -192,7 +277,7 @@ public insert(array<string,mixed> $values): bool
 Update current record in the database.
 
 ```php
-public update(array<int,mixed>|string|float|int|null $key, array $data, int $max = 1): bool
+public update(array<int,mixed>|string|float|int|null $key, array $data, ?int $max = null): bool
 ```
 
 **Parameters:**
@@ -201,7 +286,7 @@ public update(array<int,mixed>|string|float|int|null $key, array $data, int $max
 |-----------|------|-------------|
 | `$key` | **string\|float\|int\|array<int,mixed>\|null** | The key?s to update its record or null to update all records in table. |
 | `$data` | **array** | An associative array of columns and values to update. |
-| `$max` | **int** | The maximum number of records to update. |
+| `$max` | **int\|null** | The maximum number of records to update (default: null). |
 
 **Return Value:**
 
@@ -337,6 +422,26 @@ public count(array<int,mixed>|string|float|int $key): int|bool
 **Return Value:**
 
 `int|bool ` - Return the number of records or false if failed.
+
+***
+
+### exists
+
+Determine if a record exists in the database.
+
+```php
+public exists(string|int|float $key): bool 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$key` | **string\|float\|int** | The key to check if it exists in the database. |
+
+**Return Value:**
+
+`bool ` - Return true if the record exists otherwise false.
 
 ***
 

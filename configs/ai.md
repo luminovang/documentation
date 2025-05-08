@@ -1,4 +1,4 @@
-# Artificial Intelligence Models Configuration
+# Configuration for Artificial Intelligence Models
 
 ***
 

@@ -1,4 +1,4 @@
-# Core Application Architecture Class
+# Base Application Architecture
 
 ***
 
@@ -14,8 +14,130 @@ The Core Application serves as the foundational framework base architecture upon
 
 Your application class must be located in the `/app/` directory, and its name must remain unchanged under any circumstance.
 
-Additionally application class inherited the methods within the [\Luminova\Template\View](/templates/views.md) trait class.
-To lean more on how to render template views refer to the documentation.
+Additionally, application class inherited the methods within the [\Luminova\Template\View](/templates/views.md) trait class.
+To learn more on how to render template views refer to the documentation.
+
+***
+
+## Usages
+
+### Basic Application Class Example
+
+This is a basic example of how to extend the application class using the `__construct` method to initialize your routing and other services.
+
+**Using `__construct` to Invoke Parent Initialization:**
+
+```php
+// /app/Application.php
+namespace App;
+
+use Luminova\Core\CoreApplication;
+
+class Application extends CoreApplication  
+{
+    public function __construct()
+    {
+        parent::__construct();
+
+        // For custom HMVC model 
+        $this->router->addNamespace('\\App\\Modules\\Blogs\\Controllers\\');
+        // Additional setup...
+    }
+}
+```
+
+---
+
+### Overriding the onCreate Hook
+
+Alternatively, you can override the `onCreate` lifecycle hook, which is called automatically after the application is initialized.
+
+**Using `onCreate` for Initialization:**
+
+```php
+// /app/Application.php
+namespace App;
+
+use Luminova\Core\CoreApplication;
+
+class Application extends CoreApplication  
+{
+    protected function onCreate(): void
+    {
+        // Custom HMVC modules
+        $this->router->addNamespace('\\App\\Modules\\Blogs\\Controllers\\');
+        // Additional setup...
+    }
+}
+```
+
+> **Tip:**
+> Prefer using `onCreate()` when extending the application class unless you have specific reasons to override the constructor. This ensures smooth lifecycle and internal initialization flow.
+
+---
+
+### Custom Routing System
+
+To use your own routing system in Luminova, in your application class `Application`, override the `getRouterInstance()` method to return an instance of your custom router.
+
+---
+
+**Step 1: Create Your Custom Router**
+
+```php
+// /app/Utils/CustomRouter.php
+
+namespace App\Routing;
+
+use Luminova\Interface\RouterInterface;
+use Luminova\Core\CoreApplication;
+
+class CustomRouter implements RouterInterface
+{
+    public function __construct(CoreApplication $app){
+
+    }
+
+    // Implements route parsing, logging, or middleware logic here
+}
+```
+
+**Step 2: Extend the Application and Override the Method**
+
+```php
+// /app/Application.php
+
+namespace App;
+
+use Luminova\Core\CoreApplication;
+use Luminova\Interface\RouterInterface;
+use App\Utils\CustomRouter;
+
+class Application extends CoreApplication
+{
+    /**
+     * Override the default router with a custom one.
+     *
+     * @return RouterInterface
+     */
+    protected function getRouterInstance(): ?RouterInterface
+    {
+        return new CustomRouter($this);
+    }
+}
+```
+
+> **Note:**
+> Ensure that your `CustomRouter` class implements the **[Luminova RouterInterface](/interface/classes.md#routerinterface)** to maintain full framework compatibility.
+>
+> When implementing a custom routing system, you are responsible for handling all routing-related features, including:
+>
+> * Attribute-based route discovery
+> * Static file/content serving
+> * Console/command routing
+> * Any additional services managed by the default routing system
+>
+> It is **strongly recommended** to use the default Luminova routing system to take full advantage of all built-in features and minimize implementation overhead.
 
 ***
 
@@ -27,49 +149,6 @@ To lean more on how to render template views refer to the documentation.
 
 ***
 
-### Example
-
-This is an example a basic application class may look like using the `__construct` method.  
-
-```php 
-// /app/Application.php
-<?php
-namespace App;
-
-use \Luminova\Core\CoreApplication;
-
-class Application extends CoreApplication  
-{
-	public function __construct()
-	{
-		parent::__construct();
-        $this->router->addNamespace('\\App\\Modules\\Blogs\\Controllers\\');
-        // ...
-	}
-}
-```
-
-Alternatively, this is an of application class may using the `onCreate` method.  
-
-```php 
-// /app/Application.php
-<?php
-namespace App;
-
-use \Luminova\Core\CoreApplication;
-
-class Application extends CoreApplication  
-{
-	protected function onCreate(): void
-	{
-        $this->router->addNamespace('\\App\\Modules\\Blogs\\Controllers\\');
-		// ...
-	}
-}
-```
-
-***
-
 ## Properties
 
 ### router
@@ -77,7 +156,7 @@ class Application extends CoreApplication
 The application  router class instance.
 
 ```php
-public ?Router $router = null;
+public ?Luminova\Interface\RouterInterface $router = null;
 ```
 ***
 
@@ -119,6 +198,22 @@ public static getInstance(): static
 
 ***
 
+###  getRouterInstance
+
+Returns an instance of the application routing system.
+
+```php
+protected getRouterInstance(): ?RouterInterface<\T>
+```
+
+**Return Value:**
+
+`Luminova\Interface\RouterInterface<\T>|null` - Return instance of the routing system, or null to use default.
+
+> You may override this method in your application class to return a custom implementation of the routing system by extending or replacing the default router.
+
+***
+
 ### getView
 
 The `getView` method allows you to the current view `URI` segments.
@@ -139,6 +234,67 @@ To handle command events in your application controller class based on actions, 
 
 ***
 
+### terminate
+
+Trigger application early termination.
+
+This method allows you to terminate the application execution early.
+
+```php
+public final terminate(array $info = []): void 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$event` | **string** |Additional termination information to be included in `onterminated` event hook. |
+
+**Example:**
+
+Terminates application:
+
+```php
+// /app/Application.php
+namespace App;
+
+use Luminova\Core\CoreApplication;
+
+class Application extends CoreApplication
+{
+	// Before application is object created
+	protected function onPreCreate(): void 
+	{
+		if($instance->ofSomethingIsTrue()){
+			$this->terminate([
+				'foo' => 'bar'
+			]);
+		}
+	}
+
+	// Before application is terminated
+	protected function onTerminate(array $info): bool 
+	{
+		if(isset($info['uri']) && str_starts_with($info['foo'], '/api/')){
+			// Allow termination
+			return true;
+		}
+
+		// Deny Termination
+		return false;
+	}
+
+	// After application has been terminated
+	protected function onTerminated(array $info): void 
+	{
+		Logger::debug('Application was terminated', $info);
+	}
+}
+```
+> **Note:** The `terminate` method should be call before object creation.
+
+***
+
 ### __on
 
 The `__on` method in your application class allows you trigger an application event or hook methods.
@@ -153,6 +309,36 @@ public __on(string $event, mixed ...$arguments): void
 |-----------|------|-------------|
 | `$event` | **string** | The event method name to trigger. |
 | `...$arguments` | **mixed** | [mixed ...$] Optional event method arguments. |
+
+***
+
+### onPreCreate
+
+Lifecycle onPreCreate hook: Triggers once before application object creation.
+
+This allows you to override or create a custom initialization logic before routing system is initialized.
+
+```php
+protected function onPreCreate(): void
+```
+
+**Example:**
+
+Using Luminova Rate Limiter:
+
+```php
+use Luminova\Security\RateLimiter;
+
+protected function onPreCreate(): void 
+{
+    $rate = new RateLimiter();
+    if(!$rate->check()->isAllowed()){
+        $rate->respond();
+
+        $this->terminate(); // Optionally terminate application.
+    }
+}
+```
 
 ***
 
@@ -219,12 +405,12 @@ protected function onFinish(array $info): void {}
 
 **Class Info keys:**
 
-- `filename`  **(string|null)** Optional controller class file name.
-- `namespace` **(string|null)** Optional controller class namespace.
-- `method`    **(string|null)** Optional controller class method name.
-- `attrFiles` **(int)** Number of controller files scanned for matched attributes.
-- `cache`     **(bool)** Weather cached version rendered or new content.
-- `staticCache` **(bool)** Weather is a static cached version (e.g, page.html) or regular cache (e.g, `page`).
+- `filename`  **string|null** - Optional controller class file name.
+- `namespace` **string|null** - Optional controller class namespace.
+- `method`    **string|null** - Optional controller class method name.
+- `attrFiles` **int** - Number of controller files scanned for matched attributes.
+- `cache`     **bool** - Weather cached version rendered or new content.
+- `staticCache` **bool** - Weather is a static cached version (e.g, page.html) or regular cache (e.g, `page`).
 
 ***
 
@@ -273,3 +459,48 @@ protected function onCommandPresent(array $options): void
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$options` | **array** | The command options that was presented. |
+
+***
+
+### onTerminate
+
+Called before the application is allowed to terminate.
+
+This method is invoked internally after `terminate()` is called. It determines whether the application termination should proceed or be canceled.
+
+```php
+protected function onTerminate(array $info): bool 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$info` | **array** | Additional termination context data passed from `terminate()`. |
+
+**Return Value:**
+
+`bool` - Return `true` to allow termination or `false` to cancel it.
+
+> You can override this method to inspect the `$info` payload and return `true` to allow termination or `false` to prevent it. 
+>
+> If termination is allowed, the `onTerminated()` method will be triggered.
+
+***
+
+### onTerminated
+
+Triggered after the application has been terminated.
+
+This method is called only if `onTerminate()` returns `true`, indicating that the application is allowed to terminate. Use this hook to perform any final cleanup, logging, or notification logic after termination.
+
+```php
+protected function onTerminated(array $info): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$info` | **array** | Contextual information related to the termination request. |
+

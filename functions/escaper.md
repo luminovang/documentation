@@ -1,4 +1,4 @@
-# Client Input Sanitization and Escaping with the Escape Class
+# Input Sanitization and Escaper
 
 ***
 

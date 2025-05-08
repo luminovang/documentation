@@ -1,4 +1,4 @@
-# Cloud Storags Module
+# Integrating Third-Party Cloud Storage Services
 
 ***
 

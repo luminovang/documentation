@@ -1,4 +1,4 @@
-# PSR Simple Cache Implementation
+# PSR-Compliant Simple Cache Implementation
 
 ***
 

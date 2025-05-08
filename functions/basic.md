@@ -1,45 +1,45 @@
-# Utility Functions for Basic Operations Using the Func Class
+# Utility Static Methods for Basic Operations
 
 ***
 
 ## Overview
 
-Useful methods to format and normalize inputs, including validating email and phone numbers or generating randomized strings, EAN, UPC, UUIDs, email masking and more.
+Useful static methods to format and normalize inputs, including validating email and phone numbers or generating randomized strings, EAN, UPC, UUIDs, email masking, and many more.
 
 ***
 
 ## Introduction
 
-The `Func` module provides a range of useful methods designed to enhance and standardize data handling in your applications. Key functionalities include:
+The `Func` class offers a collection of static utility methods that simplify and standardize data handling across your application. It enhances development efficiency by providing ready-to-use solutions for common tasks.
 
-- **Input Formatting:** Easily format various types of inputs to ensure consistency and correctness.
-- **Email Validation:** Validate email addresses to confirm they meet standard email format requirements.
-- **Phone Number Validation:** Check phone numbers for proper formatting and validity based on regional rules.
-- **Randomized String Generation:** Create unique, random strings for various purposes, such as tokens or identifiers.
-- **EAN & UPC Generation:** Generate European Article Number (EAN) and Universal Product Code (UPC) for products and inventory management.
-- **UUID Generation:** Generate universally unique identifiers (UUIDs) to ensure the uniqueness of elements or records in your system.
-- **Email Masking:** Protect email addresses by masking them, which helps to prevent spam or unauthorized use.
-- **String Masking:** Apply masking to other sensitive strings to enhance security and privacy.
+Key features include:
 
-These methods are designed to eas common data processing tasks, ensuring data integrity and facilitating a smoother development process.
+- **Input Formatting:** Normalize various input types for consistency and reliability.  
+- **Email & Phone Validation:** Ensure emails and phone numbers meet standard formats and regional rules.  
+- **Random String Generation:** Generate secure random strings for tokens, identifiers, and more.  
+- **EAN/UPC Generation:** Create valid product codes for inventory and retail use.  
+- **UUID Generation:** Generate universally unique identifiers for reliably identifying records.  
+- **Email & String Masking:** Obscure sensitive data to enhance privacy and security.
 
 ***
 
+## Class Definition
+
 * Class namespace: `\Luminova\Functions\Func`
+
+---
 
 ## Methods
 
 The methods can be accessed through global function  helper, `Factory` instance or call statically.
 
 ```php
-<?php
 echo func()->random(50, 'string');
 ```
 
 Or using factory instance to initialize function and call math method.
 
 ```php
-<?php
 use Luminova\Application\Factory;
 
 echo Factory::functions()->random(50, 'string');
@@ -48,8 +48,7 @@ echo Factory::functions()->random(50, 'string');
 Or continently call it statically.
 
 ```php
-<?php
-use \Luminova\Functions\Func;
+use Luminova\Functions\Func;
 
 echo Func::random(50, 'string');
 ```
@@ -58,8 +57,7 @@ echo Func::random(50, 'string');
 
 ### normalize
 
-Format text before display by matching links, email, phone,
-hashtags and mentions with a link representation and replace multiple line breaks.
+Format text before display by matching links, email, phone, hashtags and mentions with a link representation and replace multiple line breaks.
 
 ```php
 public static normalize(string $text, string $target = '_self', string $blocked = null, bool $noHtml = true): string
@@ -102,7 +100,7 @@ public static random(int $length = 10, string $type = 'int', bool $uppercase = f
 
 **Supported Types:**
 
-- `character` - Includes special characters like `%#*^,?+$`;"{}][|\/:=)(@!.-`.
+- `character` - Includes special characters like `%#*^,?+$;"{}][|\/:=)(@!.-`.
 - `alphabet` - Contains only alphabetical characters (both uppercase and lowercase).
 - `password` - Combines letters, numbers, and an expanded set of special characters (`%#^_-@!$&*+=|~?<>[]{}()`).
 - `bytes` - Returns a raw binary string of the specified length.
@@ -132,7 +130,15 @@ Func::random(32, 'hex');
 
 ### bigInteger
 
-Create a random big integer based on minimum and maximum.
+Generate a random BIGINT within a specified range.
+
+> UNSIGNED BIGINT: 0 to 18,446,744,073,709,551,615 (20 digits):
+> `$min` = 0
+> `$max` = 18446744073709551615
+>
+> SIGNED BIGINT: -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807 (19 digits):
+> `$min` = -9223372036854775808
+> `$max` = 9223372036854775807
 
 ```php
 public static bigInteger(int $min, int $max): string
@@ -142,12 +148,12 @@ public static bigInteger(int $min, int $max): string
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$min` | **int** | The minimum number. |
-| `$max` | **int** | The maximin number. |
+| `$min` | **int** | The minimum value (default: `0`). |
+| `$max` | **int** | The maximum value (default: `18446744073709551615`). |
 
 **Return Value:**
 
-`string` - Return the generated big integer.
+`string` - Return a string representation of the generated `BIGINT`.
 
 ***
 
@@ -307,21 +313,24 @@ public static isUrl(string $url, bool $allow_idn = false, bool $http_only = fals
 
 ### isBase64Encoded
 
-Determines if a given string is likely to be Base64-encoded.
+Determines whether the given string is Base64-encoded (standard, URL-safe, or MIME style).
+
+Supports both standard URL-safe, and MIME-safe Base64 strings (with newlines).
 
 ```php
-public static isBase64Encoded(string $data): bool
+public static isBase64Encoded(string $data, bool $strict = true): bool
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$data` | **string** | The string to check for Base64 encoding. |
+| `$data` | **string** | The input string to validate. |
+| `$strict` | **bool** | If true, base64_decode() will return false on invalid characters. |
 
 **Return Value:**
 
-`bool` - Returns true if the string is likely to be Base64-encoded, false otherwise.
+`bool` - Returns true if the string appears to be valid Base64; false otherwise.
 
 ***
 
@@ -438,7 +447,7 @@ public static strictType(string $value, string $type = 'name', string|null $repl
 **Example:**
 
 ```php
-use \Luminova\Functions\Func;
+use Luminova\Functions\Func;
 
 $input = '1235hJndhb@<script>alert("hello");</script>';
 echo Func::strictType($input, 'int'); // Returns 1235
@@ -516,12 +525,12 @@ public static truncate(string $text, int $length = 10, string $encoding = 'UTF-8
 
 ***
 
-### base64_url_encode
+### base64UrlEncode
 
 Convert a string to base64 encode in other to pass it as a URL parameter.
 
 ```php
-public static base64_url_encode(string $input): string
+public static base64UrlEncode(string $input): string
 ```
 
 **Parameters:**
@@ -536,12 +545,12 @@ public static base64_url_encode(string $input): string
 
 ***
 
-### base64_url_decode
+### base64UrlDecode
 
 Decode a URL Base64 decoded string back to it's original content.
 
 ```php
-public static base64_url_decode(string $input): string
+public static base64UrlDecode(string $input): string
 ```
 
 **Parameters:**
@@ -596,3 +605,28 @@ public static mask(string $string, string $masker = '*', string $position = 'cen
 **Return Value:**
 
 `string` - Return masked string.
+
+***
+
+### hexToBinary
+
+Converts a hexadecimal string into its binary representation.
+
+```php
+public static hexToBinary(string $hexStr, ?string $destination = null): string|bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$hexStr` | **string** | The input string containing hexadecimal data. |
+| `$destination` | **string\|null** | Optional. If specified, saves the binary data to a file.<br/>- If it's a `file path`, the binary data is saved directly.<br/>- If it's a `directory`, a unique filename is generated. |
+
+**Return Value:**
+
+`string|bool` - Return the binary string if no destination is provided. If a file is written, returns `true` on success, `false` on failure.
+
+**Throws:**
+
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If an invalid hex is encountered.

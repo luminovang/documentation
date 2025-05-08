@@ -1,4 +1,4 @@
-# Nova-Kit Sitemap Generator Configurations
+# Configurations for Novakit Sitemap Generator
 
 ***
 
@@ -54,6 +54,20 @@ public int $scanSpeed = 5;
 ```
 
 > **Note:** The minimum allowed value is 1 second.
+
+***
+
+### maxExecutionTime
+
+Sets the sitemap scrap script's maximum execution time.
+
+If the provided timeout exceeds the current limit it adjust the time.
+
+```php
+public int $maxExecutionTime = 300;
+```
+
+> **Note:** Use `0` for not limit.
 
 ***
 
@@ -168,11 +182,15 @@ when generating a sitemap. Ignored URLs will not be included in the sitemap XML 
 public array<int,string> $ignoreUrls = [];
 ```
 
-Each element in the array can be:
+**Each element in the array can be:**
 
 - A full URL to completely exclude from the sitemap.
 - A URL pattern using wildcard characters (`*`) to match and exclude multiple URLs.
-  Example: `*/admin/login/*` will match any URL containing `*/admin/login/*` and exclude them.
+
+**Example: **
+
+- `*/admin/login/*` will match any URL containing `*/admin/login/*` and exclude them.
+- `@(^|.*\/)?scheme:\/\/.*` will match any URL containing `scheme://*` and exclude them.
 
 ***
 

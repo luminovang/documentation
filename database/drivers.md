@@ -1,4 +1,4 @@
-# Database Driver Interface Specification
+# Database Connection Drivers and Interface Overview
 
 ***
 
@@ -12,24 +12,64 @@ Database Driver Interface: Facilitating Database Connectivity, Query Execution, 
 
 Database drivers Interface, provides methods for executing database queries, statement preparation, and result fetching. To get started, see [Database Example](/database/examples.md).
 
-* Class namespace: `\Luminova\Interface\DriversInterface`
+***
+
+### Usages
+
+The recommended way to connect to database in Luminova is by using the connection class [Database Connection](/database/connection.md). This allow you to easily switch between different database drivers in environment configuration file (`.env`), without manually updating your code.
+
+```php
+use Luminova\Database\Connection;
+
+$connectionPool = true;
+$maxConnections = 5;
+
+$conn = new Connection($connectionPool, $maxConnections);
+```
+
+***
+
+To manually initialize a specific database driver with application database connection configurations.
+
+`Luminova\Database\Drivers\MysqliDriver` - Mysqli connection driver.
+
+```php
+use Luminova\Database\Drivers\MysqliDriver;
+use App\Config\Database as DatabaseConfig;
+
+$mysqli = new MySqliDriver(new DatabaseConfig([
+    ...
+]));
+```
+
+`Luminova\Database\Drivers\PdoDriver` - PDO connection driver.
+
+```php
+use Luminova\Database\Drivers\PdoDriver;
+use App\Config\Database as DatabaseConfig;
+
+$pdo = new PdoDriver(new DatabaseConfig([
+    ...
+]));
+```
+
+> **Note:** Manual initialization doesn't support connection pool, fallback-connection nor retry-connection.
+
+***
+
+### Class Definition
+
+* Class namespaces: `Luminova\Database\Drivers\MysqliDriver`, `Luminova\Database\Drivers\PdoDriver`
+* This class implements: [\Luminova\Interface\DatabaseInterface](/interface/classes.md#databaseinterface),
 
 ***
 
 ### constructor
 
-Initialize database driver with your database connection configurations.
-
-`\Luminova\Database\Drivers\MySqliDriver` - Mysqli connection driver.
+Initialize database driver with application database configurations.
 
 ```php
-new MySqliDriver(\Luminova\Base\CoreDatabase $config): mixed
-```
-
-`\Luminova\Database\Drivers\PdoDriver` - PDO connection driver.
-
-```php
-new PdoDriver(\Luminova\Base\CoreDatabase $config): mixed
+public __constructor(\Luminova\Base\CoreDatabase $config)
 ```
 
 **Parameters:**
@@ -48,7 +88,7 @@ new PdoDriver(\Luminova\Base\CoreDatabase $config): mixed
 
 ### isConnected
 
-Checks if the database is connected.
+Check if the database is connection is already established.
 
 ```php
 public isConnected(): bool
@@ -56,13 +96,13 @@ public isConnected(): bool
 
 **Return Value:**
 
-`bool` - True if connected, false otherwise.
+`bool` - Returns true if connected, false otherwise.
 
 ***
 
 ### getDriver
 
-Get database connection driver name in use (e.g `sqlite`, `mysql`, `cubrid` etc..).
+Get database connection driver name in use (e.g `sqlite`, `mysql`, `cubrid` etc...).
 
 ```php
 public getDriver(): ?string
@@ -74,31 +114,67 @@ public getDriver(): ?string
 
 ***
 
-### raw
+### getConfig
 
-Get the actual database connection object of `PDO` or `mysqli` database.
+Retrieve a specific database configuration property.
+ 
+This method allows fetching configuration values related to the database connection.
+If the requested property does not exist, `null` is returned.
 
-```php
-public raw(): \Luminova\Interface\ConnInterface|null
+**Available Properties:**
+
+- **connection** *(string)*: The connection method, typically `'pdo'` or other (default: `'pdo'`).
+- **pdo_engine** *(string)*: The PDO driver to use (e.g., `'mysql'`, `'sqlite'`, etc.) (default: `'mysql'`).
+- **charset** *(string)*: The character encoding for the connection (default: `'utf8mb4'`).
+- **sqlite_path** *(string|null)*: Path to the SQLite database file (default: `null`).
+- **production** *(bool)*: Indicates if the connection is in a production environment (default: `false`).
+- **database** *(string)*: The name of the selected database (default: `''`).
+- **persistent** *(bool)*: Whether to use persistent connections (default: `true`).
+- **socket** *(bool)*: Whether to use a Unix socket instead of TCP/IP (default: `false`).
+- **socket_path** *(string)*: The Unix socket path if `socket` is enabled (default: `''`).
+- **emulate_preparse** *(bool)*: Enables query emulation before execution (default: `false`).
+
+```php 
+public getConfig(string $property): mixed
 ```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$property` | **bool** | The name of the configuration property. |
 
 **Return Value:**
 
-`\Luminova\Interface\ConnInterface|null` - Connection instance if connected, null otherwise.
+`mixed` - Returns the property value if it exists, otherwise `null`.
 
 ***
 
-### statement
+### raw
 
-Get prepared statement of a query result.
+Get the original database connection object of `PDO` or `mysqli` database.
 
 ```php
-public statement(): PDOStatement|mysqli_stmt|mysqli_result|bool|null
+public raw(): ?Luminova\Interface\ConnInterface
 ```
 
 **Return Value:**
 
-`PDOStatement|mysqli_stmt|mysqli_result|bool|null` - Statement instance.
+`\Luminova\Interface\ConnInterface|null` - Returns the connection instance if connected, otherwise null.
+
+***
+
+### getStatement
+
+Retrieve Mysqli or PDO prepared statement of the last executed query.
+
+```php
+public getStatement(): \PDOStatement|\mysqli_stmt|null
+```
+
+**Return Value:**
+
+`PDOStatement|mysqli_stmt|null` - Retrieve `mysqli` or `PDO` prepared statement of the last executed query.
 
 ***
 
@@ -112,19 +188,19 @@ public setDebug(bool $debug): self
 
 **Return Value:**
 
-`self` - The current instance.
+`self` - Returns the current instance.
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$debug` | **bool** | The debug mode. |
+| `$debug` | **bool** | Enable or disable debug mode. |
 
 ***
 
 ### error
 
-Returns the error information for the last statement execution.
+Get the error information for the last executed statement.
 
 ```php
 public error(): string
@@ -132,13 +208,13 @@ public error(): string
 
 **Return Value:**
 
-`string` - The error information.
+`string` - Returns the error information as a string.
 
 ***
 
 ### errors
 
-Returns all error information.
+Get all error information.
 
 ```php
 public errors(): array
@@ -146,27 +222,27 @@ public errors(): array
 
 **Return Value:**
 
-`array` - The error information.
+`array` - Returns an array of error information.
 
 ***
 
 ### dumpDebug
 
-Debug dumps statement information for the last statement execution.
+Dump debug information for the last executed statement.
 
 ```php
-public dumpDebug(): bool|null
+public dumpDebug(): bool
 ```
 
 **Return Value:**
 
-`bool|null` - True on success, false on failure, or null if debug mode is disabled.
+`bool` - Returns true if debug information is dumped, otherwise false.
 
 ***
 
 ### info
 
-Returns information about the last statement execution.
+Get information about the last executed statement.
 
 ```php
 public info(): array
@@ -174,13 +250,13 @@ public info(): array
 
 **Return Value:**
 
-`array` - The statement execution information.
+`array` - Returns an array of statement execution information.
 
 ***
 
 ### prepare
 
-Prepares a statement for execution.
+Prepare a statement for execution.
 
 ```php
 public prepare(string $query): self
@@ -188,19 +264,19 @@ public prepare(string $query): self
 
 **Return Value:**
 
-`self` - The current instance.
+`self` - Returns the current instance.
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$query` | **string** | The SQL query. |
+| `$query` | **string** | The SQL query string to execute. |
 
 ***
 
 ### query
 
-Executes an sql query string.
+Execute a query without using placeholders.
 
 ```php
 public query(string $query): self
@@ -208,13 +284,13 @@ public query(string $query): self
 
 **Return Value:**
 
-`self` - The current instance.
+`self` - Returns the current instance.
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$query` | **string** | The SQL query. |
+| `$query` | **string** | The SQL query string to execute. |
 
 ***
 
@@ -228,7 +304,7 @@ public exec(string $query): int
 
 **Return Value:**
 
-`int` - The number of affected rows.
+`int` - Returns the number of affected rows.
 
 **Parameters:**
 
@@ -353,7 +429,7 @@ public static getType(mixed $value): string|int|null
 Binds a value to a parameter.
 
 ```php
-public bind(string $param, mixed $value, int|null $type = null): self
+public bind(string $param, mixed $value, ?int $type = null): self
 ```
 
 **Parameters:**
@@ -366,7 +442,7 @@ public bind(string $param, mixed $value, int|null $type = null): self
 
 **Return Value:**
 
-`self` - The current instance.
+`self` - Returns the current instance.
 
 ***
 
@@ -375,7 +451,7 @@ public bind(string $param, mixed $value, int|null $type = null): self
 Binds a variable to a parameter.
 
 ```php
-public param(string $param, mixed &$value, int|null $type = null): self
+public param(string $param, mixed &$value, ?int $type = null): self
 ```
 
 **Parameters:**
@@ -388,7 +464,7 @@ public param(string $param, mixed &$value, int|null $type = null): self
 
 **Return Value:**
 
-`self` - The current instance.
+`self` - Returns the current instance.
 
 ***
 
@@ -397,7 +473,7 @@ public param(string $param, mixed &$value, int|null $type = null): self
 Executes the prepared statement.
 
 ```php
-public execute(array|null $params = null): bool
+public execute(?array $params = null): bool
 ```
 
 **Parameters:**
@@ -408,7 +484,7 @@ public execute(array|null $params = null): bool
 
 **Return Value:**
 
-`bool` - True on success, false on failure.
+`bool` - Returns true on success, false on failure.
 
 **Throws:**
 
@@ -426,7 +502,7 @@ public function ok(): bool;
 
 **Return Value:**
 
-`bool` - True on success, false on failure.
+`bool` - Returns true on success, false on failure.
 
 ***
 
@@ -435,12 +511,12 @@ public function ok(): bool;
 Returns the number of rows affected by the last statement execution.
 
 ```php
-public rowCount(): int|bool
+public rowCount(): int
 ```
 
 **Return Value:**
 
-`int|bool` - The number of rows, otherwise return false on failure.
+`int|bool` - Returns the number of affected rows.
 
 ***
 
@@ -489,7 +565,7 @@ public getAll(string $type = 'object'): array|object|bool
 Fetches selected rows as a 2D array of integers.
 
 ```php
-public getInt(): array|bool
+public getInt(): array|false
 ```
 
 **Return Value:**
@@ -503,12 +579,12 @@ public getInt(): array|bool
 Fetches total count of selected rows as integer.
 
 ```php
-public getCount(): int|bool
+public getCount(): int
 ```
 
 **Return Value:**
 
-`int|bool` -  Return integers else return false on failure.
+`int` -  Returns the total count as an integer, or `0` on failure.
 
 ***
 
@@ -574,20 +650,6 @@ public fetchObject(string|null $class = 'stdClass', array $arguments = []): obje
 
 ***
 
-### getStatment
-
-Get prepared statement depending on database connection specified in `.env` file.
-
-```php
-public getStatment(): PDOStatement|mysqli_stmt|mysqli_result|bool|null
-```
-
-**Return Value:**
-
-`object|false` - Returns prepared statement else false or null if not statement.
-
-***
-
 ### getLastInsertId
 
 Returns the ID of the last inserted record or sequence value.
@@ -602,24 +664,38 @@ public getLastInsertId(): string
 
 ***
 
-### getItem
+### getResult
 
-More fancy way to return record from statement (context: all, next, 2dint, total, lastId, count or column).
+Retrieves a result item based on the specified mode and return type.
+
+This method allows flexible result retrieval using a single interface, depending on the mode and return type provided.
+
+**Available Modes:**
+
+- RETURN_NEXT: Fetch the next row (same as `$db->getNext($return)`).
+- RETURN_2D_NUM: Fetch a 2D numeric array (same as `$db->getInt()`).
+- RETURN_INT: Fetch a single integer value (same as `$db->getCount()`).
+- RETURN_ID: Fetch the last insert ID (same as `$db->getLastInsertId()`).
+- RETURN_COUNT: Fetch the count of affected rows (same as `$db->rowCount()`).
+- RETURN_COLUMN: Fetch specific columns (same as `$db->getColumns()`).
+- RETURN_ALL: Fetch all rows (same as `$db->getAll($return)`).
+- RETURN_STMT: Return the statement object itself (same as `$db->getStatement()`).
+- RETURN_RESULT: Return the query result in mysqli or statement in PDO.
 
 ```php
-public getItem(int $mode = RETURN_ALL string $return = 'object'): mixed
+public getResult(int $mode = RETURN_ALL string $return = 'object'): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$mode` | **int** | Return mode RETURN_* <br> See database [return modes ](/variables/helper.md). |
-| `$return` | **string** | [The return data type (array or object)]. |
+| `$mode` | **int** | The mode of the result to return (e.g., `RETURN_*` constants). <br> See database [return modes ](/variables/helper.md). |
+| `$return` | **string** | The return type when applicable (e.g., `array` or `object`).<br/>Used only with `RETURN_NEXT` and `RETURN_ALL` modes. |
 
 **Return Value:**
 
-`mixed` -  Return selected rows or false on failure.
+`mixed` -  Return the result based on the specified mode and return type.
 
 ***
 

@@ -1,4 +1,4 @@
-# Base Email Template Base Classes
+# Abstract Base Class for Email Templates
 
 ***
 

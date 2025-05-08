@@ -1,4 +1,4 @@
-# Database Seeding and Migration Version Control
+# Database Seeding and Migration Tracking
 
 ***
 
