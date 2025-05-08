@@ -1,28 +1,32 @@
-# URI Prefix Attribute for Request Routing
+# URI Prefix Handling Attribute for HTTP Controller Classes
 
 ***
 
 ## Overview
 
-The base application controller lays the foundation for handling your software development logic, by serving as the base application class other services may rely on.
+Defines a URI prefix or pattern at the HTTP controller class level for flexible and organized routing based on static paths or placeholders.
 
 ***
 
 ## Introduction
 
-The **Prefix** attribute in the Luminova framework allows for defining a URI or URI pattern at the class level, determining which URIs a controller can handle. This routing mechanism supports regular expressions and predefined placeholders, enabling flexible matching of incoming requests. This approach is an alternative to [Manual Route Prefixing Context for URI Handling](/routing/uri-prefix.md) when attributes are enabled, allowing for cleaner and more dynamic route management.
+The **Prefix** attribute in Luminova allows you to define a URI prefix or URI pattern at the HTTP controller class level, specifying which URIs the controller can handle.  
+
+The `Prefix` attribute supports regular expressions, static prefixes, or [predefined URI pattern placeholders](/routing/prefix-attribute.md), enabling flexible and powerful route matching.
+
+Using attributes is an alternative to [Method-Based Routing](/routing/uri-prefix.md) when attribute routing is enabled, allowing for cleaner and more dynamic route management.
 
 ---
 
-### Adding Prefix Attributes
+### Using the Prefix Attribute
 
-The following examples demonstrate how to use the `Prefix` attribute to define a URI pattern or placeholder for handling routes.
+The following example shows how to use the `Prefix` attribute to define a URI pattern or placeholder for handling routes.
 
-#### Basic Example:
+**Basic Example**
 
 ```php
 // /app/Controllers/Http/AdminController.php
-<?php
+
 namespace App\Controllers\Http;
 
 use Luminova\Base\BaseController;
@@ -31,11 +35,11 @@ use Luminova\Attributes\Prefix;
 #[Prefix(pattern: '/page/admin')]
 class AdminController extends BaseController
 {
-    // Class methods handling /page/admin routes
+   // Class methods handling /page/admin routes
 }
 ```
 
-In this example, the `AdminController` handles all routes under `/page/admin`.
+In this example, the `AdminController` handles all HTTP routes that start with `/page/admin`.
 
 ***
 
@@ -43,7 +47,7 @@ In this example, the `AdminController` handles all routes under `/page/admin`.
 
 ```php
 // /app/Controllers/Http/Controller.php
-<?php
+
 namespace App\Controllers\Http;
 
 use Luminova\Base\BaseController;
@@ -52,7 +56,7 @@ use Luminova\Attributes\Prefix;
 #[Prefix(pattern: '/page/admin/(:string)/(:root)')]
 class Controller extends BaseController
 {
-    // Class methods handling dynamic segments in the URL
+   // Class methods handling dynamic segments in the URL
 }
 ```
 
@@ -64,17 +68,17 @@ Here, the controller is equipped to handle URIs like `/page/admin/{string}/{root
 
 ```php
 // /app/Controllers/Http/Controller.php
-<?php
+
 namespace App\Controllers\Http;
 
 use Luminova\Base\BaseController;
 use Luminova\Attributes\Prefix;
-use App\Controllers\Errors\ViewErrors;
+use App\Errors\Controllers\ErrorController;
 
-#[Prefix(pattern: '/(:root)', onError: [ViewErrors::class, 'onRestError'])]
+#[Prefix(pattern: '/(:root)', onError: [ErrorController::class, 'onRestError'])]
 class Controller extends BaseController
 {
-    // Handles errors using custom ViewErrors handler
+   // Handles errors using custom ErrorController handler
 }
 ```
 
@@ -91,20 +95,26 @@ In this case, a custom error handler (`onRestError`) is applied to handle routin
 
 ## Attribute Constructor
 
-The `Prefix` attribute constructor allows you to specify a URI pattern for the controller and optionally define an error handler.
+Defines a non-repeatable routing prefix for `HTTP` controller classes, including URI prefix pattern and HTTP error handling.
+
+This attribute assigns a `URI` prefix and an optional error handler to a controller class, enabling centralized routing and error management.
 
 ```php
-public __construct(string $pattern, \Closure|array|null $onError = null)
+public __construct(string $pattern, string|array|null $onError = null)
 ```
 
 ### Parameters:
 
 | Parameter   | Type                        | Description                                                                 |
 |-------------|-----------------------------|-----------------------------------------------------------------------------|
-| `$pattern`  | **string**                   | The URI pattern the controller should handle (e.g., `/user/account`, `/(:root)`). |
-| `$onError`  | **\Closure&#124;array&#124;null** | Optional error handler (Closure or array for class/method error handling).     |
+| `$pattern`  | **string**                   | The URI prefix or pattern that the controller should handle (e.g., `/user/account`, `/(:root)`). |
+| `$onError`  | **callable\|null** | An optional error handler, either as a callable or a [class, method] array, for handling routing errors.     |
 
-> **Note:** Only one `Prefix` attribute can be applied per controller class.
+**Throws**
+
+- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - If the provided error handler is not a valid callable.
+
+> **Note:** Only one `Prefix` attribute can be be assigned to a controller.
 
 ---
 
@@ -133,7 +143,7 @@ In the root controller, follow the example prefix pattern to exclude the `blog` 
 
 ```php
 // /app/Controllers/Http/MainController.php
-<?php
+
 namespace App\Controllers\Http;
 
 use Luminova\Base\BaseViewController;
@@ -142,7 +152,7 @@ use Luminova\Attributes\Prefix;
 #[Prefix(pattern: '/(?!blog|api).*')]
 class MainController extends BaseViewController 
 {
-    // Your main controller methods
+   // Your main controller methods
 }
 ```
 
@@ -154,7 +164,7 @@ For the blog controller, define prefix pattern to only match URIs that start wit
 
 ```php
 // /app/Controllers/Http/BlogController.php
-<?php
+
 namespace App\Controllers\Http;
 
 use Luminova\Base\BaseViewController;
@@ -163,7 +173,7 @@ use Luminova\Attributes\Prefix;
 #[Prefix(pattern: '/blog/(:root)')]
 class BlogController extends BaseViewController 
 {
-    // Your blog controller methods
+   // Your blog controller methods
 }
 ```
 
@@ -175,7 +185,7 @@ For the API controller, restrict the URI pattern to match only `api` paths:
 
 ```php
 // /app/Controllers/Http/RestController.php
-<?php
+
 namespace App\Controllers\Http;
 
 use Luminova\Base\BaseController;
@@ -184,7 +194,7 @@ use Luminova\Attributes\Prefix;
 #[Prefix(pattern: '/api/(:root)')]
 class RestController extends BaseController 
 {
-    // Your REST API controller methods
+   // Your REST API controller methods
 }
 ```
 

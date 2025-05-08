@@ -1,4 +1,4 @@
-# Events Emitter
+# Managing and Emitting Custom Events Using Observers
 
 ***
 
@@ -26,7 +26,6 @@ The `Event` class is designed to handle events via static methods, meaning all e
 ### Usage Example
 
 ```php
-<?php
 use Luminova\Utils\Event;
 
 // Add a callback to an event
@@ -103,6 +102,8 @@ Events::emit('user.register', [
 - **Flexible Triggers**: Emit events from anywhere in your code, making your application more modular and decoupled.
 
 ***
+
+## Class Definition
 
 * Class namespace: `\Luminova\Utils\Event`
 

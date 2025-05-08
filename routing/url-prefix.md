@@ -1,4 +1,4 @@
-# Route Prefixing Context for URI Handling
+# Method-Based URI Prefixing for Route Context
 
 ***
 
@@ -36,7 +36,7 @@ The Prefix instance requires two arguments:
 
 ```php
 // /public/index.php
-<?php
+
 use \Luminova\Boot;
 use \Luminova\Routing\Prefix;
 use \App\Controller\Config\ViewErrors;
@@ -61,7 +61,7 @@ Each prefix argument should be defined with an associative array containing two 
 
 ```php
 // /public/index.php
-<?php
+
 use \Luminova\Boot;
 use \App\Controller\Config\ViewErrors;
 //...

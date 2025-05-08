@@ -1,4 +1,4 @@
-# Examples of Push Notification Services
+# Push Notification Service Examples
 
 ***
 

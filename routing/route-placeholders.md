@@ -1,4 +1,4 @@
-# Dynamic Strict Segment Placeholders in Routing
+# Dynamic URI Placeholder Patterns
 
 ***
 

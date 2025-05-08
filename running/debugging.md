@@ -4,7 +4,7 @@
 
 ## Overview
 
-Luminova framework application debugging and profiling. 
+Debugging, troubleshooting, and profiling in the Luminova framework application.
 
 ***
 
@@ -51,7 +51,7 @@ For a more tailored experience, you can customize the maintenance page to match 
 
 ![Error Debuging Display](https://luminova.ng/assets/images/debugger-error.png)
 
-Luminova provides robust error handling that logs errors and displays a custom error page if a fatal error causes the application to shut down. This approach is recommended as it offers detailed insights into the error, including stack traces, making it easier to diagnose and resolve issues.
+Luminova provides robust error handling that displays a custom error page if a fatal error causes the application to shut down. This approach is recommended as it offers detailed insights into the error, including stack traces, making it easier to diagnose and resolve issues.
 
 ### Custom Error Page
 
@@ -59,8 +59,142 @@ Luminova provides robust error handling that logs errors and displays a custom e
 
 **Development:** The custom error page, provides a detailed error information, including stack traces, which can be crucial for debugging.
 
+---
+
 ### Disabling Custom Error Pages
 
 If you prefer to have errors printed directly on the page, bypassing the custom error page, you can easily disable this feature. To do so, set the `debug.display.errors` variable to `true` in your environment configuration. When enabled, this setting will cause errors to be displayed directly in the browser, which may be useful during development but should be handled with caution in production.
 
 > **Note:** Disabling the custom error page may expose sensitive information to users. It's recommended to keep this feature enabled in production environments for security reasons.
+
+---
+
+### Framework Fails Silently?
+
+In some cases, Luminova may return a **500 Internal Server Error** without showing any message or writing to the log. This typically means the framework failed to load during its initial setup, which prevents it from handling or reporting the error.
+
+#### Common Causes
+
+- **Missing or corrupted Composer dependencies**
+- **Incorrect file or folder permissions**
+
+When this happens, the core initialization fails, and Luminova cannot register its error handling logic — making the issue invisible by default.
+
+#### How to Debug It
+
+To identify the problem, temporarily enable PHP error display in your `/public/index.php` file:
+
+```php
+// /public/index.php
+
+<?php
+declare(strict_types=1);
+
+// Temporarily add the lines below for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+
+use Luminova\Boot;
+use Luminova\Routing\Prefix;
+
+require_once __DIR__ . '/../system/Boot.php';
+// ...
+```
+
+> ⚠️ **Important:** Remove or disable these lines once the issue is resolved to avoid exposing errors in production.
+
+---
+
+### Log Debugging
+
+Luminova automatically stores application logs in the `writeable/logs/` directory. These logs are categorized by severity level, such as:
+
+- `info.log` – General information messages  
+- `debug.log` – Debug-level messages  
+- `error.log` – Application errors  
+- `critical.log` – Critical failures and exceptions  
+
+You can view these logs manually or use the command line to inspect them quickly.
+
+---
+
+### Navigate to Project Root
+
+##### On Production Server (Linux)
+
+```bash
+cd /var/www/example.com
+```
+
+##### On Development Server
+
+##### Linux / macOS (XAMPP)
+
+```bash
+cd /Applications/XAMPP/xamppfiles/htdocs/example.com
+```
+
+**Windows (XAMPP)**
+
+```bash
+cd C:\xampp\htdocs\example.com
+```
+
+**Windows (WAMP)**
+
+```bash
+cd C:\wamp64\www\example.com
+```
+
+**Generic Windows (Custom Folder)**
+
+```bash
+cd D:\projects\example.com
+```
+
+---
+
+> Replace `example.com` with your actual project folder name. Use the path that matches your setup. If unsure, check where your local server hosts your project files.
+
+---
+
+### View Logs from the Command Line
+
+#### On Linux / macOS
+
+To read a specific log file, you can use `cat`, `tail`, or `less` to view logs:
+
+```bash
+# View the entire file
+cat writeable/logs/info.log
+
+# View the last 20 lines
+tail -n 20 writeable/logs/error.log
+
+# Follow new log entries in real time
+tail -f writeable/logs/debug.log
+
+# Scrollable view
+less writeable/logs/critical.log
+```
+
+#### On Windows (CMD or PowerShell)
+
+Use `type`, `Get-Content`, or `more`:
+
+```bash
+:: View entire file
+type writeable\logs\info.log
+
+:: View last lines (PowerShell)
+Get-Content writeable\logs\error.log -Tail 20
+
+:: Follow logs in real-time (PowerShell)
+Get-Content writeable\logs\debug.log -Wait
+
+:: Scrollable view (CMD)
+more writeable\logs\critical.log
+```
+
+> **Tip:** For continuous monitoring in development or production, use `tail -f` (Linux/macOS) or `Get-Content -Wait` (PowerShell).
+

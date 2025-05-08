@@ -1,4 +1,4 @@
-# Integration Examples for Sitemap and Schema Objects
+# Sitemap and Schema Objects Integration Examples
 
 ***
 

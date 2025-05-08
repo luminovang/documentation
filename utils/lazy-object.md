@@ -1,4 +1,4 @@
-# Lazy Object Initalization
+# Lazy Load Object Initialization
 
 ***
 
@@ -23,6 +23,7 @@ The `LazyObject` class supports both class-based and closure-based initializatio
 - **PHP Compatibility**: Leverages modern PHP features, while maintaining fallback support for older versions.
 - **Type Safety**: Ensures compatibility with object type casting through the use of marker interface `LazyInterface`.
 - **Customizable Behavior**: Allows passing arguments to constructors or custom initialization logic using closures.
+- **PHP Magic Methods**: Supports for PHP magic methods such as `__get`, `__set`, `__call`, `__clone`, `__isset`, `__unset`, `__toString`, `__serialize`, `__unserialize`, `__debugInfo` and `__destruct`.
 
 ***
 
@@ -36,7 +37,7 @@ The `LazyObject` class is designed to align with Luminova's philosophy of provid
 
 ***
 
-### **Usage Examples**  
+### Usage Examples
 
 **Creating and Using a Lazy Object**  
 
@@ -45,12 +46,16 @@ Below is an example of a `Person` class:
 ```php
 class Person 
 {
-    public function __construct(public string $name, public int $age) {}
+   public function __construct(
+      public string $name, 
+      public int $age,
+      public bool $underAge = false
+   ) {}
 
-    public function getDetails(): string
-    {
-        return "{$this->name}, Age: {$this->age}";
-    }
+   public function getDetails(): string
+   {
+      return "{$this->name}, Age: {$this->age}";
+   }
 }
 ```  
 
@@ -61,7 +66,7 @@ The `LazyObject` will use lazy ghosting if the PHP version is `8.4.0` or later; 
 ```php
 use Luminova\Utils\LazyObject;
 
-$person = new LazyObject(Person::class, 'Peter', 33);
+$person = new LazyObject(Person::class, fn(): array => ['Peter', 33]);
 
 echo $person->getDetails(); // Outputs: Peter, Age: 33
 ```  
@@ -75,7 +80,7 @@ This method creates a lazy object that performs an early return of the object in
 ```php
 use Luminova\Utils\LazyObject;
 
-$person = LazyObject::newObject(Person::class, 'Peter', 33);
+$person = LazyObject::newObject(Person::class, fn(): array => ['Peter', 33]);
 
 echo $person->getDetails(); // Outputs: Peter, Age: 33
 ```  
@@ -84,20 +89,65 @@ echo $person->getDetails(); // Outputs: Peter, Age: 33
 
 **Using a Closure for Custom Initialization**  
 
-You can use a closure to define custom logic for initializing the object lazily.  
+Creating a new instance with arguments from a callable initializer argument:
+
+```php 
+use Luminova\Utils\LazyObject;
+use Person;
+
+$person = LazyObject::newObject(
+   function(mixed ...$arguments): Person {
+      // Custom logic to manipulate arguments
+      $arguments[2] = ($arguments[1] < 18);
+
+      return new Person(...$arguments);
+   }, 
+   function(): array {
+      return ['Peter', 33]; // Arguments: Name, Age
+   }
+);
+
+echo $person->age; // Outputs: 33
+echo $person->name; // Outputs: Peter
+echo $person->underAge ? 'yes' : 'no'; // Outputs: no
+```
+
+---
+
+You can use a closure to define custom logic for initializing the object lazily. 
 
 ```php
 use Luminova\Utils\LazyObject;
 use Person;
 
-$person = LazyObject::newObject(function (): Person {
-    // Custom logic to fetch initialization data
-    [$name, $age] = loadPersonInformation();
+$person = LazyObject::newObject(function (): Person 
+{
+   // Custom logic to fetch initialization data
+   [$name, $age] = loadPersonInformation();
 
-    return new Person($name, $age);
+   return new Person($name, $age);
 });
 
 echo $person->getDetails(); // Outputs: Peter, Age: 33
+```  
+
+---
+
+**Handle Initialization Arguments**  
+
+Optionally manipulate initialization arguments in the closure.  
+
+```php
+use Luminova\Utils\LazyObject;
+use Person;
+
+$person = LazyObject::newObject(function (int $age): Person 
+{
+   $isUnderAge = ($age < 18);
+   return new Person($age, $isUnderAge);
+}, fn(): array => [random_int(15, 65)]);
+
+echo $person->isUnderAge() ? 'Yes' : 'No';
 ```  
 
 ---
@@ -109,7 +159,7 @@ For PHP `8.4.0` and above, you can create a lazy ghost object that defers instan
 ```php
 use Luminova\Utils\LazyObject;
 
-$person = LazyObject::newLazyGhost(Person::class, 'Peter', 33);
+$person = LazyObject::newLazyGhost(Person::class, fn() => ['Peter', 33]);
 
 echo $person->getDetails(); // Outputs: Peter, Age: 33
 ``` 
@@ -120,7 +170,7 @@ echo $person->getDetails(); // Outputs: Peter, Age: 33
 
 * Class namespace: `\Luminova\Utils\LazyObject`
 * This class implements:
-[\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface)
+[\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface), [\Stringable](https://www.php.net/manual/en/class.stringable.php)
 
 ***
 
@@ -135,7 +185,7 @@ The constructor accepts either a class string (e.g., `Example::class`) or a clos
 For PHP versions `8.4.0` and later, this method utilizes `ReflectionClass::newLazyGhost`, which leverages PHP's magic methods to access properties or methods dynamically without early object instantiation. For earlier versions, a fallback approach ensures compatibility.
 
 ```php
-public __construct(\Closure|class-string<\T> $initializer, mixed ...$arguments): mixed
+public __construct(\Closure|class-string<\T> $initializer, ?callable $arguments = null): mixed
 ```
 
 **Parameters:**
@@ -143,7 +193,7 @@ public __construct(\Closure|class-string<\T> $initializer, mixed ...$arguments):
 | Parameter      | Type                    | Description                                                                 |
 |----------------|-------------------------|-----------------------------------------------------------------------------|
 | `$initializer` | **\Closure&#124;class-string<\T>** | A class string or closure that creates the lazily initialized object.       |
-| `...$arguments` | **mixed**              | Optional arguments to pass to the object's constructor for non-closure initializer.                   |
+| `$arguments` | **callable\|null**              | Optional arguments to pass to the class constructor or closure initializer argument.<br/>Must be a callable that returns a list array of arguments to pass to the constructor.                   |
 
 **Throws:**
 
@@ -168,7 +218,7 @@ Creates a lazily initialized instance of a class using a static method.
 This method enables early object creation when required and utilizes `ReflectionClass::newLazyGhost` for PHP `8.4.0` or later. Unlike the constructor, this method ensures no further delegation of property or method access by the `LazyObject` class. For earlier PHP versions, it falls back to a custom lazy initialization mechanism.
 
 ```php
-public static newObject(\Closure|class-string<\T> $initializer, mixed ...$arguments): object
+public static newObject(\Closure|class-string<\T> $initializer, ?callable $arguments = null): object
 ```
 
 **Parameters:**
@@ -176,7 +226,7 @@ public static newObject(\Closure|class-string<\T> $initializer, mixed ...$argume
 | Parameter      | Type                    | Description                                                                 |
 |----------------|-------------------------|-----------------------------------------------------------------------------|
 | `$initializer` | **\Closure&#124;class-string<\T>** | A class string or closure that creates the lazily initialized object.       |
-| `...$arguments` | **mixed**              | Optional arguments to pass to the object's constructor for non-closure initializer.                    |
+| `$arguments` | **callable\|null**              | Optional arguments to pass to the class constructor or closure initializer argument.<br/>Must be a callable that returns a list array of arguments to pass to the constructor.                    |
 
 **Throws:**
 
@@ -203,7 +253,7 @@ Creates a new lazy ghost object for the specified class.
 This method utilizes PHP 8.4+'s `ReflectionClass::newLazyGhost` to create a lazily loaded instance of the specified class. The actual object initialization is deferred until its properties or methods are accessed, optimizing resource usage.
 
 ```php
-public static newLazyGhost(class-string<\T> $class, mixed ...$arguments): object
+public static newLazyGhost(class-string<\T> $class, ?callable $arguments = null): object
 ```
 
 **Parameters:**
@@ -211,7 +261,7 @@ public static newLazyGhost(class-string<\T> $class, mixed ...$arguments): object
 | Parameter       | Type                   | Description                                               |
 |-----------------|------------------------|-----------------------------------------------------------|
 | `$class`        | **class-string<\T>**  | Fully qualified class name for which to create a lazy ghost. |
-| `...$arguments` | **mixed**             | Optional arguments to pass to the class constructor.      |
+| `$arguments` | **callable\|null**             | Optional arguments to pass to the class constructor.<br/>Must be a callable that returns a list array of arguments to pass to the constructor.      |
 
 **Return Value:**
 
@@ -220,6 +270,110 @@ public static newLazyGhost(class-string<\T> $class, mixed ...$arguments): object
 **Throws:**
 
 - [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If the lazy ghost creation fails.
+
+***
+
+### newLazyInstance
+
+Creates a new instance with arguments return the class object.
+
+This method takes an arguments, and creates a new instance of lazy loaded class.
+
+```php
+public newLazyInstance(mixed ...$arguments): object
+```
+
+**Parameters:**
+
+| Parameter       | Type                   | Description                                               |
+|-----------------|------------------------|-----------------------------------------------------------|
+| `$arguments`        | **mixed**  | The arguments to create a new class object with. |
+
+**Return Value:**
+
+`object` - Return a new instance of the lazy loaded class or null.
+
+**Throws:**
+
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If error occurs while initializing class.
+
+**Examples:**
+
+Recrating a new instance with arguments:
+
+```php 
+$parent = LazyObject::newObject(Person::class, fn() => ['Peter', 33]);
+echo $parent->getDetails(); // Outputs: Peter, Age: 33
+
+$child = $parent->newLazyInstance('John Deo', 34);
+echo $child->getDetails(); // Outputs: John Deo, Age: 34
+```
+
+***
+
+### setLazyInstance
+
+Override the current lazy-loaded instance with a new class object.
+
+```php
+public setLazyInstance(object $instance): void
+```
+
+**Parameters:**
+
+| Parameter       | Type                   | Description                                               |
+|-----------------|------------------------|-----------------------------------------------------------|
+| `$instance`        | **object**  | The new class object to replace the existing lazy-loaded instance. |
+
+***
+
+### getLazyInstance
+
+Creates and return the lazy-loaded class object.
+
+```php
+public getLazyInstance(): ?object
+```
+
+**Return Value:**
+
+`object|null` - Return lazy-loaded instance of the specified class or null.
+
+**Throws:**
+
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If the class does not exist or error occurs.
+
+***
+
+### isInstanceof
+
+Checks if the lazy-loaded instance is of a specific class type. 
+
+This method verifies whether the lazily instantiated object is an instance of the specified class or implements the specified interface.
+
+```php
+public isInstanceof(string $class): bool 
+```
+
+**Parameters:**
+
+| Parameter       | Type                   | Description                                               |
+|-----------------|------------------------|-----------------------------------------------------------|
+| `$class`        | **class-string<\T>**  | The fully qualified class or interface name to check against. |
+
+**Return Value:**
+
+`object` - Returns true if the lazy-loaded instance is of the specified class type, false otherwise.
+
+**Examples:**
+
+Check if the lazy-loaded instance `Person`:
+
+```php
+if($object instanceof LazyObject && $object->isInstanceof(Person::class)){
+    echo $object->getName();
+}
+```
 
 ***
 
@@ -233,17 +387,19 @@ Imagine you have an existing class defined like this:
 
 ```php
 // /app/Utils/Example.php
-<?php
+
 namespace App\Utils;
 
-class Example {}
+class Example {
+    // Class implemenation
+}
 ```
 
 And your controller initializes this class as shown:
 
 ```php
 // /app/Controllers/Http/ExampleController.php
-<?php 
+
 namespace App\Controllers\Http;
 
 use Luminova\Base\BaseController;
@@ -274,7 +430,7 @@ You'll encounter an **error**. The property `$example` expects an instance of th
 
 To resolve this, you need to modify your `Example` class and your controller. Follow these steps:
 
-### 1. Object Type
+#### 1. Object Type
 
 If you need to accommodate lazy-loading while maintaining compatibility with your class property type, you might consider redefining the property to use the `object` type:
 
@@ -292,11 +448,15 @@ This approach works as expected but has a notable drawback: it is not **IDE-frie
 
 For a more better solution, consider using interfaces or `Closure` to support lazy-loading while maintaining type hints.
 
-#### 2. Implement the `LazyInterface` in Your Class
+---
+
+#### 2. Implement the LazyInterface
+
 Update the `Example` class to implement the `LazyInterface`:
 
 ```php
-<?php
+// /app/Utils/Example.php
+
 namespace App\Utils;
 
 use Luminova\Interface\LazyInterface;
@@ -304,21 +464,26 @@ use Luminova\Interface\LazyInterface;
 class Example implements LazyInterface {}
 ```
 
-#### 3. Update the Property Type in Your Controller
+---
+
+#### 3. Update the Property Type
 In the controller, update the property definition to include a union type:
 
 ```php
-protected Example|LazyInterface|null $example = null;
+protected ?LazyInterface $example = null;
 ```
 
 This allows `$example` to accept both `Example` and objects implementing `LazyInterface`.
 
-#### 4. Updated Controller Example
+---
+
+#### Updated Controller Example
 
 Here's the complete updated controller code:
 
 ```php
-<?php 
+// /app/Controller/Http/FooController.php
+
 namespace App\Controllers\Http;
 
 use Luminova\Base\BaseController;
@@ -328,12 +493,15 @@ use App\Utils\Example;
 
 class FooController extends BaseController 
 {
-    protected Example|LazyInterface|null $example = null;
+    /**
+     * @var Example<LazyInterface>|null $example
+     */
+    protected ?LazyInterface $example = null;
 
     protected function onCreate(): void 
     {
         $this->example = LazyObject::newObject(Example::class);
-    } 
+    }
 }
 ```
 

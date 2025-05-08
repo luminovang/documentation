@@ -1,4 +1,4 @@
-# Custom Content Responses in Controllers
+# Rendering Custom Output in Controller Methods
 
 ***
 
@@ -10,7 +10,7 @@ Response class allows you to render or download content without processing, whic
 
 ## Introduction
 
-The `View Response` class simplifies the rendering of content within your application's controller methods or routing closures. Unlike the [template View](/templates/response.md) class, this class allows you to render content directly without additional processing, giving you complete control over the output.
+The `View Response` class simplifies the rendering of content within your application's controller methods or routing closures. Unlike the [Template View](/templates/response.md) class, this class allows you to render content directly without additional processing, giving you complete control over the output.
 
 This is suitable to use in responding `APIs` content without an addition overhead in processing the contents.
 
@@ -37,15 +37,13 @@ This is suitable to use in responding `APIs` content without an addition overhea
 The global helper of Response class will return a shared instance of response class.
 
 ```php
-<?php
 $response = response(200);
 ```
 
 Initialize class directly.
 
 ```php
-<?php 
-use \Luminova\Template\Response;
+use Luminova\Template\Response;
 
 $response = new Response(200);
 ```
@@ -53,7 +51,6 @@ $response = new Response(200);
 To output json content.
 
 ```php 
-<?php 
 $response->json([
     'message' => 'Foo bar'
 ]);
@@ -62,14 +59,12 @@ $response->json([
 To output html content.
 
 ```php 
-<?php 
 $response->html('<p>Foo bar</p>');
 ```
 
 To output file content in browser.
 
 ```php
-<?php 
 $response->stream('/path/to/file/', 'large-pdf.pdf', [
     'Content-Type' => 'application/pdf'
 ], true, 3600);
@@ -78,7 +73,6 @@ $response->stream('/path/to/file/', 'large-pdf.pdf', [
 To download file from browser.
 
 ```php
-<?php 
 $response->download('/path/to/file/document.pdf', 'large-pdf.pdf', [
     'Content-Type' => 'application/pdf'
 ]);
@@ -86,7 +80,6 @@ $response->download('/path/to/file/document.pdf', 'large-pdf.pdf', [
 To download content from browser.
 
 ```php
-<?php 
 $response->download('Hello world!', 'hello.txt', [
     'Content-Type' => 'text/plain'
 ]);
@@ -101,7 +94,6 @@ $response->download('Hello world!', 'hello.txt', [
 Initialize response class constructor with HTTP status code and optional headers.
 
 ```php
-<?php 
 function __construct(
 	private int $status = 200, 
 	private array $headers = [],

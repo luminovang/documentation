@@ -24,6 +24,8 @@ In Luminova, the `View` class is automatically inherited by the `CoreApplication
 
 ***
 
+## Class Definition
+
 * Class namespace: `\Luminova\Template\View`
 
 ***
@@ -98,10 +100,10 @@ In this example, the `setFolder` method is used to direct the framework to look 
 
 ```php
 // /app/Controllers/Http/ExampleController.php
-<?php 
+
 namespace App\Controllers\Http;
 
-use \Luminova\Base\BaseController;
+use Luminova\Base\BaseController;
 
 class ExampleController extends BaseController
 {
@@ -188,7 +190,6 @@ public noCaching(string|array<int,string> $viewName): self
 To disable caching for specific a route method, e,g in this `API` example `insert` and `edit` will be excluded while allowing cache for other route methods.
 
 ```php
-<?php
 $router->post('/fetch', 'ApiController::fetch');
 $router->post('/insert', 'ApiController::insert');
 $router->post('/edit', 'ApiController::edit');
@@ -200,10 +201,11 @@ In your `Application` class, within the `onCreate` or `__construct` method.
 
 ```php
 // /app/Application.php
-<?php
+
 namespace App;
 
-use \Luminova\Core\CoreApplication;
+use Luminova\Core\CoreApplication;
+
 class Application extends CoreApplication
 {
     protected function onCreate(): void
@@ -217,10 +219,11 @@ Now in your controller class, when excluded views are rendered it won't be cache
 
 ```php
 // /app/Controllers/Http/ApiController.php
-<?php
+
 namespace App\Controllers\Http;
 
-use \Luminova\Base\BaseController;
+use Luminova\Base\BaseController;
+
 class ApiController extends BaseController
 {
     public function insert(): int 
@@ -274,10 +277,10 @@ Enable caching for only 'home', 'about', and 'contact' views
 
 ```php
 // /app/Application.php
-<?php 
+
 namespace App;
 
-use Luminova\Base\CoreApplication;
+use Luminova\Core\CoreApplication;
 
 class Application extends CoreApplication
 {
@@ -320,10 +323,11 @@ But in this example we will use `Controller` method to disable caching for all `
 
 ```php
 // /app/Controllers/Http/ApiController.php
-<?php
+
 namespace App\Controllers\Http;
 
-use \Luminova\Base\BaseController;
+use Luminova\Base\BaseController;
+
 class ApiController extends BaseController
 {
     protected function onCreate(): void
@@ -370,7 +374,6 @@ public export(string|object $class, ?string $alias = null, bool $initialize =tru
 1. **Exporting Class without Alias**
 
     ```php
-    <?php 
     $this->export(new FooClass());
     ```
 
@@ -379,14 +382,12 @@ public export(string|object $class, ?string $alias = null, bool $initialize =tru
     If you do not want the class to be initialized, pass `false` as the third argument.
 
     ```php
-    <?php
     $this->export(FooClass::class);
     ```
 
 3. **Exporting Class with Alias**
 
     ```php
-    <?php 
     $this->export(FooClass::class, 'foo');
     ```
 
@@ -398,21 +399,18 @@ To access class within your template files, you must use either `$this` or `$sel
 1. **Direct Access**
 
     ```php
-    <?php
     $this->FooClass->myMethod();
     ```
 
 2. **Accessing Class by Alias**
 
     ```php
-    <?php
     $this->foo->myMethod();
     ```
 
 3. **Accessing Static Class Method**
 
     ```php
-    <?php
     $this->foo::myMethod();
     ```
 
@@ -421,7 +419,6 @@ To access class within your template files, you must use either `$this` or `$sel
 To access class properties within your controller class, use the application object.
 
 ```php
-<?php
 $this->app->foo->myMethod();
 ```
 > Globally you can access properties anywhere that `application` object is available or using global helper function `app()`.
@@ -457,10 +454,10 @@ In this example we check if cache exist and not expired before processing heavy 
 
 ```php
 // /app/Controllers/Http/ExampleController.php
-<?php
+
 namespace App\Controllers\Http;
 
-use \Luminova\Base\BaseController;
+use Luminova\Base\BaseController;
 
 class ExampleController extends BaseController
 {
@@ -725,10 +722,10 @@ In your controller class.
 
 ```php
 // /app/Controllers/Http/FooController.php
-<?php
+
 namespace App\Controllers;
 
-use \Luminova\Base\BaseController;
+use Luminova\Base\BaseController;
 
 class FooController extends BaseController
 {
@@ -751,7 +748,7 @@ These options can be accessed within the template view file using `$this->_myVar
 If variable prefixing is disabled in `/app/Config/Template.php`, then you can access your options directly as variables `$this->myVar` or `$myVar`.
 
 ```php
-public render(array&lt;string,mixed&gt; $options = [], int $status = 200): int
+public render(array<string,mixed> $options = [], int $status = 200): int
 ```
 
 **Parameters:**
@@ -802,11 +799,11 @@ In your controller class.
 
 ```php
 // /app/Controllers/Http/FooController.php
-<?php
-namespace App\Controllers;
 
-use \Luminova\Base\BaseController;
-use \App\Services\Mailer;
+namespace App\Controllers\Http;
+
+use Luminova\Base\BaseController;
+use App\Services\Mailer;
 
 class FooController extends BaseController
 {
@@ -814,6 +811,7 @@ class FooController extends BaseController
     {
         $content = $this->app->view('name', 'html')
             ->respond(['foo' => 'bar']);
+
         Mailer::to('peter@luminova.ng')->send($content);
         return STATUS_SUCCESS;
     }
@@ -850,11 +848,11 @@ Display your template view or send as an email after promise resolves
 
 ```php
 // /app/Controllers/Http/FooController.php
-<?php
-namespace App\Controllers;
 
-use \Luminova\Base\BaseController;
-use \App\Services\Mailer;
+namespace App\Controllers\Http;
+
+use Luminova\Base\BaseController;
+use App\Services\Mailer;
 
 class FooController extends BaseController
 {
@@ -927,7 +925,6 @@ public static link(string $filename = ''): string
 To ensure links, images or asset links are not broken, you can use below method:
 
 ```php
-<?php
 $this->app->link('bra'); 
 //Returns: /bra
 ```

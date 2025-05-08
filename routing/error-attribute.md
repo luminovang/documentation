@@ -1,45 +1,45 @@
-# Request Error Handling Attributes
+# Error Handling Attribute for HTTP Controller Classes
 
 ***
 
 ## Overview
 
-Luminova's error attribute allows you to define a global error handler for HTTP routes, in class global scope before the class definition starts.
+Defines class-level error handlers for HTTP applications, allowing flexible error routing by context, URI pattern, and handler method.
 
 ***
 
 ## Introduction
 
-The Luminova `Error` attribute replaces the default `Context` implementation for managing and handling context errors. It offers a straightforward method to define error handlers for `HTTP` applications. By using attributes, you can keep your routing logic and error handling close to your controller methods, improving readability and maintainability.
+The `Error` attribute in Luminova provides a simple and organized way to define error handlers for `HTTP` applications.  
+By using attributes, you can keep your routing logic and error handling closely tied to your controller classes, improving readability and maintainability.
 
-The `Error` attribute allows you to set a global error handler for HTTP routes. It can be defined in the global scope of a class, before the class definition starts.
-
-***
-
-### URI Prefix
-
-First, let's talk about URL prefixes. In Luminova, a URL prefix is the initial part of a URL path after the scheme (e.g., http or https) and hostname.
+The `Error` attribute allows you to assign a global error handler for HTTP errors, such as **404 Not Found**, or for manually triggered errors using `$this->app->router->triggerError()`.  
+It should be declared at the **class level**, before the class body begins.
 
 ***
 
 ### Usage Example
 
 ```php
-// app/controllers/Http/RequestController.php
-<?php
+// /app/Controllers/Http/RequestController.php
+
 namespace App\Controllers\Http;
 
 use Luminova\Base\BaseController;
 use Luminova\Attributes\Route;
 use Luminova\Attributes\Error;
-use App\Controllers\Errors\ViewErrors;
+use App\Errors\Controllers\ErrorController;
 
-#[Error('web', '/(:root)', [ViewErrors::class, 'onWebError'])]
+#[Error('web', '/(:root)', [ErrorController::class, 'onWebError'])]
 class RequestController extends BaseController
 {
-    // Your controller methods
+   // Your controller methods
 }
 ```
+
+In this example:
+- The `RequestController` uses the `Error` attribute to define a fallback error handler for the `web` context.
+- If a route under `/` or its subpaths encounters an error, it delegates handling to `ErrorController::onWebError()`.
 
 ***
 
@@ -51,25 +51,32 @@ class RequestController extends BaseController
 
 ***
 
-### Understanding Error URI Prefix
+### Understanding URI Context and Prefix
 
-Don't be confused by the context URI prefix `web`. Using `web` as the prefix name doesn't mean only URLs that start with `web` are handled by this error handler method `onWebError`. It is a generic way to tell Luminova to handle every URL with this this error handler if no other custom error handler prefix is defined or found to handle the URL.
+Don’t be confused by the use of the context name `web`.  
+Using `web` as the context name does **not** mean that only URLs starting with `/web` are handled by the `onWebError` method.
+
+Instead, `web` is a **generic context** that tells Luminova to apply the error handler to **any URL** if no other more specific error handler (based on context and prefix) is defined or matched.
+
+**Examples:**
 
 **Examples:**
 
 ```php
-#[Error('web', '/(:root)', [ViewErrors::class, 'onWebError'])]
+#[Error('web', '/(:root)', [ErrorController::class, 'onWebError'])]
 ```
 
-- `https://example.com/account/page`: Handled by the `web` error method `onWebError`.
-- `https://example.com/web/page`: Handled by the `web` error method `onWebError`.
-- `https://example.com/panel/page`: Handled by the `web` error method `onWebError` if no `panel` context is defined.
+- `https://example.com/account/page`: Handled by the `web` error handler (`onWebError`).
+- `https://example.com/web/page`: Handled by the `web` error handler (`onWebError`).
+- `https://example.com/panel/page`: Handled by the `web` error handler (`onWebError`), **if no `panel` context is defined**.
+
+---
 
 ```php
-#[Error('panel', '/(:root)', [ViewErrors::class, 'onPanelError'])]
+#[Error('panel', '/(:root)', [ErrorController::class, 'onPanelError'])]
 ```
 
-- `https://example.com/panel/page`: Handled by the `panel` error method `onPanelError` because it is explicitly defined.
+- `https://example.com/panel/page`: Handled by the `panel` error handler (`onPanelError`) because it matches the explicitly defined `panel` context.
 
 ***
 
@@ -82,19 +89,25 @@ Don't be confused by the context URI prefix `web`. Using `web` as the prefix nam
 
 ### Error Attribute Constructor
 
-The constructor for the route error global handling attribute allows you to set up a route context with a specific URI pattern and error handler.
+Defines a repeatable attribute for handling global HTTP route errors.
+
+This attribute assigns an error handler to a specific `URI` pattern within a given context, allowing fine-grained control over how routing errors are managed. Multiple error handlers can be defined for different URI prefix-contexts and patterns within the same controller.
 
 ```php
-public __construct(string $context = 'web', string $pattern = '/', \Closure|array|null $onError = null): mixed
+public __construct(string $context = 'web', string $pattern = '/', string|array|null $onError = null): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$context` | **string** | The route error context name for URI prefixing. |
-| `$pattern` | **string** | The URI route pattern to match for the current error handling (e.g., `/`, `/.*`, `/blog/([0-9-.]+)` or `(:placeholder)`). |
-| `$onError` | **\Closure\|array\|null** | The error handler, which can be a Closure or an array specifying a class and method. |
+| `$context` | **string** | The routing context used to categorize the URI (default: `web`).<br/>Typically, this is the first segment of the URI (e.g., `api`, `blog`). |
+| `$pattern` | **string** | The route pattern to match for error handling (e.g., `/`, `/.*`, `/blog/([0-9-.]+)`, `/blog/(:placeholder)`). |
+| `$onError` | **callable\|null** | A optional callable error handler, either as a string or a [class, method] array. |
+
+**Throw:**
+
+- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - If the provided error handler is not callable.
 
 ***
 
@@ -108,22 +121,22 @@ This example will call the `onWebError` method whenever a `404` error occurs if 
 
 ```php
 // app/controllers/Http/WebController.php
-<?php
+
 namespace App\Controllers\Http;
 
 use Luminova\Base\BaseViewController;
 use Luminova\Attributes\Route;
 use Luminova\Attributes\Error;
-use App\Controllers\Errors\ViewErrors;
+use App\Errors\Controllers\ErrorController;
 
-#[Error('web', '/(:root)', [ViewErrors::class, 'onWebError'])]
+#[Error('web', '/(:root)', [ErrorController::class, 'onWebError'])]
 class WebController extends BaseViewController
 {
-    #[Route('/', methods: ['GET'])]
-    public function index(): void
-    {
-        // Your code here
-    }
+   #[Route('/', methods: ['GET'])]
+   public function index(): void
+   {
+      // Your code here
+   }
 }
 ```
 
@@ -133,7 +146,7 @@ You can define different error handlers for different prefixes by defining multi
 
 ```php
 // /app/controllers/Http/WebController.php
-<?php
+
 namespace App\Controllers\Http;
 
 use Luminova\Base\BaseViewController;
@@ -145,17 +158,17 @@ use App\Controllers\Errors\WebErrors;
 #[Error('admin', '/dashboard/(:root)', [WebErrors::class, 'dashboard'])]
 class WebController extends BaseViewController
 {
-    #[Route('/admin', methods: ['GET'])]
-    public function home(): void
-    {
-        // Your code here
-    }
+   #[Route('/admin', methods: ['GET'])]
+   public function home(): void
+   {
+      // Your code here
+   }
 
-    #[Route('/admin/dashboard', methods: ['GET'])]
-    public function dashboard(): void
-    {
-        // Your code here
-    }
+   #[Route('/admin/dashboard', methods: ['GET'])]
+   public function dashboard(): void
+   {
+      // Your code here
+   }
 }
 ```
 

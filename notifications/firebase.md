@@ -1,4 +1,4 @@
-# Integration with Firebase Cloud Messaging
+# Firebase Cloud Messaging Integration
 
 ***
 
@@ -26,6 +26,8 @@ Please note that your usage of Firebase is subject to the [Terms of Service for 
 
 ***
 
+## Class Definition
+
 * Class namespace: `\Luminova\Notifications\Notification`
 
 ***
@@ -35,7 +37,6 @@ Please note that your usage of Firebase is subject to the [Terms of Service for 
 Instantiate a Notification object with the specified service account JSON file.
 
 ```php
-<?php
 use Luminova\Notifications\Notification;
 
 $notification = new Notification('my-service-account.json');
@@ -44,7 +45,6 @@ $notification = new Notification('my-service-account.json');
 Retrieve a shared instance of the factory class using the specified service account JSON file.
 
 ```php
-<?php
 use Luminova\Notifications\Notification;
 
 $factory = Notification::getFactory('my-service-account.json');
@@ -53,14 +53,12 @@ $factory = Notification::getFactory('my-service-account.json');
 Alias for creating a Notification instance from factory helper function.
 
 ```php
-<?php
 $notification = factory('notification', 'my-service-account.json');
 ```
 
 Get the factory instance directly from the factory helper function.
 
 ```php
-<?php
 $factory = factory('notification')->getFactory('my-service-account.json');
 
 // OR

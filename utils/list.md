@@ -1,4 +1,4 @@
-# String List Implementation Using the Lists Class
+# String Listification Implementation
 
 ***
 
@@ -10,11 +10,11 @@ The Luminova string Lists class is a versatile tool for converting between strin
 
 ## Introduction
 
-The `Lists` class provides utility methods for manipulating and validating string lists, converting between string representations and arrays. It includes methods to check if a string is a valid list format, convert between list strings and arrays, and perform other related operations.
+The `Listify` class provides utility methods for manipulating and validating string lists, converting between string representations and arrays. It includes methods to check if a string is a valid list format, convert between list strings and arrays, and perform other related operations.
 
-### What is a String List?
+### What is a String Listif?
 
-In Luminova, a string list is a string format that represents an array in a specific format. This format allows for easy conversion between string and array forms. While not a standard PHP data structure, string lists are useful for handling comma-separated strings and performing conversions or validations. This can be particularly useful for configuration data, simple data storage, and scenarios where data needs to be easily readable and writable in a string format.
+In Luminova, a string list is a string format that represents an array in a specific format. This format allows for easy conversion between string and array forms. While not a standard PHP data structure, string listification are useful for handling comma-separated strings and performing conversions or validations. This can be particularly useful for configuration data, simple data storage, and scenarios where data needs to be easily readable and writable in a string format.
 
 ### How It Works
 
@@ -24,7 +24,7 @@ In Luminova, a string list is a string format that represents an array in a spec
 
 ***
 
-### List Formatting
+### Formatting
 
 A valid string list in Luminova follows specific formats:
 
@@ -49,13 +49,13 @@ A valid string list in Luminova follows specific formats:
     - **Key-Value Pair**: Use `key=value` syntax.
     - **Nested Arrays**: Use square brackets `[]` and semicolons `;` for nested values.
 
-> **Note**: String lists are optimized for small arrays. While they can handle large arrays, performance overhead increases with size. Use string lists primarily for smaller data sets or when necessary.
+> **Note**: String Listify are optimized for small arrays. While they can handle large arrays, performance overhead increases with size. Use string listify primarily for smaller data sets or when necessary.
 
 ***
 
-### Capabilities of Lists Class
+### Capabilities
 
-While PHP’s built-in `implode` and `explode` functions are useful for basic string manipulation, the `Lists` class provides additional functionality that addresses more complex requirements for working with string representations of arrays. Here’s what makes the `Lists` class more powerful:
+While PHP’s built-in `implode` and `explode` functions are useful for basic string manipulation, the `Listify` class provides additional functionality that addresses more complex requirements for working with string representations of arrays. Here’s what makes the `Listify` class more powerful:
 
 #### 1. **Nested Array Handling**
 
@@ -82,7 +82,7 @@ While PHP’s built-in `implode` and `explode` functions are useful for basic st
     )
     ```
 
-**Lists Class**:
+**Listify Class**:
 
 - Supports conversion between nested arrays and string lists with nested structures.
 - Uses delimiters like `;` for nested elements.
@@ -90,7 +90,8 @@ While PHP’s built-in `implode` and `explode` functions are useful for basic st
 
     ```php
     $list = 'foo=bar,bar=2,baz=[1;2;3]';
-    $array = Lists::toArray($list);
+    $array = Listify::toArray($list);
+
     // Output:
     Array
     (
@@ -108,8 +109,18 @@ While PHP’s built-in `implode` and `explode` functions are useful for basic st
 
     ```php
     $list = 'name=Peter,age=33,address=[country=Nigeria;city=EN]';
-    $array = Lists::toArray($list);
-    // Output: ['name' => 'Peter', 'age' => 33, 'address' => ['country' => 'Nigeria', 'city' => 'EN']]
+    $array = Listify::toArray($list);
+
+    // Output: 
+    Array
+    (
+        'name' => 'Peter', 
+        'age' => 33, 
+        'address' => Array(
+            'country' => 'Nigeria', 
+            'city' => 'EN'
+        )
+    )
     ```
 ***
 
@@ -120,27 +131,28 @@ While PHP’s built-in `implode` and `explode` functions are useful for basic st
 - Do not support key-value pairs inherently.
 - Require manual processing for strings and keys.
 
-**Lists Class**:
+**Listify Class**:
 
 - Simplifies conversion of key-value pairs within lists.
 - Supports both simple and complex key-value structures.
 
 ***
 
-#### 3. **Validation of List Format**
+#### 3. **Validation of Listified Format**
 
 **PHP’s `explode` and `implode`**:
 
 - Lack built-in validation for list formats.
 
-**Lists Class**:
+**Listify Class**:
 
 - Includes methods to validate string conformity to list formats.
 - Ensures adherence to rules for separators and nesting.
 
     ```php
     $list = 'foo=bar,bar=2,baz=[1;2;3]';
-    $isValid = Lists::isList($list);
+    $isValid = Listify::isList($list);
+
     // Output: true
     ```
 
@@ -153,7 +165,7 @@ While PHP’s built-in `implode` and `explode` functions are useful for basic st
 - Basic parsing with fixed delimiters.
 - Cannot handle custom formatting or complex structures.
 
-**Lists Class**:
+**Listify Class**:
 
 - Provides custom parsing rules for converting between lists and arrays.
 - Supports specific formatting requirements and custom delimiters.
@@ -181,7 +193,7 @@ While PHP’s built-in `implode` and `explode` functions are useful for basic st
     $list = implode(',', $array); // Results in TypeError
     ```
 
-**Lists Class**:
+**Listify Class**:
 
 - Converts any array, including multidimensional and associative arrays, into a formatted string.
 - Handles various data types and nested arrays gracefully.
@@ -195,14 +207,16 @@ While PHP’s built-in `implode` and `explode` functions are useful for basic st
             'city' => 'EN'
         ]
     ];
-    $list = Lists::toList($array);
+    $list = Listify::toList($array);
+
     // Output: 'name=Peter,age=33,address=[country=Nigeria;city=EN]'
     ```
 
 ***
+
 ## Class Definition
 
-* Class namespace: `\Luminova\Arrays\Lists`
+* Class namespace: `\Luminova\Arrays\Listify`
 * This class implements: [\Luminova\Interface\LazyInterface](/interface/classes.md#lazyinterface)
 
 ## Methods
@@ -280,13 +294,14 @@ public static toList(array $array, string $delimiter = ','): string
 
 ### More Usages Examples
 
-Here are some examples demonstrating the use of the `Lists` class methods:
+Here are some examples demonstrating the use of the `Listify` class methods:
 
 **Convert Array to List**:
 
 ```php
 $array = ['foo', 'bar', 'baz'];
-$list = Lists::toList($array);
+$list = Listify::toList($array);
+
 // Output: 'foo,bar,baz'
 ```
 
@@ -294,7 +309,8 @@ $list = Lists::toList($array);
 
 ```php
 $list = 'foo,bar,baz';
-$array = Lists::toArray($list);
+$array = Listify::toArray($list);
+
 // Output: ['foo', 'bar', 'baz']
 ```
 
@@ -302,7 +318,8 @@ $array = Lists::toArray($list);
 
 ```php
 $list = 'foo=bar,bar=2,baz=[1;2;3]';
-$isValid = Lists::isList($list);
+$isValid = Listify::isList($list);
+
 // Output: true
 ```
 
@@ -310,6 +327,7 @@ $isValid = Lists::isList($list);
 
 ```php
 $list = 'foo=bar,[address=[New York;city=NY]]';
-$array = Lists::toArray($list);
+$array = Listify::toArray($list);
+
 // Output: ['foo' => 'bar', 'address' => ['New York', 'city' => 'NY']]
 ```

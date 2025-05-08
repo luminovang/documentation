@@ -21,14 +21,12 @@ Luminova provides simple methods for adding or updating environment variables in
 Temporarily set or change the value of an environment variable for the current execution scope.
 
 ```php
-<?php
 setenv('MY_FOO', 'foo value');
 ```
 
 To set and persist an environment variable, pass `true` as the third argument. This will update your environment file, adding the key-value pair if it does not exist, or updating it if it already does.
 
 ```php
-<?php
 setenv('MY_FOO', 'foo value', true);
 ```
 
@@ -37,14 +35,12 @@ setenv('MY_FOO', 'foo value', true);
 **Retrieve an environment variable**
 
 ```php
-<?php
 echo env('MY_FOO');
 ```
 
 **Retrieve an environment variable with a default value**
 
 ```php
-<?php
 echo env('MY_BAR', 'default value');
 ```
 
@@ -64,6 +60,12 @@ php novakit env:add --key=MY_FOO --value="foo value"
 
 ```bash
 php novakit env:remove --key=MY_FOO
+```
+
+**Set an environment variables by context**
+
+```bash
+php novakit env:setup --target=telegram
 ```
 
 ***
@@ -156,6 +158,9 @@ php novakit env:remove --key=MY_FOO
 - **`page.cache.app.versions`** **(array)**:  
   - **Description**: An array of previous application versions (e.g., `page.cache.app.versions = [1.0.2, 3.2.6]`) that the caching system considers when retrieving cached static content. This variable specifies which versions are allowed to reuse its cached pages if available, ensuring compatibility with legacy versions.
 
+- **`page.cache.latest.content`** **(array)**:  
+  - **Description**: An array of URI patterns (e.g., `page.cache.latest.content = [/, users]`) that should always use the latest cached content specific to the current application version. When a URI matches one of these patterns, the system will **not** fall back to older version caches, even if a cache is available. This ensures that selected pages always render fresh or version-specific content, useful for pages that are critical or frequently updated, such as landing pages or user dashboards.
+
 ***
 
 ### Optimization
@@ -221,7 +226,13 @@ php novakit env:remove --key=MY_FOO
   - **Description**: Defines the endpoint URL for sending POST requests for error logs to a remote server in production environments. Set this variable to the desired URL to enable automatic logging of errors remotely. If left unset or set to `null`, the error network logging feature will not be activated.
 
 - **`logger.mail.logs`** **(string|null)**: 
-  - **Description**: Specifies the email address to which error logs should be sent. When set, the logger will send an email with error details whenever an error occurs. If left unset or set to `null`, the email logging feature will be disabled.
+  - **Description**: Specifies the email address to which error logs should be sent. When set, the logger will send an email with error details whenever an error occurs. If left unset or set to `null`, the email logging feature will be disabled. 
+
+- **`telegram.bot.token`** **(string|null)**:  
+  - **Description**: Specifies the Telegram bot token required for API authentication. This token is obtained from [BotFather](https://t.me/botfather) and allows the bot to send messages. If unset or `null`, Telegram features will be disabled.  
+
+- **`telegram.bot.chat.id`** **(string|int|null)**:  
+  - **Description**: Specifies the Telegram chat ID where notifications will be sent. This can be a user ID, group ID, or channel ID. If unset or `null`, the bot will not be able to send messages.  
 
 ***
 

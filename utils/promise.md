@@ -1,10 +1,10 @@
-# Promise for Asynchronous Task Management
+# Promise Object for Asynchronous Tasks and Execution
 
 ***
 
 ## Overview
 
-A Promise represents a task that resolves or rejects asynchronously.
+A Promise object represents an asynchronous task that either resolves successfully or rejects with an error, enabling efficient management of asynchronous operations within the Luminova framework.
 
 ***
 

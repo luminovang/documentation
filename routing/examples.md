@@ -1,4 +1,4 @@
-# Examples of Request Routing
+# Routing Requests Implementation Examples
 
 ***
 
@@ -46,7 +46,6 @@ Once done you can now use `Route` attribute before methods and use `Error` attri
 **Without Attribute**
 
 ```php 
-<?php
 new Prefix('routing name', 'callback function for error handling');
 ```
 
@@ -59,24 +58,25 @@ To learn more about routing context  [See Documentation](/routing/url-prefix.md)
 The below context can be accessed in browser by visiting `https://example.com/panel/`, every request that starts with `panel` will be handles by `routes/panel.php`
 
 ```php
-<?php
-$app->router->context(new Prefix('panel', [ViewErrors::class, 'myErrorMethodName']));
+$app->router->context(
+    new Prefix('panel', [ErrorController::class, 'myErrorMethodName'])
+);
 ```
 
-> *IMPORTANT*
+> **IMPORTANT**
 > 
 > When creating custom routes, avoid changing the default web route `Context::WEB`. Changing this name may lead to unexpected errors in your application.
 
 **Using Attribute**
 
 ```php
-<?php
 use Luminova\Attributes\Error;
-use App\Controllers\Errors\ViewErrors;
+use App\Errors\Controllers\ErrorController;
 
-#[Error('panel', onError: [ViewErrors::class, 'myErrorMethodName')]
+#[Error('panel', onError: [ErrorController::class, 'myErrorMethodName'])]
 class PanelController extends BaseController
 {
+ 
 }
 ```
 
@@ -107,18 +107,17 @@ To set up global middleware security for websites and APIs request in your appli
 Here is an example of how you can implement your middleware:
 
 ```php
-<?php 
 $router->middleware('ANY', '/(:root)', 'HomeController::middleware');
 ```
 
 Implementation example in closure.
 
 ```php 
-// routes/web.php
-<?php
+// /routes/web.php
+
 $router->middleware('ANY', '/(:root)', static function (): int {
     if(doAuthenticatedPassed()){
-        return STATUS_OK;
+        return STATUS_SUCCESS;
     }
     return STATUS_ERROR;
 });
@@ -130,10 +129,10 @@ $router->middleware('ANY', '/(:root)', static function (): int {
 
 ```php
 // /app/Controllers/Http/HomeController.php
-<?php
-use \Luminova\Attributes\Route;
 
-#[Route('/(:root)', methods: ['ANY']), middleware: 'before']
+use Luminova\Attributes\Route;
+
+#[Route('/(:root)', methods: ['ANY'], middleware: Route::BEFORE_MIDDLEWARE)]
 public function middleware(): int
 {
     //...
@@ -149,16 +148,16 @@ To present your application's views, you can define a route in your `routes/pane
 Here's an example of how to set up a landing page route:
 
 ```php
-// routes/web.php
-<?php
+// /routes/web.php
+
 $router->get('/', 'HomeController::index');
 ```
 
 It can also be done using closure.
 
 ```php
-// routes/web.php
-<?php
+// /routes/web.php
+
 $router->get('/', static function(Application $app): int {
     return $app->view("index")->render();
 });
@@ -168,8 +167,8 @@ $router->get('/', static function(Application $app): int {
 
 ```php
 // /app/Controllers/Http/HomeController.php
-<?php
-use \Luminova\Attributes\Route;
+
+use Luminova\Attributes\Route;
 
 #[Route('/', methods: ['GET'])]
 public function index(): int
@@ -190,7 +189,7 @@ Define the route using a regular expression pattern for the username after `user
  
 ```php
 // /routes/user.php
-<?php
+
 $router->get('/user/(:alphanumeric)', 'UserController::profile');
 ```
 
@@ -198,8 +197,8 @@ $router->get('/user/(:alphanumeric)', 'UserController::profile');
 
 ```php
 // /app/Controllers/Http/UserController.php
-<?php
-use \Luminova\Attributes\Route;
+
+use Luminova\Attributes\Route;
 
 #[Route('/user/(:alphanumeric)', methods: ['GET'])]
 public function profile(string $name): int
@@ -220,7 +219,7 @@ Here's an example of defining a route for updating user profiles using a POST re
 
 ```php
 // /routes/user.php
-<?php
+
 $router->post('/user', 'UserController::update');
 ```
 
@@ -228,8 +227,8 @@ $router->post('/user', 'UserController::update');
 
 ```php
 // /app/Controllers/Http/UserController.php
-<?php
-use \Luminova\Attributes\Route;
+
+use Luminova\Attributes\Route;
 
 #[Route('/user', methods: ['POST'])]
 public function update(): int
@@ -245,10 +244,10 @@ public function update(): int
 To bind and access routes defined under `/blog` and its nested group `/blog/id/id7366` using the following setup:
 
 ```php
-// routes/blog.php
-<?php
-use \Luminova\Routing\Router;
-use \App\Application;
+// /routes/blog.php
+
+use Luminova\Routing\Router;
+use App\Application;
 
 $router->bind('/blog', function(Router $router, Application $app) {
 	$router->get('/', 'BlogController::blogs');
@@ -260,8 +259,8 @@ $router->bind('/blog', function(Router $router, Application $app) {
 
 ```php
 // /app/Controllers/Http/BlogController.php
-<?php
-use \Luminova\Attributes\Route;
+
+use Luminova\Attributes\Route;
 
 #[Route('/blog', methods: ['POST'])]
 public function blogs(): int
@@ -290,8 +289,8 @@ To set a custom view folder globally for all routes within a context file or the
 
 ```php
 // /app/Controllers/Http/Controller.php
-<?php
-use \Luminova\Base\BaseController;
+
+use Luminova\Base\BaseController;
 
 class Controller extends BaseController 
 {
@@ -306,9 +305,9 @@ Alternatively, you can set the custom view folder within a specific route contex
 
 ```php
 // /routes/panel.php
-<?php
-use \Luminova\Routing\Router;
-use \App\Application;
+
+use Luminova\Routing\Router;
+use App\Application;
 
 // In context global scope.
 $app->setFolder('panel');
@@ -338,7 +337,7 @@ You can define a global before middleware for command using `any` as the group n
 
 ```php
 // routes/cli.php
-<?php
+
 $router->before('any', 'CommandController::middleware');
 ```
 
@@ -346,7 +345,7 @@ Alternatively, you can pass a `Closure` as the `before` callback method to use. 
 
 ```php
 // routes/cli.php
-<?php
+
 $router->before('any', function(): int {
     // Authentication passed
     if (doAuthenticationPassed()) {
@@ -368,13 +367,13 @@ To register command controllers in `CLI` routing, you must use the `command` met
 
 To register command controllers and grouped middleware security, use the `command` and `before` method within the `group` closure callback. All commands belonging to a group should be wrapped in same `group` closure do not define multiple group with same name, it must be unique just like you will do on HTTP routing. 
 
-Bellow example we register a command route with 'foo' name, mapped to 'CommandController::foo' to handle the execution.
+Bellow example we register a command route with `foo` name, mapped to `CommandController::foo` to handle the execution.
 
 ```php
-// routes/cli.php
-<?php
-use \Luminova\Routing\Router;
-use \App\Application;
+// /routes/cli.php
+
+use Luminova\Routing\Router;
+use App\Application;
 
 $router->group("users", function(Router $router, Application $app){
     $router->before('users', 'UserCommandController::middleware');
@@ -386,10 +385,10 @@ $router->group("users", function(Router $router, Application $app){
 
 ```php
 // /app/Controllers/Cli/UserCommandController.php
-<?php
-use \Luminova\Attributes\Route;
 
-#[Route('users', group: 'users', middleware: 'before')]
+use Luminova\Attributes\Route;
+
+#[Route('users', group: 'users', middleware: Route::GUARD_MIDDLEWARE)]
 public function middleware(): int
 {
     //...
@@ -423,9 +422,9 @@ In `CLI` routing, you can define routes with dynamic segments to capture variabl
 This example shows how you can create a route with dynamic segments.
 
 ```php
-// routes/cli.php
-<?php
-use \Luminova\Routing\Router;
+// /routes/cli.php
+
+use Luminova\Routing\Router;
 
 $router->group("users", function(Router $router){
 	$router->command('profile/name/(:mixed)', 'UserCommandController::profile');
@@ -436,8 +435,8 @@ $router->group("users", function(Router $router){
 
 ```php
 // /app/Controllers/Cli/UserCommandController.php
-<?php
-use \Luminova\Attributes\Route;
+
+use Luminova\Attributes\Route;
 
 #[Route('profile/name/(:mixed)', group: 'users')]
 public function profile(): int
@@ -455,8 +454,7 @@ php index.php users profile name "Peter"
 Define a command route with multiple dynamic segments.
  
 ```php
-<?php
-use \Luminova\Routing\Router;
+use Luminova\Routing\Router;
 
 $router->group("blogs", function(Router $router){
 	$router->command('/post/id/(:int)/title/(:string)', 'BlogCommandController::blog');
@@ -478,10 +476,9 @@ While defining command controllers for `CLI`, it's possible to use `Closure` fun
 **Example**
 
 ```php
-<?php
-use \Luminova\Routing\Router;
+use Luminova\Routing\Router;
 
-$router->group("users", function(Router $router){
+$router->group('users', function(Router $router){
 	$router->command('/user/name/(:string)', function(string $name): int {
 		echo "Hello, $name!";
 		return STATUS_SUCCESS;
@@ -492,9 +489,9 @@ $router->group("users", function(Router $router){
 Define a command route with multiple dynamic segments.
 
 ```php
-<?php
-use \Luminova\Routing\Router;
-$router->group('blogs', function((Router $router){
+use Luminova\Routing\Router;
+
+$router->group('blogs', function(Router $router){
     $router->command('/blog/id/(:int)/title/(:string)', function(string $title, int $id): int {
         echo "Blog: {$id}, Title: {$title}";
         
@@ -513,7 +510,7 @@ This `UserController` class is an example of HTTP controller class that extends 
 
 ```php
 // /app/Controllers/Http/UserController.php
-<?php
+
 namespace App\Controllers;
 
 use Luminova\Base\BaseController;
@@ -524,7 +521,7 @@ class UserController extends BaseController
     {
         /**
          * Setting folder here is not a good practice, this is just for an example.
-         * Always create a new controller class to handle views based on custom folder and define your `setFolder` in `onCreate` or `__construct` initailzation method.
+         * Always create a new controller class to handle views based on custom folder and define your `setFolder` in `onCreate` or `__construct` initialization method.
          */
         return $this->app->setFolder('profile')->view('foo')->render([
             'username' => $username
@@ -565,7 +562,7 @@ This `CommandController` class is an example of a `CLI` controller that extends 
 
 ```php
 // /app/Controllers/Cli/BlogCommandController.php
-<?php 
+
 namespace App\Controllers;
 
 use Luminova\Base\BaseCommand;

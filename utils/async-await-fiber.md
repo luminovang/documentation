@@ -1,4 +1,4 @@
-# Async Class with Fiber: Asynchronous Task Execution 
+# PHP Fiber Asynchronous Tasks and Execution 
 
 ***
 
@@ -364,25 +364,30 @@ public clear(): true
 
 ### await
 
-Awaits the completion of a fiber or callable. The `await` method ensure that task is completed before returning the response.
+Awaits the completion of a fiber or callable task.
+
+Executes the given `Fiber` or `callable` and waits for it to complete.  Optionally delays between resume cycles and enforces a maximum wait time.
 
 ```php
-public static await(\Fiber|callable $task): mixed
+public static await(\Fiber|callable $task, float|int $delay = 0, float $maxWait = 0): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$task` | **\Fiber&#124;callable** | The task to await (e.g, `Fiber` or `callable`).<br />Callback signature: `function(): mixed{ return fooRunAndReturnTaskResult(); }`. |
+| `$task` | **\Fiber&#124;callable** | The task to await (e.g, `Fiber` or `callable`).<br/>If a callable is provided, it will be wrapped in a `Fiber`. |
+| `$delay` | **float&#124;int** | Optional delay in seconds between resume cycles (default: 0 (no delay)). |
+| `$maxWait` | **float** | Optional maximum time to wait in seconds (default: 0 (no max-wait)). If exceeded, a `RuntimeException` is thrown. |
 
 **Return Value:**
 
-`mixed` -  Return the result of the fiber or callable.
+`mixed` -  Return the result returned by the task after completion.
 
 **Throws:**
 
-- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If PHP Fiber is not supported on the system.
+- [\Luminova\Exceptions\RuntimeException](/running/exceptions.md#runtimeexception) - If PHP Fibers are not supported or the task does not complete in time.
+- `\Exceptions` -If the task itself throws an exception.
 
 **Example:**
 

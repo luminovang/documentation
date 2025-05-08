@@ -1,4 +1,4 @@
-# Notification Service Message Model
+# Firebase Notification Message Model
 
 ***
 
@@ -13,6 +13,8 @@ Build Firebase notification message payload configurations using the Luminova Me
 The notification `Message` model enables you to build a notification payload efficiently. It provides various methods to add custom fields to the notification payload, to customize your application requirements and platform configuration settings.
 
 ***
+
+## Class Definition
 
 * Class namespace: `\Luminova\Notifications\Models\Message`
 * This class is marked as **final** and can't be subclassed

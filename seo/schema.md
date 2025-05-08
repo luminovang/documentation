@@ -1,4 +1,4 @@
-# Structured Data Generator for Schema Objects
+# Schema Object Generator for SEO Optimization
 
 ***
 

@@ -1,10 +1,10 @@
-# Exception Handling and Custom Exception Classes
+# Error Handling and Exception Classes
 
 ***
 
 ## Overview
 
-Comprehensive Guide to Luminova Exception Classes: Detailed Documentation for Extending, Catching, Graceful Error, and Exception Handling in Luminova Applications.
+Comprehensive guide to Luminova's exception classes, including extending, catching, and gracefully handling errors and exceptions in applications.
 
 ***
 
@@ -12,7 +12,7 @@ Comprehensive Guide to Luminova Exception Classes: Detailed Documentation for Ex
 
 In any robust application, proper error and exception handling are crucial to maintaining stability and ensuring a smooth user experience. The Luminova framework provides a comprehensive set of exception classes that enable developers to manage errors effectively and gracefully. This documentation offers an in-depth look at the various exception classes available within Luminova, guiding you through their usage to handle different types of errors with precision.
 
-Whether you are dealing with runtime errors, validation issues, or network-related exceptions, Luminova’s exception classes are designed to simplify the process of error management. By understanding and utilizing these classes, you can enhance the resilience of your application, ensuring that errors are caught, logged, and handled in a manner that minimizes disruption.
+Whether you are dealing with runtime errors, validation issues, or network-related exceptions, Luminova's exception classes are designed to simplify the process of error management. By understanding and utilizing these classes, you can enhance the resilience of your application, ensuring that errors are caught, logged, and handled in a manner that minimizes disruption.
 
 This guide covers everything from basic exceptions like `ErrorException` to more specific ones like `DatabaseException` and `Http\ClientException`. It also provides practical examples of how to implement and throw exceptions based on different error conditions. By the end of this guide, you'll have a clear understanding of how to leverage Luminova's exception handling capabilities to build more reliable and user-friendly applications.
 
@@ -20,8 +20,7 @@ This guide covers everything from basic exceptions like `ErrorException` to more
 
 * Base Exception namespace: `\Luminova\Exceptions\AppException`
 * Parent class: `\Exception`
-* This class implements:
-[\Luminova\Interface\ExceptionInterface](/interface/classes.md#exceptioninterface)
+* This class implements: [\Luminova\Interface\ExceptionInterface](/interface/classes.md#exceptioninterface)
 * This class is an **Abstract class**
 
 ***
@@ -35,7 +34,6 @@ When you extend the Luminova `AppException` class, you gain access to all its bu
 ```php
 // /app/Exceptions/CustomException.php
 
-<?php
 /**
  * Custom exception class that extends the Luminova `AppException`.
  *
@@ -43,12 +41,16 @@ When you extend the Luminova `AppException` class, you gain access to all its bu
  * @extends \Luminova\Exceptions\AppException<T>
  */
 namespace App\Exceptions;
-use \Luminova\Exceptions\AppException;
-use \Throwable;
+use Luminova\Exceptions\AppException;
+use Throwable;
 
 class CustomException extends AppException
 {
-    public function __construct(string $message, string|int $code = 0, ?Throwable $previous = null)
+    public function __construct(
+        string $message, 
+        string|int $code = 0, 
+        ?Throwable $previous = null
+    )
     {
         parent::__construct($message, $code, $previous);
     }
@@ -66,7 +68,6 @@ Additionally, you need to handle cases where the exception code might be a `stri
 ```php
 // /app/Exceptions/CustomException.php
 
-<?php
 /**
  * Custom class that implements the Luminova `ExceptionInterface`.
  *
@@ -81,10 +82,16 @@ use \Throwable;
 
 class CustomException extends Exception implements ExceptionInterface
 {
-    public function __construct(string $message, string|int $code = 0, ?Throwable $previous = null)
+    public function __construct(
+        string $message, 
+        string|int $code = 0, 
+        ?Throwable $previous = null
+    )
     {
         parent::__construct($message, $code, $previous);
     }
+
+    // Implement other methods and properties as needed
 }
 ```
 
@@ -117,7 +124,6 @@ function loginAccount(string $username, string $password)
 To throw a custom exception:
 
 ```php
-<?php
 use \App\Exceptions\CustomException;
 
 throw new CustomException('Invalid configuration file.');
@@ -126,7 +132,6 @@ throw new CustomException('Invalid configuration file.');
 To throw the exception gracefully:
 
 ```php
-<?php
 use \App\Exceptions\CustomException;
 
 CustomException::throwException('Invalid configuration file.');
@@ -139,7 +144,6 @@ CustomException::throwException('Invalid configuration file.');
 You can catch exceptions thrown by the `loginAccount` function using a `try-catch` block. Below is an example of how to handle different types of exceptions based on their error codes.
 
 ```php
-<?php
 use Luminova\Exceptions\AppException;
 
 try {
@@ -163,14 +167,13 @@ try {
 You can catch a specific exception type, such as `ErrorException`, for more granular error handling.
 
 ```php
-<?php
 use Luminova\Exceptions\ErrorException;
 
 try {
     $pdo = loginAccount($username, $password);
 } catch (ErrorException $e) {
     // Handle specific errors here.
-    echo "An error occurred: " . $e->getMessage();
+    echo $e->getMessage();
 }
 ```
 
@@ -181,7 +184,6 @@ try {
 In cases where you want to log the exception rather than handle it directly, you can do so as follows:
 
 ```php
-<?php
 use Luminova\Exceptions\AppException;
 use Luminova\Exceptions\ErrorException;
 use Exception;
@@ -191,10 +193,10 @@ try {
 } catch (ErrorException|Exception $e) {
     if ($e instanceof AppException) {
         $e->log('debug'); // Log AppException details.
-    } else {
-        // Log PHP exceptions using a logger.
-        logger('debug', $e->getMessage());
-    }
+        return;
+    } 
+    // Log PHP exceptions using a logger.
+    logger('debug', $e->getMessage());
 }
 ```
 
@@ -205,20 +207,24 @@ try {
 You can manage exceptions differently based on your environment, throwing exceptions during development and logging them in production:
 
 ```php
-<?php
 use Luminova\Exceptions\AppException;
-use Luminova\Exceptions\ErrorException;
 use Exception;
 
 try {
     $pdo = loginAccount($username, $password);
-} catch (ErrorException|Exception $e) {
+} catch (Exception $e) {
     if ($e instanceof AppException) {
         $e->handle(); // Handle AppException accordingly.
-    } else {
-        // Handle generic PHP exceptions gracefully.
-        logger('error', 'An error occurred: ' . $e->getMessage());
+        return;
     }
+
+    // Handle generic PHP exceptions gracefully.
+    if(PRODUCTION){
+        logger('error', $e->getMessage());
+        return;
+    }
+
+    throw $e;
 }
 ```
 ***
@@ -228,7 +234,6 @@ try {
 You can throw exceptions in a way that varies depending on the environment:
 
 ```php
-<?php
 use Luminova\Exceptions\ErrorException;
 
 ErrorException::throwException('An error occurred', ErrorException::ROUTING_ERROR);
@@ -241,7 +246,6 @@ ErrorException::throwException('An error occurred', ErrorException::ROUTING_ERRO
 You can retrieve a filtered error message that omits file details:
 
 ```php
-<?php
 use Luminova\Exceptions\ErrorException;
 
 try {
@@ -258,7 +262,6 @@ try {
 You can obtain backtrace information from an exception:
 
 ```php
-<?php
 use Luminova\Exceptions\ErrorException;
 
 try {
@@ -275,7 +278,6 @@ try {
 To retrieve a user-friendly name for the exception, use the following method:
 
 ```php
-<?php
 use Luminova\Exceptions\ErrorException;
 
 try {
@@ -296,7 +298,6 @@ In PHP, some errors may not throw exceptions due to the default behavior of the 
 To get the backtrace information of an error, you can use the following method:
 
 ```php
-<?php
 use Luminova\Errors\ErrorHandler;
 
 print_r(ErrorHandler::getBacktrace());
@@ -309,7 +310,6 @@ print_r(ErrorHandler::getBacktrace());
 You can manually set the backtrace information when an error is encountered. This allows you to call `ErrorHandler::getBacktrace()` from anywhere in your application:
 
 ```php
-<?php
 use Luminova\Errors\ErrorHandler;
 
 // Set backtrace information when an error occurs.
@@ -323,7 +323,6 @@ ErrorHandler::setBacktrace(debug_backtrace());
 To retrieve the human-readable name of an error based on any supported error code, use the following method:
 
 ```php
-<?php
 use Luminova\Errors\ErrorHandler;
 
 echo ErrorHandler::getErrorName(ErrorException::INPUT_VALIDATION_ERROR); // Outputs: INPUT VALIDATION ERROR
@@ -335,10 +334,12 @@ echo ErrorHandler::getErrorName(ErrorException::INPUT_VALIDATION_ERROR); // Outp
 
 ### constructor
 
-Constructor for the exception.
+Constructor to initialize a new exception object.
+
+When an exception object is created with a message, an optional code, and a previous exception, it can be thrown using the `throw` keyword or pass as an object to methods or return type.
 
 ```php
-public __construct(string $message, string|int $code, \Throwable|null $previous = null): mixed
+public __construct(string $message, string|int $code = 0, ?\Throwable $previous = null): mixed
 ```
 
 **Parameters:**
@@ -346,20 +347,20 @@ public __construct(string $message, string|int $code, \Throwable|null $previous 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$message` | **string** | The error message for the exception. |
-| `$code` | **string&#124;int** | The exception code (default: 0). |
-| `$previous` | **\Throwable&#124;null** | The previous exception, if available (default: null). |
+| `$code` | **string&#124;int** | The exception code, support `int` or `string` (default: 0). |
+| `$previous` | **\Throwable&#124;null** | The previous exception object, if available (default: null). |
 
 **Usages Example**
 
 Initialize and throws an exception:
 
 ```php
-<?php
+use Luminova\Exceptions\AppException;
 use Luminova\Exceptions\RuntimeException;
 
 try{
 	throw new RuntimeException('An error occurred');
-}catch(RuntimeException $e){
+}catch(AppException $e){
 	// handle exception
 }
 ```
@@ -454,6 +455,22 @@ public getName(): string
 
 ***
 
+### getName
+
+Get the string or int error code associated with this exception.
+
+Unlike `getCode` method, this method returns an `int` or `string` error code of the exception. It first checks if a string error code is set (strCode), and if not, falls back to the numeric error code.
+
+```php
+public getErrorCode(): string|int
+```
+
+**Return Value:**
+
+`string|int` - Return the error code as either a string or an integer. Returns the string error code if set, otherwise returns the numeric error code.
+
+***
+
 ### getBacktrace
 
 Retrieves the debug backtrace from the exception or shared error context.
@@ -470,18 +487,28 @@ public getBacktrace(): array
 
 ***
 
-### __toString
+### toString
 
-Gets a string representation of the exception.
+Gets a formatted exception message if this format `'Exception: (%s) %s in %s on line %d'`.
 
 ```php
-public __toString(): string
+public toString(): string
 ```
 
 **Return Value:**
 
-`string` - Return a formatted error message representing the exception.
+`string` - Return a formatted error message containing error code and line number.
 
+**Example:**
+```php
+use Luminova\Exceptions\RuntimeException;
+
+try{
+    throw new RuntimeException('An error occurred');
+}catch(RuntimeException $e){
+    echo $e->toString(); // Output: Exception: (0) An error occurred in /path/to/file.php on line 12
+}
+```
 ***
 
 ### log
@@ -491,14 +518,14 @@ Based on your `App\Config\Logger`, if asynchronous logging is enabled, all log w
 If on production, `logger.mail.logs` or `logger.remote.logs` is set, the log will be redirected to email or remote server.
 
 ```php
-public log(string $level = 'exception'): void
+public log(string $dispatch = 'exception'): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$level` | **string** | The log level to use (default: 'exception'). |
+| `$dispatch` | **string** | A log level, email or a remote URL to send error to (default: 'exception'). |
 
 **Log Levels:**
 
@@ -519,7 +546,6 @@ public log(string $level = 'exception'): void
 This example demonstrates catching an exception and logging an exception message with a custom log level.
 
 ```php
-<?php
 use Luminova\Exceptions\RuntimeException;
 
 try{
@@ -541,14 +567,13 @@ public handle(): void
 
 **Throws:**
 
-- `self<\T>` - Throws in development environment or if the exception code is fatal, otherwise log the information.
+- `Luminova\Interface\AppException<\T>` - Throws in development environment or if the exception code is fatal, otherwise log the information.
 
 **Usages Example**
 
 This below example shows how you can catch an exception and handle it with `handle` method.
 
 ```php
-<?php
 use Luminova\Exceptions\RuntimeException;
 
 try{
@@ -565,7 +590,7 @@ try{
 Throw an exception gracefully based on environment.
 
 ```php
-public static throwException(string $message, string|int $code, \Throwable|null $previous = null): void
+public static throwException(string $message, string|int $code = 0, ?\Throwable $previous = null): void
 ```
 
 **Parameters:**
@@ -578,20 +603,79 @@ public static throwException(string $message, string|int $code, \Throwable|null 
 
 **Throws:**
 
-- `static<\T>` - Throws in development environment or if the exception code is fatal, otherwise log the information.
+- `Luminova\Exceptions\AppException<\T>` - Throws in development environment or if the exception code is fatal, otherwise log the information.
 
 **Usage Example**
 
-The following example demonstrates how to throw an exception in a production environment using the fatal error code `COMPILE_ERROR`. For more error codes, refer to [Exceptions and Error Handling](/running/error-codes.md).
+The following example demonstrates how to handle an exception  gracefully in a production environment. 
+For more error codes, refer to [Exceptions and Error Handling](/running/error-codes.md).
 
 ```php
-<?php
+use Luminova\Exceptions\AppException;
 use Luminova\Exceptions\RuntimeException;
+use Error;
 
-RuntimeException::throwException('An error occurred', RuntimeException::COMPILE_ERROR);
+try {
+  throw new RuntimeException('An error occurred');
+} catch (Exception $e) {
+    if($e instanceof AppException) {
+        $e->handle();
+        return;
+    }
+
+    // If not instance of AppException, create safe exception handler from the exception object.
+    RuntimeException::throwException(
+        $e->getMessage(), 
+        RuntimeException::COMPILE_ERROR,
+        $e
+    );
+}
 ```
 
-> **Note:** The error codes `ERROR`, `PARSE_ERROR`, `CORE_ERROR`, and `COMPILE_ERROR` are considered fatal. These can be used with exception classes to signify critical issues.
+***
+
+### throwAs
+
+Rethrow or handle an exception gracefully as a different exception class.
+
+If the provided Throwable is already an instance of the `Luminova\Exceptions\AppException` class, it will be handled directly.
+Otherwise, a new exception of the specified class (or the current class by default) will be created with the same message, code, and previous exception, and then handled.
+
+```php
+public static throwAs(\Throwable $e, ?string $exception_class = null): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$e` | **\Throwable** | The original exception object to be thrown or handled. |
+| `$exception_class` | **lass-string<AppException>&#124;null** | The class name to throw the exception as (e.g, `Luminova\Exceptions\RuntimeException`).<br/>Defaults to the current class if not provided.. |
+
+**Throws:**
+
+- `Luminova\Exceptions\AppException<\T>` - Throws the exception from the called class.
+
+**Usage Example**
+
+Throw `Error` exception as `RuntimeException` and handle it gracefully:
+
+```php
+use Luminova\Exceptions\AppException;
+use Luminova\Exceptions\RuntimeException;
+use Error;
+
+try {
+  throw new Error('An error occurred');
+} catch (Exception $e) {
+    if($e instanceof RuntimeException) {
+        $e->handle();
+        return;
+    }
+
+    AppException::throwAs($e, RuntimeException::class);
+}
+```
 
 ***
 
@@ -599,12 +683,12 @@ RuntimeException::throwException('An error occurred', RuntimeException::COMPILE_
 
 Luminova provides a robust set of predefined exception classes that extend the `\Luminova\Exceptions\AppException` class. These exceptions cover a wide range of error scenarios, ensuring that your application can handle various issues gracefully.
 
-The global namespace for these classes is: `\Luminova\Exceptions\`.
+The global namespace group for these classes is: `\Luminova\Exceptions\`.
 
 | Class                        | Description                                                                 |
 |------------------------------|-----------------------------------------------------------------------------|
 | `AppException`               | The base exception class for all Luminova-specific exceptions.              |
-| `BadMethodCallException`      | Thrown when a callback refers to an undefined method or an invalid context. |
+| `BadMethodCallException`     | Thrown when a callback refers to an undefined method or an invalid context. |
 | `CacheException`             | Represents errors related to caching operations.                            |
 | `ClassException`             | Indicates issues related to class handling, such as instantiation failures. |
 | `CookieException`            | Thrown when there are problems with cookie operations.                      |
@@ -618,6 +702,7 @@ The global namespace for these classes is: `\Luminova\Exceptions\`.
 | `InvalidException`           | General exception for invalid operations or inputs.                         |
 | `InvalidObjectException`     | Indicates that an object is invalid or not in the expected state.           |
 | `JsonException`              | Handles errors related to JSON encoding or decoding.                        |
+| `LogicException`             | Handles errors related to implementation and logic issues.                  |
 | `MailerException`            | Thrown when email sending operations fail.                                  |
 | `NotFoundException`          | Raised when a required resource or entity cannot be found.                  |
 | `RouterException`            | Represents issues related to routing operations within the application.     |
@@ -633,7 +718,7 @@ The global namespace for these classes is: `\Luminova\Exceptions\`.
 
 Luminova also provides custom exception classes specifically for handling network-related errors. These exceptions may be thrown when using the [Luminova\Http\Network](/http/request.md) class.
 
-The global namespace for these classes is: `\Luminova\Exceptions\Http\`.
+The global namespace group for `Http` exception classes is: `\Luminova\Exceptions\Http\`.
 
 | Class                                              | Description                                                                                   |
 |----------------------------------------------------|-----------------------------------------------------------------------------------------------|

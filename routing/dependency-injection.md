@@ -1,4 +1,4 @@
-# Dependency Injection for Controller Methods
+# Dependency Injection in Routable Controller Methods
 
 ***
 
@@ -36,7 +36,7 @@ This allows for more flexible and maintainable code by abstracting the creation 
 
 ```php
 // /app/Controllers/Http/MyController.php
-<?php
+
 namespace App\Controllers\Http;
 
 use Luminova\Base\BaseController;
@@ -67,7 +67,7 @@ Luminova also supports DI in some router methods, allowing you to inject depende
 
 ```php
 // /routes/web.php
-<?php 
+
 use Luminova\Routing\Router;
 use App\Utils\SomeService;
 use App\Utils\SomeRepository;
@@ -84,7 +84,7 @@ $router->get('/example', static function(Router $router, SomeService $service, S
 
 ```php
 // /routes/web.php
-<?php 
+
 use Luminova\Routing\Router;
 
 $router->bind('/example', static function(Router $router){
@@ -96,7 +96,7 @@ $router->bind('/example', static function(Router $router){
 
 ```php
 // /routes/cli.php
-<?php 
+
 use Luminova\Routing\Router;
 
 $router->group('http-get', static function(Router $router){
@@ -121,7 +121,6 @@ Define a route that maps to a controller method.
 
 ```php
 // /routes/cli.php
-<?php 
 
 $router->get('/example/(:int)', 'MyController::handle');
 ```

@@ -1,4 +1,4 @@
-# Examples of Input Validation and CSRF Protection
+# Security and Validation Examples
 
 ***
 
@@ -17,7 +17,6 @@ To set validation rules you can separate each rule with a parenthesis and parame
 Adding rule one after another
 
 ```php
-<?php
 $this->validate->addRule('name', 'required|max(10)|alphanumeric', [
     'required' => 'Error message for required',
     'max_length' => 'Error message for max_length',
@@ -28,7 +27,6 @@ $this->validate->addRule('name', 'required|max(10)|alphanumeric', [
 Setting rules from array.
 
 ```php
-<?php
 $rules = [
     'name' => 'required|max(10)|alphanumeric',
     'age' => 'required|integer|min(2)|max(3)',
@@ -64,7 +62,8 @@ $this->validate->setRules($rules, $errorMessages);
 This simple controller examples shows how you can validate user entries using validator class.
 
 ```php
-<?php
+// /app/Controllers/Http/UserController.php
+
 namespace App\Controllers\Http;
 
 use \Luminova\Base\BaseController;
@@ -105,7 +104,6 @@ Defining your own callback validation.
 > You can define your validation rule in your dev global helper file located in `/app/Utils/Global.php`.
 
 ```php
-<?php 
 function id_is_integer(mixed $value, string $field): bool
 {
 	if($field === 'my-user-id'){

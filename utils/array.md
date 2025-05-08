@@ -1,4 +1,4 @@
-# Array Management Implementation with ArrayUtil Class
+# Array Operations Using the ArrayUtil Helper Class
 
 ***
 
@@ -28,7 +28,7 @@ Constructor to initialize array instance.
 If no array is provided, an empty array will be initialized.
 
 ```php
-public __construct(array&lt;string|int,mixed&gt; $array = []): mixed
+public __construct(array<string|int,mixed> $array = []): mixed
 ```
 
 **Parameters:**
@@ -44,7 +44,6 @@ Take note of these initialization variable names, we will make use of then in th
 An example of associative array.
 
 ```php
-<?php 
 use Luminova\Arrays\ArrayUtil;
 
 $assoc = new ArrayUtil(['name' => 'Peter', 'age' => 33]);
@@ -53,7 +52,6 @@ $assoc = new ArrayUtil(['name' => 'Peter', 'age' => 33]);
 An example of a nested array.
 
 ```php
-<?php 
 use Luminova\Arrays\ArrayUtil;
 
 $nested = new ArrayUtil(['address' => ['country' => 'Nigeria'], 'about' => ['code' => 'PHP']]);
@@ -62,7 +60,6 @@ $nested = new ArrayUtil(['address' => ['country' => 'Nigeria'], 'about' => ['cod
 An example of a list array.
 
 ```php
-<?php 
 use Luminova\Arrays\ArrayUtil;
 
 $list = new ArrayUtil([1, 2, 3]);
@@ -124,7 +121,6 @@ public fromStringList(string $list): self
 Examples of a string list:
 
 ```php
-<?php 
 use Luminova\Arrays\ArrayUtil;
 $arr = (new ArrayUtil)->fromList('name=Peter,age=33,[country=Nigeria;city=EN]'); 
 ```
@@ -171,14 +167,12 @@ public isNested(bool $recursive = false): bool
 The nested array will pass.
 
 ```php
-<?php 
 var_export($nested->isNested()); // true
 ```
 
 The list and associative array will fail.
 
 ```php
-<?php 
 var_export($assoc->isNested()); // false
 var_export($list->isNested()); // false
 ```
@@ -202,7 +196,6 @@ public isAssoc(): bool
 The associative and nested array will pass because they have string key.
 
 ```php
-<?php 
 var_export($assoc->isAssoc()); // true
 var_export($nested->isAssoc()); // true
 ```
@@ -210,7 +203,6 @@ var_export($nested->isAssoc()); // true
 The list array will fail, because it has an integer key.
 
 ```php
-<?php 
 var_export($list->isAssoc()); // false
 ```
 
@@ -233,7 +225,6 @@ public isList(): bool
 The associative and nested array will fail because they both have a string key.
 
 ```php
-<?php 
 var_export($assoc->isList()); // false
 var_export($nested->isList()); // false
 ```
@@ -241,7 +232,6 @@ var_export($nested->isList()); // false
 The list array will pass because it has integer keys.
 
 ```php
-<?php 
 var_export($list->isList()); // true
 ```
 
@@ -285,16 +275,32 @@ public get(string|int|null $key = null, mixed $default = null): mixed
 Get Property key.
 
 ```php
-<?php 
 var_export($assoc->get('name')); // Peter
 ```
 
 To return all elements of the array
 
 ```php
-<?php 
 print_r($assoc->get()); // Array
 ```
+
+***
+
+***
+
+### getArray
+
+Retrieve the modified array after processing.
+
+This method returns the internally stored array, which may have been modified by other operations such as merging, filtering, or reordering.
+
+```php
+public getArray(): array
+```
+
+**Return Value:**
+
+`mixed` - Return the processed array.
 
 ***
 
@@ -322,7 +328,6 @@ public getNested(string $notations, mixed $default = null): mixed
 Retrieve the country name from initialized nested array.
 
 ```php
-<?php 
 echo $nested->getNested('address.country'); // Nigeria
 ```
 
@@ -373,7 +378,6 @@ public addNested(string $notations, mixed $value): self
 This example will add new element to the nested initialized array.
 
 ```php
-<?php
 $nested->addNested('address.zip.code', '12345');
 ```
 
@@ -585,7 +589,6 @@ public pluck(string $property): \Luminova\Arrays\ArrayUtil
 **Example**:
 
 ```php
-<?php
 use Luminova\Arrays\ArrayUtil;
 
 $arr = new ArrayUtil([
@@ -607,19 +610,18 @@ print_r($names);
 Using an object with pluck.
 
 ```php
-<?php
 class User
 {
     public function __construct(public int $id, public string $name){}
 }
 
-$arr = new ArrayUtil([
+$users = new ArrayUtil([
     new User(1, 'Peter'),
     new User(2, 'Hana'),
     new User(3, 'Doe')
 ]);
 
-$names = $arr->pluck('name');
+$names = $users->pluck('name');
 print_r($names);
 
 // Output:
@@ -655,12 +657,32 @@ public search(mixed $search, bool $strict = true, bool $forKey = false): string|
 
 ***
 
+### replace
+
+Replace the current array with another array.
+
+```php
+public replace(ArrayUtil|array<string|int,mixed> $replacements): self
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$replacements` | **ArrayUtil\|array<string&#124;int,mixed>** | The array to replace with the current array. |
+
+**Return Value:**
+
+`self` - Return the updated instance with the merged array.
+
+***
+
 ### merge
 
 Merge another array with the current array.
 
 ```php
-public merge(ArrayUtil|array&lt;string|int,mixed&gt; $array): self
+public merge(ArrayUtil|array<string|int,mixed> $array): self
 ```
 
 **Parameters:**
@@ -680,7 +702,7 @@ public merge(ArrayUtil|array&lt;string|int,mixed&gt; $array): self
 Recursively merges multiple arrays. Values from later arrays will overwrite values from earlier arrays, including merging nested arrays.
 
 ```php
-public mergeRecursive(ArrayUtil|array&lt;string|int,mixed&gt; $array, bool $distinct = false): self
+public mergeRecursive(ArrayUtil|array<string|int,mixed> $array, bool $distinct = false): self
 ```
 
 **Parameters:**
@@ -697,10 +719,53 @@ public mergeRecursive(ArrayUtil|array&lt;string|int,mixed&gt; $array, bool $dist
 **Example**:
 
 ```php
-<?php
 $nested->mergeRecursive(['a' => ['y' => 2], 'c' => 3]);
 ```
 
+***
+
+### mergeIntervals
+
+Merges the given array into the current array at specified intervals.
+
+This method inserts elements from the provided array (`$array`) into the existing array (`$this->array`) at every `$position` interval. If there are remaining elements in `$array` after merging, they will be inserted randomly.
+
+```php
+public mergeIntervals(ArrayUtil|array $array, int $intervals = 4): self 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$array` | **ArrayUtil\|array** | The array to merge into the current array. |
+| `$intervals` | **bool** | The interval at which elements from `$array` should be inserted (default: `4`). |
+
+**Return Value:**
+
+`self` - Returns the instance with the modified array.
+
+**Example:**
+
+Merging Posts with Advertisements:
+
+```php
+$posts = [
+	["id" => 1, "title" => "Post 1"],
+	["id" => 2, "title" => "Post 2"],
+	["id" => 3, "title" => "Post 3"],
+	["id" => 4, "title" => "Post 4"]
+];
+
+$adverts = [
+	["id" => 101, "title" => "Ad 1"],
+	["id" => 102, "title" => "Ad 2"],
+	["id" => 103, "title" => "Ad 3"],
+];
+
+$array = (new ArrayUtil($posts))->mergeIntervals($adverts, 2);
+print_r($array->getArray());
+```
 ***
 
 ### filter
@@ -892,7 +957,7 @@ public toStringList(): string
 Convert the current array to json string representation.
 
 ```php
-public toJson(int $flags, int $depth = 512, bool $throw = true): string|null
+public toJson(int $flags, int $depth = 512, bool $throw = true): ?string
 ```
 
 **Parameters:**
@@ -918,7 +983,7 @@ public toJson(int $flags, int $depth = 512, bool $throw = true): string|null
 Convert the current array to json object representation.
 
 ```php
-public toObject(bool|null $assoc = true, int $flags, int $depth = 512, bool $throw = true): object|null
+public toObject(bool|null $assoc = true, int $flags, int $depth = 512, bool $throw = true): ?object
 ```
 
 **Parameters:**

@@ -1,60 +1,82 @@
-# Request Routing Handler
+# HTTP and CLI Request Routing System
 
 ***
 
 ## Overview
 
-Luminova's routing module simplifies capturing, processing, and executing both web page and CLI command requests within your controller class.
+The routing system in Luminova is optimized for capturing, processing, and executing HTTP requests and CLI commands within routable controller classes.
 
 ***
 
 ## Introduction
 
-**Routing** is an essential part of the Luminova framework to handle incoming URI requests and matches them to the right controller methods. Its also manages request middleware authentication based on the URI prefix and patterns.
+**Routing** is a core component of the Luminova framework, responsible for handling incoming URI requests and matching them to the appropriate controller methods. It also manages request-level middleware authentication based on URI prefixes and patterns.
 
-Luminova simplifies and speeds up routing by using a [Routing URI Prefix](/routing/url-prefix.md) to quickly match the initial part of the URI as context and load the `routes/<context>.php` to handle request controller routing. This means only the necessary routes are loaded, improving performance compared to loading all routes in a single context.
+Luminova optimizes and simplifies routing by using a [URI Route Prefixing](/routing/url-prefix.md), which allows it to quickly identify the initial part of the URI as a context and load only the necessary `routes/<context>.php` file. This selective loading approach improves performance by avoiding the overhead of loading all routes into a single context.
 
-The routing module works efficiently for both `HTTP` and `CLI` requests, it captures and matches URI patterns, handles commands, and manages authentication with middleware as needed.
+The routing module is designed to efficiently handle both `HTTP` requests and `CLI` commands. It captures and matches URI patterns, executes commands, and applies middleware authentication when required.
 
-In Luminova routing, routeable controller methods support dependency injection. This means you can specify the types of modules you want as parameters in your controller methods. By default, this feature is disabled. To enable it, update your [environment configuration file](/running/env.md) setting the value of `feature.route.dependency.injection` to `enable`.
+In Luminova, routable controller methods also support **dependency injection**. You can specify module types as method parameters to automatically inject dependencies. By default, this feature is **disabled**. To enable it, update your [environment configuration file](/running/env.md) by setting the following:
 
-***
-
-### Defining Controller Method
-
-When defining controller methods or rendering callback handlers, you can use either a `Closure` or a string format that resembles a static method call (e.g., `ControllerBaseName::methodName`). The key difference is that you don’t need to specify the full class namespace, as it has already been registered in your application. You only need to provide the class base name and the method name (e.g., `ControllerBaseName::methodName`).
+```ini
+feature.route.dependency.injection=enable
+```
 
 ***
 
-### Segment Capturing
+### Defining Controllers
 
-Segment capturing is way to capture URL segments and pass them to controller as arguments for further processing, the capture pattern uses various methods like regular expression patterns (e.g., `/foo/([a-zA-Z0-9]+)/([0-9]+)`), named placeholders (e.g., `/foo/{title}/{id}`), or predefined strict placeholders (e.g., `/foo/(:string)/(int)`). While regular expressions offer flexibility, named and strict placeholders provide a more convenient and developer-friendly approach, making them especially suitable for beginners.
+When defining controller methods or rendering callback handlers, you can use either a `Closure` or a string that resembles a static method call (e.g., `ControllerBaseName::methodName`).  
+The key difference is that you do not need a fully-qaulified namespace, the base name of the controller and the method name are required.  
 
-***
+**Example:**  
 
-### View Caching
+The application already knows the registered controller namespace internally.
 
-To learn about how Luminova view caching and static content serving work [read the documentation](/cache/view-caching.md).
+```php
+$route->get('/home', 'HomeController::index');
+```
 
-***
+---
 
-### PHP Attributes
+### Capturing Segments
 
-Luminova provides a `Route` attribute, allowing you to define both `HTTP` and `CLI` routes using attributes. [Read the documentation here](/routing/attribute.md).
+**Segment capturing** allows you to extract parts of the URL and pass them as arguments to your controller methods for further processing.  
+There are several ways to define capture patterns:
+
+- **Regular Expressions**  
+  Example: `/foo/([a-zA-Z0-9]+)/([0-9]+)`
+  
+- **Named Placeholders**  
+  Example: `/foo/{title}/{id}`
+  
+- **Predefined Pattern Placeholders**  
+  Example: `/foo/(:string)/(:int)`
+
+> While regular expressions provide maximum flexibility, **named** and **pattern placeholders** offer a more convenient and readable approach, making them especially ideal for beginners and maintaining cleaner route definitions.
+
+### View Content Caching
+
+Luminova supports view content caching and serving cached static content to significantly improve response times and reduce server load. To learn more about how view caching works and how to configure it, [read the documentation](/cache/view-caching.md).
+
+---
+
+### Routing PHP Attributes
+
+Luminova offers a `Route` attribute that allows you to define both `HTTP` and `CLI` routes directly within your controller classes. Additionally we support class-level attributes like `Prefix`, `Error` and `Group`, using attributes makes routing more organized, flexible, and readable.  [Read the documentation here](/routing/route-attribute.md) for full details.
 
 ***
 
 ### Base Usages
 
-In your route context file `/routes/<context>.php`, the variable holding `Luminova\Routing\Router $router` and `App\Application $app` object  is already available as a global variable. Therefore, there's no need to specify the `use` keyword or import the router instance anymore except if it required which is usually for `bind` or `groupt` method.
+In your route context file `/routes/<context>.php`, the variable holding `Luminova\Routing\Router $router` and `App\Application $app` object  is already available as a global variable. Therefore, there's no need to specify the `use` keyword or import the router instance anymore except if it required which is usually for `bind` or `group` method.
 
 ```php 
 // /routes/web.php
 
-<?php
 $router->get('/',  function (Application $app) {
-    $app->view('index')->render([
-	    // Options to pass to the view
+   return $app->view('index')->render([
+	   'foo' => 'Bar' // Options to pass to the view
 	]);
 });
 ```
@@ -64,7 +86,8 @@ $router->get('/',  function (Application $app) {
 When passing your controller class, you only need to provide the class base name and method, without the full namespace (e.g., `ExampleController::about`) instead of `App\Controllers\Http\ExampleController`. The namespace is already registered with the `CoreApplication` class, allowing you to pass only a controller class that extends `Luminova\Base\BaseController` by default.
 
 ```php 
-<?php
+// /routes/web.php
+
 $router->get('/about', 'ExampleController::about');
 ```
 
@@ -72,15 +95,16 @@ $router->get('/about', 'ExampleController::about');
 
 If you need to register a URI group for routing, you can use `bind` method which accepts only `2` arguments `group pattern` and `Closure`.
 
-```php 
-<?php
-use \Luminova\Routing\Router;
-use \Luminova\Core\CoreApplication;
+```php
+// /routes/web.php
+
+use Luminova\Routing\Router;
+use Luminova\Core\CoreApplication;
 
 $router->bind('/blog', function(Router $router, CoreApplication $app) {
-    $router->middleware('GET', '/(:root)', 'Authentication::isAllowed');
-    $router->get('/', 'ExampleController::blogs');
-    $router->get('/(:alphanumeric)', 'ExampleController::blog');
+   $router->middleware('GET', '/(:root)', 'Authentication::isAllowed');
+   $router->get('/', 'ExampleController::blogs');
+   $router->get('/(:alphanumeric)', 'ExampleController::blog');
 });
 ```
 
@@ -91,19 +115,24 @@ The `any` method allows you to capture any `HTTP` request method, which is espec
 For example, to handle all HTTP methods for a "Contact Us" page:
 
 ```php
+// /routes/web.php
+
 $router->any('/contact', 'ExampleController::contact');
 ```
 
 Alternatively, you can achieve the same functionality using the `capture` method with `Router::ANY_METHODS` or `ANY`:
 
 ```php
+// /routes/web.php
+
 $router->capture('ANY', '/contact', 'ExampleController::contact');
 ```
 
 Using `capture` for selective `HTTP` methods.
 
 ```php 
-<?php
+// /routes/web.php
+
 $router->capture('POST|GET|PUT', '/contact', 'ExampleController::contact');
 ```
 
@@ -115,28 +144,31 @@ Luminova routing supports dependency injection for controller methods. You can t
 
 ```php
 // /app/Controllers/Http/ExampleController.php
-<?php 
+
 namespace App\Controllers\Http;
 
 use Luminova\Base\BaseController;
+
 class ExampleController extends BaseController
 {
-    public function userInfo(Request $request): int 
-    {
-        $name = $request->getGet('name');
-        // Method implementation
-    }
+   public function userInfo(Request $request): int 
+   {
+      $name = $request->getGet('name');
+      // Method implementation
+   }
 }
 ```
 
 **Using Callback Function:**
 
 ```php
+// /routes/web.php
+
 use Luminova\Http\Request;
 
 $router->get('/users', function (Request $request) {
-    $name = $request->getGet('name');
-    // Callback implementation
+   $name = $request->getGet('name');
+   // Callback implementation
 });
 ```
 
@@ -150,14 +182,15 @@ Registering command controller routing.
 To register commands, you will need to first call the `group` method which is like your command base, within the group closure you can then call `command` method to register your commands associated to the group name.
 
 ```php
-<?php
-use \Luminova\Routing\Router;
-use \Luminova\Core\CoreApplication;
-use \Luminova\Command\Terminal;
+// /routes/cli.php
+
+use Luminova\Routing\Router;
+use Luminova\Core\CoreApplication;
+use Luminova\Command\Terminal;
 
 $router->group("blog", function(Router $router, CoreApplication $app) {
-    $router->command("list", 'Command::listBlogs');
-    $router->command('id/(:int)', 'Command::showBlog');
+   $router->command("list", 'Command::listBlogs');
+   $router->command('id/(:int)', 'Command::showBlog');
 });
 ```
 To execute the above command run the following command:
@@ -172,77 +205,118 @@ To get a single blog by its ID based on the above example.
 php index.php blog id=2
 ```
 
+> **More Examples and Guides:**  
+> Explore additional usage patterns in the [Routing Example Documentation](/routing/examples.md).  
+> For advanced control over dynamic route segments, see the guide on [Segment Pattern Placeholders](/routing/route-placeholders.md).
+
 ***
 
-### Class Definition
+## Class Definition
 
 * Class namespace: `\Luminova\Routing\Router`
+* This class implements: [\Luminova\Interface\RouterInterface](/interface/classes.md#routerinterface)
 * This class is marked as **final** and can't be subclassed
 
 ***
 
 ## Methods
 
-Explore additional usage examples in the [Routing Example Documentation](/routing/examples.md). For insights on using [Dynamic Segment Strict Placeholders in Routing](/routing/route-placeholders.md), visit the dedicated guide.
-
-***
-
 ### context
 
-The `context` method is a crucial part of routing optimization in Luminova. It initializes your routes based on the request URL path prefix. This method is called once at runtime in your application's entry point, typically `/public/index.php`.
+Registers the application routing context based on URI prefixes (e.g., `web`, `cli`, `api`, `console`) or custom prefix names.
 
-The `context` method allows you to define URI prefixes and error handlers for specific URI prefixes. This ensures that only the necessary routes for handling requests are loaded based on the URL prefix, such as `api`, `console`, and more. The default context name `web` handles any incoming request without a unique registered prefix.
+The `context` method is an essential part of Luminova’s routing optimization strategy. It initializes and loads routes based on a given URI prefix, allowing the framework to load only the relevant route files (like `routes/web.php`, `routes/api.php`, or `routes/cli.php`) at runtime. This method improves performance by avoiding loading all routes at once.
 
-This method is flexible in its argument approach, supporting a `Context` object, an array, or `null` when using PHP attributes instead of code-based routing.
+If no specific prefix is matched, the default `web` context handles the request.
 
-Using an array is particularly useful for scenarios with complex routing requirements or a large number of contexts. It offers better scalability and maintainability. Choose the method that best aligns with your specific use case and coding style preferences.
+The `context` method also supports defining custom error handlers for each prefix, similar to using attribute-based routing. It accepts a flexible input: either a `Luminova\Routing\Prefix` object or an array describing the prefix and error handler. If you're using PHP attributes to define routes, simply leave it blank.
+
+> **Tip:** Using an array for context definition is particularly useful in large applications with many route groups. It helps improve maintainability and scalability.
 
 ```php
-public context(\Luminova\Routing\Prefix|array<string,mixed>|null ...$contexts): \Luminova\Routing\Router
+public context(\Luminova\Routing\Prefix|array<string,mixed> ...$contexts): self
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$contexts` | **Luminova\Routing\Prefix&#124;array<string,mixed>&#124;null** | Arguments containing routing prefix or an array of arguments. Pass `null` or leave blank only when using route attributes. |
+| `$contexts` | **Luminova\Routing\Prefix&#124;array<string,mixed>** | Optional arguments containing routes prefix object, an array of prefix or leave blank when using attribute routing. |
 
 **Return Value**
 
-`Router` - Return router instance class.
+`self` - Return router instance class.
 
 **Throws:**
 - [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - Thrown if no context arguments are passed and route attributes are not enabled.
 
+> **Note:**  
+> The prefix name must be unique and reflect your URL structure accurately.  
+> Avoid mixing `Prefix` objects and array definitions in the same call, as it may lead to unintended errors.
+
 **See Also:**
 
-- [Routing URL Prefix](/routing/url-prefix.md) - Learn more about how routing prefixes work and their usage.
-- [Index Controller Handler](/public/index.md) - See an example of the front controller index file handler.
-
-> **Note:** 
-> The prefix name must be unique based on your `URLs` to discover and load only the required files. 
-> Additionally, mixing context arguments with arrays and `Context` instances may produce unintended errors.
+- [Method-Based Routing URI Prefixing](/routing/url-prefix.md) — How prefixes work and how to configure them.
+- [Front Controller Setup](/public/index.md) — Example of setting up the main application handler.
 
 ***
 
-## HTTP Router Method
+### run
 
-The HTTP router methods are named after common `HTTP` methods to make them simple and easy to understand. These methods help you define routes for different HTTP requests in a clear and intuitive way. 
+Starts the application routing system by processing incoming `HTTP` requests or `CLI` commands and matching them against registered routes.
+
+This method is responsible for identifying the matching route based on the incoming URI and request method (e.g., `GET`, `POST`, or CLI command). Once matched, it dispatches the request to the appropriate controller method. It also integrates profiling and lifecycle event handling to ensure proper execution and graceful shutdown.
+
+```php
+public run(): void
+```
+
+**Throws:**
+- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) – Thrown if routing fails or if no suitable route is found for the request.
+
+> This method is typically called in your application's front controller (`/public/index.php`) to bootstrap and run the routing system.
+
+**Example:**
+
+```php
+// /public/index.php
+declare(strict_types=1);
+
+use Luminova\Boot;
+
+require_once __DIR__ . '/../system/Boot.php';
+
+// Set the correct working directory if launched via CLI
+if (getcwd() . DIRECTORY_SEPARATOR !== DOCUMENT_ROOT) {
+    chdir(DOCUMENT_ROOT);
+}
+
+// Initialize context and run the router
+Boot::http()->router->context(...)->run();
+```
+
+> **Note:** The `run()` method should only be called once, after initializing the routing context, to handle the incoming request lifecycle correctly.
+
+***
+
+## HTTP Routing Methods
+
+HTTP routing methods are designed specifically for controller classes that handle web requests, such as APIs or websites. Each method corresponds to a standard HTTP verb (e.g., `GET`, `POST`, `PUT`, `DELETE`) to make route definitions intuitive and organized. These methods allow you to clearly define how different types of HTTP requests should be handled by your controller.
 
 ### get
 
 Get, a shorthand for route `capture` method to handle `GET` request method.
 
 ```php
-public get(string $pattern, \Closure|string $callback): void
+public get(string $pattern, Closure|string $callback): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
-| `$callback` | **\Closure&#124;string** | The callback to execute (e.g `ClassBaseName::methodName`). |
+| `$pattern` | **string** | The route URL pattern or template name (e.g., `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
+| `$callback` | **Closure&#124;string** | The callback to execute (e.g., `ClassBaseName::methodName`). |
 
 ***
 
@@ -251,15 +325,15 @@ public get(string $pattern, \Closure|string $callback): void
 Post, a shorthand for route `capture` method to handle `POST` request method.
 
 ```php
-public post(string $pattern, \Closure|string $callback): void
+public post(string $pattern, Closure|string $callback): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
-| `$callback` | **\Closure&#124;string** | The callback to execute (e.g `ClassBaseName::methodName`). |
+| `$pattern` | **string** | The route URL pattern or template name (e.g., `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
+| `$callback` | **Closure&#124;string** | The callback to execute (e.g., `ClassBaseName::methodName`). |
 
 ***
 
@@ -268,15 +342,15 @@ public post(string $pattern, \Closure|string $callback): void
 Patch, a shorthand for route `capture` method to handle `PATCH` request method.
 
 ```php
-public patch(string $pattern, \Closure|string $callback): void
+public patch(string $pattern, Closure|string $callback): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
-| `$callback` | **\Closure&#124;string** | The callback to execute (e.g `ClassBaseName::methodName`). |
+| `$pattern` | **string** | The route URL pattern or template name (e.g., `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
+| `$callback` | **Closure&#124;string** | The callback to execute (e.g., `ClassBaseName::methodName`). |
 
 ***
 
@@ -285,15 +359,15 @@ public patch(string $pattern, \Closure|string $callback): void
 Delete, a shorthand for route `capture` method to handle `DELETE` request method.
 
 ```php
-public delete(string $pattern, \Closure|string $callback): void
+public delete(string $pattern, Closure|string $callback): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
-| `$callback` | **\Closure&#124;string** | The callback to execute (e.g `ClassBaseName::methodName`). |
+| `$pattern` | **string** | The route URL pattern or template name (e.g., `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
+| `$callback` | **Closure&#124;string** | The callback to execute (e.g., `ClassBaseName::methodName`). |
 
 ***
 
@@ -302,15 +376,15 @@ public delete(string $pattern, \Closure|string $callback): void
 Put, a shorthand for route `capture` method to handle `PUT` request method.
 
 ```php
-public put(string $pattern, \Closure|string $callback): void
+public put(string $pattern, Closure|string $callback): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
-| `$callback` | **\Closure&#124;string** | The callback to execute (e.g `ClassBaseName::methodName`). |
+| `$pattern` | **string** | The route URL pattern or template name (e.g., `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
+| `$callback` | **Closure&#124;string** | The callback to execute (e.g., `ClassBaseName::methodName`). |
 
 ***
 
@@ -319,120 +393,219 @@ public put(string $pattern, \Closure|string $callback): void
 Options, a shorthand for route `capture` method to handle `OPTIONS` request method.
 
 ```php
-public options(string $pattern, \Closure|string $callback): void
+public options(string $pattern, Closure|string $callback): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
-| `$callback` | **\Closure&#124;string** | The callback to execute (e.g `ClassBaseName::methodName`). |
+| `$pattern` | **string** | The route URL pattern or template name (e.g., `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
+| `$callback` | **Closure&#124;string** | The callback to execute (e.g., `ClassBaseName::methodName`). |
 
 ***
 
 ### middleware
 
-The `HTTP` middleware security allows you to define authentication to validate requests before allowing other routes to execute or terminate their executions based on the returned response code: `STATUS_SUCCESS` (0) or `STATUS_ERROR` (1).
+Registers an HTTP `before` middleware to authenticate requests before handling controllers.
 
-To instruct the `middleware` to terminate or proceed with execution, your controller method or closure must return an integer as described above.
+This method allows you to apply middleware security logic that executes prior to any associated HTTP controllers. If the middleware callback returns `STATUS_ERROR`, the routing process will terminate, preventing further execution.
 
-Middlewares can be registered within a `bind` method for `URI` prefix or in the global scope of the routing context. It also support defining regular expression patterns and methods to match before executing.
+Middlewares can be registered within a `bind` method for a specific URI prefix or in the global scope of the routing context. It also support defining regular expression patterns and methods to match before executing.
 
 ```php
-public middleware(string $methods, string $pattern, \Closure|string $callback): void
+public middleware(string $methods, string $pattern, Closure|string $callback): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$methods` | **string** | The allowed methods, can be serrated with `&amp;#124;` pipe symbol (e.g. `GET&amp;#124;POST`). |
-| `$pattern` | **string** | The route URL pattern or template view name (e.g `/.*`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
-| `$callback` | **\Closure&#124;string** | Callback controller or closure to execute. |
+| `$methods` | **string** |  The allowed HTTP methods, separated by a `&amp;#124;` pipe symbol (e.g,. `GET&amp;#124;POST`). |
+| `$pattern` | **string** | The route URL pattern or template name (e.g., `/.*`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
+| `$callback` | **Closure&#124;string** | The callback function or controller method to execute. |
 
-***
-
-### before
-
-The `before` method provides middleware security for `CLI` implementation. It allows you to define and execute authentication before other commands are executed. If the response code returns `STATUS_SUCCESS`, the subsequent commands will be executed; otherwise, if `STATUS_ERROR` is returned, other commands will not be executed.
-
-Unlike the `middleware` method, which handles only `HTTP` method authentication and accepts regular `regex` patterns, the `before` method accepts only the command group name or `global` for global middleware security.
-
-To register middleware with the group name, you must define your `before` method within the `group` method callback closure.
-
-```php
-public before(|string $group, \Closure|string $callback = null): void
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$group` | **string** | The command middleware group name or `global` for global middleware. |
-| `$callback` | **\Closure&#124;string** | Callback controller handler (e.g `ClassBaseName::beforeMethodName` or `closure`). |
+**Throws:**
+- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - Thrown if the method is called in non-HTTP context or the `$methods` parameter is empty.
 
 ***
 
 ### after
 
-The after route method, allow you to define a middleware to executes after route controller was executed successfully.
-This method can only be used on `HTTP` request method, it not allowed in `CLI` mode.
+Registers an HTTP `after` middleware to execute logic after a controller has been handled.
+
+This method applies middleware logic that runs after a controller processes a request. It is typically used for tasks such as cleanup or additional post-processing.
 
 ```php
-public after(string $methods, string $pattern, \Closure|string $callback): void
+public after(string $methods, string $pattern, Closure|string $callback): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$methods` | **string** | The allowed methods, can be serrated with `&amp;#124;` pipe symbol (e.g. `GET&amp;#124;POST`). |
-| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])`). |
-| `$callback` | **\Closure&#124;string** | The callback function to execute (e.g `ClassBaseName::afterMethodName`). |
+| `$methods` | **string** | The allowed HTTP methods, separated by a `&amp;#124;` pipe symbol (e.g., `GET&amp;#124;POST`). |
+| `$pattern` | **string** | The route URL pattern or template name (e.g., `/`, `/home`, `/user/([0-9])`). |
+| `$callback` | **Closure&#124;string** | The callback function or controller method to execute (e.g., `ClassBaseName::afterMethodName`). |
+
+**Throws:**
+- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - Thrown if the `$methods` parameter is empty.
+
+> **Note:** This method can only be used on `HTTP` request routing, it not allowed in `CLI` mode.
 
 ***
 
 ### capture
 
-The capture method allows you to define set of methods the controller should handle based on `HTTP` request method, and `URI` patterns to look for the listed methods. Once the method and patterns match the callback controller will be executed accordingly.
+Registers HTTP request methods, URI patterns, and corresponding callback or controller methods.
+
+This method allows you to define routes by specifying supported HTTP methods, a URL pattern, and the callback or controller method to execute when the pattern matches a client request. Multiple HTTP methods can be specified using the pipe (`|`) symbol.
 
 ```php
-public capture(string $methods, string $pattern, \Closure|string $callback): void
+public capture(string $methods, string $pattern, Closure|string $callback): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$methods` | **string** | The allowed methods, can be separated with `&amp;#124;` pipe symbol (e.g `GET\|POST\|PUT` or `ANY`). |
-| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
-| `$callback` | **\Closure&#124;string** | The callback function to execute (e.g `ClassBaseName::methodName`). |
+| `$methods` | **string** | The allowed method(s), multiple HTTP methods can be separated by `&amp;#124;` pipe symbol (e.g., `GET\|POST\|PUT` or `ANY`). |
+| `$pattern` | **string** | The route URL pattern or template name (e.g., `/`, `/home`, `/user/([0-9])` or `/user/(:placeholder)`). |
+| `$callback` | **Closure&#124;string** | The callback function or controller method to execute (e.g., `ClassBaseName::methodName`). |
+
+**Throws:**
+- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - Thrown if an empty method string is provided.
+
+***
+
+### any
+
+Capture and handle requests for any HTTP method.
+
+This method leverages `Router::ANY_METHODS` to match and handle requests for any HTTP method. It is a convenient way to define routes that respond to all HTTP methods without explicitly specifying them.
+
+```php
+public any(string $pattern, Closure|string $callback): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$pattern` | **string** | The route URL pattern or template name (e.g., `/`, `/home`, `/user/([0-9])`). |
+| `$callback` | **Closure&#124;string** | The callback function or controller method to execute (e.g., `ClassBaseName::methodName`). |
+
+***
+
+### bind
+
+Groups related routes under a specified URI prefix.
+
+The `bind` method simplifies route organization by associating a group of routes with a common base path or pattern. It allows you to define and manage multiple nested `URI` patterns under a shared prefix, enhancing the clarity and maintainability of your routing structure. Additionally, middleware can be applied within the scope of the defined closure, enabling advanced route-specific logic.
+
+```php
+public bind(string $prefix, Closure $callback): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$prefix` | **string** | The base path or URI pattern (e.g,. `/blog`, `/account/([a-z])` or `/account/(:placeholder)`). |
+| `$callback` | **Closure** | The closure containing the route definitions for the group. |
+
+**Example:**
+
+Using `bind` to group routes under a `/blog` prefix:
+
+```php
+$router->bind('/blog/', static function (Router $router) {
+   $router->get('/', 'BlogController::listBlogs');                   // Matches '/blog/'
+   $router->get('/([a-zA-Z0-9-]+)', 'BlogController::readBlog');     // Matches '/blog/{slug}'
+   $router->get('/edit/([a-zA-Z0-9-]+)', 'BlogController::editBlog'); // Matches '/blog/edit/{slug}'
+});
+```
+
+**Explanation:**
+
+When you group routes using `bind`, the specified prefix (e.g., `/blog`) is prepended to all routes defined within the closure. For example:
+- `http://example.com/blog/` maps to `listBlogs`.
+- `http://example.com/blog/{slug}` maps to `readBlog`.
+- `http://example.com/blog/edit/{slug}` maps to `editBlog`.
+
+This approach keeps route definitions organized and manageable, especially for applications with multiple related endpoints. Additionally, middleware can be applied selectively within the closure to handle group-specific logic. 
+
+***
+
+## CLI Routing Methods
+
+`CLI` routing methods are used in command controllers to define and manage grouped commands, apply middleware, and handle command execution logic effectively.
+
+### group
+
+Organizes CLI commands into a specific group for execution.
+
+Similar to the HTTP `bind` method, the `group` method simplifies the organization of CLI commands by grouping related commands under a common name. This is especially useful for commands related to the same controller, making it easier to execute and maintain them.
+
+```php
+public group(string $group, Closure $callback): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$group` | **string** | The name of the command group (e.g., `blog`, `user`). |
+| `$callback` | **Closure** | A callback function that defines the commands for the group. |
+
+**Example:**
+
+Grouping CLI commands under a `blog` group:
+
+```php
+$router->group('blog', static function (Router $router) {
+   $router->command('list', 'BlogController::blogs');     // Command to list all blogs
+   $router->command('id/(:int)', 'BlogController::blog'); // Command to fetch a blog by ID
+});
+```
+
+**Executing Commands:**
+
+```bash
+# Navigate to the project's public directory
+cd path/to/project/public/
+
+# Execute commands within the `blog` group
+php index.php blog list       # Lists all blogs
+php index.php blog id=4       # Fetches the blog with ID 4
+```
+
+> **Note:** Ensure that the group name matches the value of the `$group` property defined in the command controller class to avoid routing mismatches or execution errors.
 
 ***
 
 ### command
 
-The `command` method registers and captures command-line interface (CLI) requests, executing the specified commands. It is similar to the `capture` method but is specifically designed for CLI routing.
+Registers a CLI command and its corresponding callback or controller method.
 
-Unlike the `capture` method, `command` does not support regular regex patterns. Instead, it uses a set of filter rules to capture command arguments.
-
-For example, suppose you have a command group `blogs` and a blog command controller class with two methods: `list` and `get`. The `list` method accepts an `int` argument to determine the number of blogs to list, while the `get` method accepts a `string` as the blog ID. You can register these commands with filters like `/list/limit/(:int)` for the list method and `/get/id/(:string)` for the get method.
+This method is used to define CLI commands, specifying the command name and the callback function or controller method to execute when the command is run in the terminal. Unlike HTTP routes, CLI commands are defined using this method specifically within a `group` method and does not support regular regex patterns. Instead, it uses a set of filter rules to capture command arguments.
 
 ```php
-public command(string $command, \Closure|string $callback): void
+public command(string $command, Closure|string $callback): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$command` | **string** | The allowed command name or command with filters (e.g `foo`, `foo/(:int)/bar/(:string)`). |
-| `$callback()` | **\Closure&#124;string** | The callback function to execute (e.g `ClassBaseName::methodName`). |
+| `$command` | **string** | The command group name or a command group name with filters (e.g., `foo`, `foo/(:int)/bar/(:string)`). |
+| `$callback()` | **Closure&#124;string** | The callback function or controller method to execute (e.g., `ClassBaseName::methodName`). |
 
 **Example Usage:**
 
-List Command:
+Suppose you have a command group `blogs` and a blog command controller class with two methods: `list` and `get`. The `list` method accepts an `int` argument to determine the number of blogs to list, while the `get` method accepts a `string` as the blog ID. You can register these commands with filters like `/list/limit/(:int)` for the list method and `/get/id/(:string)` for the get method.
+
+**List Command:**
 
 ```php
 $router->group('blog', function(Router $router){
@@ -440,115 +613,121 @@ $router->group('blog', function(Router $router){
 });
 ```
 
-Get Command:
+**List Command With Attribute:**
+
+```php
+// /App/Controllers/Cli/BlogCommandController.php
+
+#[Route('list/limit/(:int)', group: 'blog')]
+public function list(int $limit = 10): int
+{}
+```
+
+**Get Command:**
 
 ```php
 $router->group('blog', function(Router $router){
 	$router->command('/get/id/(:string)', 'BlogCommandController::get');
-})
+});
+```
+
+**Get Command With Attribute:**
+
+```php
+// /App/Controllers/Cli/BlogCommandController.php
+
+#[Route('get/id/(:string)', group: 'blog')]
+public function get(string $id): int
+{}
 ```
 
 > **Note:**
-> For commands that don't expect any arguments, you don't need to add any rule, just pass the name like `foo`.
+> For commands that don't expect any arguments, you don't need to add any filters, just pass the name like `foo`.
 > 
-> Execution of the command controller must follow this pattern: `php index.php <command-group> <command> <argument>`.
+> Additionally, execution of the command controller must follow this pattern: `php index.php <command-group> <command> <argument>`.
 
 ***
 
-### any
+### guard
 
-A shorthand for route `capture` method to handle any type of `HTTP` request methods.
+Registers a CLI `before` middleware guard to authenticate commands within a specific group.
+
+The `guard` method provides middleware security for `CLI` implementation. It applies middleware logic to CLI commands within a specified group. The middleware is executed before any command in the group. If the response code returns `STATUS_SUCCESS`, the routing process will continue to execute other commands. If the middleware callback returns `STATUS_ERROR`, the routing process will terminate, preventing further commands from executing.
+
+Unlike the `middleware` method, which handles only `HTTP` method authentication and accepts regular `regex` patterns, the `guard` method accepts only the command group name or `global` for global middleware security.
 
 ```php
-public any(string $pattern, \Closure|string $callback): void
+public guard(string $group, Closure|string $callback): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$pattern` | **string** | The route URL pattern or template view name (e.g `/`, `/home`, `/user/([0-9])`). |
-| `$callback` | **\Closure&#124;string** | The callback to execute (e.g `ClassBaseName::methodName`). |
-
-***
-
-### bind
-
-The `bind` method allows you to bind a specific pattern or path to a set of routes and middleware within the defined scope. This helps in organizing and grouping routes that share a common prefix such as `path` or `pattern`.
-
-For example, if you have a base URL like `http://example.com/user`, using the `bind` method with the pattern `user` will group all related `URLs` under this base path. This means routes such as `http://example.com/user/account` and `http://example.com/user/dashboard` will be organized together, making your route definitions more structured and manageable.
-
-```php
-public bind(string $prefix, \Closure $callback): void
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$prefix` | **string** | The path prefix name or pattern (e.g. `/blog`, `/account/([a-z])` or `/account/(:placeholder)`). |
-| `$callback` | **\Closure** | The callback function to handle routes group binding. |
+| `$group` | **string** | The command group name or default `global` for middleware that applies to all commands. |
+| `$callback` | **Closure&#124;string** | The callback function or controller method to execute (e.g., `ControllerClass::methodName`). |
 
 **Throws:**
-- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - If invalid callback is provided
+- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - Thrown if the method is used outside a CLI context.
 
-***
-
-### group
-
-The group method works similar to `bind` method, except that `group` if used only in `CLI` group binding to bind  a collection of command controllers that belong to same group.
-
-```php
-public group(string $group, \Closure $callback): void
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$group` | **string** | The command group name. |
-| `$callback` | **\Closure** | Callback command function to handle grouped commands under same group name. |
-
-**Throws:**
-- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - If invalid callback is provided
-
-> **Note:** Your group name must match with the defined group name in controller class.
+> **Note:** To register middleware with the group name, you must define your `guard` method within the `group` method callback closure.
 
 ***
 
 ### addNamespace
 
-To register module controller class `namespace` group that router is allowed to lookup classed in.
-If you wish to register more namespace this method should be called in your application class either within `constructor` or `onCreate` method.
+Registers an `MVC` or `HMVC` controller namespace group for application routing.
+
+This method allows the registration of new routable namespaces, making controllers within those namespaces accessible for routing in both HMVC and MVC applications.
+
+**Namespace Pattern:**
+
+Register your namespace up to the controller path, excluding the `Http` and `Cli` suffixes.
+
+- **HMVC Example**: Use `App\Modules\FooModule\Controllers\` instead of `App\Modules\FooModule\Controllers\Http`.  
+  This allows the router to capture both `Http` and `Cli` namespaces under the registered group.
 
 ```php
-public addNamespace(string $namespace): void
+public addNamespace(string $namespace): self
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$namespace` | **string** | Class namespace string |
+| `$namespace` | **string** | The namespace to register (e.g., `App\Controllers\`, `App\Modules\FooModule\Controllers\`). |
+
+**Return Value:**
+
+`self` - Returns the instance of the router class.
 
 **Throws:**
-- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - If namespace string is empty or contains invalid namespace characters.
+- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - If the namespace is empty or invalid.
 
-> **Note:** When registering a route namespace, omit the suffix like `Cli` or `Http`. Instead, register your module's namespace ending with `Controllers` (e.g., `App\Modules\Foo\Controllers`, `App\Controllers`, `App\Modules\Controllers`) rather than `App\Modules\Foo\Controllers\Http` or `App\Modules\Foo\Controllers\Cli`.
+**Example:**
 
-***
+Registering namespaces for module controllers:
 
-### run
-
-Run application routes, loop through registered routes and executed request methods if match is  found.
-This method should be called once on `public/index.php` after calling the `context` method.
+This setup is typically implemented in your application class, either within the `constructor` or the `onCreate` method.
 
 ```php
-public run(): void
+// /app/Application.php
+namespace App;
+
+use Luminova\Core\CoreApplication;
+
+class Application extends CoreApplication
+{
+   protected function onCreate(): void
+   {
+      // Register HMVC module namespaces
+      $this->router->addNamespace('\\App\\Modules\\Admins\\Controllers\\');
+      $this->router->addNamespace('\\App\\Modules\\Users\\Controllers\\');
+   }
+}
 ```
 
-**Throws:**
-- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - Encounter error while executing controller callback.
+**Note:** For MVC and HMVC applications, base controllers are already defined in the `Luminova\Core\CoreApplication` class. Use `addNamespace` only to extend routing for additional modules or custom namespaces.
 
 ***
 
@@ -557,15 +736,15 @@ public run(): void
 Set the handler context error listener for `404` errors.
 
 ```php
-public setErrorListener(\Closure|string|array $match, \Closure|array|null $callback = null): void
+public setErrorListener(Closure|string|array $match, Closure|array|null $callback = null): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$match` | **\Closure&#124;string&#124;array<int,string>** | Matching route callback or segment pattern for error handling. |
-| `$callback` | **\Closure&#124;string&#124;array<int,string>&#124;null** | Optional error callback handler function. |
+| `$match` | **Closure&#124;string&#124;array<int,string>** | Matching route callback or segment pattern for error handling. |
+| `$callback` | **Closure&#124;string&#124;array<int,string>&#124;null** | Optional error callback handler function. |
 
 **Throws:**
 - [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - EThrows if callback is specified and `$match` is not a segment pattern.
@@ -612,7 +791,7 @@ public getBase(): string
 To access more information about the requested `URI` segments.
 
 ```php
-public getSegment(): \Luminova\Routing\Segments
+public getSegment(): Luminova\Routing\Segments
 ```
 
 **Return Value:**

@@ -1,4 +1,4 @@
-# URL Path Structure and Segmentation
+# Route URI Segment Object
 
 ***
 
@@ -10,19 +10,17 @@ View Segments is a utility class designed to assist in accessing requested view 
 
 ## Introduction
 
-View Segments" is a utility class designed to simplify the retrieval of specific segments from requested view URIs. It offers methods that allow easy access to different parts of the URI, making it convenient to extract and process relevant information.
-
-* Class namespace: `\Luminova\Routing\Segments`
+View **Segments** is a utility class designed to simplify the retrieval of specific segments from requested view URIs. It offers methods that allow easy access to different parts of the URI, making it convenient to extract and process relevant information.
 
 ***
 
-Usage in your controller class.
+**Usage in your controller class.**
 
 ```php
 $segment = $this->app->router->getSegment();
 ```
 
-Usage in routing context file `/routes/my-context.php`;
+Usage in routing context file (e.g, `/routes/web.php`);
 
 ```php
 $segment = $router->getSegment();
@@ -30,9 +28,13 @@ $segment = $router->getSegment();
 
 ***
 
-## Methods
+## Class Definition
+
+* Class namespace: `\Luminova\Routing\Segments`
 
 ***
+
+## Methods
 
 ### index
 
@@ -50,15 +52,14 @@ public index(int $index): string
 
 **Return Value:**
 
-`string` - View segment
+`string` - Return the view segment.
 
-*Example*
+**Example:**
+
+Request URL example `https://example.com/page/foo/bar/baz`.
 
 ```php 
-https://example.com/page/foo/bar/baz
-
-echo $segment->index(1);
-// foo
+echo $segment->index(1); // foo
 ```
 
 ***
@@ -73,15 +74,14 @@ public first(): string
 
 **Return Value:**
 
-`string` - First URI segment
+`string` - Return the first URI segment
 
-*Example*
+**Example:**
+
+Request URL example `https://example.com/page/foo/bar/baz`.
 
 ```php 
-https://example.com/page/foo/bar/baz
-
-echo $segment->first();
-// page
+echo $segment->first(); // page
 ```
 
 ***
@@ -96,15 +96,14 @@ public current(): string
 
 **Return Value:**
 
-`string` - Current URI segment.
+`string` - Return the current URI segment.
 
-*Example*
+**Example**
+
+Rquest URL example `https://example.com/page/foo/bar/baz`.
 
 ```php 
-https://example.com/page/foo/bar/baz
-
-echo $segment->current();
-// baz
+echo $segment->current(); // baz
 ```
 
 ***
@@ -119,15 +118,14 @@ public previous(): string
 
 **Return Value:**
 
-`string` - The segment before the last.
+`string` - Return the segment before the last.
 
-*Example*
+**Example:**
+
+Request URL example `https://example.com/page/foo/bar/baz`.
 
 ```php 
-https://example.com/page/foo/bar/baz
-
-echo $segment->previous();
-// bar
+echo $segment->previous(); // bar
 ```
 
 ***
@@ -137,9 +135,9 @@ echo $segment->previous();
 Retrieve the current view segments as an array.
 
 ```php
-public segments(): array&lt;int,string&gt;
+public segments(): array<int,string>
 ```
 
 **Return Value:**
 
-`array` - Array list of URL segments.
+`array` - Return an array list of URL segments.

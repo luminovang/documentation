@@ -1,4 +1,4 @@
-# PHP Layout Inheritance and Extension Implementation
+# PHP Template System with Layout Inheritance
 
 ***
 

@@ -1,4 +1,4 @@
-# Json Web Token (JWT) Authentication Helper
+# JWT-Based Authentication Helper Class
 
 ***
 

@@ -1,4 +1,4 @@
-# Asynchronous Background Task Queue Execution
+# Asynchronous Background Tasks Queue and Execution
 
 ***
 
@@ -25,7 +25,6 @@ The Queue Class leverages PHP **Fiber** feature for executing tasks if it is ava
 Enqueue tasks directly during initialization.
 
 ```php
-<?php
 use \Luminova\Utils\Queue;
 
 $jobs = [
@@ -58,7 +57,6 @@ $queue->run(function(array|string $result) {
 You can dynamically add tasks to the queue after initialization.
 
 ```php
-<?php
 // Enqueue a task with an identifier
 $queue->push(function() {
     // Task 1: Perform some operation

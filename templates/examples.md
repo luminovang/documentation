@@ -1,4 +1,4 @@
-# Template and View Handling Examples
+# Template View Rendering Examples
 
 ***
 
@@ -106,9 +106,9 @@ namespace App\Controllers\Http;
 use Luminova\Base\BaseController;
 use Luminova\Attributes\Route;
 use Luminova\Attributes\Error;
-use App\Controllers\Errors\ViewErrors;
+use App\Errors\Controllers\ErrorController;
 
-#[Error('api', onError: [ViewErrors::class, 'onApiError'])]
+#[Error('api', onError: [ErrorController::class, 'onApiError'])]
 class BookController extends BaseController 
 {
     #[Route('/api/books', methods: ['POST'])]
@@ -169,9 +169,9 @@ namespace App\Controllers;
 use Luminova\Base\BaseViewController;
 use Luminova\Attributes\Route;
 use Luminova\Attributes\Error;
-use App\Controllers\Errors\ViewErrors;
+use App\Errors\Controllers\ErrorController;
 
-#[Error(onError: [ViewErrors::class, 'onWebError'])]
+#[Error(onError: [ErrorController::class, 'onWebError'])]
 class BookController extends BaseViewController 
 {
     #[Route('/books', methods: ['GET'])]
@@ -209,9 +209,9 @@ use Luminova\Base\BaseController;
 use Luminova\Email\Mailer;
 use Luminova\Attributes\Route;
 use Luminova\Attributes\Error;
-use App\Controllers\Errors\ViewErrors;
+use App\Errors\Controllers\ErrorController;
 
-#[Error(onError: [ViewErrors::class, 'onWebError'])]
+#[Error(onError: [ErrorController::class, 'onWebError'])]
 class BookController extends BaseController
 {
     #[Route('/books/send', methods: ['GET'])]
@@ -254,15 +254,14 @@ Luminova automatically handles the basic headers for your template output, but t
 Here's how you can do it:
 
 ```php
-<?php 
 namespace App\Controllers;
 
 use Luminova\Base\BaseViewController;
 use Luminova\Attributes\Route;
 use Luminova\Attributes\Error;
-use App\Controllers\Errors\ViewErrors;
+use App\Errors\Controllers\ErrorController;
 
-#[Error(onError: [ViewErrors::class, 'onWebError'])]
+#[Error(onError: [ErrorController::class, 'onWebError'])]
 class MyController extends BaseViewController 
 {
     #[Route('/books', methods: ['GET'])]
@@ -313,15 +312,14 @@ Automatic caching requires no additional implementation after enabling the cachi
 This method allows you to render cached content if it is still valid. The callback function will only be executed if the cache does not exist or has expired.
 
 ```php
-<?php 
 namespace App\Controllers;
 
 use Luminova\Base\BaseViewController;
 use Luminova\Attributes\Route;
 use Luminova\Attributes\Error;
-use App\Controllers\Errors\ViewErrors;
+use App\Errors\Controllers\ErrorController;
 
-#[Error(onError: [ViewErrors::class, 'onWebError'])]
+#[Error(onError: [ErrorController::class, 'onWebError'])]
 class MyController extends BaseViewController 
 {
     #[Route('/books', methods: ['GET'])]
@@ -349,16 +347,15 @@ class MyController extends BaseViewController
 This approach uses a traditional if-else check to first verify if the cache has expired. If the cache is still valid, the existing content is rendered when you call the `reuse` method. If the cache has expired, new content is generated to refresh the content.
 
 ```php
-<?php 
-namespace App\Controllers;
+namespace App\Controllers\Http;
 
 use Luminova\Base\BaseViewController;
+use Luminova\Core\CoreApplication;
 use Luminova\Attributes\Route;
 use Luminova\Attributes\Error;
-use App\Controllers\Errors\ViewErrors;
-use Luminova\Core\CoreApplication;
+use App\Errors\Controllers\ErrorController;
 
-#[Error(onError: [ViewErrors::class, 'onWebError'])]
+#[Error(onError: [ErrorController::class, 'onWebError'])]
 class MyController extends BaseViewController 
 {
     #[Route('/books', methods: ['GET'])]

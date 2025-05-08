@@ -1,4 +1,4 @@
-# Request Route Attributes
+# Unified Route Attribute for HTTP and CLI
 
 ***
 
@@ -10,47 +10,49 @@ Leverage the power and flexibility of route attribute, in Luminova, making your 
 
 ## Introduction
 
-The `Route` attribute in Luminova is designed to provide a convenient way to define `HTTP` and `CLI` routes directly within your Controller methods. This attribute is repeatable and can be applied to methods, enabling flexible and straightforward routing for your web and CLI applications.
+The `Route` attribute in Luminova provides a convenient way to define `HTTP` and `CLI` routes directly within your controller methods. It is **repeatable** and can be applied to multiple methods, offering flexible and straightforward routing for both web and CLI applications.
 
-Additionally, Luminova offers a convenient way through the `NovaKit` command to generate routes based on attribute definitions. This is particularly useful for large projects where you want to compare the performance of using attributes versus configuring routes based on the default context and route methods.
+Luminova uses `PHPToken` to process controller classes and match the appropriate controller to handle a given request.  
+While this may seem intensive, Luminova offers **optional attribute caching** in production environments to avoid re-parsing attributes on every request, significantly enhancing performance.
 
-Running the command `php novakit context --export-attr` will export all attributes, create the necessary files and contexts to load each route, and disable the use of PHP attributes for routing.
+Additionally, Luminova provides a helpful command through `NovaKit` to generate routes based on attribute definitions.  
+This is particularly useful for larger projects where you want to compare the performance of using attributes versus the default context-based routing system.
+
+> You can run the following command to export and cache attribute-based routes:
+
+```bash
+php novakit context --export-attr
+```
+
+This command will:
+- Export all attributes into the necessary files.
+- Create contexts to load each route efficiently.
+- Disable the runtime use of PHP attributes for routing.
 
 ***
 
-### Prefix Attribute
-
-In Luminova, the `Prefix` attribute is an optional class-level feature that enables you to define a global `URI` or `URI Patterns` for a controller. This allows the controller to handle only requests matching the specified prefix. Additionally, it supports an optional error handler for invalid URIs. This attribute optimized routing by reducing redundancy in route definitions. [Learn more in the documentation](/routing/prefix-attribute.md).
-
-***
-
-### Error Attribute
-
-The `Error` attribute is an optional class-level feature in Luminova that allows you to define a global error handler for all route methods within a controller. This ensures consistent error handling across the class and improves code maintainability by centralizing error management. [Explore more in the documentation](/routing/error-attribute.md).
-
-***
-## Getting Started
+### Getting Started
 
 To start using the `PHP` attribute for routing in Luminova, follow these steps:
 
-### 1. Enable Attribute Routing
+#### 1. Enable Attribute Routing
 
 Update your environment configuration file `.env` to enable attribute routing by setting the `feature.route.attributes` variable to `enable`.
 
-```env
+```ini
 feature.route.attributes = enable
 ```
 
-### 2. Cache Attributes
+#### 2. Cache Attributes
 
 Enabling caching of route attributes to improve performance by reducing the overhead of parsing annotations on every request. This is especially useful in production environments where routes do not change frequently.
 
-```env
+```ini
 feature.route.cache.attributes = enable
 ```
 > Cache storage directory `/writeable/caches/routes/`.
 
-### 3. Configure Route Context Initialization
+#### 3. Configure Route Context Initialization
 
 For optimal performance, set the route context initialization arguments to `Blank` or `Null` in `public/index.php` to avoid loading unnecessary contexts.
 
@@ -59,46 +61,43 @@ For optimal performance, set the route context initialization arguments to `Blan
 If your `public/index.php` router context initialization looks like this:
 
 ```php
-//public/index.php
-<?php 
-//....
+// /public/index.php
+
 Boot::http()->router->context(
-    new Prefix(Prefix::WEB, [ViewErrors::class, 'onWebError']),
-    new Prefix(Prefix::API, [ViewErrors::class, 'onApiError']),
-    new Prefix(Prefix::CLI)
+   new Prefix(Prefix::WEB, [ErrorController::class, 'onWebError']),
+   new Prefix(Prefix::API, [ErrorController::class, 'onApiError']),
+   new Prefix(Prefix::CLI)
 )->run();
 ```
 
 **Or you are using array context initialization like this:**
 
 ```php
-//public/index.php
-<?php 
-//....
+// /public/index.php
+
 Boot::http()->router->context(
-    [
-        'prefix' => 'web',
-        'error' => [ViewErrors::class, 'onWebError']
-    ],
-    [
-        'prefix' => 'api',
-        'error' => [ViewErrors::class, 'onApiError']
-    ],
-    [
-        'prefix' => 'cli',
-        'error' => null
-    ]
+   [
+      'prefix' => 'web',
+      'error' => [ErrorController::class, 'onWebError']
+   ],
+   [
+      'prefix' => 'api',
+      'error' => [ErrorController::class, 'onApiError']
+   ],
+   [
+      'prefix' => 'cli',
+      'error' => null
+   ]
 )->run();
 ```
 
-### 4. Simplify the Configuration
+#### 4. Simplify the Configuration
 
 Change the router context initialization method call to:
 
 ```php
-//public/index.php
-<?php 
-//....
+// /public/index.php
+
 Boot::http()->router->context()->run();
 ```
 
@@ -113,12 +112,77 @@ Boot::http()->router->context()->run();
 
 ***
 
+## Constants 
+
+These constants represent middleware authentication types for routes:
+
+| **Name**        | **Value**    | **Description**                                                                                   | **Use Case**                        |
+|--------------------------|--------------|---------------------------------------------------------------------------------------------------|---------------------------------------------|
+| BEFORE_MIDDLEWARE    | `before`     | Middleware executed before handling the main controller logic.                                    | HTTP authentication or pre-processing.      |
+| AFTER_MIDDLEWARE     | `after`      | Middleware executed after the main controller logic has been handled.                             | HTTP cleanup, logging, or additional tasks. |
+| GLOBAL_MIDDLEWARE    | `global`     | Middleware applied globally to all commands, regardless of group.              | Universal CLI security checks.|
+| GUARD_MIDDLEWARE     | `guard`      | Middleware executed before commands in the same CLI group are executed.                           | CLI group security checks.                  |
+
+---
+
+## Properties
+
+### pattern
+
+The `pattern` property defines the URL or command pattern that the route should match.
+
+**Examples:**
+
+- **In HTTP Controller**: `'/users/([0-9]+)'` - Matches a URL like `https://example.com/users/123`.
+- **In CLI Controller**: `'users/limit/(:int)'` - Matches a CLI command like `php index.php group-name users limit=50`.
+
+***
+
+### methods
+
+The `methods` property specifies the `HTTP` methods that the route should respond to. This is particularly useful for RESTful APIs.
+
+***
+
+### error
+
+The `error` property indicates whether this route is an error handler. Error handler routes are used to catch and handle `404` errors for specified `HTTP` methods.
+
+***
+
+### group
+
+The `group` property defines the command group name for `CLI` routes. Grouping commands helps organize related commands together and the group name service as the base command before other following commands.
+
+***
+
+### middleware
+
+The `middleware` property specifies middleware to be applied to the route. Middleware can be used to execute code before or after the main route handler.
+
+**Examples:**
+
+- `Route::BEFORE_MIDDLEWARE` - HTTP Middleware will execute before any controller route is handle.
+- `Route::AFTER_MIDDLEWARE` - HTTP Middleware will execute after the controller is handled.
+- `Route::GLOBAL_MIDDLEWARE` - CLI Middleware applies globally to all commands.
+- `Route::GUARD_MIDDLEWARE` - CLI Middleware applies to a specific command group.
+
+***
+
 ### Route Construct
 
-Route attribute constructor for both `HTTP` and `CLI`.
+Defines a repeatable attribute for registering `HTTP` and `CLI` routes.
+
+This attribute maps controller methods to specific URI patterns and HTTP methods (for web) or command patterns (for CLI), with optional middleware and error handling support.
 
 ```php
-public __construct(string $pattern = '/', array $methods = ['GET'], bool $error = false, string|null $group = null, string|null $middleware = null): mixed
+public __construct(
+   string $pattern = '/', 
+   array $methods = ['GET'], 
+   bool $error = false, 
+   ?string $group = null, 
+   ?string $middleware = null
+): mixed
 ```
 
 **Parameters:**
@@ -126,10 +190,14 @@ public __construct(string $pattern = '/', array $methods = ['GET'], bool $error 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$pattern` | **string** | The route pattern for HTTP (e.g. `/`, `/blog/([0-9-.]+)`)<br />or CLI command pattern (e.g. `blogs`, `blogs/limit/(:int)`). |
-| `$methods` | **array** | The HTTP methods this route should responds to. (default: `['GET']`).<br/>Optionally use `['ANY']` for any HTTP methods. |
-| `$error` | **bool** | Indicates if this is an error handler route for HTTP methods. |
-| `$group` | **string&#124;null** | The command group name for CLI route (default: `NULL`). |
-| `$middleware` | **string&#124;null** | Middleware type (default: `NULL`).<br />-   HTTP middleware route - `before` or `after`.<br />-   CLI middleware rote `global` for global middleware or `before` for command group middleware. |
+| `$methods` | **array** | The HTTP methods this route responds to (default: `['GET']`).<br/>Optionally use `['ANY']` to match all HTTP methods for enhanced performance. |
+| `$error` | **bool** | Indicates if this route-method is an error handler for HTTP routes. |
+| `$group` | **string&#124;null** | The CLI command group this route belongs to (default: `null`).<br/>Applicable only to CLI command controllers. |
+| `$middleware` | **string&#124;null** | Optional middleware authentication assignment e.g `Route::BEFORE_MIDDLEWARE` (default: `null`). |
+
+**Throw:**
+
+- [\Luminova\Exceptions\RouterException](/running/exceptions.md#routerexception) - If the provided middleware handler is not a valid supported in context.
 
 ***
 
@@ -142,7 +210,7 @@ The `HTTP` routes can respond to basic HTTP methods such as `GET`, `POST`, `PUT`
 In this example, we assume you have a controller class named `RequestController`.
 
 ```php
-// /app/controllers/Http/RequestController.php
+// /app/Controllers/Http/RequestController.php
 
 namespace App\Controllers\Http;
 
@@ -151,28 +219,29 @@ use Luminova\Attributes\Route;
 
 class RequestController extends BaseController
 {
-    // Your controller methods
+   // Your controller methods
 }
 ```
+
+---
 
 ### Defining Routes with Attributes
 
 #### Basic HTTP Route
 
-Define an HTTP route that responds to `GET` requests at the root URL (`/`).
+Defines an HTTP route that responds to `GET` requests at the root URL (`/`):
 
 ```php
 #[Route('/', methods: ['GET'])]
 public function index(): int
 {
-    // Your code here
+   // Your code here
 }
 ```
 
 **Equivalent Router Method**
 
 ```php
-<?php 
 $route->get('/', 'RequestController::index');
 ```
 
@@ -181,20 +250,20 @@ $route->get('/', 'RequestController::index');
 Define an HTTP route with middleware that executes before the main route handler.
 
 ```php
-#[Route('/', methods: ['GET'], middleware: 'before')]
+#[Route('/', methods: ['GET'], middleware: Route::BEFORE_MIDDLEWARE)]
 public function middleware(): int
 {
-    // Your code here
+   // Your code here
 }
 ```
 
 **Equivalent Router Method**
 
 ```php
-<?php 
 $route->middleware('GET', '/', 'RequestController::middleware');
 ```
 ***
+
 ## CLI Examples
 
 CLI behaves differently from HTTP; methods like `POST`, `GET`, and other HTTP methods are not supported. To define commands for CLI, you can use the `command` method from the router class or the `Route` pattern argument with the `group` in the attribute definition.
@@ -210,12 +279,16 @@ namespace App\Controllers\Cli;
 
 use Luminova\Base\BaseCommand;
 use Luminova\Attributes\Route;
+use Luminova\Attributes\Group;
 
+#[Group(name: 'bar')]
 class CommandController extends BaseCommand
 {
-    // Your CLI controller methods
+   // Your CLI controller methods
 }
 ```
+
+---
 
 ### Defining Routes with Attributes
 
@@ -227,131 +300,63 @@ Define a CLI route for the command `foo` within the `bar` group. Command: `php i
 #[Route('foo', group: 'bar')]
 public function fooMethod(): int
 {
-    // Your code here
+   // Your code here
 }
 ```
 
 **Equivalent Router Method**
 
 ```php
-<?php 
-$route->group('bar', static function(Router $router){
-    $router->command('foo', 'CommandController::fooMethod');
+$route->group('bar', static function(Router $router) {
+   $router->command('foo', 'CommandController::fooMethod');
 });
 ```
 
+---
+
 #### CLI Route with Middleware
 
-For `CLI` middleware, it support only `global` and `before` middleware.
+For `CLI` middleware, it support only `Route::GLOBAL_MIDDLEWARE` and `Route::GUARD_MIDDLEWARE` middleware.
 
 Define a CLI route with middleware that executes before the command group handler.
 
 ```php
-#[Route(group: 'bar', middleware: 'before')]
+#[Route(group: 'bar', middleware: Route::GUARD_MIDDLEWARE)]
 public function middleware(): int
 {
-    // Your code here
+   // Your code here
 }
 ```
 
 **Equivalent Router Method**
 
 ```php
-<?php 
 $route->group('bar', static function(Router $router){
-    $router->before('bar', 'CommandController::middleware');
-    // Commands
+   $router->guard('bar', 'CommandController::middleware');
+   // Commands
 });
 ```
 
 #### Global Command Middleware
 
-Define a global command middleware that executes before any command. The middleware name can be `global`.
+Define a global command middleware that executes before any command. The middleware name can be `Route::GLOBAL_MIDDLEWARE`.
 
 ```php
-#[Route(group: 'bar', middleware: 'global')]
-// Or #[Route(group: 'bar', middleware: 'before')]
+#[Route(group: 'bar', middleware: Route::GLOBAL_MIDDLEWARE)]
 public function middleware(): int
 {
-    // Your code here
+   // Your code here
 }
 ```
 
 **Equivalent Router Method**
 
 ```php
-<?php 
-$router->before('global', 'CommandController::middleware');
+$router->guard('global', 'CommandController::middleware');
 $route->group('group-name', static function(Router $router){
     // Commands
 });
 ```
-
-***
-
-## Property Descriptions
-
-### pattern
-
-The `pattern` property defines the URL or command pattern that the route should match.
-
-```php
-public string $pattern = '/';
-```
-
-- **HTTP Example**: `'/users/([0-9]+)'` - Matches a URL like `https://example.com/users/123`.
-- **CLI Example**: `'users/limit/(:int)'` - Matches a CLI command like `php index.php group-name users limit=50`.
-
-***
-
-### methods
-
-The `methods` property specifies the `HTTP` methods that the route should respond to. This is particularly useful for RESTful APIs.
-
-```php
-public array $methods = ['GET'];
-```
-
-- **Example**: `['GET', 'POST']` - The route will respond to both `GET` and `POST` requests.
-
-***
-
-### error
-
-The `error` property indicates whether this route is an error handler. Error handler routes are used to catch and handle `404` errors for specified `HTTP` methods.
-
-```php
-public bool $error = false;
-```
-
-- **Example**: `true` - Marks the route as an error handler.
-
-***
-
-### group
-
-The `group` property defines the command group name for `CLI` routes. Grouping commands helps organize related commands together and the group name service as the base command before other following commands.
-
-```php
-public ?string $group = null;
-```
-
-- **Example**: `'admin'` - Groups the command under the `php index admin <command> <options> <arguments>` group.
-
-***
-
-### middleware
-
-The `middleware` property specifies middleware to be applied to the route. Middleware can be used to execute code before or after the main route handler.
-
-```php
-public ?string $middleware = null;
-```
-
-- **HTTP Before Middleware Example**: `'before'` - Middleware will execute before the route handler.
-- **HTTP After Middleware Example**: `'after'` - Middleware will execute after the route handler.
-- **CLI Global Middleware Example**: `'global'` - Middleware applies globally to CLI commands.
-- **CLI Before Group Middleware Example**: `'before'` - Middleware applies to a specific command group.
 
 ***
 
@@ -392,3 +397,11 @@ When attribute caching is enabled, changes made or new attributes added will not
 ```bash
 php novakit context --clear-attr
 ```
+
+---
+
+### Related Attributes
+
+- [Prefix Attribute](/routing/prefix-attribute.md) - HTTP controller class level attribute for URI prefixing.
+- [Error Attribute](/routing/error-attribute.md) - HTTP controller class level attribute for global URI prefix or controller error handling.
+- [Group Attribute](/routing/cli-group-attribute.md) - CLI controller class level attribute for command group prefixing.
