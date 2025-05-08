@@ -1,4 +1,4 @@
-# Adhering to Class Interface Contract Rules
+# Class Interface Contract Rules and Adherence
 
 ***
 
@@ -10,7 +10,7 @@ Luminova Interfaces are fundamental for establishing standardized contracts betw
 
 ## Introduction
 
-Interfaces define clear communication contracts between components in object-oriented programming, playing a critical role in building robust, maintainable systems. They ensure consistency across an application by enforcing specific structures and data types.
+Interfaces define clear communication contracts between components in object-oriented programming, playing a critical role in building robust and maintainable systems. They ensure consistency across an application by enforcing specific structures and data types.
 
 All available interfaces in Luminova are located in the `/system/Interface/` directory and share a common namespace prefix: `Luminova\Interface\`. These interfaces provide a unified structure for interaction across various components, ensuring consistency and flexibility throughout the framework.
 
@@ -22,7 +22,6 @@ In Luminova, interfaces are used to define contracts for classes that implement 
 By implementing an interface, a class agrees to provide specific functionality defined by that interface. This allows for better structure and flexibility in your code, allowing extending capabilities.
 
 ```php
-<?php
 use Luminova\Interface\FooInterface;
 
 class MyClass implements FooInterface
@@ -173,6 +172,14 @@ Interface for validating user-submitted input data against predefined rules. It 
 
 ---
 
+### AuthenticatorInterface
+
+**Namespace:** `Luminova\Interface\AuthenticatorInterface`
+
+This interface defines the contract for implementing Time-Based One-Time Password (TOTP) generation and validation. It serves as the foundation for managing secrets, generating QR codes, and validating TOTP codes, leveraging tools like Google Authenticator or similar implementations. 
+
+---
+
 ### AiInterface
 
 **Namespace:** `Luminova\Interface\AiInterface`
@@ -189,12 +196,21 @@ This interface serves as a callback signature for methods that require the Lumin
 
 ---
 
+### RoutableInterface
+
+**Namespace:** `Luminova\Interface\RoutableInterface`
+
+This interface allows for the implementation of custom routable classes. By default, Luminova routing system allows routing request to `Luminova\Base\BaseController`  and `Luminova\Base\BaseCommand`.  Classes that do not extend these must implement routable interface to ensure routability.
+
+---
+
 ### RouterInterface
 
 **Namespace:** `Luminova\Interface\RouterInterface`
 
-This interface allows for the implementation of custom routable classes. By default, Luminova routing handles `BaseController`, `BaseViewController`, and `ErrorHandlerInterface`. 
-Classes that do not extend these must implement this interface to ensure routability.
+This interface allows for the implementation of custom routing system for handling application routing operations. 
+
+> It is strongly recommended to use the default Luminova routing system to take full advantage of all built-in features and minimize implementation overhead.
 
 ---
 
@@ -209,10 +225,16 @@ The LazyInterface is designed to ensure type compatibility when working with laz
 To use the `LazyInterface`, implement it in your class:
 
 ```php
-namespace MyUtils;
+// /app/Utils/Foo.php
+
+namespace App\Utils;
+
 use Luminova\Interface\LazyInterface;
 
-class Foo implement LazyInterface{}
+class Foo implements LazyInterface
+{
+	// Foo class methods
+}
 ```
 
 **Usage Example**
@@ -221,20 +243,22 @@ Below is an example demonstrating how to use the` LazyInterface` with the `Lumin
 
 ```php
 use Luminova\Interface\LazyInterface;
-use MyUtils\Foo;
+use Luminova\Utils\LazyObject;
+use App\Utils\Foo;
 
 class SomeClass 
 {
     /**
      * Lazy-loaded instance of Foo.
      * 
-     * @var Foo<LazyInterface> $foo
+     * @var Foo<LazyInterface>|null $foo
      */
-    private Foo|LazyInterface|null $foo = null;
+    private ?LazyInterface $foo = null;
 		
-    public __construct(){
+    public __construct()
+	{
 		// Initialize the lazy-loaded instance of Foo.
-        $this->foo = Luminova\Utils\LazyObject::newObject(Foo::class);
+        $this->foo = LazyObject::newObject(Foo::class);
     }
 }
 ```

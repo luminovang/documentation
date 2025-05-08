@@ -1,10 +1,10 @@
-# PSR Nova Logger Class
+# Default PSR-Compliant Logger for Luminova Application Logging System
 
 ***
 
 ## Overview
 
-Installation guides for the PHP Luminova framework highlight the benefits of using Composer for easy maintenance and ensuring you're always up to date with the latest framework and dependency.
+The NovaLogger class is the default logging system for Luminova applications. It supports logging to files, sending logs via email, and dispatching logs to a remote server URL.
 
 ***
 
@@ -31,12 +31,12 @@ The `NovaLogger` is preconfigured as the default logger in `\Luminova\Logger\Log
 
 #### Example: Using NovaLogger
 
-Initialize NovaLogger with custom log file extension
-```php
-<?php
-use \Luminova\Logger\NovaLogger;
+Initialize NovaLogger with custom log file extension:
 
-$logger = new NovaLogger('.txt');
+```php
+use Luminova\Logger\NovaLogger;
+
+$logger = new NovaLogger('app', '.txt');
 ```
 
 Log messages asynchronously (enabled by default in the logger configuration)
@@ -53,13 +53,15 @@ $logger->write('error', 'This is a synchronous error message');
 Send logs to email
 
 ```php
-$logger->setLevel('error')->mail('peter@example.com', 'This is a log sent via email');
+$logger->setLevel('error')
+	->mail('peter@example.com', 'This is a log sent via email');
 ```
 
 Dispatch logs to a remote server
 
 ```php
-$logger->setLevel('debug')->remote('https://example.com/api/log', 'This is a log sent to a remote server');
+$logger->setLevel('debug')
+	->remote('https://example.com/api/log', 'This is a log sent to a remote server');
 ```
 
 > **Note**: When using `NovaLogger` with `\Luminova\Logger\Logger`, you can redirect logs to a file, email, or remote server by using the `dispatch` method. This ensures logs are sent to the appropriate destination based on their type.
@@ -69,16 +71,38 @@ $logger->setLevel('debug')->remote('https://example.com/api/log', 'This is a log
 ### Customization
 
 To replace `NovaLogger` with another PSR-compliant logger:
-1. Implement the `getLogger` method in `App\Config\Logger` to return your preferred logger.
-2. Ensure your custom logger adheres to the PSR-3 `LoggerInterface`. 
+1. Implement the `getLogger` method in `App\Config\Logger` to return your preferred logger. Ensure your custom logger adheres to the PSR-3 `LoggerInterface`. 
+2. Implement the `getEmailLogTemplate` to return a custom html template for mail logging, return null to use default template. 
 
 Example:
 
 ```php
-// app/Config/Logger.php
-public function getLogger(): ?LoggerInterface
+// /app/Config/Logger.php
+namespace App\Config;
+
+use Luminova\Interface\HttpRequestInterface;
+use Monolog\Logger as MonologLogger;
+use Monolog\Handler\StreamHandler;
+use Psr\Log\AbstractLogger;
+
+class Logger extends BaseConfig 
 {
-    return new MonologLogger('custom-channel');
+    public function getLogger(): ?LoggerInterface
+    {
+        return (new MonologLogger('custom-channel'))
+            ->pushHandler(new StreamHandler('path/to/your.log'));
+    }
+
+    public static function getEmailLogTemplate(
+        HttpRequestInterface $request, 
+        AbstractLogger $logger,
+        string $message, 
+        string $level, 
+        array $context
+    ): ?string 
+    {
+        return "<template>{$message}</template>";
+    }
 }
 ```
 
@@ -87,26 +111,18 @@ public function getLogger(): ?LoggerInterface
 ## Class Definition
 
 * Class namespace: `\Luminova\Logger\NovaLogger`
-* Parent class: [AbstractLogger](/Psr/Log/AbstractLogger.md)
+* Parent class: [\Psr\Log\AbstractLogger](https://www.php-fig.org/psr/psr-3/#3-psrabstractlogger)
+
+---
 
 ## Properties
-
-### path
-
-Default log path.
-
-```php
-protected static ?string $path = null;
-```
-
-***
 
 ### maxSize
 
 The maximum log size in bytes.
 
 ```php
-protected static ?int $maxSize = null;
+protected int $maxSize = 0;
 ```
 
 ***
@@ -116,17 +132,27 @@ protected static ?int $maxSize = null;
 Flag indicating if backup should be created.
 
 ```php
-protected static ?bool $createBackup = null;
+protected bool $createBackup = false;
 ```
 
 ***
 
 ### extension
 
-The log file extension type (e.g, `.txt`, `.log`)
+The log file extension type (e.g, `.txt`, `.log`).
 
 ```php
 protected string $extension = '.log';
+```
+
+***
+
+### name
+
+The logging system name (e.g, `app`, `foo`).
+
+```php
+protected string $name = 'default';
 ```
 
 ***
@@ -135,23 +161,91 @@ protected string $extension = '.log';
 
 ### constructor
 
-Initialize NovaLogger
+Initialize NovaLogger class instance.
 
 ```php
-public __construct(string $extension ='.log'): mixed
+public __construct(string $name = 'default', string $extension ='.log'): mixed
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$extension` | **string** | The log file extension type (e.g, `.txt`, `.log`). |
+| `$name` | **string** | The logging system name (default: `default`). |
+| `$extension` | **string** | The log file name extension (default: `.log`). |
+
+***
+
+### setName
+
+Sets the log name for application identifier.
+
+```php
+public setName(string $name): self
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$name` | **string** | The Logging system name. |
+
+**Return Value:**
+
+`self` -  Returns the instance of NovaLogger class.
+
+***
+
+### setMaxLogSize
+
+Sets the maximum size for log files.
+
+This method allows setting a custom maximum size for log files. When a log file reaches this size, it may trigger backup or clearing operations depending on other configuration settings.
+
+```php
+public setMaxLogSize(int $size): self
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$size` | **int** | The maximum size of the log file in bytes. |
+
+**Return Value:**
+
+`self` -  Returns the instance of NovaLogger class.
+
+***
+
+### setAutoBackup
+
+Enables or disables automatic log file backup based on maximum log size configuration.
+
+When enabled, old log files will be automatically archived to prevent excessive log size and improve performance.
+
+```php
+public setAutoBackup(bool $backup = true): self 
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$backup` | **bool** | Set to `true` to enable auto-backup, `false` to disable it (default: `true`). |
+
+**Return Value:**
+
+`self` -  Returns the instance of NovaLogger class.
 
 ***
 
 ### setLevel
 
-Sets the log level for the remote and email logging.
+Sets the default log level for the `remote` or `email` logging.
+
+When sending logs via email or to a remote server, the default log level will be use in case of failure. 
+It also serves as an indicator of log severity.
 
 ```php
 public setLevel(string $level): self
@@ -165,32 +259,10 @@ public setLevel(string $level): self
 
 **Return Value:**
 
-`self` -  Returns the current NovaLogger instance.
+`self` -  Returns the instance of NovaLogger class.
 
 > **Note:** Setting log level with this method doesn't affect `log` and `write` methods.
 > This is only for `remote` and `mail` logging, to identify the type of log level that triggered the logging.
-
-***
-
-### getHtmlMessage
-
-Generates the HTML message body for log.
-
-```php
-public getHtmlMessage(string $message, array $context = []): string
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$level` | **string** | The log level (e.g., 'error', 'info', 'debug'). |
-| `$message` | **string** | The log message. |
-| `$context` | **array** | Optional associative array providing context data. |
-
-**Return Value:**
-
-`self` - Return formatted HTML email message body.
 
 ***
 
@@ -208,36 +280,9 @@ public log(string $level, string $message, array $context = []): void
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$level` | **string** | The log level (e.g., &quot;emergency,&quot; &quot;error,&quot; &quot;info&quot;). |
+| `$level` | **string** | The log level (e.g., `emergency,` `error,` `info`). |
 | `$message` | **string** | The log message. |
 | `$context` | **array** | Optional associative array providing context data. |
-
-**Throws:**
-
-- [\Luminova\Exceptions\FileException](/running/exceptions.md#fileexception) - If unable to write log to file.
-
-***
-
-### write
-
-Writes a log message to the specified file. This doesn't support no use asynchronous logging.
-
-```php
-public write(string $level, string $message, array $context = [], bool $auth_backup = false): bool
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `$level` | **string** | The log level (e.g., 'info', 'error', 'debug'). |
-| `$message` | **string** | The primary log message. |
-| `$context` | **array** | Optional associative array providing context data. |
-| `$auth_backup` | **array** | Weather to automatically create backup if max size is reached (default: false). |
-
-**Return Value:**
-
-`bool` -  Returns true if the log written to file, false otherwise.
 
 **Throws:**
 
@@ -264,9 +309,7 @@ public mail(string $email, string $message, array $context = []): void
 | `$message` | **string** | The message to log. |
 | `$context` | **array** | Additional context data (optional). |
 
-**Return Value:**
-
-> Note: If error occurs during mailing log, file logger will be used instead.
+> **Note:** If error occurs during mailing log, file logger will be used instead.
 > If exception occurs during mailing log, file logger with level `exception` be used.
 
 ***
@@ -279,19 +322,65 @@ This method sends an error log to a specified URL endpoint with details about th
 If sending fails, it logs an error message.
 
 ```php
-public remote(string $url_endpoint, string $message, array $context = []): void
+public remote(string $url, string $message, array $context = []): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$url_endpoint` | **string** | The URL to which the log should be sent. |
+| `$url` | **string** | The URL to which the log should be sent. |
 | `$message` | **string** | The message to log. |
 | `$context` | **array** | Additional context data (optional). |
 
 > Note: If error occurs during network log, file logger will be used instead.
 > If exception occurs during network log, file logger with level `exception` be used.
+
+***
+
+### telegram
+
+Sends a log message to a Telegram chat using the Telegram Bot API.
+
+This method sends an error log to a telegram chat bot, allowing to get instant notification on telegram when array occurs in your application.
+
+```php
+public telegram(string|int $chatId, string $token, string $message, array $context = []): void
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$chatId` | **string\|int** | The telegram chat ID to send the message to. |
+| `$string` | **string** | The telegram bot token. |
+| `$message` | **string** | The log message to send. |
+| `$context` | **array** | Additional contextual data related to the log message. |
+
+**Setup Steps for Telegram Integration**  
+
+**1. Create a Telegram Bot**  
+- Open [BotFather](https://t.me/botfather).  
+- Create a new bot and copy the generated **bot token**.  
+
+**2. Manually Configure Environment Variables**  
+- Send a message (e.g., `"Hi!"`) to your bot.  
+- Retrieve your **chat ID** using the following API:  
+  ```bash
+  https://api.telegram.org/bot<TOKEN>/getUpdates
+  ```
+- Set the environment variables in your configuration for global use:  
+  ```ini
+  telegram.bot.token = <TOKEN>
+  telegram.bot.chat.id = <CHAT_ID>
+  ```
+
+**3. Automatically Configure via CLI**  
+Use the `novakit` command to set up the Telegram bot:  
+```bash
+php novakit env:setup -t=telegram
+Enter your Telegram bot token: <TOKEN>
+```
 
 ***
 
@@ -317,24 +406,50 @@ public clear(string $level): bool
 
 ### message
 
-Formats a log message with the given level, message, and optional context.
+Constructs a formatted log message with an ISO 8601 timestamp (including microseconds).
 
 ```php
-public static message(string $level, string $message, array $context = [], bool $html_context = false): string
+public message(string $level, string $message, array $context = [], bool $htmlFormat = false): string
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$level` | **string** | The log level (e.g., 'INFO', 'ERROR'). |
+| `$level` | **string** | The log level (e.g., `LogLevel::DEBUG`, `info`, `error`). |
 | `$message` | **string** | The primary log message. |
-| `$context` | **array** | Optional associative array providing context data. |
-| `$html_context` | **bool** | If true the context will be formatted as HTML `&lt;pre&gt;&lt;code&gt;` (default: false). |
+| `$context` | **array<string,mixed>** | Optional associative array providing context data. |
+| `$htmlFormat` | **bool** | Whether to format the message and context as HTML (default: false).|
 
 **Return Value:**
 
 `string` -  Return the formatted log message.
+
+***
+
+### write
+
+Writes a log message to the specified file. This doesn't support no use asynchronous logging.
+
+```php
+protected write(string $level, string $message, array $context = []): bool
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$level` | **string** | The log level (e.g., 'info', 'error', 'debug'). |
+| `$message` | **string** | The primary log message. |
+| `$context` | **array** | Optional associative array providing context data. |
+
+**Return Value:**
+
+`bool` -  Returns true if the log written to file, false otherwise.
+
+**Throws:**
+
+- [\Luminova\Exceptions\FileException](/running/exceptions.md#fileexception) - If unable to write log to file.
 
 ***
 
@@ -343,12 +458,15 @@ public static message(string $level, string $message, array $context = [], bool 
 Creates a backup of the log file if it exceeds a specified maximum size.
 
 ```php
-protected backup(string $filepath, string $level): void
+public backup(string $level): bool
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$filepath` | **string** | The path to the current log file. |
-| `$level` | **string** | The log level, used in the backup file's naming convention. |
+| `$level` | **string** | The log level to create backup for. |
+
+**Return Value:**
+
+`bool` -  Return true if the backup was created, otherwise false.

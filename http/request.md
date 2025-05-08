@@ -1,18 +1,24 @@
-# Incoming HTTP Request Management Class
+# Initializing and Handling Incoming HTTP Requests
 
 ***
 
 ## Overview
 
-The Request class plays a crucial role in web applications by providing a structured and simple way to handle incoming HTTP requests and responses, providing methods for safe access and manipulation.
+Incoming HTTP request class, offering a secure and consistent interface to retrieve query parameters, form inputs, headers, files, and server information, enabling easy request handling.
 
 ***
 
 ## Introduction
 
-The `Request` class represents an incoming HTTP request to a server, encapsulating various components such as headers, query parameters, form data, and uploaded files. This class offers a structured approach to access and manipulate incoming HTTP requests, including built-in authentication mechanisms to validate requests based on origin, proxies, or allowed domains.
+The `Request` class represents an incoming HTTP request, encapsulating all relevant data sent by the client, including headers, query parameters, form inputs, cookies, server variables, and uploaded files. It provides a structured and secure interface for accessing and manipulating request data, ensuring consistency across web applications.
 
-## Accessing the Request Object
+In addition to basic data retrieval, the `Request` class includes built-in authentication mechanisms, allowing validation of requests based on trusted origins, proxy headers, or allowed domain rules. This makes it easier to implement security measures such as CSRF protection, origin checks, and proxy validation without adding additional layers of complexity.
+
+By abstracting low-level server interactions, the `Request` class helps request handling, improves application security, and simplifies application development in HTTP-based services.
+
+---
+
+## Accessing Object
 
 The request object can be accessed in multiple ways, depending on the context. You can use the global helper function, the `Factory` class, or the `Controller` class.
 
@@ -99,14 +105,14 @@ This constructor optionally accept request properties like method, URI, body, fi
 
 ```php
 public function __construct(
-    private ?string $method = null,
-    private ?string $uri = null,
-    private array $body = [],
-    private array $files = [],
-	private array $cookies = [],
-    private ?string $raw = null,
-    ?array $server = null,
-    ?array $headers = null
+   private ?string $method = null,
+   private ?string $uri = null,
+   private array $body = [],
+   private array $files = [],
+   private array $cookies = [],
+   private ?string $raw = null,
+   ?array $server = null,
+   ?array $headers = null
 )
 ```
 
@@ -218,6 +224,27 @@ public setField(string $field, mixed $value, ?string $method = null): self
 
 ***
 
+### removeField
+
+Remove a specific field from the request body for the given HTTP method.
+
+```php
+public removeField(string $field, ?string $method = null): self
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$field` | **string** | The name of the field to remove. |
+| `$method` | **string\|null** | Optional HTTP method, if null the current request method will be used (e.g, `GET`, `POST`). |
+
+**Return Value:**
+
+`self` - Returns the instance request class.
+
+***
+
 ### getGet
 
 Get a field value from HTTP `GET` request method or entire fields if `$field` parameter is `null`.
@@ -230,7 +257,7 @@ public getGet(string|null $field, mixed $default = null): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$field` | **string\|null** | The field key to retrieve the value from. |
 | `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
@@ -251,7 +278,7 @@ public getPost(string|null $field, mixed $default = null): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$field` | **string\|null** | The field key to retrieve the value from. |
 | `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
@@ -272,7 +299,7 @@ public getPut(string|null $field, mixed $default = null): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$field` | **string\|null** | The field key to retrieve the value from. |
 | `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
@@ -293,7 +320,7 @@ public getOptions(string|null $field, mixed $default = null): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$field` | **string\|null** | The field key to retrieve the value from. |
 | `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
@@ -314,7 +341,7 @@ public getPatch(string|null $field, mixed $default = null): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$field` | **string\|null** | The field key to retrieve the value from. |
 | `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
@@ -335,7 +362,7 @@ public getHead(string|null $field, mixed $default = null): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$field` | **string\|null** | The field key to retrieve the value from. |
 | `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
@@ -356,7 +383,7 @@ public getConnect(string|null $field, mixed $default = null): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$field` | **string\|null** | The field key to retrieve the value from. |
 | `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
@@ -377,7 +404,7 @@ public getTrace(string|null $field, mixed $default = null): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$field` | **string\|null** | The field key to retrieve the value from. |
 | `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
@@ -398,7 +425,7 @@ public getPropfind(string|null $field, mixed $default = null): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$field` | **string\|null** | The field key to retrieve the value from. |
 | `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
@@ -419,7 +446,7 @@ public getMkcol(string|null $field, mixed $default = null): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$field` | **string\|null** | The field key to retrieve the value from. |
 | `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
@@ -440,7 +467,7 @@ public getCopy(string|null $field, mixed $default = null): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$field` | **string\|null** | The field key to retrieve the value from. |
 | `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
@@ -461,7 +488,7 @@ public getMove(string|null $field, mixed $default = null): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$field` | **string\|null** | The field key to retrieve the value from. |
 | `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
@@ -482,7 +509,7 @@ public getLock(string|null $field, mixed $default = null): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$field` | **string\|null** | The field key to retrieve the value from. |
 | `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
@@ -503,12 +530,54 @@ public getUnlock(string|null $field, mixed $default = null): mixed
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$field` | **string\|null** | The field key to retrieve the value value from. |
+| `$field` | **string\|null** | The field key to retrieve the value from. |
 | `$default` | **mixed** | An optional default value to return if the field is not found (default: null). |
 
 **Return Value:**
 
 `mixed` - Return the value from HTTP request method body based on field name.
+
+***
+
+### getAny
+
+Get a value from the `ANY` incoming HTTP request method.
+
+```php
+public getAny(string $field, mixed $default = null): mixed
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$field` | **string** | The field key to retrieve the value from. |
+| `$default` | **mixed** | An optional default value to return if the field is not found (default: `null`). |
+
+**Return Value:**
+
+`mixed` - Return the value from current HTTP request method, based on field name.
+
+**Throws:**
+
+- [\Luminova\Exceptions\InvalidArgumentException](/running/exceptions.md#invalidargumentexception) - Throw if field name is not provided.
+
+**Example:**
+
+This can be useful for debugging, when you are sure that all request must include a specific field.
+
+```php
+try{
+	$this->doSomething();
+}catch(Exception $e){
+	Logger::error(
+		'Error while processing: ' . $e->getMessage(), 
+		[
+			'device_id' => $this->request->getAny('device')
+		]
+	)
+}
+```
 
 ***
 
@@ -614,7 +683,6 @@ To learn more about [File Upload Object](/http/files.md), refer to the documenta
 Handle file upload based on multiple files or single file.
 
 ```php
-<?php
 use Luminova\Storages\Uploader;
 use Luminova\Http\File;
 use \Generator;
@@ -658,13 +726,13 @@ public getFiles(): array
 
 ```php
 [
-    'images' => [
-        'name'      => ['file1.jpg', 'file2.png', 'file3.gif'],
-        'type'      => ['image/jpeg', 'image/png', 'image/gif'],
-        'tmp_name'  => ['/tmp/phpYzdqkD', '/tmp/phpeEwEWq', '/tmp/php7sdfXy'],
-        'error'     => [0, 0, 0],
-        'size'      => [123456, 234567, 345678]
-    ]
+   'images' => [
+      'name'      => ['file1.jpg', 'file2.png', 'file3.gif'],
+      'type'      => ['image/jpeg', 'image/png', 'image/gif'],
+      'tmp_name'  => ['/tmp/phpYzdqkD', '/tmp/phpeEwEWq', '/tmp/php7sdfXy'],
+      'error'     => [0, 0, 0],
+      'size'      => [123456, 234567, 345678]
+   ]
 ];
 ```
 
@@ -672,29 +740,29 @@ public getFiles(): array
 
 ```php
 [
-    'images' => [
-        [
-            'name' => 'file1.jpg',
-            'type' => 'image/jpeg',
-            'tmp_name' => '/tmp/phpYzdqkD',
-            'error' => 0,
-            'size' => 123456
-        ],
-        [
-            'name' => 'file2.png',
-            'type' => 'image/png',
-            'tmp_name' => '/tmp/phpeEwEWq',
-            'error' => 0,
-            'size' => 234567
-        ],
-        [
-            'name' => 'file3.gif',
-            'type' => 'image/gif',
-            'tmp_name' => '/tmp/php7sdfXy',
-            'error' => 0,
-            'size' => 345678
-        ]
-    ]
+   'images' => [
+      [
+         'name' => 'file1.jpg',
+         'type' => 'image/jpeg',
+         'tmp_name' => '/tmp/phpYzdqkD',
+         'error' => 0,
+         'size' => 123456
+      ],
+      [
+         'name' => 'file2.png',
+         'type' => 'image/png',
+         'tmp_name' => '/tmp/phpeEwEWq',
+         'error' => 0,
+         'size' => 234567
+      ],
+      [
+         'name' => 'file3.gif',
+         'type' => 'image/gif',
+         'tmp_name' => '/tmp/php7sdfXy',
+         'error' => 0,
+         'size' => 345678
+      ]
+   ]
 ];
 ```
 
@@ -704,7 +772,7 @@ public getFiles(): array
 
 ### getMethod
 
-Get the current request method.
+Retrieves actual HTTP method if provided by the client.
 
 ```php
 public getMethod(): string
@@ -712,7 +780,39 @@ public getMethod(): string
 
 **Return Value:**
 
-`string` - Return the HTTP request method.
+`string` - Return the HTTP method in uppercase.
+
+***
+
+### getAnyMethod
+
+Retrieves the HTTP method of the request or method overrides.
+
+If the original request method is POST and a method override is present (e.g., via `_method` field or `X-HTTP-Method-Override` header), the overridden method is returned instead. This is useful for supporting RESTful methods when method is spoofed from POST requests.
+
+```php
+public getAnyMethod(): string
+```
+
+**Return Value:**
+
+`string` - Return the HTTP method or override method.
+
+***
+
+### getMethodOverride
+
+Retrieves the HTTP method override if provided by the client.
+
+This method checks for the "X-HTTP-Method-Override" value first in the request headers. If found, the override method is returned in uppercase.
+
+```php
+public getMethodOverride(): ?string
+```
+
+**Return Value:**
+
+`string|null` - Return the overridden HTTP method in uppercase, or null if not set.
 
 ***
 
@@ -1138,12 +1238,12 @@ public isProxy(): bool
 
 ***
 
-### isAJAX
+### isAjax
 
 Check if request is `ajax` request, see if a request contains the `HTTP_X_REQUESTED_WITH` header.
 
 ```php
-public isAJAX(): bool
+public isAjax(): bool
 ```
 
 **Return Value:**
@@ -1172,7 +1272,7 @@ public isApi(): bool
 Check if the request origin matches the current application host.
 
 ```php
-public isSameOrigin(bool $subdomains = false): bool
+public isSameOrigin(bool $subdomains = false, bool $strict = false): bool
 ```
 
 **Parameters:**
@@ -1180,6 +1280,7 @@ public isSameOrigin(bool $subdomains = false): bool
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$subdomains` | **bool** | Whether to consider sub-domains or not (default: false). |
+| `$strict` | **bool** | When set to true, if request origin is empty it checks for referer if also empty return false (default: false).<br/>If set to false, it checks for only the request origin is empty it returns true without further validation. |
 
 **Return Value:**
 

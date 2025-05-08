@@ -32,12 +32,12 @@ You can configure the features in your environment variable file `/.env`, by sim
 <?php 
 namespace App\Controllers\Http;
 
-use App\Controllers\Errors\ViewErrors;
+use App\Errors\Controllers\ErrorController;
 use Luminova\Base\BaseController;
 use Luminova\Attributes\Route;
 use Luminova\Attributes\Error;
 
-#[Error('web', pattern: '/.*', onError: [ViewErrors::class, 'onWebError'])]
+#[Error('web', pattern: '/.*', onError: [ErrorController::class, 'onWebError'])]
 class MyController extends BaseController
 {
 	#[Route('/', methods: ['GET', 'POST'])]

@@ -1,4 +1,4 @@
-# HTTP Socket Server for Real-Time Communication
+# Real-Time Communication using HTTP Socket Server
 
 ***
 

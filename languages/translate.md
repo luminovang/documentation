@@ -1,4 +1,4 @@
-# Application Translation Integration
+# Multi-Language Support and Translation Integration
 
 ***
 
@@ -9,8 +9,6 @@ With the built-in language helper class and global helper function lang, you can
 ***
 
 ## Introduction
-
-#### Introduction to Luminova's Web Translation
 
 Translation is a crucial aspect of web development, especially for applications that target diverse audiences speaking different languages. By providing translations for various languages, developers can ensure that their applications are accessible and user-friendly for people around the world.
 
@@ -24,13 +22,14 @@ In this guide, we'll explore how to set up and manage translation locals, integr
 
 Here are a couple of steps to follow to create a translation:
 
+---
+
 ### lang
 
-The `lang` helper function allows you to translate between different languages anywhere in your application where translation may be needed.
+The global helper function `lang`  allows you to translate between different languages anywhere in your application where translation may be needed.
 
 ```php
-<?php
-function lang(
+lang(
     string $lookup,
     ?string $default = null,
     ?string $locale = null,
@@ -47,18 +46,20 @@ function lang(
 | `$locale` | **?string** | The locale to use for translation. (Default is null drive from env `app.locale`)
 | `$placeholders` | **array** | Optional: An associative or int-indexed array of placeholders to replace in the translated string. |
 
-> *Note:*
-> The first part of the lookup key must match the language file name before `xx.php`.
-> Example: if you have a file named `Blog.fr.php`, then the lookup key must start with `Blog`, followed by the translation array key, using dot annotation for nested lookup.
-		
+> **Note:**
+> The first part of the lookup key must match the language file name before `Foo.php`.
+>> **Example:**
+>>  if you have a file named `Blog.fr.php`, then the lookup key must start with `Blog`, followed by the translation array key, using dot annotation for nested lookup.
+
+**Example:**
+
 ```php 
-<?php 
-echo lang('Context.foo.bar', 'Default message', 'fr', ['name' => 'Peter', '20']);
+echo lang('Users.notify', 'Default message', 'fr', ['name' => 'Peter', '20']);
 ```
 
-> This will output the translated string for the key `Context.foo.bar` in French (fr). 
-> If the translation is not found, it will output the default message 'Default message'. 
-> The placeholders {name} and {0} in the translated string will be replaced with 'Peter' and '20' respectively.
+> This will output the translated string for the key `Users.notify` in French (fr). 
+> If the translation is not found, it will output the default message `Default message`. 
+> The placeholders `{name}` and `{0}` in the translated string will be replaced with `Peter` and `20` respectively.
 
 ***
 
@@ -77,7 +78,8 @@ The array `keys` will serve as a lookup identifier to locate each translation in
 **Users.en.php Example**
 
 ```php
-<?php
+// /app/Languages/Users.en.php
+
 return [
     'invalid_username' => 'Invalid username',
     'notify' => 'Hello, {name}! You have {0} new messages.',
@@ -90,7 +92,8 @@ return [
 **Users.fr.php Example**
 
 ```php
-<?php
+// /app/Languages/Users.fr.php
+
 return [
     'invalid_username' => 'Nom d\'utilisateur invalide',
     'notify' => 'Bonjour, {name}! Vous avez {0} nouveaux messages.',
@@ -100,7 +103,8 @@ return [
 ];
 ```
 
-In above examples, the array keys and placeholders are left as they are in all translation of same context. While the part of the values are translated depending on the local.
+> In above examples, the array keys and placeholders are left as they are in all translation of same context. 
+> While the part of the values are translated depending on the local.
 
 ***
 
@@ -109,26 +113,70 @@ In above examples, the array keys and placeholders are left as they are in all t
 To translate between different languages, you can set the default locale in the `env` file. Additionally, implement a switcher in your application to allow users to change between locales for other languages translation.
 
 ```php
-<?php 
-echo lang('Users.notify', null, null, ['name' => 'Peter', '20']);
-//Hello, Peter! You have 20 new messages.
+echo lang(
+    'Users.notify', // Context
+    null, // No Default
+    null, // Use Default Local (en)
+    ['name' => 'Peter', '20'] // Placeholders
+);
+
+//Output: Hello, Peter! You have 20 new messages.
 ```
 
 Change locale from `English` to `French`
+
 ```php 
-<?php 
-echo lang('Users.notify', null, 'fr', ['name' => 'Peter', '20']);
-//Bonjour, Peter! Vous avez 20 nouveaux messages.
+echo lang(
+    'Users.notify', // Context
+    null, // No Default
+    'fr', // Use French Local (fr)
+    ['name' => 'Peter', '20'] // Placeholders
+);
+
+//Output: Bonjour, Peter! Vous avez 20 nouveaux messages.
 ```
 
 ****
 
-To temporarily change the locale, you can use the `setenv` function or store the user-selected locale in a session or cookie.
+### Change Local 
+
+To temporarily change the locale for runtime session, you can use the `setenv` function or store the user-selected locale in a session or cookie.
+
+**Envirnment Variable:**
 
 ```php
-<?php
+$locale = 'fr';
 setenv('app.locale', $locale, false);
+
+// Get Local from session
+
+$local = end('app.locale');
+// Output: fr
 ```
 
 > **Note:** 
-> Avoid using `locale($locale)` or `setenv('app.locale', $locale, true)` for temporary changes, as this will update the locale in your `env` file, affecting all other users and forcing them to use the same locale as the current user.
+> Avoid using `locale($locale)` or `setenv('app.locale', $locale, true)` for temporal changes, as this will update the locale in your `env` file, affecting all other users and forcing them to use the same locale as the current user.
+
+**In Session**
+
+```php
+$locale = 'fr';
+session()->set('users.locale', $locale);
+
+// Get Local from session
+
+$local = session('users.locale');
+// Output: fr
+```
+
+**In Cookie**
+
+```php
+$locale = 'fr';
+cookie('users.locale', $locale);
+
+// Get Local from session
+
+$local = cookie('users.locale')->get();
+// Output: fr
+```

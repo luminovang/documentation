@@ -1,4 +1,4 @@
-# PSR Aware Logger Interface
+# PSR Aware Logger for Custom Application Logging
 
 ***
 
@@ -16,32 +16,103 @@ This design allows easy swapping of logging implementations and ensures compatib
 
 The primary method in `LoggerAware` is `setLogger`, which injects a logger instance into the implementing class.
 
+**Primary Benefits:**
+- **Flexibility:** Easily switch between different logging implementations.  
+- **Standards Compliance:** Fully compatible with any PSR-compliant logger. 
+
 ---
 
 ### Usage Examples
 
-#### Using a Class Implementing `\Psr\Log\LoggerInterface`
+Using a custom PSR logger class.
+
+**Implement your custom class:**
+
+```php
+namespace App\Utils;
+
+use Psr\Log\LoggerInterface;
+
+class MyLoggerClass implements LoggerInterface
+{
+    // Your logger methods
+}
+```
+
+Initialize aware logger with your custom logger instance:
 
 ```php
 use Luminova\Logger\LoggerAware;
+use \App\Utils\MyLoggerClass;
 
-$logger = new LoggerAware();
-$logger->setLogger(new MyPsrLoggerClass());
-$logger->alert('This is a alert message');
-$logger->getLogger()->setLevel('debug')->mail('peter@example.com', 'This is a debug message');
+$logger = new LoggerAware(new MyLoggerClass());
 ```
 
-**Primary Benefits:**
-- **Flexibility:** Easily switch between different logging implementations.  
-- **Standards Compliance:** Fully compatible with any PSR-compliant logger.  
+---
+
+Initialize aware logger with Luminova `NovaLogger` instance:
+
+```php
+use Luminova\Logger\LoggerAware;
+use Luminova\Logger\NovaLogger;
+
+$logger = new LoggerAware(new NovaLogger('app'));
+```
+
+---
+
+Initialize aware logger with Monolog logger instance:
+
+```php
+use Luminova\Logger\LoggerAware;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
+$monolog = new Logger('app');
+$monolog->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
+
+$logger = new LoggerAware($monolog);
+```
+
+---
+
+Log messages using your logger class: 
+
+```php
+$logger->alert('This is a alert message');
+$logger->info('This is an info message');
+$logger->debug('This is a debug message');
+```
+
+---
+
+### NovaLogger-Specific Features
+
+Send log to emil or a remote URL:
+
+```php
+$logger->mail('peter@example.com', 'This is an email log message');
+$logger->remote('https://example.com/api/log', 'This is a remote log message');
+```
+
+When sending logs via email or to a remote server, you can define a default log level to use in case of failure. The log level also serves as an indicator of log severity.  
+
+```php
+$logger->setLevel('debug')
+    ->mail('peter@example.com', 'This is a debug message');
+``` 
 
 ***
 
 ## Class Definition
 
 * Full namespace: `\Luminova\Logger\LoggerAware`
+* Class parent:
+[\Psr\Log\AbstractLogger](https://www.php-fig.org/psr/psr-3/#3-psrabstractlogger)
 * This class implements:
 [\Psr\Log\LoggerInterface](https://www.php-fig.org/psr/psr-3/#3-psrlogloggerinterface), [\Psr\Log\LoggerAwareInterface](https://www.php-fig.org/psr/psr-3/#4-psrlogloggerawareinterface)
+
+---
 
 ## Properties
 
@@ -50,7 +121,7 @@ $logger->getLogger()->setLevel('debug')->mail('peter@example.com', 'This is a de
 The PSR logger interface class instance.
 
 ```php
-protected \Psr\Log\LoggerInterface $logger = null;
+protected ?Psr\Log\LoggerInterface $logger = null;
 ```
 
 ***
@@ -99,7 +170,7 @@ public getLogger(): ?LoggerInterface
 
 **Return Value:**
 
-`\Psr\Log\LoggerInterface` -  Return instance of logger class in-use.
+`\Psr\Log\LoggerInterface|null` -  Return instance of logger class in-use, otherwise null.
 
 ***
 
@@ -244,14 +315,14 @@ public debug(string $message, array $context = []): void
 Log an exception message.
 
 ```php
-public exception(string $message, array $context = []): void
+public exception(\Throwable|string $message, array $context = []): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$message` | **string** | The EXCEPTION message to log. |
+| `$message` | **\Throwable\|string** | The exception message to log. |
 | `$context` | **array** | Additional context data (optional). |
 
 ***
@@ -278,14 +349,14 @@ public php(string $message, array $context = []): void
 Log an performance metric.
 
 ```php
-public metrics(string $message, array $context = []): void
+public metrics(string $data, array $context = []): void
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$message` | **string** | The php message to log. |
+| `$data` | **string** | The php message to log. |
 | `$context` | **array** | Additional context data (optional). |
 
 ***
@@ -302,7 +373,7 @@ public log(string $level, string $message, array $context = []): void
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$level` | **string** | The log level (e.g., &quot;emergency,&quot; &quot;error,&quot; &quot;info&quot;). |
+| `$level` | **string** | The log level (e.g., `emergency,` `error,` `info`). |
 | `$message` | **string** | The log message. |
 | `$context` | **array** | Additional context data (optional). |
 

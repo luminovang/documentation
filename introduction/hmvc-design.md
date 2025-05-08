@@ -4,34 +4,102 @@
 
 ## Overview
 
-The HMVC offers a simple way to build scalable, modular applications. By organizing the application into logical modules, which can improve reusability, maintainability, and application performance.
+HMVC provides a simple way to build scalable and modular applications. By organizing your app into logical modules, it enhance reusability, maintainability, and performance.
 
 ***
 
 ## Introduction
 
-HMVC (Hierarchical Model-View-Controller) is an advanced architectural pattern that extends the standard MVC (Model-View-Controller) structure by supporting modularity. Each module in Luminova `HMVC` has its own `MVC` components (Models, Views, and Controllers). This modular approach helps in providing a cleaner, more maintainable, and scalable approach to developing complex applications.
+HMVC (Hierarchical Model-View-Controller) is an advanced architectural pattern that extends the standard MVC (Model-View-Controller) design by adding modularity. In Luminova, each module follows the traditional `MVC` components (Models, Views, and Controllers), but operates independently within its own namespace and structure. This modular approach makes it easier to develop, maintain, and scale complex applications.
 
-In an HMVC application, modules operate independently, making it easier to divide the system into logical sections that can be worked on in parallel or reused across different parts of the application.
+#### Implementing HMVC in Luminova
+
+Adopting the HMVC design pattern in Luminova is simple and straightforward. It doesn't require additional learning curves. You can easily convert your existing MVC structure into HMVC by organizing your controllers into module specific directories. Simply place your existing MVC controllers, models, and views into the `/app/Modules/` directory, update namespaces and Luminova will handle the routing and module management for you.
+
+---
+
+### Enabling HMVC in Luminova
+
+To enable HMVC support in Luminova, you need to switch from the default MVC mode to HMVC by updating your environment configuration.
+
+1. Open the `.env` file in the root of your project.
+2. Locate the `feature.app.hmvc` setting.
+3. Set its value to `enable` like this:
+
+```env
+feature.app.hmvc = enable
+```
+
+> This tells Luminova to use the HMVC structure for loading controllers, views, and models from module folders.
+
+---
+
+### Important Naming Convention
+
+In the Luminova HMVC architecture, module directories must follow a strict naming convention* by using **PascalCase**.
+The **module name must start with an uppercase letter** (e.g., `Blog`), not lowercase (`blog`).
+
+**Why it matters:**
+Luminova uses autoloading and class resolution that are case-sensitive. If your module directory name doesn’t follow the correct casing, it may not be recognized properly.
+
+**Example:**
+
+If your URL is:
+
+```bash
+https://example.com/blog
+```
+
+And `blog` is a sub-HMVC module, then the corresponding module directory must be named with an uppercase first letter:
+
+Correct:
+
+```
+/app/Modules/
+    Blog/
+        Controllers/
+        Models/
+```
+
+Incorrect:
+
+```
+/app/Modules/
+    blog/
+        Controllers/
+        Models/
+```
+
+> Always use `PascalCase` (first letter uppercase) for module directory names to ensure compatibility and consistency within the framework.
 
 ***
 
-### Key Concepts
+## Key Concepts
 
-#### 1. Modules
+### Modules
+
 A **module** is a self-contained component that encapsulates its own controllers, models, views, and other necessary resources. Modules in Luminova HMVC are designed to be reusable and scalable, often representing a distinct part of your application (e.g., user management, blog, etc.).
 
-### 2. Controllers
+---
+
+### Controllers
+
 Controllers in Luminova HMVC are responsible for handling requests and directing the flow of the application. Controllers can be created within either:
 - **HTTP Controllers**: Located in `app/Modules/Controllers/Http/` or `app/Modules/<Module>/Controllers/Http/` and handle HTTP requests.
 - **CLI Controllers**: Located in `app/Modules/Controllers/Cli/` or `app/Modules/<Module>/Controllers/Cli/` and handle command-line interface requests.
 
- > **Note:** You must call `$this->app->setModule('Foo')` within the controller's `onCreate` or `__construct` method to register your custom module name. Only the module's directory name (e.g., `Foo`) is required, not the full path.
+> **Note:** You must call `$this->app->setModule('Foo')` within the controller's `onCreate` or `__construct` method to register your custom module name. Only the module's directory name (e.g., `Foo`) is required, not the full path.
 
-#### 3. Views
+---
+
+### Views
+
 Views handle the presentation logic of the application. Each module can have its own views, and the path to these views is scoped to the module in which they are defined. Views are generally located in the `app/Modules/Views/` or `app/Modules/<Module>/Views/` directory within each module.
 
-#### 4. Models
+---
+
+### Models
+
 Models are responsible for handling the data logic of your application. Each module can have its own set of models, allowing each module to manage its own data independently. Models are typically stored in the `app/Modules/Models/` or `app/Modules/<Module>/Models/` directory within each module.
 
 ***
@@ -68,37 +136,47 @@ The Luminova HMVC structure organizes code into modules, each containing its own
             /Views/         (Views specific to User module)
 ```
 
-**Directory Structure Breakdown:**
+**Directory Structure Overview**
 
-- **Modules**: Contains all application modules.
-  - **<Module>**: Each module is a self-contained section of the application.
-    - **Controllers**: Contains all controller logic for that module.
-    - **Models**: Contains all model logic for that module.
-    - **Views**: Contains all view templates for that module.
+* **Modules/**: Root container for all application modules, including the default (root) module.
+  * **Module/**: Each module represents a self-contained feature or section of the application.
+     * **Controllers/**: Handles incoming requests and business logic specific to the module.
+     * **Models/**: Defines data structures and database interactions used by the module.
+     * **Views/**: Contains the presentation layer, HTML or template files rendered by the module.
 
 ***
 
 ### Namespaces
 
-In Luminova HMVC, namespace registration is important for managing modules. The namespace conventions follow a specific pattern based on whether it's a regular MVC application or HMVC module.
+In Luminova's HMVC architecture, proper namespace registration is essential for organizing and autoloading your application components. Namespace patterns vary slightly depending on whether you're using standard MVC or modular HMVC.
 
-**MVC Namespace:**
-- `\App\Controllers\Http\` for HTTP controllers.
-- `\App\Controllers\Cli\` for CLI controllers.
+**MVC Namespace Conventions**
 
-**HMVC Namespace:**
-- `\App\Modules\<ModuleName>\Controllers\Http\` for HTTP controllers in the module.
-- `\App\Modules\<ModuleName>\Controllers\Cli\` for CLI controllers in the module.
+* `\App\Controllers\Http\`
+  For standard HTTP controllers in a non-modular structure.
 
-**Namespaces Registration:**
+* `\App\Controllers\Cli\`
+  For command-line controllers (CLI) in a non-modular structure.
 
-In Luminova, namespaces are typically registered within the application's `onCreate` or `__construct` methods, using the router object. This ensures that controller namespaces are properly set up when the application is initialized.
+**HMVC Namespace Conventions**
 
-**Example: Registering Namespaces**
+* `\App\Modules\<ModuleName>\Controllers\Http\`
+  For HTTP controllers within a specific HMVC module.
+
+* `\App\Modules\<ModuleName>\Controllers\Cli\`
+  For CLI controllers within a specific HMVC module.
+
+---
+
+### Namespace Registration
+
+In Luminova, controller namespaces should be registered during application initialization, typically within the `onCreate` or `__construct` method, using the router object in application. This ensures that route resolution can correctly locate controllers across your modules.
+
+**Registering Controller Namespaces**
 
 ```php
 // /app/Application.php
-<?php
+
 namespace App;
 
 use Luminova\Core\CoreApplication;
@@ -106,99 +184,134 @@ use Luminova\Core\CoreApplication;
 class Application extends CoreApplication
 {
     /**
-     * Initialize namespaces for the application.
+     * Boot and register controller namespaces.
      */
     protected function onCreate(): void 
     {
-        // Register namespaces for different modules
+        // Register namespaces for module-based controllers
         $this->router->addNamespace('\\App\\Modules\\Blog\\Controllers\\')
-                     ->addNamespace('\\App\\Modules\\User\\Controllers\\');
+            ->addNamespace('\\App\\Modules\\User\\Controllers\\');
     }
 }
 ```
 
-> **Note:** When registering the namespace for routing, omit the `Http` and `Cli` suffixes. Instead, register your namespace module and end it in `Controllers` (e.g., `App\Modules\Blog\Controllers`), not `App\Modules\Blog\Controllers\Http` or `App\Modules\Blog\Controllers\Cli`.
+> **Note:**
+>
+> * Do **not** include the `Http` or `Cli` subdirectories when registering namespaces. Only register up to `Controllers` (e.g., `App\Modules\Blog\Controllers`) instead of (`App\Modules\Blog\Controllers\Http`). Luminova will resolve the correct sub-namespace automatically based on request type.
+> * The namespace for the **root module** is registered by default, so there is no need to register it manually.
 
 ***
 
 ### Routing in Luminova HMVC
 
-Routing in Luminova HMVC works the same way as in regular MVC. You can use either [PHP Attributes](/routing/route-attribute.md) for route definition or the method-based routing provided by the [Luminova\Routing\Router](/routing/url-routing.md) class. Both approaches are fully supported within the HMVC architecture.
+Routing in Luminova's HMVC architecture works just like in standard MVC. You can define routes using either:
 
-***
+* [PHP Attributes](/routing/route-attribute.md) — for declarative, annotation-style route definitions.
+* [Routing System Methods](/routing/url-routing.md) — using the `Luminova\Routing\Router` for programmatic route registration.
+
+Both methods are fully supported within HMVC and can be used interchangeably across your modules.
+
+---
 
 ### Route Loading
 
-In Luminova's HMVC architecture, the routing system automatically loads the appropriate controller based on the request type (`HTTP` or `CLI`) and the module structure. This process also takes into account the module name defined in `$this->app->setModule(...)` for rendering views.
+Luminova automatically resolves and loads the correct controller based on:
 
-***
+* The **request type**: `HTTP` or `CLI`
+* The **active module**: as defined by `$this->app->setModule(...)`
 
-### Controllers in HMVC
+The routing system also ensures that view rendering corresponds to the active module, allowing for clean separation and isolation of logic per module.
 
-Controllers in Luminova HMVC are very similar to those in traditional MVC structures, but they are organized within modules. Each controller handles incoming requests, processes the necessary data (using models), and returns the appropriate response (using views).
+---
 
-**Example Controller:**
+### HMVC Controllers
+
+In Luminova's HMVC architecture, controllers function similarly to those in traditional MVC but are organized within individual modules. Each controller is responsible for handling incoming requests, coordinating with models for data processing, and returning the appropriate response via views.
+
+**Example: Blog Controller**
+
 ```php
 // /app/Modules/Blog/Controllers/Http/BlogController.php
 
-<?php
 namespace App\Modules\Blog\Controllers\Http;
 
 use Luminova\Base\BaseViewController;
 use Luminova\Attributes\Route;
-use Luminova\Attributes\Error;
-use App\Controllers\Errors\ViewErrors;
+use Luminova\Attributes\Prefix;
+use App\Errors\Controllers\ErrorController;
 
-#[Error(onError: [ViewErrors::class, 'onWebError'])]
+#[Prefix(
+    pattern: '/blog/(:root)',
+    onError: [ErrorController::class, 'onWebError']
+)]
 class BlogController extends BaseViewController 
 {
     protected function onCreate(): void 
     {
+        // Set the current module name for view and template resolution
         $this->app->setModule('Blog');
     }
 
     #[Route('/blog', methods: ['GET'])]
     public function index(): int 
     {
-        // Logic to handle showing the blog index page
-
+        // Logic to display the blog index page
         return $this->view('blogs');
     }
 }
 ```
 
-**For CLI controllers:**
+> **Note:** Always register the module name using `$this->app->setModule('YourModuleName')` inside `onCreate()`. This enables the template engine to correctly locate views within the module context.
+
+---
+
+### HMVC CLI Controllers
+
+CLI controllers in Luminova allow you to define commands that can be executed through the command line interface. These controllers are typically used for background tasks, maintenance commands, or other non-HTTP operations.
+
+**Example: Blog CLI Controller**
+
 ```php
 // /app/Modules/Blog/Controllers/Cli/BlogController.php
-<?php
+
 namespace App\Modules\Blog\Controllers\Cli;
 
 use Luminova\Base\BaseCommand;
+use Luminova\Attributes\Group;
 use Luminova\Attributes\Route;
 
+#[Group(name: 'blog')]
 class BlogController extends BaseCommand 
 {
     protected string $group = 'blog';
-    protected string $name  = 'blog-command';
+    protected string $name  = 'blog-command'; 
     protected array $usages  = [
         'php index.php blog sync',
     ];
 
-    #[Route('sync', group: 'blog')]
+    #[Route('sync', group: 'blog')] 
     public function sync(): int 
     {
-        // Logic to handle CLI-based blog synchronization
-
+        // Logic to handle blog synchronization from the CLI
         return STATUS_SUCCESS;
     }
 }
 ```
 
-***
+> **Note:** In CLI controllers, `Route` attributes define specific command names, and the `Group` attribute is used to group related commands together. The command is then executed via the CLI using `php index.php <group> <command>`.
 
-## Advantages of HMVC in Luminova
+---
 
-1. **Modularity**: Each module can be independently developed and managed, reducing complexity in large applications.
-2. **Reusability**: Modules can be reused across multiple applications or different parts of the same application.
-3. **Maintainability**: By breaking down the application into logical modules, the code becomes easier to maintain and update.
-4. **Scalability**: The application can grow by adding more modules without affecting the core structure.
+### Advantages of HMVC in Luminova
+
+1. **Modularity**:
+   Modules are self-contained and can be independently developed, tested, and managed. This reduces complexity, especially in large applications.
+
+2. **Reusability**:
+   Modules can be reused across different projects or parts of the same application, promoting code reuse and reducing duplication.
+
+3. **Maintainability**:
+   By organizing the application into logical, isolated modules, maintenance becomes easier. Updates and fixes can be made to specific modules without affecting the entire system.
+
+4. **Scalability**:
+   The application can grow more efficiently. New modules can be added without disrupting the core structure, allowing the application to scale seamlessly.

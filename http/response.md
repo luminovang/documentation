@@ -1,4 +1,4 @@
-# cURL Client: Handling Outgoing Network Request Responses
+# Handling Responses from Outgoing Network Requests
 
 ***
 
