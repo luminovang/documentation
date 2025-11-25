@@ -1,0 +1,38 @@
+# Application Mail Client Configuration
+
+***
+
+## Overview
+
+Easily switch or configure the default mailer to use your preferred email client for sending application emails.
+
+***
+
+## Introduction
+
+The `Mailer` Configuration class provides basic email configurations and method to specify preferred mailer class to be used across your application.
+
+***
+
+* Class namespace: `\App\Config\Mailer`
+* File path: `/app/Config/Mailer.php`
+* This class is marked as **final** and can't be subclassed
+
+***
+## Methods
+
+### getMailer
+
+Return instance of your preferred mail client.
+
+```php
+public getMailer(): ?Luminova\Interface\MailerInterface
+```
+
+> Your mail client class must implement Luminova MailerInterface.
+>
+> Optionally you can use any of available mail client `Luminova\Utility\Email\Clients\PHPMailer`, `Luminova\Utility\Email\Clients\SwiftMailer`
+
+**Return Value:**
+
+`Luminova\Interface\MailerInterface|null` - Return preferred mailer instance or null to use default mailer class.
